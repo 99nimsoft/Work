@@ -1,0 +1,17 @@
+
+public class A{
+
+	
+	public static void main(String[] args) {
+		Bb b = new Bb();
+		String tmp1 = b.a="neelu";
+		String tmp2 = b.b="cheelu";
+		System.out.println(tmp1+" : "+tmp2);
+	}
+	
+}
+
+class Bb{
+	String a = "gaurav";
+	static String b = "saurabh";
+}

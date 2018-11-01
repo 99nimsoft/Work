@@ -1,0 +1,19 @@
+
+public class A{
+	
+	public static void main(String[] args) {
+		
+		
+	}
+}
+
+class mahList{
+	
+	Object[] arr;
+	
+	mahList(){
+		arr = new Object[10];
+	}
+	
+	
+}

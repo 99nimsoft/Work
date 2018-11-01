@@ -1,0 +1,12 @@
+
+
+public class A implements C{
+
+	@Override
+	public void m1() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	
+}

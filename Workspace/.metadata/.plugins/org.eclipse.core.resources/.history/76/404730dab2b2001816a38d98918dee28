@@ -1,0 +1,39 @@
+package automationPackage;
+
+import org.testng.annotations.*;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.*;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxProfile;
+
+public class TestTest {
+
+
+  @Test
+  public void testCase2(){  
+	  System.setProperty("webdriver.chrome.driver","C:\\Users\\IBM_ADMIN\\GAURAV\\Z_Drivers\\chromedriver.exe");
+	  WebDriver driver = new ChromeDriver();
+	  driver.get("https://www.google.com");
+	  driver.findElement(By.id("lst-ib")).sendKeys("sachin");
+	  driver.findElement(By.name("btnK")).click();
+	  driver.close();
+  }
+  
+  @Test
+  public void testCase1(){
+	  System.setProperty("webdriver.chrome.driver","C:\\Users\\IBM_ADMIN\\GAURAV\\Z_Drivers\\chromedriver.exe");
+	  WebDriver driver = new ChromeDriver();
+	  driver.get("https://www.google.com");
+	  driver.findElement(By.id("lst-ib")).sendKeys("sachin");
+	  driver.findElement(By.name("btnK")).click();
+	  driver.close();
+  }
+}

@@ -1,0 +1,19 @@
+
+public class A extends Bb{
+
+	
+	public static void main(String[] args) {
+		System.out.println();
+	}
+	
+}
+
+class Bb{
+	
+	String name;
+	int roll;
+	Bb(){
+		
+	}
+	
+}

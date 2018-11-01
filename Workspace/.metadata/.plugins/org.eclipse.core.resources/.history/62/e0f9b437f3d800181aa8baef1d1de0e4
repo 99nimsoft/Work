@@ -1,0 +1,16 @@
+
+
+public class A{
+	
+	private int age;
+	private Dog3 d;
+	A(int age , Dog3 d){
+		this.age=age;
+		this.d=d;
+	}
+	
+	public static void main(String[] args) {
+	
+		A a = new A();
+	}	
+}

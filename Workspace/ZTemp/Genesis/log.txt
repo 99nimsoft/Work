@@ -1,0 +1,24 @@
+[11:44:10:AM]: Genesis v1.0 started on Windows 7
+[11:44:13:AM]: You: hi
+[11:44:13:AM]: Genesis: Hi.
+[11:44:23:AM]: You: bye
+[11:44:23:AM]: Genesis: 
+[11:44:28:AM]: Genesis v1.0 shut down successfully!
+[11:44:37:AM]: Genesis v1.0 started on Windows 7
+[11:44:40:AM]: You: hi
+[11:44:40:AM]: Genesis: Hi!
+[11:44:47:AM]: You: how are you doing
+[11:44:47:AM]: Genesis: 
+[11:44:56:AM]: You: bro u thetre
+[11:44:56:AM]: Genesis: 
+[11:45:00:AM]: You: there??
+[11:45:00:AM]: Genesis: 
+[11:45:05:AM]: Genesis v1.0 shut down successfully!
+[11:45:16:AM]: Genesis v1.0 started on Windows 7
+[11:45:19:AM]: You: hi
+[11:45:19:AM]: Genesis: Hi.
+[11:45:26:AM]: You: how are u doing?
+[11:45:26:AM]: Genesis: 
+[11:45:32:AM]: You: u there??
+[11:45:32:AM]: Genesis: 
+[11:45:34:AM]: Genesis v1.0 shut down successfully!

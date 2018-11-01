@@ -1,0 +1,10 @@
+
+
+public class A{
+	 
+	public static void main(String[] args) {
+		int[] arr = {1,2,3,4,99,88,77,66,0};
+		B b = new B();
+		b.print(arr);
+	}
+}

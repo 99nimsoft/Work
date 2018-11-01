@@ -1,0 +1,23 @@
+import java.util.Arrays;
+
+public class A extends temp{
+
+	A vemp(){
+		return this;
+	}
+	void m1(){
+		System.out.println("yes");
+	}
+	public static void main(String[] args) {
+		
+		new A().vemp().m1();
+	}
+}
+
+class temp{
+	
+	temp vemp(){
+		return this;
+	}
+}
+

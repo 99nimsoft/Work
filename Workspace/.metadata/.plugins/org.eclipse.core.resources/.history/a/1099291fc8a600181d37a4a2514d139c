@@ -1,0 +1,12 @@
+import java.util.Arrays;
+
+public class B{
+	
+	public <E> void print(E arrObj){
+		
+		//Arrays.sort(arrObj);
+		for(E i : arrObj){
+			System.out.println(i);
+		}
+	}
+}

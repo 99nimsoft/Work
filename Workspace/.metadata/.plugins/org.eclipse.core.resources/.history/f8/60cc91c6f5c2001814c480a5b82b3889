@@ -1,0 +1,15 @@
+
+public class A extends Bb{
+
+	
+	public static void main(String[] args) {
+		Bb = new Bb();
+		
+	}
+	
+}
+
+class Bb{
+	String a = "gaurav";
+	static String b = "saurabh";
+}

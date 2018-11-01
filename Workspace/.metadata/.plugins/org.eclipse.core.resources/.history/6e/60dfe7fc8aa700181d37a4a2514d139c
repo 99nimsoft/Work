@@ -1,0 +1,33 @@
+
+public class AssociationTest {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+	}
+
+}
+
+
+class movie{
+	private String movie;
+	
+	movie(String movie){
+		this.movie=movie;
+	}
+	public String getMovieName(){
+		return movie;
+	}
+	
+}
+
+class actor{
+	private String actor;
+	
+	actor(String actor){
+		this.actor=actor;
+	}
+	public String getActorName(){
+		return actor;
+	}
+}

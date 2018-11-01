@@ -1,0 +1,4 @@
+Greeting? Hi
+Farewell? bye
+Farewell? there
+Farewell? u there

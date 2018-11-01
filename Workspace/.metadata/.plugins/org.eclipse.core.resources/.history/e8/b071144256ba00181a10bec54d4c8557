@@ -1,0 +1,14 @@
+
+public class A{
+	
+	public static void main(String[] args) {
+		zx z = new zx();
+	}
+}
+
+class zx{
+	
+	void add(){
+		
+	}
+}

@@ -1,0 +1,14 @@
+
+
+public class A implements C{
+
+	@Override
+	public void m1() {
+		
+		
+	}
+    public static void main(String[] args) {
+		
+	}
+	
+}

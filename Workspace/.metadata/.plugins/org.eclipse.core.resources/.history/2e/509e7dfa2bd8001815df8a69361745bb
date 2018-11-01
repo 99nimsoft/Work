@@ -1,0 +1,16 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class A{
+	
+	List<String> list = new ArrayList<String>();
+	void m1(){
+		
+	}
+	
+}
+
+class mp{
+	
+	
+}

@@ -1,0 +1,10 @@
+
+public class Exptn implements C{
+
+	C obj = ()->System.out.println("utilising lambda");
+	
+	public static void main(String[] args) {
+		
+	}
+	
+}

@@ -1,0 +1,40 @@
+package automationPackage;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.annotations.Test;
+
+public class ZZ_Test1 {
+	
+	static WebDriver driver;
+	static int i = 0;
+	static int j = 0;
+	
+	
+	@Test
+    public void tcTest1() throws Exception{
+			
+		if(j>0){
+			System.out.println("yes");
+			j++;
+		}
+
+    }
+	
+	@Test
+    public void tcTest2() throws Exception{
+
+		if(i>0){
+			System.out.println("no");
+			i++;
+		}
+	}
+	
+	boolean waitFor(int val){
+		if(){
+			
+		}
+	}
+}
+
+

@@ -1,0 +1,17 @@
+class Dog3{
+	
+
+	private String name;
+	
+	Dog3(String name){
+		this.name=name;
+	}
+	
+	public String toString(){
+		return name;
+	}
+}  
+
+class bb<T>{
+	
+}

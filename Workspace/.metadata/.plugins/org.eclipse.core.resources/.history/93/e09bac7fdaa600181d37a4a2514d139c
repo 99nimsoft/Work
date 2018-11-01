@@ -1,0 +1,6 @@
+
+public class B implements C{
+	public void m1(){
+		System.out.println("m1 method of Exptn class");
+	}
+}

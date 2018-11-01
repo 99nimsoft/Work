@@ -1,0 +1,19 @@
+
+public class A{
+	
+	public static void main(String[] args) {
+		
+		
+	}
+}
+
+class mahList{
+	
+	String[] arr = new String[10];
+	static int i=0;
+	String[] add(String tmp){
+		arr[i]=tmp;
+		i++;
+		return arr;
+	}
+}

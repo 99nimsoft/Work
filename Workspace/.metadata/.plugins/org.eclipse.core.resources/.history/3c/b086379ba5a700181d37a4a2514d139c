@@ -1,0 +1,11 @@
+import java.util.Arrays;
+
+public class A{
+
+	temp p = ()->System.out.println("yes");
+}
+
+interface temp{
+	void m1();
+}
+

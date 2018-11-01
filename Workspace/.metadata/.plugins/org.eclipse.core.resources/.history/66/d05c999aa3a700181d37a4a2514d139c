@@ -1,0 +1,25 @@
+
+
+public class A extends GenX{
+
+	static GenX<String> obj = new GenX();
+	public static void main(String[] args) {
+		obj.m1("gaurav");
+		System.out.println(obj.m2());
+	}
+	
+}
+
+class GenX<T>{
+	
+	private T temp;
+	
+	void m1(T temp){
+		this.temp=temp;
+	}
+	T m2(){
+		return temp;
+	}
+	
+}
+

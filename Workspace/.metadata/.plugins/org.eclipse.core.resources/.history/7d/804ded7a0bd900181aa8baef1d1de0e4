@@ -1,0 +1,32 @@
+import java.util.Arrays;
+
+public class A{
+	
+	mahList ml = new mahList();
+}
+
+
+class mahList{
+	
+	Object[] arr;
+	int size;
+	
+	mahList(){
+		arr = new Object[10];
+	}
+	
+	public void add(){
+		validatecapacity(size+1);
+	}
+	
+	public void validatecapacity(int tmp){
+		if(tmp>arr.length){
+			int sze = (((arr.length*3)/2))+1;
+			arr=Arrays.copyOf(arr,sze);
+		}
+	}
+	
+	public Object get(int index){
+		return arr[index];
+	}
+}

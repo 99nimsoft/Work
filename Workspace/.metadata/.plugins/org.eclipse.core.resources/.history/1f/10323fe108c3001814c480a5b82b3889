@@ -1,0 +1,26 @@
+
+public class A{
+
+	String address;
+	Bb obj;
+	
+	A(String address,Bb obj){
+		this.address=address;
+		this.obj=obj;
+	}
+	public static void main(String[] args) {
+		new A("nework",new Bb("gaurav",3));
+	}
+	
+}
+
+class Bb{
+	
+	String name;
+	int roll;
+	Bb(String name,int roll){
+		this.name=name;
+		this.roll=roll;
+	}
+	
+}

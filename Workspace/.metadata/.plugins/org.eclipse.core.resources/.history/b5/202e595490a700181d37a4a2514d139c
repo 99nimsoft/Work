@@ -1,0 +1,28 @@
+
+
+public class A{
+
+	public static void main(String[] args) {
+		Sample s = new Sample();
+		s.m1();
+	}
+}
+
+interface Sample{
+	void m1();
+}
+
+class ImplementSample1 implements Sample{
+
+	@Override
+	public void m1() {
+		System.out.println("implementation of m1 method in one way");	
+	}	
+}
+class ImplementSample2 implements Sample{
+
+	@Override
+	public void m1() {
+		System.out.println("implementation of m1 method in second way");	
+	}	
+}

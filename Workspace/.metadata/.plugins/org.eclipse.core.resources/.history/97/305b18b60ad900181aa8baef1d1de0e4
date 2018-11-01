@@ -1,0 +1,21 @@
+
+
+public class A{
+	
+	private int age;
+	private Dog3 d;
+	A(int age , Dog3 d){
+		this.age=age;
+		this.d=d;
+	}
+	
+	public static void main(String[] args) {
+	
+		A a = new A(10,new Dog3("doggy"));
+		System.out.println(a);
+	}	
+	
+	public String toString(){
+		return age+":"+d;
+	}
+}

@@ -1,0 +1,16 @@
+
+public class B{
+	
+	private void method1(String arg,boolean a){
+		System.out.println("private method m of class B"+" "+arg+" "+a);
+	}
+	
+	void method2(int a){
+		System.out.println("no private"+a);
+	}
+	
+	void method3(int arg){
+		System.out.println("aa"+arg);
+	}
+}
+

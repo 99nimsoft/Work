@@ -1,0 +1,43 @@
+import java.util.ArrayList;
+import java.util.List;
+
+public class Jungle {
+
+	List<Animals> animals;
+	
+	Jungle(List<Animals> animals) {
+		this.animals=animals;
+	}
+	public List<Animals> getCount(){
+		return animals;
+	}
+}
+
+
+class Animals {
+
+private String nameAnimal;
+	
+	Animals(String nameAnimal){
+		this.nameAnimal=nameAnimal;
+	}
+	
+}
+
+
+class checkComposition{
+	
+	public static void main(String[] args) {
+		Animals a1 = new Animals("Lion");
+		Animals a2 = new Animals("Tiger");
+	    List<Animals> anmls = new ArrayList<Animals>();
+	    anmls.add(a1);
+	    anmls.add(a2);
+	    
+	    Jungle jungle = new Jungle(anmls);
+
+	    List<Animals> = jungle.getCount();
+	    
+	}
+}
+

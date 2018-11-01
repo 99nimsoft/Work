@@ -1,0 +1,13 @@
+
+public class A{
+	
+	
+}
+
+class Bb extends Exception{
+	
+	void Bb(String s){
+		super();
+	}
+	
+}

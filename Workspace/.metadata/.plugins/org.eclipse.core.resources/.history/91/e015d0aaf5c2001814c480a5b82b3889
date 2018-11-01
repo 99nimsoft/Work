@@ -1,0 +1,12 @@
+
+public class A{
+
+	
+	
+	
+}
+
+class B{
+	String a = "gaurav";
+	static String b = "saurabh";
+}

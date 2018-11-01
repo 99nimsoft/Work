@@ -1,0 +1,46 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
+
+public class A{
+	
+	public static void main(String[] args) {
+		
+		Map<Integer,Names> hm = new HashMap<Integer,Names>();
+		
+		hm.put(1,new Names("gaurav","newyork"));
+		hm.put(4,new Names("saurabh","london"));
+		hm.put(3,new Names("gary","london"));
+				
+//		for(Entry<Integer,Names> m : hm.entrySet()){
+//			//int i = m.getKey();
+//			Names b = m.getValue();
+//			System.out.println(b);
+//		}
+		TreeMap<Integer,Names> sorted = new TreeMap<>(); 
+		  
+        // Copy all data from hashMap into TreeMap 
+        sorted.putAll(hm); 
+  
+        // Display the TreeMap which is naturally sorted 
+        for (Map.Entry<Integer,Names> entry : sorted.entrySet())  
+            System.out.println("Key = " + entry.getKey() +  
+                         ", Value = " + entry.getValue());    
+	}
+}
+
+class Names{
+	
+	private String name;
+	private String address;
+	
+	public Names(String name,String address){
+		this.name=name;
+		this.address=address;
+	}
+	
+	public String toString(){
+		return name+":"+address;
+	}
+}

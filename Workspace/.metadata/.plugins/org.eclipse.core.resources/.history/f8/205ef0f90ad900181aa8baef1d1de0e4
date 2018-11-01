@@ -1,0 +1,19 @@
+
+
+public class A{
+	
+	
+}
+
+
+class mahList{
+	
+	Object[] arr;
+	int size;
+	
+	mahList(){
+		arr = new Object[10];
+	}
+	
+	
+}

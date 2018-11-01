@@ -1,0 +1,4 @@
+19:03:40,489  INFO automationPackage.ZZ_Test1<strong>{1}</strong>:19 - This is info
+19:04:34,902  WARN automationPackage.ZZ_Test1<strong>{1}</strong>:20 - This is warning
+19:04:34,902 ERROR automationPackage.ZZ_Test1<strong>{1}</strong>:21 - This is error
+19:04:34,902 FATAL automationPackage.ZZ_Test1<strong>{1}</strong>:22 - This is fatal

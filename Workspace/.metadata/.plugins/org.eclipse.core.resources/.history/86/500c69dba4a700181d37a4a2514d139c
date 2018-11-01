@@ -1,0 +1,32 @@
+import java.util.Arrays;
+
+public class A extends GenX<Integer>{
+
+	static GenX<Integer> obj = new GenX<Integer>();
+	public static void main(String[] args) {
+		obj.m1(999);
+		System.out.println(obj.m2());
+		System.out.println("*************************************************");
+	}
+	
+}
+
+class GenX<T>{
+	
+	private T temp;
+	
+	void m1(T temp){
+		this.temp=temp;
+	}
+	T m2(){
+		return temp;
+	}
+	
+	<E> void m3(E[] arrObj){
+		Arrays.sort(arrObj);
+		for(E o : arrObj){
+			System.out.println(o);
+		}
+	}
+}
+

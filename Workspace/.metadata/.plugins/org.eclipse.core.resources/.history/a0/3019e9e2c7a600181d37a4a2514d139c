@@ -1,0 +1,13 @@
+import java.util.Arrays;
+
+public class B{
+	
+	public <T> void print(T arrObj){
+		
+		//Arrays.sort(arrObj);
+//		for(T i : arrObj){
+//			System.out.println(i);
+//		}
+		System.out.println(arrObj);
+	}
+}

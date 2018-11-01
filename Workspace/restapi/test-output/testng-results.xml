@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" total="6" passed="6">
+  <reporter-output>
+  </reporter-output>
+  <suite name="Default suite" duration-ms="5264" started-at="2018-09-06T08:41:24Z" finished-at="2018-09-06T08:41:29Z">
+    <groups>
+    </groups>
+    <test name="Default test" duration-ms="5264" started-at="2018-09-06T08:41:24Z" finished-at="2018-09-06T08:41:29Z">
+      <class name="restapi.GetAPITest">
+        <test-method status="PASS" signature="TC_02(java.lang.String)[pri:0, instance:restapi.GetAPITest@28feb3fa]" name="TC_02" duration-ms="3305" started-at="2018-09-06T14:11:24Z" data-provider="params" finished-at="2018-09-06T14:11:27Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[noida]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- TC_02 -->
+        <test-method status="PASS" signature="TC_02(java.lang.String)[pri:0, instance:restapi.GetAPITest@28feb3fa]" name="TC_02" duration-ms="390" started-at="2018-09-06T14:11:27Z" data-provider="params" finished-at="2018-09-06T14:11:28Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[delhi]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- TC_02 -->
+        <test-method status="PASS" signature="TC_02(java.lang.String)[pri:0, instance:restapi.GetAPITest@28feb3fa]" name="TC_02" duration-ms="270" started-at="2018-09-06T14:11:28Z" data-provider="params" finished-at="2018-09-06T14:11:28Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[mumbai]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- TC_02 -->
+        <test-method status="PASS" signature="TC_02(java.lang.String)[pri:0, instance:restapi.GetAPITest@28feb3fa]" name="TC_02" duration-ms="445" started-at="2018-09-06T14:11:28Z" data-provider="params" finished-at="2018-09-06T14:11:28Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[greenland]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- TC_02 -->
+        <test-method status="PASS" signature="TC_02(java.lang.String)[pri:0, instance:restapi.GetAPITest@28feb3fa]" name="TC_02" duration-ms="346" started-at="2018-09-06T14:11:28Z" data-provider="params" finished-at="2018-09-06T14:11:29Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[nora]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- TC_02 -->
+        <test-method status="PASS" signature="TC_02(java.lang.String)[pri:0, instance:restapi.GetAPITest@28feb3fa]" name="TC_02" duration-ms="465" started-at="2018-09-06T14:11:29Z" data-provider="params" finished-at="2018-09-06T14:11:29Z">
+          <params>
+            <param index="0">
+              <value>
+                <![CDATA[jordan]]>
+              </value>
+            </param>
+          </params>
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- TC_02 -->
+      </class> <!-- restapi.GetAPITest -->
+    </test> <!-- Default test -->
+  </suite> <!-- Default suite -->
+</testng-results>

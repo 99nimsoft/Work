@@ -1,0 +1,15 @@
+
+
+public class A{
+	
+	private int age;
+	
+	A(int age){
+		this.age=age;
+	}
+	
+	public static void main(String[] args) {
+	
+		
+	}	
+}

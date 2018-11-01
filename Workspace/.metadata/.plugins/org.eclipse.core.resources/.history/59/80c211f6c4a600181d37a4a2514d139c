@@ -1,0 +1,31 @@
+
+import java.lang.reflect.Method;
+
+public class A{
+	
+    public static void main(String[] args) throws Exception{
+    	
+    	//Create object of class to get methods and variables
+		Class cls = Class.forName("B");
+		
+		Method[] methods = cls.getDeclaredMethods();
+		for(Method m : methods){
+			System.out.print("Method Name:-"+m.getName()+" ,Return Type:-"+m.getReturnType()+" ,Its Parameters Types:-");
+			Class<?>[] tmp = m.getParameterTypes();
+			for(Class c : tmp){
+				System.out.print(c+",");
+			}
+			System.out.println();
+		}
+
+		System.out.println("Invoking private method which by the way not visible with out reflection class");
+		
+		//assign class instance to an object of Object class to invoke
+		Object object = cls.newInstance();
+		
+		Method method = object.getClass().getDeclaredMethod("method1",String.class,boolean.class);
+		method.setAccessible(true);
+		method.invoke(object,"QWERTY",true);
+	}
+	
+}

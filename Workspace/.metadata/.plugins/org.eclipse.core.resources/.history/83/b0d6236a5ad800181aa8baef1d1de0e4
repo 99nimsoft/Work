@@ -1,0 +1,47 @@
+
+public class A{
+	
+	public static void main(String[] args) {
+		
+//		mahList c = new mahList();
+//		c.add("qqq");
+//		c.add("www");
+//		c.add("eee");
+//		
+//		for(int i=0;i<c.size;i++){
+//			System.out.println(c.get(i));
+//		}
+		
+		int[] myArr = {2,4,2,4,5,6,3};
+        System.out.println("Array size before copy: "+myArr.length);
+        int[] newArr = Arrays.copyOf(myArr, 10);
+        System.out.println("New array size after copying: "+newArr.length);
+	}
+}
+
+class mahList{
+	
+	Object[] arr;
+	int size;
+	
+	mahList(){
+		arr = new Object[3];
+	}
+	
+	void add(Object obj){
+		validateCapacity(size+1);
+		arr[size++]=obj;
+	}
+	
+	void validateCapacity(int z){
+		if(z>=arr.length){
+			int tmp = ((arr.length*3)/2)+1;
+			arr=new Object[tmp];
+			
+		}
+	}
+	
+	Object get(int i){
+		return arr[i];
+	}
+}

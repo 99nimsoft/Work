@@ -1,0 +1,41 @@
+import java.util.Arrays;
+
+public class A{
+	
+	public static void main(String[] args) {
+		mahList ml = new mahList();
+		ml.add("gaurav");
+		
+		for(int i=0;i<ml.size;i++){
+			System.out.println(ml.get(i));
+		}
+	}
+	
+}
+
+
+class mahList{
+	
+	Object[] arr;
+	int size;
+	
+	mahList(){
+		arr = new Object[10];
+	}
+	
+	public void add(Object o){
+		validatecapacity(size+1);
+		arr[size]=o;
+	}
+	
+	public void validatecapacity(int tmp){
+		if(tmp>arr.length){
+			int sze = (((arr.length*3)/2))+1;
+			arr=Arrays.copyOf(arr,sze);
+		}
+	}
+	
+	public Object get(int index){
+		return arr[index];
+	}
+}

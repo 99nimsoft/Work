@@ -1,0 +1,15 @@
+
+public class A extends Bb{
+
+	
+	public static void main(String[] args) {
+		
+		System.out.println(a);
+	}
+	
+}
+
+class Bb{
+	String a = "gaurav";
+	static String b = "saurabh";
+}

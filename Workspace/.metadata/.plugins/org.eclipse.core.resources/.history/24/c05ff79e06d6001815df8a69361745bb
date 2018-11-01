@@ -1,0 +1,22 @@
+
+public class A{
+
+	public static void main(String[] args) {
+		
+		equality obj = new equality();
+		
+        obj.x = 5;
+        obj.y = 5;
+        System.out.println(obj.isequal()); 
+	}
+}
+
+
+class equality {
+    int x=3;
+    int y=4;
+    boolean isequal() {
+        return(x == y);  
+    } 
+    
+}  

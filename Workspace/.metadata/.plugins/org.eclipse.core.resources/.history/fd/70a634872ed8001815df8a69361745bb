@@ -1,0 +1,27 @@
+import java.util.ArrayList;
+
+public class A{
+	
+	
+	void m1(){
+		//ArrayList<String> list = new ArrayList<String>();
+		//list.add("");
+		mp p = new mp();
+		String[] arr = p.add("gaurav");
+		for(String s : arr){
+			System.out.println(s);
+		}
+	}
+	
+}
+
+class mp{
+	
+	String[] arr = new String[10];
+	static int i=0;
+	String[] add(String tmp){
+		arr[i]=tmp;
+		i++;
+		return arr;
+	}
+}

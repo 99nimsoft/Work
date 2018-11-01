@@ -1,0 +1,8 @@
+
+
+public class A implements C{
+
+	public void m1(){
+		System.out.println("method of class A");
+	}
+}

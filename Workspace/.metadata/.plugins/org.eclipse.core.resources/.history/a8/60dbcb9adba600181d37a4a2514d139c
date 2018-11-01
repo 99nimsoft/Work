@@ -1,0 +1,15 @@
+import java.util.List;
+
+public class Exptn{
+
+	void m1(List<? extends C>aa){
+		for(C s : aa){
+			s.m1();
+		}
+	}
+	
+	public static void main(String[] args) {
+		
+	}
+	
+}

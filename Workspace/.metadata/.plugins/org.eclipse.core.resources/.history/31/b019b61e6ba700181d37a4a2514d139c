@@ -1,0 +1,7 @@
+
+class B implements C{
+	public void m1(){
+		System.out.println("method of class B");
+	}
+	abstract void m2();
+}

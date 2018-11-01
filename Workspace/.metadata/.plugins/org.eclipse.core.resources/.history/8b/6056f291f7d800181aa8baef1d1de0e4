@@ -1,0 +1,9 @@
+
+class Dog3 implements C{
+	
+	public static void main(String[] args) {
+		
+		C c = (int a)->System.out.println();
+		c.m2(6);
+	}
+}

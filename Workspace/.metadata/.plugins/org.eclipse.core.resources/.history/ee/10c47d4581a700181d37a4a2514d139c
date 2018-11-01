@@ -1,0 +1,26 @@
+
+public class Jungle {
+
+	
+}
+
+
+public class Animals {
+
+private String nameAnimal;
+	
+	Animals(String nameAnimal){
+		this.nameAnimal=nameAnimal;
+	}
+}
+
+
+public class Birds {
+
+	private String nameBirds;
+	
+	Birds(String nameBirds){
+		this.nameBirds=nameBirds;
+	}
+}
+

@@ -1,0 +1,15 @@
+
+
+public class A{
+
+	public static void main(String[] args) {
+		Sample s = new Sample();
+		s.m1();
+	}
+}
+
+interface Sample{
+	void m1(){
+		System.out.println("tight coupling");
+	}
+}

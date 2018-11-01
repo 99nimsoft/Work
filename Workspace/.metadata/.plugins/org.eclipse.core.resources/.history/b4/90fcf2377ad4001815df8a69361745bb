@@ -1,0 +1,14 @@
+
+
+public class B{
+	
+	private String name;
+
+	B(String name){
+		this.name=name;
+	}
+	
+	public String toString(){
+		return name;
+	}
+}

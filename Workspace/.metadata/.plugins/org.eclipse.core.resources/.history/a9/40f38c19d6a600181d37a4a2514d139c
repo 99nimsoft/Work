@@ -1,0 +1,20 @@
+import java.util.Arrays;
+
+public class B{
+	
+	/*
+	 * Here E means Element, the types is as below:
+	 * T means Type
+	 * E means Element
+	 * K menas Key
+	 * V means Value
+	 * N means number
+	 */
+	public <E> void print(E[] arrObj){
+		
+		Arrays.sort(arrObj);
+		for(E i : arrObj){
+			System.out.println(i);
+		}
+	}
+}

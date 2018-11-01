@@ -1,0 +1,10 @@
+
+public class B<T>{
+	
+	T obj;
+	
+	void m(T obj){
+		this.obj=obj;
+	}
+}
+

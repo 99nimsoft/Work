@@ -1,0 +1,11 @@
+
+public class A{
+
+	String a = "gaurav";
+	static String b = "saurabh";
+	
+	public static void main(String[] args) {
+		
+		
+	}
+}

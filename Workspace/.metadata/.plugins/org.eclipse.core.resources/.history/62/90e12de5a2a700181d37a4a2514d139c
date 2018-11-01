@@ -1,0 +1,15 @@
+
+
+public class A{
+
+	
+	
+}
+
+class GenX<T>{
+	private GenX<T> temp;
+	
+	
+	
+}
+

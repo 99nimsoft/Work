@@ -1,0 +1,21 @@
+
+
+public class A{
+
+	
+	
+}
+
+class GenX<T>{
+	
+	private GenX<T> temp;
+	
+	void m1(GenX<T> temp){
+		this.temp=temp;
+	}
+	GenX<T> m2(){
+		return temp;
+	}
+	
+}
+

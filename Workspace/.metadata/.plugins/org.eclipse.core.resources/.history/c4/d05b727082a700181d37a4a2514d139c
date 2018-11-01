@@ -1,0 +1,38 @@
+import java.util.List;
+
+public class Jungle {
+
+	List<Animals> animals;
+	
+	Jungle(List<Animals> animals) {
+		this.animals=animals;
+	}
+	
+}
+
+
+class Animals {
+
+private String nameAnimal;
+	
+	Animals(String nameAnimal){
+		this.nameAnimal=nameAnimal;
+	}
+}
+
+class Birds {
+
+	private String nameBirds;
+	
+	Birds(String nameBirds){
+		this.nameBirds=nameBirds;
+	}
+}
+
+class checkComposition{
+	
+	public static void main(String[] args) {
+		
+	}
+}
+

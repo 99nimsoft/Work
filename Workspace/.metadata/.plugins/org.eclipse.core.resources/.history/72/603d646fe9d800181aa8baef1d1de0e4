@@ -1,0 +1,42 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+
+public class A{
+	
+	public static void main(String[] args) {
+		
+		ArrayList<String> list = new ArrayList<String>();
+		list.add("A");
+		list.add("B");
+		list.add("C");
+		list.add("D");
+		
+		Iterator itr = list.listIterator();
+	}
+}
+
+class mahList{
+	
+	Object[] arr;
+	int size;
+	
+	mahList(){
+		arr = new Object[1];
+	}
+	
+	void add(Object obj){
+		validateCapacity(size+1);
+		arr[size++]=obj;
+	}
+	
+	void validateCapacity(int z){
+		if(z>=arr.length){
+			int tmp = ((arr.length*3)/2)+1;
+			arr = Arrays.copyOf(arr,tmp);
+		}
+	}
+	
+	Object get(int i){
+		return arr[i];
+	}
+}

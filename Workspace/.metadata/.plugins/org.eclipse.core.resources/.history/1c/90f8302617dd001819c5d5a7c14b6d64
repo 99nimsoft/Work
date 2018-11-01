@@ -1,0 +1,45 @@
+package automationPackage;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.testng.annotations.Test;
+
+import Flash.FlashObjectWebDriver;
+
+public class ZZ_Test1 {	
+	
+	@Test
+    public void tcTest1(){
+		
+		System.setProperty("webdriver.chrome.driver","C:\\Users\\IBM_ADMIN\\GAURAV\\Z_Drivers\\chromedriver.exe");
+		
+		ChromeOptions options = new ChromeOptions();
+	    Map<String, Object> prefs = new HashMap<String, Object>();
+	    prefs.put("profile.default_content_setting_values.plugins", 1);
+	    prefs.put("profile.content_settings.plugin_whitelist.adobe-flash-player", 1);
+	    prefs.put("profile.content_settings.exceptions.plugins.*,*.per_resource.adobe-flash-player", 1);
+	    // Enable Flash for this site
+	    prefs.put("PluginsAllowedForUrls", "https://arlo.netgear.com");
+	    options.setExperimentalOption("prefs", prefs); 
+
+		ChromeDriver driver = new ChromeDriver(options);
+		
+		driver.get("http://demo.guru99.com/test/flash-testing.html");
+		driver.manage().window().maximize();
+		try {
+			Thread.sleep(60000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println();
+		//FlashObjectWebDriver flashApp = new FlashObjectWebDriver(driver, "myFlashMovie");	
+		
+    }
+}
+
+

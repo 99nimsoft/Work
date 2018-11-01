@@ -1,0 +1,9 @@
+
+public class Exptn {
+
+	public static void main(String[] args) {
+		C obj = ()->System.out.println("utilising lambda");
+		obj.m1();
+	}
+	
+}

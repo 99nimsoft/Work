@@ -1,0 +1,26 @@
+
+public class A{
+	
+	public static void main(String[] args) {
+		
+		
+	}
+}
+
+class mahList{
+	
+	Object[] arr;
+	int size;
+	
+	mahList(){
+		arr = new Object[10];
+	}
+	
+	void add(Object obj){
+		validateCapicity();
+	}
+	
+	boolean validateCapacity(){
+		
+	}
+}

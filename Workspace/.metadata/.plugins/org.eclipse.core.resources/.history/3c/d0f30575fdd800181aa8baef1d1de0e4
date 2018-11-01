@@ -1,0 +1,9 @@
+
+class Dog3{
+	
+	public static void main(String[] args) {
+		
+		C c = ()->System.out.println();
+		c.m2();
+	}
+}

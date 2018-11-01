@@ -1,0 +1,11 @@
+
+
+public class A{
+	 
+	public static void main(String[] args) {
+		
+		B<String> b = new B<String>();
+		b.setVal("Testing..");
+		System.out.println(b.getVal());
+	}
+}

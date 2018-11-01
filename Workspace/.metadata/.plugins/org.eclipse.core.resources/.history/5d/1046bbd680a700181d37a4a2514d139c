@@ -1,0 +1,9 @@
+
+public class Birds {
+
+	private String nameBirds;
+	
+	void Birds(String nameBirds){
+		this.nameBirds=nameBirds;
+	}
+}

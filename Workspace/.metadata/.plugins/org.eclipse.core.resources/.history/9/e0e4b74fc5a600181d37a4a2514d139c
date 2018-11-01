@@ -1,0 +1,8 @@
+
+
+public class A extends B{
+	 
+	B b = new B();
+	b.
+	
+}

@@ -1,0 +1,12 @@
+
+public class Exptn{
+
+	void m1(<? extends C>aa){
+		
+	}
+	
+	public static void main(String[] args) {
+		
+	}
+	
+}

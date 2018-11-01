@@ -1,0 +1,9 @@
+import java.util.Arrays;
+
+class Dog3{
+	
+	public static void main(String[] args) {
+		
+		
+	}
+}

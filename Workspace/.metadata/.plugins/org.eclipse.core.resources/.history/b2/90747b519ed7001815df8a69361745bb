@@ -1,0 +1,15 @@
+import java.util.Random;
+
+public class A{
+
+	static int a = 10;
+	int b=20;
+	
+	void m1(){
+		
+	}
+	public static void main(String[] args) {
+		this.
+		
+	}
+}

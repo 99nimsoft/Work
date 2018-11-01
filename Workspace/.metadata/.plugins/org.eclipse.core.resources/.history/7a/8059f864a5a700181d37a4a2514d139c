@@ -1,0 +1,10 @@
+import java.util.Arrays;
+
+public class A{
+
+}
+
+interface temp{
+	void m1;
+}
+

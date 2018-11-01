@@ -1,0 +1,14 @@
+class Dog3{
+	
+private static mahList obj = null;
+	
+	private Dog3(){
+		
+	}
+	
+	public mahList getInstance(){
+		if(obj==null)
+			obj = new Dog3();
+		return obj;
+	}
+}  

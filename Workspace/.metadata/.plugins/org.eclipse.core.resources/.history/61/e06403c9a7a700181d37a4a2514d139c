@@ -1,0 +1,16 @@
+import java.util.Arrays;
+
+public class A{
+
+	public static void main(String[] args) {
+		temp p = ()->System.out.println("yes");
+		//p.m1();
+	}
+}
+
+class temp{
+	temp(){
+		
+	}
+}
+

@@ -1,0 +1,14 @@
+
+public class B<T>{
+	
+	T obj;
+	
+	void setVal(T obj){
+		this.obj=obj;
+	}
+	
+	T getVal(){
+		return obj;
+	}
+	
+}

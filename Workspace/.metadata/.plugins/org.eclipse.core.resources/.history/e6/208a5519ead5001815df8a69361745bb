@@ -1,0 +1,51 @@
+package automationPackage;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
+import org.openqa.selenium.firefox.FirefoxProfile;
+import org.testng.annotations.Test;
+
+public class ZZ_Test1 {
+	
+	static WebDriver driver;
+	public static String downloadPath = "C:\\Users\\IBM_ADMIN\\Desktop\\TEMP\\";
+	
+	@Test
+    public void tcTest2() throws Exception{
+			
+		System.setProperty("webdriver.gecko.driver","C:\\Users\\IBM_ADMIN\\GAURAV\\Z_Drivers\\geckodriver.exe");
+		FirefoxOptions option=new FirefoxOptions();
+		option.addArguments("--headless");
+		option.setProfile(FirefoxDriverProfile());
+		WebDriver driver = new FirefoxDriver(option);
+	    driver.get("http://spreadsheetpage.com/index.php/file/C35/P10/");
+	    System.out.println(driver.getTitle());
+	    driver.findElement(By.linkText("smilechart.xls")).click();
+	    driver.manage().window().maximize();
+	    driver.quit();
+    }
+	
+	public static FirefoxProfile FirefoxDriverProfile() throws Exception {
+		FirefoxProfile profile = new FirefoxProfile();
+		//profile.setPreference("browser.privatebrowsing.autostart", true);  // Use this for incognito mode
+		profile.setPreference("browser.download.folderList", 2);
+		profile.setPreference("browser.download.manager.showWhenStarting", false);
+		//Set downloadPath
+		profile.setPreference("browser.download.dir", downloadPath);
+		//Set File Open &amp; Save preferences
+		profile.setPreference("browser.helperApps.neverAsk.openFile","text/csv,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,image/jpeg,text/html,text/plain,application/msword,application/xml");
+		profile.setPreference("browser.helperApps.neverAsk.saveToDisk",
+"text/csv,application/x-msexcel,application/excel,application/x-excel,application/vnd.ms-excel,image/png,image/jpeg,text/html,text/plain,application/msword,application/xml");
+		profile.setPreference("browser.helperApps.alwaysAsk.force", false);
+		profile.setPreference("browser.download.manager.alertOnEXEOpen", false);
+		profile.setPreference("browser.download.manager.focusWhenStarting", false);
+		profile.setPreference("browser.download.manager.useWindow", false);
+		profile.setPreference("browser.download.manager.showAlertOnComplete", false);
+		profile.setPreference("browser.download.manager.closeWhenDone", false);
+		return profile;
+	}
+}
+
+

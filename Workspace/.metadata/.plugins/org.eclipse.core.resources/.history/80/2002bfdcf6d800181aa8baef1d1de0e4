@@ -1,0 +1,7 @@
+
+interface C {
+	
+	static void m2(){
+		System.out.println("drawing rectangle");
+	}
+}

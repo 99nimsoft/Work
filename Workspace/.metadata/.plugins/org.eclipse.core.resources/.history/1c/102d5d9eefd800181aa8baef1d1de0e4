@@ -1,0 +1,18 @@
+
+
+public class A{
+	
+	public static void main(String[] args) {
+		
+		
+	}
+}
+
+class mahList{
+	
+	private static mahList obj = new mahList();
+	
+	private mahList(){
+		
+	}
+}

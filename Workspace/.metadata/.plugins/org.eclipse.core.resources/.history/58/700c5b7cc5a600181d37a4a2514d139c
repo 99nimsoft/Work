@@ -1,0 +1,8 @@
+
+
+public class A extends B{
+	 
+	B<String> b = new B<String>();
+	
+	
+}

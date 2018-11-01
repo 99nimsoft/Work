@@ -1,0 +1,21 @@
+
+public class A{
+	
+	public static void main(String[] args) {
+		try {
+			throw new Bb();
+		} catch (Bb e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+}
+
+class Bb extends Exception{
+	
+	Bb(){
+		super();
+	}
+	
+}

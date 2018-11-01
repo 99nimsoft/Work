@@ -1,0 +1,26 @@
+
+
+public class A{
+	
+	public static void main(String[] args) {
+		
+		A a = mahlist.
+	}
+	
+	
+}
+
+class mahList{
+	
+	private static mahList obj = null;
+	
+	private mahList(){
+		
+	}
+	
+	public static mahList getInstance(){
+		if(obj==null)
+			obj = new mahList();
+		return obj;
+	}
+}

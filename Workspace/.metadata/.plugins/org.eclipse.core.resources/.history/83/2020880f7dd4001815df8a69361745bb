@@ -1,0 +1,29 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class B{
+	
+	public static void main(String[] args) {
+		Integer[] arr = {1,3,6,1,3,7,9,6,3,1};
+		List<Integer> list2 = Arrays.asList(arr);
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		list.addAll(list2);
+		countFrequencies(list);
+	}
+	
+	public static void countFrequencies(ArrayList<Integer> list){
+		
+		HashMap<Integer,Integer> hm = new HashMap<Integer,Integer>();
+		for(Integer i : list){
+			Integer tmp = hm.get(i);
+			hm.put(i,(tmp==null)?1:tmp+1);
+		}
+		for(Map.Entry<Integer,Integer> map : hm.entrySet()){
+			System.out.println(map.getKey()+" Number of times "+map.getValue());
+		}
+	}
+}

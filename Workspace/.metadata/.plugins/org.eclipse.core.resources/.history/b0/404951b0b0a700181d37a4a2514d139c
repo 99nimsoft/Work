@@ -1,0 +1,18 @@
+import java.util.Arrays;
+
+public class A extends temp{
+
+	String vemp
+	public static void main(String[] args) {
+		
+		
+	}
+}
+
+class temp{
+	
+	temp vemp(){
+		return this;
+	}
+}
+

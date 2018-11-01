@@ -1,0 +1,27 @@
+
+
+public class A{
+	
+	
+}
+
+// we are creating interface here for loose coupling
+// so that m1 method can be implemented as per requirement
+interface Sample{
+	void m1();
+}
+
+class ImplementSample1 implements Sample{
+
+	@Override
+	public void m1() {
+		System.out.println("implementation of m1 method in one way");	
+	}	
+}
+class ImplementSample2 implements Sample{
+
+	@Override
+	public void m1() {
+		System.out.println("implementation of m1 method in second way");	
+	}	
+}

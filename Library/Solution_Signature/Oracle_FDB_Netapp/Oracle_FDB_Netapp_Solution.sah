@@ -1,0 +1,918 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are the part of  Oracle FullDB Netapp solution screen wise fetching and comparing data from Db and GUI. 
+ ** @AuthorName : Govinda Mengji
+ ** Created Date :July 2014
+ ************************************************************************/
+
+/**
+* Function is for Functional Group creation for Oracle_FDB_NetApp solution.
+*@param :null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function Creation_NetApp_SnapMirror_Group() {
+	if (_exists(_link($groupName))) {
+		_log("Same group name already exists");
+	} else {
+		navigateToDiscovery();
+		_click(_link("Groups"));
+		_click(_cell("Create new - Group - Functional Group Application Group Business Group 3 Site Group"));
+		_setSelected(_select("createGroup"), "Functional Group");
+		_click(_button("Go "));
+		_wait(1000);
+		_setValue(_textbox("groupName"), $groupName);
+		_setValue(_textarea("groupDescription"), $groupDescription);	
+		if($subscriber != ""){
+		   _setSelected(_select("subscriberId"), $subscriber);
+		} 
+		_setSelected(_select("solutionType"), $SolutionSignature);
+		_click(_button("/Next/"));
+		_wait(10000);
+		_click(_link("Server Component"));
+		_click(_checkbox("primaryComponents", _near(_cell($primaryComponents, _under(_tableHeader("PrimaryComponent"))))));
+		_click(_checkbox("remoteComponents", _near(_cell($remoteComponents, _under(_tableHeader("RemoteComponent"))))));
+		_wait(1000);
+		_click(_checkbox("primaryComponents", _near(_cell($primaryNetAppComponent,_under(_tableHeader("PrimaryComponent"))))));
+		_click(_checkbox("remoteComponents", _near(_cell($remoteNetAppComponent, _under(_tableHeader("RemoteComponent"))))));
+		
+		_click(_submit("Save"));
+		_wait(2000);
+		_click(_link("Application Dataset"));		
+		_setSelected(_select("primaryDatasets"), $datasetNamePR);
+		_setSelected(_select("remoteDatasets"), $datasetNameDR);
+		_click(_submit(" Save"));
+		_wait(1000);
+		_click(_link("Data Protection"));
+		_setSelected(_select("primaryProtections"), $primaryProtections);
+		_setSelected(_select("remoteProtections"), $remoteProtections);
+		_click(_button("Save"));
+		_click(_button("/Next/"));
+		_wait(1000);
+		_click(_button("Save"));
+		_click(_link("License"));
+		_click(_link("License"));
+		_click(_checkbox("Recovery"));
+		_click(_checkbox("Test"));
+		_click(_button("Save[2]"));
+		_click(_button("Finish"));
+		if (_exists(_link($groupName))) {
+			_assertExists("Group created succesfully");
+		} else {
+			_fail("Group not created succesfully.So that stopping execution.");
+		}
+	}
+}// End Of Oracle_FDB_NetApp_Group_Creation
+
+
+
+/**
+* Function is for Post Group Creation Discovery > Groups > Solution Details > Show Advanced Configuration Post SO.
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+**/
+
+
+function Oracle_fulldb_Netapp_Post_Group_Creation_Post_SO(){
+	
+	Oracle_fulldb_Netapp_Post_Group_Creation_Details($groupName);
+}
+
+
+function Oracle_fulldb_Netapp_Post_Group_Creation(){
+	
+	Oracle_fulldb_Netapp_Post_Group_Creation_Details($groupName);
+}
+
+
+
+
+/**
+* Function is for Post Group Creation Discovery > Groups > Solution Details.
+*@param : $groupName
+*@return : null
+*@Author: Govinda Mengji
+*/
+
+function Oracle_fulldb_Netapp_Post_Group_Creation_Details($groupName){
+	navigateToDiscovery();
+	_click(_link("Groups"));
+	_click(_link($groupName));
+	_click(_link("Solution Details"));
+	
+_click(_link("1.Gather the required information , more details"));
+_assertExists(_cell("Find out and list the file system mount points the database files reside on for the primary and the DR databases"));
+	
+_click(_link("2.Choose the PIT/snapshot copies to be used with this group"));
+_assertExists(_cell("No PIT/Snapshots discovered for this replication pair Use \"Rediscover\" to include PIT(s) that are already part of protection scheme list."));
+
+
+_click(_span(".For device groups discovered on the primary, map mount points to device path"));
+_assertExists(_cell("Device Group : " + $NetApp_Protection_PR));
+
+
+_click(_span(".For device groups discovered on the DR, map mount points to device path"));
+_assertExists(_cell("Device Group : " + $NetApp_Protection_DR));
+
+_click(_link("5.Choose device group to be used for App RPO calculation"));
+_assertExists(_cell($NetApp_Protection_DR));
+
+_click(_link("6.Choose device group to be used when Failover (to DR) workflow is invoked"));
+_assertExists(_cell($NetApp_Protection_DR+"[2]"));
+
+
+}
+
+
+
+/**
+*This function is used to Edit SO/SB/FOTE/FO/pre post RPO Workflows
+*@param :  null
+*@return : null
+*@Author : Govinda Mengji
+*/
+
+function Oracle_fulldb_Netapp_Edit_SO_Workflow(){
+	Oracle_fulldb_Netapp_Edit_Workflow($mountpath,$fileSO);
+}
+
+function Oracle_fulldb_Netapp_Edit_SB_Workflow(){
+	Oracle_fulldb_Netapp_Edit_Workflow($mountpath,$fileSB);
+}
+
+function Oracle_fulldb_Netapp_Edit_PreRPO_Workflow(){
+	Oracle_fulldb_Netapp_Edit_Workflow($mountpath,$filePreRPO);
+}
+
+function Oracle_fulldb_Netapp_Edit_PostRPO_Workflow(){
+	Oracle_fulldb_Netapp_Edit_Workflow($mountpath,$filePostRPO);
+}
+
+function Oracle_fulldb_Netapp_Edit_FOTE_Workflow(){
+	Oracle_fulldb_Netapp_Edit_Workflow($mountpath,$fileFOTE);
+}
+
+function Oracle_fulldb_Netapp_Edit_FO_Workflow(){
+	Oracle_fulldb_Netapp_Edit_Workflow($mountpath,$fileFO);
+}
+
+
+function Oracle_fulldb_Netapp_Edit_Workflow($mountpath,$file)
+{
+	
+	  var $fileRead= _userDataDir() + "\\Oracle\\OracleFullDBNetApp\\" + $file;
+	  var $xmlStr =_readFile($fileRead); 
+	  var $newXmlStr = $xmlStr.replace('<?xml version="1.0" encoding="UTF-8"?>',"");
+
+	  var $xml = new XML($newXmlStr); 
+	  $xml..userDef..entry.(@key=="MOUNT_POINT").(@value=$mountpath);
+     _writeFile($xml.toString(),$fileRead, true);
+	  
+	  }
+
+
+/**
+* Function is for Verification of the all RTO detail from RPO/RTO screen for Oraclefulldb Net app  solution
+*@param : null
+*@return : $dbRto
+*@Author: Govinda Mengji
+*
+*/
+
+function Oracle_fulldb_Netapp_Rto() {
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("RPO/RTO"));
+
+	// verification of current RTO :
+
+	
+	var $stepName1 = parseInt(_getText(_cell(1, _near(_cell("Custom action for Remote Pre-check"), _under(_cell("Expected Completion Time (sec)"))))));
+	var $stepName2 = parseInt(_getText(_cell(1, _near(_cell("Break Replication"), _under(_cell("Expected Completion Time (sec)"))))));
+	var $stepName3 = parseInt(_getText(_cell(1, _near(_cell("NetAppgetDataMountPath"), _under(_cell("Expected Completion Time (sec)"))))));
+	var $stepName4 = parseInt(_getText(_cell(1, _near(_cell("mountDataVolume"), _under(_cell("Expected Completion Time (sec)"))))));
+	var $stepName5 = parseInt(_getText(_cell(1, _near(_cell("OracleStartupDatabaseOperation"), _under(_cell("Expected Completion Time (sec)"))))));
+	var $stepName6 = parseInt(_getText(_cell(1, _near(_cell("OracleVerifyDatabaseStateOperation"), _under(_cell("Expected Completion Time (sec)"))))));
+	
+	
+	var $expectedCompletionTime = Math.floor($stepName1 + $stepName2 + $stepName3 + $stepName4 + $stepName5 + $stepName6);
+	_assertExists("Expected completion time", $expectedCompletionTime);
+
+	// Calling function Calculate_Rto from Group_manager.sah
+	 $dbRto = Calculate_Rto($expectedCompletionTime);
+	return $dbRto;
+
+} // End of Oracle_fulldb_Netapp_RTO
+
+
+
+/**
+* Function is for Verification of the all RPO detail from RPO/RTO screen for Oracle_fulldb_Netapp  solution Post SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function Oracle_fulldb_Netapp_Rpo_Post_SO() {
+
+	Oracle_fulldb_Netapp_Rpo_Status($groupName,$compIPDR,$remoteUserNameValDR,$remotePwdValDR);
+	
+} // End of APP_Rpo_Post_SO()
+
+/**
+* Function is for Verification of the all RPO detail from RPO/RTO screen for Oracle_fulldb_Netapp solution before SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*
+*/
+function Oracle_fulldb_Netapp_Rpo() {
+
+	Oracle_fulldb_Netapp_Rpo_Status($groupName,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+
+}// End of APP_Rpo()
+
+/**
+* Function is for Verification of the all RPO detail from RPO/RTO screen for Oracle fulldb Netapp solution.
+*@param : $groupName,$datasetName,$compIP,$remoteUserNameVal,$remotePwdVal
+*@return : $dbRecoveryPoint
+*@Author: Govinda Mengji
+*
+*/
+function Oracle_fulldb_Netapp_Rpo_Status($groupName,$compIP,$remoteUserNameVal,$remotePwdVal) {
+
+	Popup_Handler();
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("RPO/RTO"));
+	
+	
+	//PR
+    var $CurrentTransactionIDPR=_getCellText(_cell(1,_near(_cell("Current Transaction ID:"))));
+    _assertExists("Current Transaction ID from GUI" ,$CurrentTransactionIDPR);
+        
+    var $CurrentTransactionTimePR =_getCellText(_cell(1,_near(_cell("Current Transaction Time:"))));
+    _assertExists("Current Transaction Time from GUI" ,$CurrentTransactionTimePR);
+    //time cal
+    var $CurrentTransactionTimeGUIPR = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.fff").parse($CurrentTransactionTimePR).getTime();
+	_assertExists("Current Transaction Time from GUI", $CurrentTransactionTimeGUIPR);
+    
+    
+    var $CheckPointTransactionIDPR=_getCellText(_cell(1,_near(_cell("CheckPoint Transaction ID:"))));
+    _assertExists("CheckPoint Transaction ID from GUI" ,$CheckPointTransactionIDPR);
+    
+    
+    var $CheckPointTransactionTimePR =_getCellText(_cell(1,_near(_cell("CheckPoint Transaction Time:"))));
+    _assertExists("Check Point Transaction Time from GUI" ,$CheckPointTransactionTimePR);
+    //time cal
+    var $CheckPointTransactionTimeGUIPR = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.fff").parse($CheckPointTransactionTimePR).getTime();
+	_assertExists("Current Transaction Time from GUI", $CheckPointTransactionTimeGUIPR);
+    
+    
+
+	//DR
+    var $CurrentTransactionIDDR=_getCellText(_cell(1,_near(_cell("Current Transaction ID:[1]"))));
+    _assertExists("Current Transaction ID from GUI" ,$CurrentTransactionIDDR);
+        
+    var $CurrentTransactionTimeDR =_getCellText(_cell(1,_near(_cell("Current Transaction Time:[1]"))));
+    _assertExists("Current Transaction Time from GUI" ,$CurrentTransactionTimeDR);
+    //time cal
+    var $CurrentTransactionTimeGUIDR = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.fff").parse($CurrentTransactionTimeDR).getTime();
+	_assertExists("Current Transaction Time from GUI", $CurrentTransactionTimeGUIDR);
+    
+    
+    var $CheckPointTransactionIDDR=_getCellText(_cell(1,_near(_cell("CheckPoint Transaction ID:[1]"))));
+    _assertExists("CheckPoint Transaction ID from GUI" ,$CheckPointTransactionIDDR);
+    
+    
+    var $CheckPointTransactionTimeDR=_getCellText(_cell(1,_near(_cell("CheckPoint Transaction Time:[1]"))));
+    _assertExists("Check Point Transaction Time from GUI" ,$CheckPointTransactionTimeDR);
+    //time cal
+    var $CheckPointTransactionTimeGUIDR = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.fff").parse($CheckPointTransactionTimeDR).getTime();
+	_assertExists("Current Transaction Time from GUI", $CheckPointTransactionTimeGUIDR); 
+    
+	
+	//Create file 
+  var $sshCommand = "echo > " + $mountpath +"/file100.txt";
+   $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+    
+   _click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("RPO/RTO"));
+	 $count = 1;
+		while($count<10){
+			_wait(30000);
+			$count++;	
+		}
+	
+		
+		
+		//PR
+	    var $CurrentTransactionIDPRdb=_getCellText(_cell(1,_near(_cell("Current Transaction ID:"))));
+	    _assertExists("Current Transaction ID from db" ,$CurrentTransactionIDPRdb);
+	        
+	    var $CurrentTransactionTimePRdb =_getCellText(_cell(1,_near(_cell("Current Transaction Time:"))));
+	    _assertExists("Current Transaction Time from db" ,$CurrentTransactionTimePRdb);
+	    //time cal
+	    var $CurrentTransactionTimedbPR = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.fff").parse($CurrentTransactionTimePRdb).getTime();
+		_assertExists("Current Transaction Time from db", $CurrentTransactionTimedbPR);
+	    
+	    
+	    var $CheckPointTransactionIDPRdb =_getCellText(_cell(1,_near(_cell("CheckPoint Transaction ID:"))));
+	    _assertExists("CheckPoint Transaction ID from db" ,$CheckPointTransactionIDPRdb);
+	    
+	    
+	    var $CheckPointTransactionTimePRdb =_getCellText(_cell(1,_near(_cell("CheckPoint Transaction Time:"))));
+	    _assertExists("Check Point Transaction Time from db" ,$CheckPointTransactionTimePRdb);
+	    //time cal
+	    var $CheckPointTransactionTimedbPR = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.fff").parse($CheckPointTransactionTimePRdb).getTime();
+		_assertExists("Current Transaction Time from db", $CheckPointTransactionTimedbPR);
+	    
+	    
+
+		//DR
+	    var $CurrentTransactionIDDRdb =_getCellText(_cell(1,_near(_cell("Current Transaction ID:[1]"))));
+	    _assertExists("Current Transaction ID from db" ,$CurrentTransactionIDDRdb);
+	        
+	    var $CurrentTransactionTimeDRdb =_getCellText(_cell(1,_near(_cell("Current Transaction Time:[1]"))));
+	    _assertExists("Current Transaction Time from db" ,$CurrentTransactionTimeDRdb);
+	    //time cal
+	    var $CurrentTransactionTimedbDR = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.fff").parse($CurrentTransactionTimeDRdb).getTime();
+		_assertExists("Current Transaction Time from db", $CurrentTransactionTimedbDR);
+	    
+	    
+	    var $CheckPointTransactionIDDRdb=_getCellText(_cell(1,_near(_cell("CheckPoint Transaction ID:[1]"))));
+	    _assertExists("CheckPoint Transaction ID from db" ,$CheckPointTransactionIDDRdb);
+	    
+	    
+	    var $CheckPointTransactionTimeDRdb =_getCellText(_cell(1,_near(_cell("CheckPoint Transaction Time:[1]"))));
+	    _assertExists("Check Point Transaction Time from db" ,$CheckPointTransactionTimeDRdb);
+	    //time cal
+	    var $CheckPointTransactionTimedbDR = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.fff").parse($CheckPointTransactionTimeDRdb).getTime();
+		_assertExists("Current Transaction Time from db", $CheckPointTransactionTimedbDR); 
+	    		
+		
+
+		//PR
+		_assertTrue($CurrentTransactionIDPR<=$CurrentTransactionIDPRdb, "Current Transaction ID is Equal in GUI and db");
+
+		_assertTrue($CurrentTransactionTimeGUIPR<=$CurrentTransactionTimedbPR, "Current Transaction Time is Equal in GUI and db");
+
+		_assertTrue($CheckPointTransactionIDPR<=$CheckPointTransactionIDPRdb, "CheckPoint Transaction ID is Equal in GUI and db");
+
+		_assertTrue($CheckPointTransactionTimeGUIPR<=$CheckPointTransactionTimedbPR, "CheckPoint Transaction Time is Equal in GUI and db");
+
+		//DR
+		_assertTrue($CurrentTransactionIDDR<=$CurrentTransactionIDDRdb, "Current Transaction ID is Equal in GUI and db");
+
+		_assertTrue($CurrentTransactionTimeGUIDR<=$CurrentTransactionTimedbDR, "Current Transaction Time is Equal in GUI and db");
+
+		_assertTrue($CheckPointTransactionIDDR<=$CheckPointTransactionIDDRdb, "CheckPoint Transaction ID is Equal in GUI and db");
+
+		_assertTrue($CheckPointTransactionTimeGUIDR<=$CheckPointTransactionTimedbDR, "CheckPoint Transaction Time is Equal in GUI and db");
+
+
+    
+    // Calling Calulate_Rpo function to verify RPO calculation from gui
+	$dbRpo = Calulate_Rpo($CurrentTransactionTimedbPR,$CurrentTransactionTimedbDR);
+    $recoveryPointinDB = $dbRpo.get("recoveryPointDB");
+    
+    $dbRecoveryPoint = new java.util.Properties();
+ 	$dbRecoveryPoint.put("recoveryPointDB", $recoveryPointinDB);
+	return $dbRpo;
+	return $dbRecoveryPoint;
+	
+}// End Of Oracle_fulldb_Netapp RPO
+
+
+/**
+* Function is for Verification of the all data RPO detail from RPO/RTO screen for Oracle_fulldb_Netapp  solution Post SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function Oracle_fulldb_Netapp_data_Rpo_Post_SO() {
+
+	Oracle_fulldb_Netapp_Data_RPO($groupName,$compIPDR,$remoteUserNameValDR,$remotePwdValDR);
+	
+} // End of APP_Rpo_Post_SO()
+
+/**
+* Function is for Verification of the all data RPO detail from RPO/RTO screen for Oracle_fulldb_Netapp solution before SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*
+*/
+function Oracle_fulldb_Netapp_data_Rpo() {
+
+	Oracle_fulldb_Netapp_Data_RPO($groupName,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+
+}// End of APP_Rpo()
+
+/**
+* Function is for Verification of the all data RPO detail from RPO/RTO screen for Oracle fulldb Netapp solution.
+*@param : $groupName,$datasetName,$compIP,$remoteUserNameVal,$remotePwdVal
+*@return : $dbRecoveryPoint
+*@Author: Govinda Mengji
+*
+*/
+
+
+
+function Oracle_fulldb_Netapp_Data_RPO($groupName,$compIP,$remoteUserNameVal,$remotePwdVal){
+	
+var $CurrentPRtimestampGUI =_getCellText(_cell(1,_near(_cell("Current PR timestamp"))));
+_assertExists("Check Point Transaction Time from db" ,$CurrentPRtimestampGUI);
+//time cal
+var $CurrentPRtimestampGUIPR = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.fff").parse($CurrentPRtimestampGUI).getTime();
+_assertExists("Current Transaction Time from db", $CurrentPRtimestampGUIPR); 
+	
+	
+var $CheckPointTransactionTimeDRGUI =_getCellText(_cell(1,_near(_cell("Current DR timestamp"))));
+_assertExists("Check Point Transaction Time from db" ,$CheckPointTransactionTimeDRdb);
+//time cal
+var $CheckPointTransactionTimeGUIDR = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.fff").parse($CheckPointTransactionTimeDRGUI).getTime();
+_assertExists("Current Transaction Time from db", $CheckPointTransactionTimeGUIDR); 
+
+var $sshCommand = "echo > " + $mountpath +"/file1010.txt";
+$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+		    
+		   _click(_link("Monitor"));
+			_click(_link($groupName));
+			_click(_link("RPO/RTO"));
+			 $count = 1;
+				while($count<10){
+					_wait(30000);
+					$count++;	
+				}
+
+var $CurrentPRtimestampdb =_getCellText(_cell(1,_near(_cell("Current PR timestamp"))));
+   _assertExists("Check Point Transaction Time from db" ,$CurrentPRtimestampdb);
+//time cal
+ var $CurrentPRtimestampdbPR = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.fff").parse($CurrentPRtimestampdb).getTime();
+_assertExists("Current Transaction Time from db", $CurrentPRtimestampdbPR); 
+				
+				
+var $CheckPointTransactionTimeDRdb =_getCellText(_cell(1,_near(_cell("Current DR timestamp"))));
+  _assertExists("Check Point Transaction Time from db" ,$CheckPointTransactionTimeDRdb);
+//time cal
+ var $CheckPointTransactionTimedbDR = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss.fff").parse($CheckPointTransactionTimeDRdb).getTime();
+_assertExists("Current Transaction Time from db", $CheckPointTransactionTimedbDR); 
+
+
+
+_assertTrue($CurrentPRtimestampGUIPR<=$CurrentPRtimestampdbPR, "Current PR time stamp is Equal in GUI and db");
+
+_assertTrue($CheckPointTransactionTimeGUIDR<=$CheckPointTransactionTimedbDR, "Current DR time stamp is Equal in GUI and db");
+
+
+
+
+}
+
+
+/**
+* Function is for Verification of replication status in replication page after SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function Oracle_fulldb_Netapp_Replication_Post_SO() {
+	Oracle_fulldb_Netapp_Replication_Status($groupName);
+	}
+
+/**
+* Function is for Verification of replication status in replication page before SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function Oracle_fulldb_Netapp_Replication() {
+	Oracle_fulldb_Netapp_Replication_Status($groupName);
+}
+
+
+/**
+* Function is for Verification of replication status in replication page .
+*@param : $groupName
+*@return : null
+*@Author: Govinda Mengji
+*/
+
+function Oracle_fulldb_Netapp_Replication_Status($groupName);
+{
+	
+	
+	
+	
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("Replication"));
+	
+	var $ProtectionGUI=_getCellText(_cell(1,_near(_cell("Protection:"))));
+	_assertExists("Protection  from Gui" , $ProtectionGUI);
+	_assertEqual($ProtectionGUI, $systemTypeProtection, "Primary Remote Services from DB and GUI");
+	
+	 
+	var $ReplicationStatusGUI=_getCellText(_cell(1,_near(_cell("Replication Status:"))));
+	_assertExists("Replication Status from Gui" , $ReplicationStatusGUI);
+	
+	
+	var $primaryRemoteServicesGUI=_getCellText(_cell(1,_near(_cell("Primary - Remote Services:"))));
+	_assertExists("Primary Remote Servicesfrom Gui" , $primaryRemoteServicesGUI);
+	var $primaryRemoteServices=split.$primaryRemoteServicesGUI("-");
+	_assertEqual($primaryRemoteServices[0], $NetApp_Protection_PR, "Primary Remote Services from DB and GUI");
+	_assertEqual($primaryRemoteServices[1], $NetApp_Protection_DR, "Remote Remote Services from DB and GUI");
+	
+	
+	
+	
+	var $StateGUI=_getCellText(_cell(1,_near(_cell("State:"))));
+	_assertExists("State from Gui" , $primaryRemoteServicesGUI);
+	
+	var $primaryModeGUI=_getCellText(_cell(1,_near(_cell("Mode"))));
+	_assertExists("Primary Mode from Gui" , $primaryModeGUI);
+	
+	var $remoteModeGUI=_getCellText(_cell(2,_near(_cell("Mode"))));
+	_assertExists("Remote Mode from GUI" , $remoteModeGUI);
+	
+	
+	var $primaryClusterVserverGUI=_getCellText(_cell(1,_near(_cell("Cluster/Vserver"))));
+	_assertExists("$Primary Cluster Vserver from Gui" , $primaryClusterVserverGUI);
+	_assertEqual($primaryClusterVserverGUI, $compIPPR, "Remote Remote Services from DB and GUI");
+	
+	
+	var $remoteClusterVserverGUI=_getCellText(_cell(2,_near(_cell("Cluster/Vserver"))));
+	_assertExists("$remote Cluster Vserverfrom Gui" , $remoteClusterVserverGUI);
+	_assertEqual($remoteClusterVserverGUI, $compIPDR, "Remote Remote Services from DB and GUI");
+	
+	
+	
+	var $primaryloctionGUI=_getCellText(_cell(1,_near(_cell("Location:"))));
+	_assertExists("primary  Remote Services from GUI" , $primaryloctionGUI);
+	
+	
+	
+	var $remoteLocationGUI=_getCellText(_cell(2,_near(_cell("Location:"))));
+	_assertExists("Remote Location from GUI" , $remoteLocationGUI);
+	
+	var $primaryVolumeNameGUI =_getCellText(_cell(1,_near(_cell("Volume Name:"))));
+	_assertExists("primary Volume Name from GUI" , $primaryVolumeNameGUI);
+	
+	var $remoteVolumeNameGUI =_getCellText(_cell(2,_near(_cell("Volume Name:"))));
+	_assertExists("Remote Volume Name from GUI" , $remoteVolumeNameGUI);
+	
+	}
+
+/**
+* Function is for Monitor Relationship Screen.
+*@param :  $groupName.
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function  Oracle_fulldb_Netapp_Monitor_Relationship($groupName) {
+
+       Popup_Handler();
+       _wait(5000);
+       Popup_Handler();
+       _click(_link("Monitor"));
+       _click(_link($groupName));
+       _click(_link("Relationship"));
+       _click(_link("Expand All"));
+       
+       // Validation of Solution Signature
+       var $drSolutionSignature = _getText(_cell(1, _near(_cell("DR Solution Signature[1]"))));
+       _assertEqual($SolutionSignature, $drSolutionSignature, "Checking DR Solution Signature from the user input and GUI showing for group");
+
+       // Validation of Replication Details for PR
+
+       var $primaryService = _getText(_link(0, _near(_strong("Primary Service"))));
+       _assertEqual($primaryProtections, $primaryService, "Checking Protection Scheme name from user input and GUI showing for PR");
+
+       // Splitting the strings to get the replication type for PR
+       var $replicationTypePR = _getText(_cell(0, _near(_strong("Primary Service"))));
+       var $replicationPR = $replicationTypePR.split(":");
+       var $replication_PR = $replicationPR[1].split("[");
+       var $primaryServiceType = $replication_PR[1].split("]");
+       var $primaryServiceType1=$primaryServiceType[0];
+   _assertEqual($systemTypeProtection, $primaryServiceType1, "Checking System type Protection from user input and GUI showing for PR");
+
+       var $primaryServiceStatus = _getText(_cell(0, _near(_strong("Primary Service Status"))));
+       _assertExists("Primary Service Status:", $primaryServiceStatus);
+       // Validation of Replication Details for DR
+       var $remoteService = _getText(_link(0, _near(_strong("Remote Service"))));
+       _assertEqual($remoteProtections, $remoteService, "Checking Protection Scheme from user input and GUI for DR");
+       // Splitting the strings to get the replication type for DR
+       var $replicationTypeDR =  _getText(_cell(0, _near(_strong("Remote Service"))));
+       var $replicationDR = $replicationTypeDR.split(":");
+       var $replication_DR = $replicationDR[1].split("[");
+       var $remoteServiceType = $replication_DR[1].split("]");
+       var $remoteServiceType1=$remoteServiceType[0];
+       _assertEqual($systemTypeProtection,$remoteServiceType1 , "Checking System type Protection from user input and GUI showing for DR");
+
+       var $remoteServiceStatus = _getText(_cell(0, _near(_strong("Remote Service Status"))));
+       _assertExists("Remote Service Status:", $remoteServiceStatus);
+
+       // Validation of Data set for PR
+       var $primaryDataset = _getText(_link(1, _near(_strong("Primary Dataset"))));
+       _assertExists("Primary Dataset:", $primaryDataset);
+       _assertEqual($datasetNamePR, $primaryDataset, "Checking Dataset from user input and GUI for PR");
+
+       // Splitting the strings to get the Data set type for PR
+       var $datasetPR = _getText(_cell(0, _near(_strong("Primary Dataset"))));
+       var $datasetTypePR = $datasetPR.split(":");
+       var $prDataset = $datasetTypePR[1].split("[");
+       var $prDatasetType = $prDataset[1].split("]");
+       _assertEqual($datasetType, $prDatasetType[0], "Checking Dataset Type from user input and GUI for PR");
+
+
+       var $primaryDataset = _getText(_cell(0, _near(_strong("Primary Dataset Status"))));
+       var $primaryDatasetPR = $primaryDataset.split(":");
+       _assertExists("Primary Dataset Status:", $primaryDatasetPR[2]);
+
+       // Validation of Data set for DR
+       var $remoteDataset = _getText(_link(0, _near(_strong("Remote Dataset"))));
+       _assertEqual($datasetNameDR, $remoteDataset, "Checking Dataset from user input and GUI for DR");
+
+ 
+
+       // Splitting the strings to get the Data set type for DR
+       var $datasetDR = _getText(_cell(0, _near(_strong("Remote Dataset"))));
+       var $datasetType_DR = $datasetDR.split(":");
+       var $drDataset = $datasetType_DR[1].split("[");
+       var $drDatasetType = $drDataset[1].split("]");
+       _assertEqual($datasetType, $drDatasetType[0], "Checking Dataset Type from user input and GUI for DR");
+
+ 
+
+       var $remoteDataset = _getText(_cell(0, _near(_strong("Remote Dataset Status"))));
+       var $remoteDataset_DR = $remoteDataset.split(":");
+       _assertExists("Remote Dataset Status:", $remoteDataset_DR[2]);
+       // Validation of Component for PR 1
+       var $primaryComponent = _getText(_link(0, _near(_strong("Primary Component 1"))));
+       _assertEqual($compNamePR, $primaryComponents, "Checking Component from user input and GUI for PR");
+
+       // Splitting the strings to get the Component type for PR
+       var $componentPR = _getText(_cell(0, _near(_strong("Primary Component 1"))));
+       var $systemTypePR = $componentPR.split(":");
+       var $prComponent = $systemTypePR[1].split("[");
+       var $prSystemType = $prComponent[1].split("]");
+       _assertEqual($systemType, $prSystemType[0], "Checking System type component from user input and GUI for PR");
+
+ 
+
+       var $prComponent1 = _getText(_cell(0, _near(_strong("Primary Component 1 Status"))));
+       var $prComponent = $prComponent1.split(":");
+       _assertExists("Primary Component Status", $prComponent[1]);
+
+      // Validation of Component for PR 2
+       var $primaryComponent = _getText(_link(0, _near(_strong("Primary Component 2"))));
+       _assertEqual($NetAppcompNamePR, $primaryNetAppComponent, "Checking Component from user input and GUI for PR");
+
+       // Splitting the strings to get the Component type for PR
+       var $componentPR = _getText(_cell(0, _near(_strong("Primary Component 2"))));
+       var $systemTypePR = $componentPR.split(":");
+       var $prComponent = $systemTypePR[1].split("[");
+       var $prSystemType = $prComponent[1].split("]");
+       _assertEqual($NetAppFilerSytemType, $prSystemType[0], "Checking System type component from user input and GUI for PR");
+
+ 
+       var $prComponent1 = _getText(_cell(0, _near(_strong("Primary Component 2 Status"))));
+       var $prComponent = $prComponent1.split(":");
+       _assertExists("Primary Component Status", $prComponent[1]);
+
+       // Validation of Component for DR 1
+       var $remoteComponent = _getText(_link(0, _near(_strong("Remote Component 1"))));
+       _assertEqual($compNameDR, $remoteComponents, "Checking Component from user input and GUI for DR");
+
+
+       // Splitting the strings to get the Component type for DR
+       var $componentDR = _getText(_cell(0, _near(_strong("Remote Component 1"))));
+       var $systemTypeDR = $componentDR.split(":");
+       var $drComponent = $systemTypeDR[1].split("[");
+       var $drSystemType = $drComponent[1].split("]");
+       _assertEqual($NetAppFilerSytemType, $drSystemType[0], "Checking System type component from user input and GUI for DR");
+
+
+       var $remoteComponent = _getText(_cell(0, _near(_strong("Remote Component 1 Status"))));
+       var $remoteComponentDR = $remoteComponent.split(":");
+       _assertExists("Remote Component Status:", $remoteComponentDR[1]);
+
+
+// Validation of Component for DR 2
+       var $remoteComponent = _getText(_link(0, _near(_strong("Remote Component 2"))));
+       _assertEqual($NetAppcompNameDR, $remoteNetAppComponent, "Checking Component from user input and GUI for DR");
+
+// Splitting the strings to get the Component type for DR
+       var $componentDR = _getText(_cell(0, _near(_strong("Remote Component 2"))));
+       var $systemTypeDR = $componentDR.split(":");
+       var $drComponent = $systemTypeDR[1].split("[");
+       var $drSystemType = $drComponent[1].split("]");
+       _assertEqual($systemType, $drSystemType[0], "Checking System type component from user input and GUI for DR");
+       var $remoteComponent = _getText(_cell(0, _near(_strong("Remote Component 2 Status"))));
+       var $remoteComponentDR = $remoteComponent.split(":");
+       _assertExists("Remote Component Status:", $remoteComponentDR[1]);
+
+      }
+
+
+
+
+/**
+* Function is for verification of details in Manage-Group Information screen for Oracle_PFR solution Post SO
+*@param : null
+*@return : null
+*@Author: Swati Chowdhary
+*
+*/
+
+function Oracle_fulldb_Netapp_Groupinformation_Post_SO() {
+	
+	Group_Managegroupinformation($groupName,"SO");
+}// End of Oracle_Groupinformation_Post_SO()
+
+/**
+* Function is for verification of details in Manage-Group Information screen for Oracle_PFR solution Before SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function Oracle_fulldb_Netapp_Groupinformation() {
+	Group_Managegroupinformation($groupName);
+}// End of Oracle_Groupinformation()
+
+
+
+
+/**
+* Function is for Validation of logs in Monitor > GroupSnapshot screen for oraclePFR solution post SO.
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function Oracle_fulldb_Netapp_Groupsnapshot_Post_SO() {
+	
+	Oracle_fulldb_Netapp_Groupsnapshot_Status($groupName,"SO");
+
+} // End of Oracle_Groupsnapshot_Post_SO()
+
+
+/**
+* Function is for Validation of logs in Monitor > GroupSnapshot screen for oraclePFR solution before SO.
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function Oracle_fulldb_Netapp_Groupsnapshot() {
+	
+	Oracle_fulldb_Netapp_Groupsnapshot_Status($groupName);
+}// End of Oracle_Groupsnapshot()
+
+/**
+* Function is for Validation of logs in Monitor > GroupSnapshot screen for oraclePFR solution.
+*@param : $groupName,$WFType
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+
+function Oracle_fulldb_Netapp_Groupsnapshot_Status($groupName,$WFType) {
+	Popup_Handler();
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("Group Snapshot"));
+
+	// verifying Recovery Point
+	if ($WFType == "SO") {
+		if (_exists(_cell("Not supported in Switchover mode"))) {
+			_log("So done successfully");
+		} else {
+			_log("Gui not showing correct value");
+		}
+		// calling Mysql_RPO_Post_SO function
+		
+		Oracle_fulldb_Netapp_Rpo_Post_SO();
+
+	} else {
+		// calling Mysql_RPO function
+		Oracle_fulldb_Netapp_Rpo();
+	}
+	
+	var $recoveryPointGui1 = _getText(_span(1, _near(_span("DR Data Consistent up to:"), _near(_cell("Continuity")))));
+	_assertExists("Recovery Point DR Data Consistent up to:", $recoveryPointGui1);
+	var $date = $recoveryPointGui1;
+     var $dateString = $date.toString();
+     var $recoveryPointGui = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+	_assertExists("Recovery Point DR Data Consistent up to:", $recoveryPointGui);
+	if ($recoveryPointinDB == $recoveryPointGui){
+	_assertEqual($recoveryPointinDB, $recoveryPointGui, "Validating Recovery Point DR Data Consistent upto correct in GUI");
+	}
+	else {
+ 		_log("Validating Recovery Point DR Data Consistent is not  correct in GUI");
+ 	}
+	// Verfing Recovery time
+	if ($WFType == "SO") {
+		if (_exists(_cell("Not supported in Switchover mode"))) {
+			_log("Not supported in Switchover mode");
+		}
+	} else {
+		Popup_Handler();
+		_click(_link("Monitor"));
+		_click(_link($groupName));
+		_click(_link("Group Snapshot"));
+		var $recoveryTimeGui1 = (_getText(_cell(5, _near(_span("Est. time to recover:", _near((_cell("Recovery Time")))))))).split("Est. time to recover:");
+		var $recoveryTimeGui = $recoveryTimeGui1[1];
+		_assertExists("Recovery Time  Est. time to recover:", $recoveryTimeGui);
+		// calling function to calculate rto for Recovery Time
+		var $dbRto = Oracle_fulldb_Netapp_Rto($groupName);
+		Popup_Handler();
+		_click(_link("Monitor"));
+		_click(_link($groupName));
+		_click(_link("Group Snapshot"));
+		_assertEqual($dbRto.get("actualRtoDB"), $recoveryTimeGui, "Validating Recovery Time  Est. time to recover correct in GUI");
+	}
+	Popup_Handler();
+	
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("Group Snapshot"));
+	var $continuityOperation = _getText(_cell(1, _near(_cell("Continuity Operation:"))));
+	_assertExists("Continuity Operation:", $continuityOperation);
+	
+
+}
+
+/**
+* Function is for Verification of details in Manage-Manage DR Solution screen for Oracle_fulldb_Netapp solution Post SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function Oracle_fulldb_Netapp_Managedrsolution_PostSO() {
+	Oracle_fulldb_Netapp_Managedrsolution_Status($groupName,"SO" );
+} // End of Oracle_PFR_Managedrsolution_PostSO()
+
+/**
+* Function is for Verification of details in Manage-Manage DR Solution screen for Oracle_fulldb_Netapp  solution before SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function Oracle_fulldb_Netapp_Managedrsolution() {
+	Oracle_fulldb_Netapp_Managedrsolution_Status($groupName);
+}// End of Oracle_fulldb_Netapp_Managedrsolution()
+
+
+/**
+* Function is for Verification of details in Manage-Manage DR Solution screen for Oracle_fulldb_Netapp solution.
+*@param : $groupName,$WFType 
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function Oracle_fulldb_Netapp_Managedrsolution_Status($groupName,$WFType ){
+	
+	// calling Group_ManageGroupInformation to verify the PR and DR site status
+	Group_Managedrsolution($WFType);
+
+	navigateToDiscovery();
+	_click(_link("Groups"));
+	_click(_link("Subsystems"));
+	_click(_link("Protection Schemes"));
+	_wait(1000);
+	_click(_link($sernamePR, _near(_cell($systemTypeProtection))));
+
+	// Getting value of Pair name from GUI
+	_click(_link("Manage"));
+	_click(_link("Groups List View"));
+	_click(_link($groupName));
+	_click(_link("Manage DR Solution"));
+
+	var $protectionMechanism = _getCellText(_cell(1, _near(_cell("Protection Mechanism:"))));
+	_assertExists("Protection Mechanism is:", $protectionMechanism);
+	_assertEqual($systemTypeProtection, $protectionMechanism, "Validating Protection Mechanism in GUI");
+	
+	var $replicationStatusGui = _getText(_cell(1, _near(_cell("Replication Status:"))));
+	_assertExists("Replication Status:", $replicationStatusGui);
+	_assertEqual($protectionSchemeStatusDb, $replicationStatusGui, "Comparing Replication status from GUI and DB");
+}
+// end Of Oracle_fulldb_Netapp_Managedrsolution_Status()
+	

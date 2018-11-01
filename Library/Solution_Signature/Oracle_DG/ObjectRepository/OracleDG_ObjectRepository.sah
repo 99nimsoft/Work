@@ -1,0 +1,241 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains APP PFR Solution specific
+ ** AuthorName : SaiTeja
+ ** Created Date : FEB 2017
+ ***********************************************************************************************/
+
+var $Excel1=_getExcel($SAHI_HOME + "\\Library\\Solution_Signature\\Oracle_DG\\ObjectRepository\\OracleDG_ObjectRepository.xls","Param");
+
+var $Excel=$Excel1.getData();
+
+if($BrowserLang == "N"){
+
+	var $j = 2;
+}
+else if($BrowserLang == "Y-JA"){
+	
+	var $j = 3;
+	}
+
+else if($BrowserLang == "Y-EN"){
+		
+		var $j = 3;
+	}
+////   Solution
+
+var $Submit=$Excel[2][$j];
+var $Submit=$Excel[3][$j];
+var $License=$Excel[4][$j];
+var $Recovery=$Excel[5][$j];
+var $Test=$Excel[6][$j];
+var $Save=$Excel[7][$j];
+var $Finish=$Excel[8][$j];
+var $ArchiveLogsLocationPR=$Excel[9][$j];
+var $ArchiveLogsLocationDR=$Excel[10][$j];
+var $SolutionDetails=$Excel[11][$j];
+var $ShowAdvancedConfiguration=$Excel[12][$j];
+var $ReplicationStatus=$Excel[13][$j];
+var $ReplicationStatus=$Excel[14][$j];
+var $Subsystems=$Excel[15][$j];
+var $ProtectionSchemes=$Excel[16][$j];
+var $ReplicationPair=$Excel[17][$j];
+var $PairName=$Excel[18][$j];
+var $ProtectionModeRep=$Excel[19][$j];
+var $DGBroker=$Excel[20][$j];
+var $=$Excel[21][$j];
+var $SyncStatus=$Excel[22][$j];
+var $StdbyRedo=$Excel[23][$j];
+var $ReplicationStatus=$Excel[24][$j];
+var $ReplicationStatus=$Excel[25][$j];
+var $DataNotArchivedKB=$Excel[26][$j];
+var $DataNotArchivedKB=$Excel[27][$j];
+var $ACTIVE=$Excel[28][$j];
+var $CurrentLog=$Excel[29][$j];
+var $CurrentLog=$Excel[30][$j];
+var $LastReceivedLog=$Excel[31][$j];
+var $FALClient=$Excel[32][$j];
+var $DestinationId=$Excel[33][$j];
+var $Mode=$Excel[34][$j];
+var $Type=$Excel[35][$j];
+var $Status=$Excel[36][$j];
+var $DataNotReceivedKB=$Excel[37][$j];
+var $DataNotAppliedKB=$Excel[38][$j];
+var $LastAppliedLog=$Excel[39][$j];
+var $FALServer=$Excel[40][$j];
+var $ApplyServiceOn=$Excel[41][$j];
+var $ApplyDelayMin=$Excel[42][$j];
+var $Status1=$Excel[43][$j];
+var $TransactionID=$Excel[44][$j];
+var $TransactionTime=$Excel[45][$j];
+var $TransactionID1=$Excel[46][$j];
+var $TransactionTime1=$Excel[47][$j];
+var $TransactionID=$Excel[48][$j];
+var $TransactionTime=$Excel[49][$j];
+var $TransactionID1=$Excel[50][$j];
+var $TransactionTime1=$Excel[51][$j];
+var $RemotePre=$Excel[52][$j];
+var $CheckArchive=$Excel[53][$j];
+var $IsGapPresent=$Excel[54][$j];
+var $Listing=$Excel[55][$j];
+var $ApplyPending=$Excel[56][$j];
+var $StopManaged=$Excel[57][$j];
+var $Activate=$Excel[58][$j];
+var $Shutdown=$Excel[59][$j];
+var $StartDatabase=$Excel[60][$j];
+var $Open=$Excel[61][$j];
+var $Switch=$Excel[62][$j];
+var $Verify=$Excel[63][$j];
+var $Manage=$Excel[64][$j];
+var $GroupsListView=$Excel[65][$j];
+var $ManageDRSolution=$Excel[66][$j];
+var $Groups=$Excel[67][$j];
+var $Subsystems=$Excel[68][$j];
+var $ProtectionSchemes=$Excel[69][$j];
+var $ReplicationPair=$Excel[70][$j];
+var $Manage=$Excel[71][$j];
+var $GroupsListView=$Excel[72][$j];
+var $ManageDRSolution=$Excel[73][$j];
+var $PairName=$Excel[74][$j];
+var $ProtectionMechanism=$Excel[75][$j];
+var $ReplicationStatus=$Excel[76][$j];
+var $ReplicationStatus=$Excel[77][$j];
+var $ReplicationStatus=$Excel[78][$j];
+var $LastLogFiledumpedatprimary=$Excel[79][$j];
+var $primary=$Excel[80][$j];
+var $DumpLogFileTimestamp=$Excel[81][$j];
+var $Timestamp=$Excel[82][$j];
+var $LastDumpLogsequencenumber=$Excel[83][$j];
+var $number=$Excel[84][$j];
+var $LastApplyLogsequencenumber=$Excel[85][$j];
+var $number=$Excel[86][$j];
+var $NextLogFiletobeAppliedatsecondary=$Excel[87][$j];
+var $secondary=$Excel[88][$j];
+var $LogFileAppliedTimestamp=$Excel[89][$j];
+var $Timestamp=$Excel[90][$j];
+var $Subsystems=$Excel[91][$j];
+var $Datasets=$Excel[92][$j];
+var $ArchiveLogsLocation=$Excel[93][$j];
+var $Subsystems=$Excel[94][$j];
+var $Datasets=$Excel[95][$j];
+var $ArchiveLogsLocation=$Excel[96][$j];
+var $NormalCopy=$Excel[97][$j];
+var $OracleSwitchLogOperationOracle=$Excel[98][$j];
+var $ActionProperties=$Excel[99][$j];
+var $SaveNow=$Excel[100][$j];
+var $Next=$Excel[101][$j];
+var $PublishWorkflow=$Excel[102][$j];
+var $Drills=$Excel[103][$j];
+var $Switchover=$Excel[104][$j];
+var $Execute=$Excel[105][$j];
+var $EXECUTING=$Excel[106][$j];
+var $EXECUTING=$Excel[107][$j];
+var $Drills=$Excel[108][$j];
+var $Execute=$Excel[109][$j];
+var $EXECUTING=$Excel[110][$j];
+var $EXECUTING=$Excel[111][$j];
+var $Admin=$Excel[112][$j];
+var $CurrentEvents=$Excel[113][$j];
+var $AdvancedFilter=$Excel[114][$j];
+var $NEW=$Excel[115][$j];
+var $WIP=$Excel[116][$j];
+var $Apply=$Excel[117][$j];
+var $Critical=$Excel[118][$j];
+var $Serious=$Excel[119][$j];
+var $Warning=$Excel[120][$j];
+
+//////////////////Datasets 
+
+var $Subsystems=$Excel[121][$j];
+var $Datasets=$Excel[122][$j];
+var $Go=$Excel[123][$j];
+var $RegisterAgent=$Excel[124][$j];
+var $Addnewcredential=$Excel[125][$j];
+var $RegisterAgents=$Excel[126][$j];
+var $Subsystems=$Excel[127][$j];
+var $Datasets=$Excel[128][$j];
+var $Go=$Excel[129][$j];
+var $CONNECTED=$Excel[130][$j];
+var $TestCredentials=$Excel[131][$j];
+var $GetSIDS=$Excel[132][$j];
+var $GetSIDS=$Excel[133][$j];
+var $TestCredentials1=$Excel[134][$j];
+var $Success=$Excel[135][$j];
+var $Discover=$Excel[136][$j];
+var $Subsystems=$Excel[137][$j];
+var $Datasets=$Excel[138][$j];
+var $RegisterAgent=$Excel[139][$j];
+var $RegisterAgent=$Excel[140][$j];
+var $RegisterAgents=$Excel[141][$j];
+var $Subsystems=$Excel[142][$j];
+var $Datasets=$Excel[143][$j];
+var $Go=$Excel[144][$j];
+var $TestCredentials=$Excel[145][$j];
+var $GetSIDS=$Excel[146][$j];
+var $Save=$Excel[147][$j];
+var $Subsystems=$Excel[148][$j];
+var $Datasets=$Excel[149][$j];
+var $Subsystems=$Excel[150][$j];
+var $Datasets=$Excel[151][$j];
+var $Save=$Excel[152][$j];
+var $Subsystems=$Excel[153][$j];
+var $Datasets=$Excel[154][$j];
+var $Subsystems=$Excel[155][$j];
+var $Datasets=$Excel[156][$j];
+var $Datafiles=$Excel[157][$j];
+var $Redologs=$Excel[158][$j];
+var $Controlfiles=$Excel[159][$j];
+var $ArchiveLogsLocation=$Excel[160][$j];
+var $Subsystems=$Excel[161][$j];
+var $Datasets=$Excel[162][$j];
+var $OracleAgentrunning=$Excel[163][$j];
+var $DatabaseConnectionEstablished=$Excel[164][$j];
+var $OracleAgentrunning=$Excel[165][$j];
+var $DatabaseConnectionEstablished=$Excel[166][$j];
+var $DatasetStatusDB=$Excel[167][$j];
+
+/////////////// ProtectionScheme
+
+var $Subsystems=$Excel[168][$j];
+var $ProtectionSchemes=$Excel[169][$j];
+var $Go=$Excel[170][$j];
+var $RegisterAgent=$Excel[171][$j];
+var $RegisterAgent=$Excel[172][$j];
+var $Agentisnotregistered=$Excel[173][$j];
+var $Subsystems=$Excel[174][$j];
+var $ProtectionSchemes=$Excel[175][$j];
+var $Go=$Excel[176][$j];
+var $TestCredentials=$Excel[177][$j];
+var $StatusPS=$Excel[178][$j];
+var $GetSIDS=$Excel[179][$j];
+var $TestCredentials1=$Excel[180][$j];
+var $Success=$Excel[181][$j];
+var $GetDestinations=$Excel[182][$j];
+var $Discover=$Excel[183][$j];
+var $ReplicationPair=$Excel[184][$j];
+var $Save=$Excel[185][$j];
+var $Subsystems=$Excel[186][$j];
+var $ProtectionSchemes=$Excel[187][$j];
+var $Subsystems=$Excel[188][$j];
+var $ProtectionSchemes=$Excel[189][$j];
+var $DatabaseName=$Excel[190][$j];
+var $PortonwhichOraclelistens=$Excel[191][$j];
+var $IPaddressonwhichOraclelistens=$Excel[192][$j];
+var $DatabaseRole=$Excel[193][$j];
+var $ProtectionMode=$Excel[194][$j];
+var $ReplicationPairVerify=$Excel[195][$j];
+var $Subsystems=$Excel[196][$j];
+var $ProtectionSchemes=$Excel[197][$j];
+
+var $Role=$Excel[198][$j];
+var $PrimaryTH=$Excel[199][$j];
+var $StandbyTH=$Excel[200][$j];
+var $StandbyRedo=$Excel[201][$j];
+var $PrShutDownRal=$Excel[202][$j];
+var $OracleShutdownDb=$Excel[203][$j];
+
+
+var $OracleSwitchLogOperation=$Excel[204][$j];
+var $dateTimeFormat=$Excel[205][$j];
+var $dateTimeFormat2=$Excel[206][$j];

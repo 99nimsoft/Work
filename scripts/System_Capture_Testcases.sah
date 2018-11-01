@@ -1,0 +1,71 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the System Capture test cases. 
+ ** AuthorName : Sahu
+ ** Created Date : Dec2016
+ ************************************************************************/
+
+
+_log("=================================Pre-Condition===================================", "Custom1");
+
+_include("../Library/Common/Common_Function.sah");
+_include("../conf/DRMInstallation_Parameter.sah");
+//_include("../conf/DRMInstallation_Parameter_New.sah"); // DRM 15 enable
+_include("../Library/Solution_Signature/Include/System_Capture_Include.sah");
+_include("../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+//*************************************************************************************************************************************************
+
+Login_001();
+createUsers_0001();
+
+preConditionForRAL_GroupCreation();
+
+_log("=================================Test========================================", "Fetchlog");
+
+
+
+
+var $test2 = _testcase("System_Capture_0002", "Assigning Groups To Users");
+$test2.start();
+Assign_Group_User_0002();
+$test2.end();
+
+
+var $test3 = _testcase("System_Capture_0003", "Login_Different_User");
+$test3.start();
+Login_Different_User_0003();
+$test3.end();
+
+
+
+Login_001();
+
+
+var $test6 = _testcase("System_Capture_0005", "SystemLog Capture in CLI/Windows Mode");
+$test6.start();
+SystemLog_Windows_Mode_0006();
+$test6.end();
+
+var $test7 = _testcase("System_Capture_0007", "Verify BCO Details");
+$test7.start();
+Verify_Details_BCO_0007();
+$test7.end();
+
+
+var $test8 = _testcase("System_Capture_0008", "Verify Test Details");
+$test8.start();
+Verify_Details_Test_0008();
+$test8.end();
+
+var $test9 = _testcase("SystemLog_Windows_Mode_0009", "Verify Other Test Details");
+$test9.start();
+Verify_Other_Details_Test_0009();
+$test9.end();
+
+
+
+
+_log("================================Post-Condition================================== ", "Custom1");
+
+Logout_001();

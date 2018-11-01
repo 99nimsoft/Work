@@ -1,0 +1,159 @@
+var  $l_AppGrp = _readExcelFile($SAHI_HOME+"\\conf\\Application_Group\\Application_Group.xls","ApplicationGrp");  //To read the inputs from the drm_inputs excel file.
+
+
+	//The below parameter is used for Linux OS
+	var $SerIP = $l_AppGrp[3][3];
+	var $SerUserNm = $l_AppGrp[4][3];
+	var $SerPassWord =$l_AppGrp[5][3];
+	var $username = $l_AppGrp[8][3]; 
+	var $password = $l_AppGrp[9][3]; 
+	/*
+	var $supadmin=$l_AppGrp[3][6];
+	var $admin=$l_AppGrp[4][6];
+	var $operator=$l_AppGrp[5][6];
+	var $notification=$l_AppGrp[6][6];
+	var $password1=$l_AppGrp[7][6];
+	var $logspath=$l_AppGrp[8][6];
+	var $errorvalue=$l_AppGrp[9][6];
+	var $supuname=$l_AppGrp[3][8];
+	var $suppwd=$l_AppGrp[4][8];*/
+	
+	var $compIpPR=$l_AppGrp[12][3];
+	
+	
+	var $AGrpNm=$l_AppGrp[21][3];
+	
+	
+	
+	
+	var $groupName1=$l_AppGrp[12][6];
+	var $groupName2=$l_AppGrp[13][6];
+	var $groupName3=$l_AppGrp[14][6];
+	var $time="60";
+	//var $AGrpNm="AG1";
+
+	
+	var $WorkflowNm1=$l_AppGrp[17][6];
+	var $WorkflowNm3=$l_AppGrp[19][6];
+	var $TEWrkflwNm1=$l_AppGrp[21][6];
+	var $TEWrkflwNm3=$l_AppGrp[22][6];
+	
+	var $ralString = "work";
+	var $ralCategory = "Workflow";
+	var $ralName = "TriggerBCO";
+	//var $WorkflowName="dr2";
+
+	var $WorkflowNameTwo="dr1";
+	var $ralNameIE="TEAction";
+	
+	
+	//var $site = "DRM_Site";
+	//This user Input required to create the Site
+	var $locationPR = "PR"; // PR Site Location
+	var $incharge = "drmadmin"; // Site Incharge
+	var $addressPR = "Mumbai"; // PR site Address
+	var $locationDR = "DR"; // DR Site Location
+	var $addressDR = "Bangalore";// DR site Address
+	var $compsitePR = $locationPR;
+	var $compsiteDR = $locationDR;
+	var $systemType = $l_AppGrp[23][3];
+	var $osType = $l_AppGrp[22][3];
+	
+	
+	var $primaryComponents = $compNamePR;
+	var $remoteComponents = $compNameDR;
+	var $primaryDatasets = $datasetNamePR;
+	var $remoteDatasets = $datasetNameDR;
+	var $primaryProtections = $sernamePR;
+	var $remoteProtections = $sernameDR;
+
+	
+	var $primaryDatasets1 = $datasetNamePR1;
+	var $remoteDatasets1 = $datasetNameDR1;
+	var $primaryProtections1 = $sernamePR1;
+	var $remoteProtections1 = $sernameDR1;
+
+	var $primaryDatasets2 = $datasetNamePR2;
+	var $remoteDatasets2= $datasetNameDR2;
+	var $primaryProtections2 = $sernamePR2;
+	var $remoteProtections2= $sernameDR2;
+
+
+	//This user Input required to create the Component for remote
+	var $agentType = "Remote";
+	var $compIPPR = $l_AppGrp[12][3]; // PR Componenet ID
+	var $compIPDR = $l_AppGrp[13][3];// DR Componenet ID
+	var $remoteUserNameValPR = $l_AppGrp[14][3]; // PR Machine user name. this information required for both local and remote
+	var $remotePwdValPR = $l_AppGrp[15][3]; // PR Machine Pwd name. this information required for both local and remote
+	var $remoteUserNameValDR = $l_AppGrp[16][3];// DR Machine user name. this information required for both local and remote
+	var $remotePwdValDR = $l_AppGrp[17][3];// PR Machine Pwd name. this information required for both local and remote
+	var $compNamePR = $l_AppGrp[5][8]; // PR Componenet Name
+	var $compNameDR = $l_AppGrp[6][8]; // DR Componenet Name
+
+	/*//This user Input required to create the Component for Local
+	var $localAgentPath = $l_AppGrp[11][5];
+	var $agentBuildPath = $l_AppGrp[12][5];
+	var $LocalCompIP = $l_AppGrp[13][5];
+	var $LocalCompName = $l_AppGrp[14][5];
+	var $LocalCompUserName = $l_AppGrp[15][5];
+	var $LocalCompPassword = $l_AppGrp[16][5];
+*/
+
+
+	//This user Input required to create the dataset
+	var $systemTypeDataset = "Application SubSystem";
+	var $datasetNamePR = $l_AppGrp[7][8]; // PR dataset name
+	var $datasetNameDR = $l_AppGrp[8][8]; // DR dataset name
+	var $fileNameTextPathPR = $l_AppGrp[9][8];
+	var $fileNameTextPathDR = $l_AppGrp[10][8];
+	var $dependentComponentNamePR = $compNamePR;
+	var $dependentComponentNameDR = $compNameDR;
+
+
+
+	//This user Input required to create the protection Scheme
+	var $systemTypeProtection = "PFR"; 
+	var $sernamePR = $l_AppGrp[12][8]; // PR Protection Scheme name
+	var $sernameDR = $l_AppGrp[13][8]; // DR Protection Scheme name
+	var $mgmtHostPFRPR = $compNamePR + " (" + $compIPPR + ")"; 
+	var $mgmtHostPFRDR = $compNameDR + " (" + $compIPDR + ")"; 
+
+	//var $groupName = $l_AppGrp[6][3];
+	var $groupDescription = "APP PFR";
+	var $SolutionSignature = "Application SubSystem with PFR"; 
+
+	
+	var $datasetNamePR1 = $l_AppGrp[15][8]; // PR dataset name
+	var $datasetNameDR1 = $l_AppGrp[16][8]; // DR dataset name
+	var $fileNameTextPathPR1 = $l_AppGrp[17][8];
+	var $fileNameTextPathDR1= $l_AppGrp[18][8];
+	var $dependentComponentNamePR1 = $compNamePR;
+	var $dependentComponentNameDR1 = $compNameDR;
+
+
+
+	//This user Input required to create the protection Scheme
+	//var $systemTypeProtection = "PFR"; 
+	var $sernamePR1 = $l_AppGrp[20][8]; // PR Protection Scheme name
+	var $sernameDR1 = $l_AppGrp[21][8]; // DR Protection Scheme name
+	var $mgmtHostPFRPR1 = $compNamePR + " (" + $compIPPR + ")"; 
+	var $mgmtHostPFRDR1 = $compNameDR + " (" + $compIPDR + ")"; 
+	
+	
+	var $datasetNamePR2 = $l_AppGrp[3][6]; // PR dataset name
+	var $datasetNameDR2 = $l_AppGrp[4][6]; // DR dataset name
+	var $fileNameTextPathPR2 = $l_AppGrp[5][6];
+	var $fileNameTextPathDR2= $l_AppGrp[6][6];
+	var $dependentComponentNamePR2 = $compNamePR;
+	var $dependentComponentNameDR2 = $compNameDR;
+
+
+
+	//This user Input required to create the protection Scheme
+	//var $systemTypeProtection = "PFR"; 
+	var $sernamePR2 = $l_AppGrp[8][6]; // PR Protection Scheme name
+	var $sernameDR2 = $l_AppGrp[9][6]; // DR Protection Scheme name
+	var $mgmtHostPFRPR2 = $compNamePR + " (" + $compIPPR + ")"; 
+	var $mgmtHostPFRDR2 = $compNameDR + " (" + $compIPDR + ")"; 
+
+

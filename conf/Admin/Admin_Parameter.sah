@@ -1,0 +1,16 @@
+
+
+
+var $l_APP_PFR=_readExcelFile($SAHI_HOME + "\\conf\\Admin\\Admin_parameter.xls","Admin");
+
+
+
+//This user Input required to Login the DRM server
+var $username = $l_APP_PFR[3][2]; // DRM server GUI user name e.g. "swati"
+var $password = $l_APP_PFR[4][2]; // DRM server GUI pwd
+
+
+var $backUpPath = "/tmp";
+var $backupTime = "1:00";
+var $backUpDay = "Monday";
+var $backfrequency = "/.*Weekly.*/i";

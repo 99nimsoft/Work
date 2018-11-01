@@ -1,0 +1,32 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains Attach SG RAL
+ ** AuthorName : Govinda Mengji
+ ** Created Date : Oct 2013
+ ***********************************************************************************************/
+
+var $l_AttachSGRAL=_readExcelFile($SAHI_HOME + "\\conf\\AWS_RALS_conf\\VM_AWS_Parameter.xls","AttachSGRAL");
+
+var $username =$l_AttachSGRAL[3][2];
+var $password = $l_AttachSGRAL[4][2];
+
+
+
+// This user Input required to create the Component for Local or remote
+
+
+
+
+var  $mgmtServiceName=$l_AttachSGRAL[7][2];
+var $region= $l_AttachSGRAL[8][2];
+var  $vpcId =$l_AttachSGRAL[9][2];
+var  $AWSInstanceId =$l_AttachSGRAL[10][2];
+var  $sgId1=  $l_AttachSGRAL[11][2];
+var  $sgId2=  $l_AttachSGRAL[12][2];
+var  $sgId3=  $l_AttachSGRAL[13][2];
+var  $sgId4= $l_AttachSGRAL[14][2];
+
+var $groupName=$l_AttachSGRAL[17][2];
+
+var $keyvalueASG = $l_AttachSGRAL[18][2];

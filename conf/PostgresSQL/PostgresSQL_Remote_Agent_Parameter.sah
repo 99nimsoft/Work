@@ -1,0 +1,110 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the Remote Agents parameters for Postgres SR
+ ** AuthorName : Aditi Jain
+ ** Created Date : Nov 2013
+ ***********************************************************************************************/
+
+var $l_PostgresSR=_readExcelFile($SAHI_HOME + "\\conf\\PostgresSQL\\PostgresSR_Parameter.xls","Remote");
+
+//This user Input required to Login the DRM server
+
+var $username =$l_PostgresSR[3][2];//$l_PostgresSR_Remote[3][2]; // DRM server GUI user name e.g. "swati"
+var $password = $l_PostgresSR[4][2];//$l_PostgresSR_Remote[4][2]; // DRM server GUI pwd
+var $systemTypeAgent = "Linux";
+// This user Input required to create the Site
+var $locationPR = "PR"; // PR Site Location
+var $incharge = "drmadmin"; // Site Incharge
+var $addressPR = "Mumbai"; // PR site Address
+var $locationDR = "DR"; // DR Site Location
+var $addressDR = "Bangalore";// DR site Address
+
+// This user Input required to create the Component for Local or remote
+var $agentType = "Remote"; // This if for agent type always enter as e.g. Local or Remote.Note Here first letter is upper case and remaining lower case.
+var $compIPPR = $l_PostgresSR[7][2];//$l_PostgresSR_Remote[7][2]; // PR Componenet ID
+var $compIPDR = $l_PostgresSR[8][2];//$l_PostgresSR_Remote[8][2]; // DR Componenet ID
+var $remoteUserNameValPR = $l_PostgresSR[9][2];//$l_PostgresSR_Remote[9][2]; // PR Machine user name. this information required for both local and remote
+var $remotePwdValPR =$l_PostgresSR[10][2]; //$l_PostgresSR_Remote[10][2]; // PR Machine Pwd name. this information required for both local and remote
+var $remoteUserNameValDR = $l_PostgresSR[11][2];//$l_PostgresSR_Remote[11][2];// DR Machine user name. this information required for both local and remote
+var $remotePwdValDR =$l_PostgresSR[12][2]; //$l_PostgresSR_Remote[12][2];// PR Machine Pwd name. this information required for both local and remote
+var $compNamePR = $l_PostgresSR[13][2];//$l_PostgresSR_Remote[13][2]; // PR Componenet Name
+var $compNameDR = $l_PostgresSR[14][2];//$l_PostgresSR_Remote[14][2]; // DR Componenet Name
+
+// This user Input required to create the dataset
+var $userNameValPR = $l_PostgresSR[3][5];//for DB  connection
+var $pwdValPR = $l_PostgresSR[4][5];
+var $userNameValDR = $l_PostgresSR[5][5];//for DB  connection
+var $pwdValDR = $l_PostgresSR[6][5];
+var $postgresData= $l_PostgresSR[7][5]; 
+var $postgresHome= $l_PostgresSR[8][5];
+var $port="5432";
+var $dbSidSelect =$l_PostgresSR[9][5]; //$l_PostgresSR_Remote[7][5];// This is Database Name for PR
+var $userNamePR=$userNameValPR;//for psql connection
+var $pwdPR=$pwdValPR ;
+var $userNameDR=$userNameValDR;
+var $pwdDR=$pwdValDR;
+
+
+var $datasetNamePR =$l_PostgresSR[10][5]; //$l_PostgresSR_Remote[9][5]; // PR dataset name
+var $datasetNameDR =$l_PostgresSR[11][5]; //$l_PostgresSR_Remote[10][5]; // DR dataset name
+
+// This user Input required to create the protection Scheme
+var $sernamePR =$l_PostgresSR[18][2];//$l_PostgresSR_Remote[18][2]; // PR Protection Scheme name
+var $sernameDR = $l_PostgresSR[19][2];//$l_PostgresSR_Remote[19][2]; // DR Protection Scheme name
+
+// This user Input required to create the Group
+var $groupName = $l_PostgresSR[23][2];//$l_PostgresSR_Remote[23][2]; // Group name
+var $groupDescription = "PostgreSQL_SR_Remote_98"; // Group description
+
+// This user Input required to Login the the PR and DR machine from backend
+var $prUserID = $remoteUserNameValPR; // PR machine user Id
+var $prPassword =  $remotePwdValPR ; // PR machine password
+var $drUserID = $remoteUserNameValDR;// DR machine user Id
+var $drPassword = $remotePwdValDR; // DR machine password
+
+var $RemoteAgentPathPR = $l_PostgresSR[14][5];
+var $RemoteAgentPathDR = $l_PostgresSR[15][5];
+var $agentBuildPR =$l_PostgresSR[16][5];
+var $agentBuildDR = $l_PostgresSR[17][5];
+
+var $PfrServicePath=$l_PostgresSR[18][5];
+
+// *********************************************************************************************************************************************
+// Important Note : Please DON'T modify/edit any below variable or its value.
+// If you made any changes of variable and its value, script will not execute.
+// *********************************************************************************************************************************************
+
+var $panacesAgentNodeAddressPR = $compIPPR;
+var $panacesAgentNodeAddressDR = $compIPDR;
+var $compsitePR = $locationPR;
+var $compsiteDR = $locationDR;
+
+var $primaryComponents = $compNamePR;
+var $remoteComponents = $compNameDR;
+var $primaryDatasets = $datasetNamePR;
+var $remoteDatasets = $datasetNameDR;
+var $primaryProtections = $sernamePR;
+var $remoteProtections = $sernameDR;
+var $mgmtHostPostgreSQLSRPR = $compNamePR + " (" + $compIPPR + ")"; //"Win_67_PR (192.168.20.67)"; 
+var $mgmtHostPostgreSQLSRDR = $compNameDR + " (" + $compIPDR + ")";
+
+var $dependentComponentNamePR = $compNamePR;
+var $dependentComponentNameDR = $compNameDR;
+var $incharge = "drmadmin";
+//var $Status = "NormalCopy";
+var $desiredRpo = "300";
+var $rpoCompute = "180";
+var $systemTypeProtection = "PostgreSQL SR"; // Protection Scheme type
+var $SolutionSignature = "PostgreSQL with SR"; // Solution type
+var $systemTypeDataset = "Postgres"; // database subsystem
+var $systemTypeDatasetSR="PostgreSQL";
+var $datasetType = "PostgreSQL"; // database Type
+var $systemType = "Linux";
+var $osType = "Linux";
+
+var $WFPath = "Postgres"; // Location of SO xml file
+var $fileSO = "BCS-PostgreSQLSR-SO.xml"; // Location of SO xml file
+var $fileSB = "BCS-PostgreSQLSR-SB.xml"; // Location of SB xml file
+var $fileFO = "BCS-PostgreSQLSR-FO.xml"; // Location of FO xml file
+var $PfrStart="1";

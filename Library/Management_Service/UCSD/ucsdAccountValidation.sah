@@ -1,0 +1,588 @@
+/* 1. --Check the Availability of "converged" tab in DRM UI-- */
+function checkConvergedLinkAvailability(){
+	
+	navigateToDiscovery();
+	_assertExists(_link("Converged"));
+	_log("Converged link exists");
+}
+
+/* 2. --Check the navigation after clicking on "converged" tab -- */
+function checkNavigationForConverged(){
+	
+	discoverUCSD();
+	_assertContainsText("UCS Directors", _table("report"));
+	
+}
+
+/*
+ * 3 --Check the availability of "Add UCS Director " hyperlink in "converged"
+ * page--
+ */
+function checkAddUcsDirectorLink(){
+	
+	discoverUCSD();
+	_assertExists(_link("Add UCS Director"));
+	_log("Add UCS Director link exists");
+	
+}
+/*
+ * 4--Check the availability of UCS Directors under "Converged" page before
+ * adding any Service--
+ */
+
+function checkUcsDirector() {
+	
+	discoverUCSD();
+	_assertContainsText("UCS Directors", _table("report"));
+
+	_assertExists(_tableHeader("Name", _in(_table("report"))));
+	_assertExists(_tableHeader("Site", _in(_table("report"))));
+	_assertExists(_tableHeader("Credential Status", _in(_table("report"))));
+	
+	if (_exists(_table("report"))) {
+		rowCount=0;
+		_set($rowCount, _table("report").rows.length - 1);
+		_log($rowCount);
+		_assertEqual(0, $rowCount);
+
+	} else {
+
+		_fail();
+	}
+	
+}
+
+/* 5--Check the navigation after clicking on "Add UCS Director " hyperlink-- */
+
+function checkAddUcsDirectorLinkNavigation() {
+	
+	discoverUCSD();
+	_click(_link("Add UCS Director"));
+	_assertExists(_cell("Add UCS Director"));
+	
+
+}
+
+/* 6--Check the availability of fields in "Add UCS Director"page-- */
+
+function checkAddUcsDirectorFields() {
+	
+	discoverUCSD();
+	_click(_link("Add UCS Director"));
+	_assertExists(_tableHeader("Name"));
+	_assertExists(_cell("Site"));
+	_assertExists(_tableHeader("Access Key"));
+	_assertExists(_tableHeader("Server IP"));
+	_assertExists(_textbox("accountname", _near(_tableHeader("Name"))));
+	_assertExists(_select("ucsdsite", _near(_cell("Site"))));
+	_assertExists(_password("ucsdaccesskey", _near(_tableHeader("Access Key"))));
+	_assertExists(_textbox("ucsdiphostname", _near(_tableHeader("Server IP"))));
+
+	_assertExists(_button("Test Credentials"));
+	_assertExists(_submit(" Save "));
+	_assertExists(_button("Cancel", _near(_submit(" Save "))));
+	
+}
+
+/* 7.--Verify "Test Credentials" button with Valid data-- */
+
+function checkCredentialWithValidData( $key,
+		$ucsdiphostname) {
+	
+	discoverUCSD();
+	_click(_link("Add UCS Director"));
+	_setValue(_textbox("ucsdiphostname"), $ucsdiphostname);
+
+	_setValue(_password("ucsdaccesskey"), $key);
+	_click(_button("Test Credentials"));
+	_assertExists(_span("Credential Check Passed"));
+	
+}
+/* 8. --Verify "Test Credentials" button with Invalid data-- */
+
+function checkCredentialWithInValidData( $Invalidkey,
+		$invalidServerIp) {
+	
+	discoverUCSD();
+	_click(_link("Add UCS Director"));
+	_setValue(_textbox("ucsdiphostname"), $invalidServerIp);
+	_setValue(_password("ucsdaccesskey"), $Invalidkey);
+	_click(_button("Test Credentials"));
+	//_wait(30000);
+	_assertExists(_span("Credential Check Failed"));
+	
+}
+/*
+ * 9.--Verify "Test Credentials" button without entering Access key--
+ */
+/*
+ * --Verify "Test Credentials" button without entering Server IP/Host Name--
+ */
+
+function checkCredentialWithoutKey( $ucsdiphostname) {
+
+	discoverUCSD();
+	_click(_link("Add UCS Director"));
+
+	_setValue(_textbox("ucsdiphostname"), $ucsdiphostname);
+	_click(_button("Test Credentials"));
+	_assertEqual("Please enter UCSD Access Key", _lastAlert());
+	
+}
+
+/*
+ * 10.--Verify "Test Credentials" button without entering Server IP/Host Name--
+ */
+
+function checkCredentialWithoutServerIp($key) {
+	
+	discoverUCSD();
+	_click(_link("Add UCS Director"));
+	_setValue(_password("ucsdaccesskey"), $key);
+	_click(_button("Test Credentials"));
+	_assertEqual("Please enter UCSD IP", _lastAlert());
+	
+}
+/* 11--Verify field "Server IP/Host Name" with invalid IPAddress-- */
+
+function verifyServerIPFieldWithInvalidServerIp(
+		$invalidServerIp, $key) {
+	
+	discoverUCSD();
+	_click(_link("Add UCS Director"));
+	_setValue(_password("ucsdaccesskey"), $key);
+	_setValue(_textbox("ucsdiphostname"), $invalidServerIp);
+	_click(_button("Test Credentials"));
+	_assertExists(_span("Credential Check Failed"));
+	
+}
+/*
+ * 13 ,14and 15. --Verify Saving UCS Director Details with valid data-- and
+ * --Check the status of Newly created UCS Director A/C--
+ */
+function ucsdSave($accountname, $site, $ucsdiphostname, $key) {
+
+	  
+		discoverUCSD();
+	if (_exists(_cell($accountname))) {
+		_log("UCSD Management Service already exists");
+	} else {
+		saveUcsd($accountname, $site, $ucsdiphostname, $key);
+		if (_exists(_cell($accountname))) {
+			_log("UCSD Management Service created succesfully");
+		 
+		//_assertNotExists(_lastAlert());
+		//_assertExists(_table("report"));
+		// status of account
+		if (_table("report")) {
+		
+			$i = 0;
+			while ($i < 10) {
+				$ucsStatus = _getText(_cell(3, _near(_cell($accountname),_under(_tableHeader("Credential Status")))));
+
+				if ($ucsStatus == "ACTIVE") {
+					_assertTrue(true);
+					_assertEqual("ACTIVE", $ucsStatus);
+					break;
+				} else {
+					_log($ucsStatus);
+				}
+
+				_wait(10000);
+
+			}
+			if ($ucsStatus != "ACTIVE") {
+				_assertTrue(false);
+				_assertEqual("ACTIVE", $ucsStatus);
+			}			
+
+		}
+		}
+		else {
+			_assertEqual("UCSD Management Service created succesfully",_lastAlert()); 
+			_fail("UCSD Management Service creation failed.So that stopping execution.");
+		}
+		
+		
+	}	
+	
+}
+/* 16. --Check the status of UCSD A/C with all Invalid details-- */
+function ucsdAccStatusWithInvalidDetails($accountname1, $site, $Invalidkey,
+		$invalidServerIp) {
+	
+		discoverUCSD();
+	saveUcsd($accountname1, $site, $invalidServerIp, $Invalidkey);
+	/*
+	 * _assertNotEqual( "Management Service discovery failed due to:
+	 * PAN-OBJM-0024: Management service " + $accountname1 + " is already
+	 * configured for given ip/host: " + $invalidServerIp + ". ", _lastAlert());
+	 */
+	_assertExists(_table("report"));
+
+	_assertExists(_cell($accountname1));
+	if (_exists(_cell($accountname1))) {
+		
+		$i = 0;
+		while ($i < 10) {
+			$ucsStatus = _getText(_cell(3, _near(_cell($accountname1),_under(_tableHeader("Credential Status")))));
+			_log($ucsStatus);
+			if ($ucsStatus == "INACTIVE") {
+				_assertTrue(true);
+				_assertEqual("INACTIVE", $ucsStatus);
+				break;
+			} else {
+				_log($ucsStatus);
+			}
+
+			_wait(10000);
+
+		}
+		if ($ucsStatus != "INACTIVE") {
+			_assertTrue(false);
+			_assertEqual("INACTIVE", $ucsStatus);
+		}			
+
+	}
+	
+	}
+// 19.Check the UCSD Agent presence soon after discovering UCSD A/C
+
+function ucsdAgentPresenceInAgentList($accountname) {
+	// saveVcs($msSite, $msType, $NewVcsName,
+	// $vCenterServer, $userName1, $password1);
+	
+	_click(_link("Admin"));
+	_click(_link("Go to Agents"));
+	_assertExists(_cell($accountname + "(Mgmt Service)",
+			_near(_tableHeader("Component/Mgmt Service"))));
+	
+
+}
+
+// 20.Check the ucsd Agent status after discovering ucsd Management
+// service
+
+function ucsdAgentStatusInAgentList($accountname) {
+
+	_click(_link("Admin"));
+	_click(_link("Go to Agents"));
+	if (_exists(_cell($accountname + "(Mgmt Service)"))) {
+
+		_assertExists(_cell($accountname + "(Mgmt Service)",
+				_near(_tableHeader("Component/Mgmt Service"))));
+		var $ucsdStatus = _getText(_cell(3, _near(_cell($accountname
+				+ "(Mgmt Service)"), _under(_tableHeader("Status")))));
+
+		_assertEqual("Connected Stop", $ucsdStatus);
+
+	}
+	
+}
+
+// 22.Check the status of ucsd Agent after stopping
+
+function ucsdAgentStatusAfterStopingAgent($accountname) {
+	
+	_click(_link("Admin"));
+	_click(_link("Go to Agents"));
+	if (_exists(_cell($accountname + "(Mgmt Service)"))) {
+		_click(_link("Stop", _near(_cell($accountname + "(Mgmt Service)"),
+				_under(_tableHeader("Status")))));
+		_wait(10000);
+		var $vcsStatus = _getText(_cell(3, _near(_cell($accountname
+				+ "(Mgmt Service)"), _under(_tableHeader("Status")))));
+
+		_assertEqual("Not connected Start", $vcsStatus);
+	}
+	
+}
+// 23.Check the status of ucsd Agent after starting
+
+function ucsdAgentStatusAfterStartingAgent($accountname) {
+
+	_click(_link("Admin"));
+	_click(_link("Go to Agents"));
+	if (_exists(_cell($accountname + "(Mgmt Service)"))) {
+		_click(_link("Start", _near(_cell($accountname + "(Mgmt Service)"),
+				_under(_tableHeader("Status")))));
+		_wait(10000);
+		var $vcsStatus = _getText(_cell(3, _near(_cell($accountname
+				+ "(Mgmt Service)"), _under(_tableHeader("Status")))));
+
+		_assertEqual("Connected Stop", $vcsStatus);
+
+	}
+	
+}
+// 24.Check theUCSD Event in UI after Invalidating The UCSD A/CCheck theUCSD
+// Event in UI after Invalidating The UCSD A/C
+
+function checkEventsAfterInvalidatingUCSDAccount($accountname,
+		$invalidServerIp1) {
+	
+	discoverUCSD();
+	if (_exists($accountname)) {
+		_click(_image("edit.png", _near(_cell($accountname))));
+		_setValue(_textbox("ucsdIp"), $invalidServerIp1);
+		_click(_submit("Save"));
+
+		// event
+	} else {
+
+		_fail("UCSD account doesn't exists");
+	}
+	
+}
+/* 25.Check the database after creating the UCSD A/C details */
+
+function checkAccountDetailInDb($accountname, $site, $ucsdiphostname, $key) {
+	$props = Get_Mysql_Db_Connection_URL($hostUserNamePR, $hostPasswordPR,
+			$hostIPPR, $hostPortPR, "panaces");
+
+	var db = _getDB("com.mysql.jdbc.Driver", $props.get("databaseconnection"),
+			$props);
+	var $q = "Select * from mgmt_service where name=" + "'" + $accountname
+			+ "'";
+
+	var $UcsdAcc = db.select($q);
+	for ( var $i = 0; $i < $UcsdAcc.length; $i++) {
+		var $row = $UcsdAcc[$i];
+		var $name = $row["name"];
+		var $type_id = $row["type_id"];
+		var $status = $row["status"];
+		var $default_status = $row["default_status"];
+		var $computeTS = $row["computeTS"];
+
+		if ($name == $accountname) {
+			_assertEqual("2", $type_id);
+			_assertEqual("ACTIVE", $status);
+			_assertEqual("UNKNOWN", $default_status);
+			_log("UCSD Account:"+$accountname+" "+"details present in Database" );
+			} else {
+
+			_fail("account doesn't exists in db");
+		}
+	}
+
+}
+// 26.check the details after clicking on Existing UCSD A/C
+function ucsdAccDetails($accountname) {
+	discoverUCSD();
+	_assertExists(_cell($accountname));
+	_log("UCSD Account:"+$accountname+" "+"exists" );
+
+	
+}
+// 27.check the navigation after clicking on "<<Go Back" button from UCSD A/C
+// Details page
+function ucsdAccGoButtonTest($accountname) {
+
+	discoverUCSD();
+	_click(_image("edit.png", _near(_cell($accountname))));
+	_click(_button("« Go Back"));
+_assertExists(_cell("Converged"));
+	
+}
+/* 28--Delete UcsAcc */
+
+function deleteUcs($accountname1) {
+	
+	discoverUCSD();
+
+	if (_exists(_cell($accountname1))) {
+		
+		_expectConfirm("Are you sure you want to delete the UCSDAccount "
+				+ $accountname1+"?", true);
+		_click(_image("Delete", _near(_cell($accountname1))));
+		// _expectConfirm("Are yo u sure you want to delete the UCSDAccount
+		// test_ucs2?", true);
+		// _click(_image("Delete[2]"));
+		_assertNotExists(_cell($accountname1));
+		_log("UCSD Account deteted Successfully ");
+	}
+	else{
+		
+		
+		_log("UCSD Account doesn't exists");
+	}
+	}
+/*
+ * --Check the Deleted UCSD A/C details in Agent List
+ */
+
+function deleteUcsDetailsInAgentList($accountname1) {
+	
+	_click(_link("Admin"));
+	_click(_link("Go to Agents"));
+	_assertNotExists(_cell("null" + "(Mgmt Service)",
+			_near(_tableHeader("Component/Mgmt Service"))));
+	_assertNotExists(_cell($accountname1 + "(Mgmt Service)",
+			_near(_tableHeader("Component/Mgmt Service"))));
+	_log("Deleted UCSD MAnagement Service Agent is not present in Agent listing Page");
+	}
+/*
+ * 28--Check the Deleted UCSD A/C details in Database
+ */
+
+function deletetedUcsDetailsInDB($accountname1) {
+	$props = Get_Mysql_Db_Connection_URL($hostUserNamePR, $hostPasswordPR,
+			$hostIPPR, $hostPortPR, "panaces");
+
+	var db = _getDB("com.mysql.jdbc.Driver", $props.get("databaseconnection"),
+			$props);
+	var $q = "Select * from mgmt_service where name=" + "'" + $accountname1
+			+ "'";
+	var $ucsdAccount = db.select($q);
+	_assertEqual([],$ucsdAccount);
+	_log("Deleted UCSD Account Details not found in DB");
+
+}
+// 30Check the navigation after clicking edit icon against UCSD A/C
+function editUcsdPageAvailability($accountname1) {
+	
+	discoverUCSD();
+	_click(_image("edit.png", _near(_cell($accountname1))));
+	_assertExists(_cell("Edit UCS Director"));
+	_log("Edit UCSD Page vailable");
+}
+
+/* 31.Check the edit link for UCSD A/C */
+
+function editUcsd($accountname1) {	
+
+	discoverUCSD();
+	_click(_image("edit.png", _near(_cell($accountname1))));
+	_setValue(_textbox("ucsdIp"), $ucsdIpForUpdate);
+	_clearLastAlert();
+	_click(_submit("Save"));	
+	
+	if(_exists(_cell("Converged"))) {
+	_click(_image("edit.png", _near(_cell($accountname1))));
+	var $upadteIP = _getText(_textbox("ucsdIp"));
+	_assertEqual($ucsdIpForUpdate,$upadteIP,"UCSD Account IP Address Updated successfully ");
+
+	} else {
+		_assertTrue(false);
+		_log(_lastAlert());
+		_log("The UCSD Account:"+$accountname1+" doesn't exists");
+	}
+}
+
+/* 32.Check the database after editing the UCSD A/C details */
+
+function checkDb($accountname1) {
+	$props = Get_Mysql_Db_Connection_URL($hostUserNamePR, $hostPasswordPR,
+			$hostIPPR, $hostPortPR, "panaces");
+
+	var db = _getDB("com.mysql.jdbc.Driver", $props.get("databaseconnection"),
+			$props);
+	var $q = "Select * from mgmt_service where name=" + "'" + $accountname1
+			+ "'";
+	var $UcsdAcc = db.select($q);
+	_assertNotEqual([], $UcsdAcc);
+	_log("UCSD Account Details verified successfully in DB after updation");
+
+}
+
+/* 33.check the creation of UCSD A/C with already existing IP/Host name */
+function ucsAccWithExistingIp($accountname5, $site, $ucsdiphostname, $key) {
+	
+	discoverUCSD();
+	saveUcsd($accountname5, $site, $ucsdiphostname, $key);
+
+	/*
+	 * _assertEqual( "Management Service discovery failed due to: PAN-OBJM-0024:
+	 * Management service " + $accountname3 + " is already configured for given
+	 * ip/host: " + $ucsdiphostname + ". ", _lastAlert());
+	 */
+	_assertExists(_lastAlert());
+	}
+
+/* 34.check the creation of UCSD A/C with already existing name */
+function ucsAccWithExistingName($accountname, $site, $ucsdiphostname3, $key3) {
+	discoverUCSD();
+	saveUcsd($accountname, $site, $ucsdiphostname3, $key3);
+	_assertEqual("Management Service discovery failed due to: PAN-OBJM-0024: Management service"+" "+$accountname2+" "+ "is already configured for given ip/host:"+" "+$ucsdiphostname3+".",_lastAlert());
+	_assertExists(_lastAlert());
+	
+}
+
+/*=====================DR Map====================================*/
+ /*function defineDrMap($prUcsdAccount,$prOrg,$prVdc,$drUcsdAccount,$drOrg,$drVdc,$storageAccount,$filer,$aggregate){
+
+	_click(_link("Converged"));
+	_click(_link("Define vDC Map"));
+	_setSelected(_select("pr_accountname"),$prUcsdAccount);
+	_setSelected(_select("pr_org"), $prOrg);
+	_setSelected(_select("pr_vdc"), $prVdc);
+	_setSelected(_select("dr_accountname"),$drUcsdAccount);
+	_setSelected(_select("dr_org"), $drOrg);
+	_setSelected(_select("dr_vdc"), $drVdc);
+	_setSelected(_select("storageAccount1"), $storageAccount);
+	_setSelected(_select("filers"), $filer);
+	_setSelected(_select("aggregates"),$aggregate);
+	_click(_submit(" Save "));
+	_assertNotExists(_lastAlert());
+	_assertContainsText("UCS Director vDC Map for DR",_getText(_table("report[1]")));
+}
+//it will create DRMAP with already exists DRmap VDCs 
+
+function defineDrMapWithExistingVdc($prUcsdAccount,$prOrg,$prVdc2,$drUcsdAccount,$drOrg,$drVdc,$storageAccount2,$filer,$aggregate){
+	
+	_click(_link("Converged"));
+	_click(_link("Define vDC Map"));
+	_setSelected(_select("pr_accountname"),$prUcsdAccount);
+	_setSelected(_select("pr_org"), $prOrg);
+	_setSelected(_select("pr_vdc"), $prVdc2);
+	_setSelected(_select("dr_accountname"),$drUcsdAccount);
+	_setSelected(_select("dr_org"), $drOrg);
+	_setSelected(_select("dr_vdc"), $drVdc);
+	_setSelected(_select("storageAccount1"), $storageAccount);
+	_setSelected(_select("filers"), $filer);
+	_setSelected(_select("aggregates"),$aggregate);
+	_click(_submit(" Save "));
+	_assertExists(_lastAlert());
+	_assertEqual("DR Map already exist.",_lastAlert());
+}
+//it will create DRMAP with Default
+
+function defineDrMapWithDefaults($prUcsdAccount,$defaultOrg,$defaultVdc,$drUcsdAccount,$defaultOrg,$defaultVdc,$storageAccount,$filer,$aggregate){
+	
+	_click(_link("Converged"));
+	_click(_link("Define vDC Map"));
+	_setSelected(_select("pr_accountname"),$prUcsdAccount);
+	_setSelected(_select("pr_org"), $defaultOrg);
+	_setSelected(_select("pr_vdc"), $defaultVdc);
+	_setSelected(_select("dr_accountname"),$drUcsdAccount);
+	_setSelected(_select("dr_org"), $defaultOrg);
+	_setSelected(_select("dr_vdc"), $defaultVdc);
+	_setSelected(_select("storageAccount1"), $storageAccount);
+	_setSelected(_select("filers"), $filer);
+	_setSelected(_select("aggregates"),$aggregate);
+	_click(_submit(" Save "));
+	_assertNotExists(_lastAlert());
+	_assertContainsText("UCS Director vDC Map for DR",_getText(_table("report[1]")));
+}
+
+
+
+
+
+function deleteDRMap() {
+	
+	_click(_image("Delete[4]"));
+	_click(_link("Aggregate Info"));
+	_click(_button("Cancel"));
+	_click(_link("Aggregate Info[1]"));
+	_click(_button("Cancel"));
+	_click(_cell("PR UCSD NY_New York - Defence Department_Virtual Data Cennter Primary Site. 1"));
+	_click(_cell("Mumbai - Defence Department.[1]"));
+	_click(_cell("Virtual Data Cennter Primary Site. 1"));
+
+	
+}
+
+*/
+
+

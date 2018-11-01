@@ -1,0 +1,77 @@
+<ws:workflow xmlns:ws="http://www.sanovi.com/panaces/workflow/">
+  <userDef size="0"/>
+  <name>NormalCopy</name>
+  <version>4.2 FCS_P2</version>
+  <description>Normal copy action set for DB log replication</description>
+  <approverList/>
+  <action-list>
+    <action failurePathId="1" id="0" successPathId="1">
+      <registeredName>Custom</registeredName>
+      <name>Custom action for Production Pre-check</name>
+      <uniqueName>ProductionPreCheck</uniqueName>
+      <description>This action does a pre-check on the production server</description>
+      <etc>100</etc>
+      <retryable>false</retryable>
+      <actionFailureEvent/>
+      <userInputEvent severity="INFO"/>
+      <userInputOnFailureEvent severity="CRITICAL"/>
+      <privateProperties>
+        <ws:scriptAction etcComputationType="userDefined" type="tcl">
+          <serverName>ORA_DG_PR_247</serverName>
+          <command>scripts/oracle/PrimaryOracleDBMode.tcl</command>
+        </ws:scriptAction>
+      </privateProperties>
+      <version>4.2 FCS_P2</version>
+    </action>
+    <action failurePathId="2" id="1" successPathId="2">
+      <registeredName>Custom</registeredName>
+      <name>Custom action for Remote Pre-check</name>
+      <uniqueName>RemotePreCheck</uniqueName>
+      <description>This action does a pre-check on the remote server</description>
+      <etc>100</etc>
+      <retryable>false</retryable>
+      <actionFailureEvent/>
+      <userInputEvent severity="INFO"/>
+      <userInputOnFailureEvent severity="CRITICAL"/>
+      <privateProperties>
+        <ws:scriptAction etcComputationType="userDefined" type="tcl">
+          <serverName>ORA_DG_DR_247</serverName>
+          <command>scripts/oracle/RemoteOracleDBMode.tcl</command>
+        </ws:scriptAction>
+      </privateProperties>
+      <version>4.2 FCS_P2</version>
+    </action>
+    <action failurePathId="3" id="2" successPathId="3">
+      <registeredName>Custom</registeredName>
+      <name>Custom action for NormalCopy</name>
+      <uniqueName/>
+      <description>Please provide a script or command to do any specific actions to be performed in NormalCopy</description>
+      <recurrence>300</recurrence>
+      <deletable>false</deletable>
+      <actionFailureEvent/>
+      <userInputEvent severity="INFO"/>
+      <userInputOnFailureEvent severity="CRITICAL"/>
+      <privateProperties>
+        <ws:scriptAction etcComputationType="userDefined">
+          <serverName/>
+        </ws:scriptAction>
+      </privateProperties>
+      <version>4.2 FCS_P2</version>
+    </action>
+    <action final="true" id="3">
+      <registeredName>OracleSwitchLogOperation</registeredName>
+      <name>OracleSwitchLogOperation</name>
+      <description>Switch Log</description>
+      <timeToExecute>0</timeToExecute>
+      <recurrence>300</recurrence>
+      <syncName/>
+      <actionFailureEvent/>
+      <userInputEvent severity="INFO"/>
+      <userInputOnFailureEvent severity="CRITICAL"/>
+      <privateProperties>
+        <ws:OracleSwitchLogOperation datasetName="Production Dataset" datasetType="dynamic"/>
+      </privateProperties>
+      <version>4.2 FCS_P2</version>
+    </action>
+  </action-list>
+</ws:workflow>

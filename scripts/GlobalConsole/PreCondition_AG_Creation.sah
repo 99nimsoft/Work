@@ -1,0 +1,126 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : 
+ ** AuthorName : Gaurav
+ ** Created Date : June 2018
+ ************************************************************************/
+
+_log("=================================Pre-Condition===================================","Custom1");
+
+_include("../../Library/Solution_Signature/Include/APP_PFR_Include.sah");
+_include("../../conf/DRMInstallation_Parameter.sah");
+_include("../../Library/Common/CommonRepository/CommonDRM_ObjRepository.sah");
+_include("../../Library/Common/CommonRepository/CommonGUINavigation_ObjRepository.sah");
+_include("../../Library/Common/CommonRepository/GroupOperation_ObjRepository.sah");
+_include("../../Library/Solution_Signature/APP_PFR/ObjectRepository/APPPFR_ObjectRepository.sah");
+_include("../../Library/Solution_Signature/APP_PFR/ObjectRepository/AppPFR_Event_ObjectRepository.sah");
+_include("../../conf/APP_PFR/APP_PFR_Remote_Agent_Parameter.sah");
+_include("../../conf/APP_PFR/UserSelected_APP_PFR_Testcase.sah");
+_include("../../Library/Database/APPSubSystem/ObjectRepository/APPSubSystem_ObjectRepository.sah");
+_include("../../Library/Replication/PFR/ObjectRepository/PFR_ObjectRepository.sah");
+
+_include("../../Library/GlobalConsole/GC_Functions.sah");
+_include("../../conf/GlobalConsole/GlobalConsole_OverridingParameters.sah");
+/*
+// *************************************************************************************************************************************************
+// Notes: below test cases for Remote agent solution
+
+UnInstall_Remote_Agent_SilentMode_PR();  //uninstalling remote Agent. Pfr Services for PR
+UnInstall_Remote_Agent_SilentMode_DR(); //uninstalling remote Agent. Pfr Services for DR
+AgentBuild_Copy_into_PFRFile_PR();
+AgentBuild_Copy_into_PFRFile_DR();
+Copy_Property_file();
+Update_PropertyFile_RemoteAgent_PR();
+Update_PropertyFile_RemoteAgent_DR();
+Install_Remote_Agent_SilentMode_PR();
+Install_Remote_Agent_SilentMode_DR();
+
+Create_Files_Folder();
+
+getExcelRows_CleanUp($SAHI_HOME +"conf/GlobalConsole/GlobalConsole.xls","RealTimeData",9);
+//////////////////////////////////////////////////////////////update above methods
+*/
+
+
+Login_001();
+
+////_log("=================================Test========================================","Custom1");
+
+if($g_executeAPP_PFRAll == "Y" || $g_siteAPP_PFR == "Y"){
+var $test0 = _testcase("Site_0003","Create New Site");
+$test0.start(); 
+	Site_0003();
+$test0.end();
+}
+
+/*
+if($g_executeAPP_PFRAll == "Y" || $g_agentNodeAPP_PFR == "Y"){
+var $test1 = _testcase("Object_Manager/ Common/ Components/ Component_04","Create Agent Node");
+$test1.start();
+	Agent_node_001();
+$test1.end();
+}*/
+
+
+if($g_executeAPP_PFRAll == "Y" || $g_componentRemoteDiscoveryAPP_PFR == "Y"){
+var $test2 = _testcase("Object_Manager/ Common/ Components/ Component_04","Create New Component");
+$test2.start();
+	GC_Component_Remote_Discovery();
+$test2.end();
+}
+
+
+if($g_executeAPP_PFRAll == "Y" || $g_datasetDiscoveryAPP_PFR == "Y"){
+var $test3 = _testcase("Object_Manager/Dataset/APP/OraDiscovery_0006 ","Dataset Discovery");
+$test3.start();
+	APP_PFR_Dataset_Discovery_0007();
+$test3.end();
+}
+
+if($g_executeAPP_PFRAll == "Y" || $g_datasetAutoDiscoveryAPP_PFR == "Y"){
+var $test4 = _testcase("Object_Manager/Dataset/APP/Ora_Auto_DatasetDiscovery0002","APP Auto Dataset Discovery");
+$test4.start();
+	APP_PFR_Auto_DatasetDiscovery0009();
+$test4.end();
+}
+
+if($g_executeAPP_PFRAll == "Y" || $g_protectionSchemeDiscoveryAPP_PFR == "Y"){
+var $test5 = _testcase("Object_Manager/ProtectionScheme/DataGaurd/APP_PFR_Discovery0002","Protection Scheme Discovery");
+$test5.start();
+
+	var $mgmtHostPFRPR = $dependentComponentNamePR + " (" + $compIPPR + ")"; 
+	var $mgmtHostPFRDR = $dependentComponentNameDR + " (" + $compIPDR + ")";
+	
+	APP_PFR_Protectionscheme_Discovery_0018();
+	
+$test5.end();
+}
+
+if($g_executeAPP_PFRAll == "Y" || $g_groupCreationAPP_PFR == "Y"){
+	
+	var $primaryComponents = $dependentComponentNamePR;
+	var $remoteComponents = $dependentComponentNameDR;
+var $test6= _testcase("Continuity_Manager/Common/FG/Group/GroupCreation_0001","APP_PFR Group Creation");
+$test6.start();
+	APP_PFR_GroupCreation_0022();
+$test6.end();
+}
+
+if($g_executeAPP_PFRAll == "Y" || $g_moveGroupToManageAPP_PFR == "Y"){
+var $test7 = _testcase("Continuity_Manager/Common/FG/Group/GroupCreation_0006","Move Group to Manage");
+	$test7.start();
+		APP_PFR_Move_Group_Manage_0006();
+	$test7.end();
+}
+
+if($g_executeAPP_PFRAll == "Y" || $g_moveGroupToManageAPP_PFR == "Y"){
+	var $test8 = _testcase("AG Creation","AG Creation");
+	$test8.start();
+		AG_GlobalConsole_Creation();
+	$test8.end();
+}
+
+_log("================================Post-Condition================================== ","Custom1");
+
+//Logout_001(); 

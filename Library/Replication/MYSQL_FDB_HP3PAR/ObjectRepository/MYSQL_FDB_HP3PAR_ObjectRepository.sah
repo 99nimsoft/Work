@@ -1,0 +1,56 @@
+
+/****************************** MSSQL_PFR ******************************/
+
+var $Excel1=_getExcel($SAHI_HOME + "\\Library\\Replication\\MYSQL_FDB_HP3PAR\\ObjectRepository\\MYSQL_FDB_HP3PAR_ObjectRepository.xls","MYSQL_FDB_HP3PAR");
+
+var $Excel=$Excel1.getData();
+
+if($BrowserLang == "N"){
+
+	var $j = 2;
+}
+else if($BrowserLang == "Y-JA"){
+	
+	var $j = 3;
+	}
+
+else if($BrowserLang == "Y-EN"){
+		
+		var $j = 3;
+	}
+
+
+var $MYSQL_FDB_HP3PAR_Subsystems=$Excel[2][$j];
+var $MYSQL_FDB_HP3PAR_ProtectionSchemes=$Excel[3][$j];
+var $MYSQL_FDB_HP3PAR_systemType=$Excel[4][$j];
+var $MYSQL_FDB_HP3PAR_Go=$Excel[5][$j];
+var $MYSQL_FDB_HP3PAR_mgmtHost_HP3PAR=$Excel[6][$j];
+var $MYSQL_FDB_HP3PAR_sername=$Excel[7][$j];
+var $MYSQL_FDB_HP3PAR_RegisterAgent=$Excel[8][$j];
+var $MYSQL_FDB_HP3PAR_LinuxOS=$Excel[9][$j];
+var $MYSQL_FDB_HP3PAR_AgentName=$Excel[10][$j];
+var $MYSQL_FDB_HP3PAR_OtherReplicatorInputElement_0=$Excel[11][$j];
+var $MYSQL_FDB_HP3PAR_OtherReplicatorInputElement_1=$Excel[12][$j];
+var $MYSQL_FDB_HP3PAR_OtherReplicatorInputElement_2=$Excel[13][$j];
+var $MYSQL_FDB_HP3PAR_OtherReplicatorInputElement_3=$Excel[14][$j];
+var $MYSQL_FDB_HP3PAR_HP3PARDetails=$Excel[15][$j];
+var $MYSQL_FDB_HP3PAR_Save=$Excel[16][$j];
+var $MYSQL_FDB_HP3PAR_Subsystems=$Excel[17][$j];
+var $MYSQL_FDB_HP3PAR_ProtectionSchemes=$Excel[18][$j];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

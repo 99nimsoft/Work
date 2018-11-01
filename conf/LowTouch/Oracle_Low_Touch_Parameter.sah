@@ -1,0 +1,103 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the Remote Agents parameters for APP PFR
+ ** AuthorName : Govinda Mengji
+ ** Created Date : OCT 2015
+ ***********************************************************************************************/
+
+
+
+var $l_Oracle_Low=_readExcelFile($SAHI_HOME + "\\conf\\LowTouch\\Low_Touch_Parameter.xls","LowTouch");
+
+
+//This user Input required to Login the DRM server
+var $username = $l_Oracle_Low[3][2]; // DRM server GUI user name e.g. "swati"
+var $password = $l_Oracle_Low[4][2]; // DRM server GUI pwd
+
+//This user Input required to create the Site
+var $locationPR = "PR"; // PR Site Location
+var $incharge = "drmadmin"; // Site Incharge
+var $addressPR = "Mumbai"; // PR site Address
+var $locationDR = "DR"; // DR Site Location
+var $addressDR = "Bangalore";// DR site Address
+
+
+//Management_Service
+var $AWSmsName = $l_Oracle_Low[9][5];
+var $aws_access_id = $l_Oracle_Low[10][5];
+var $aws_secret_key = $l_Oracle_Low[11][5];
+
+
+
+//Create Primary Server
+var $CreatePrimaryServerType=$l_Oracle_Low[8][2];
+var $primarysystemType = $l_Oracle_Low[9][2]; // this is the Path where user has install the agent on PR "/opt/panaces/"
+var $primarysite = $locationPR; // this is the Path where user has install the agent on DR "/opt/panaces/"
+var $primaryip =$l_Oracle_Low[10][2];
+var $primaryPwd=$l_Oracle_Low[11][2];
+
+
+
+//Create_Primary_Database_Details
+var $primarysid = $l_Oracle_Low[3][5];
+var $primarydbusernameval = $l_Oracle_Low[4][5];
+var $primarydbpwdval = $l_Oracle_Low[5][5];
+var $BackuppathforDB = $l_Oracle_Low[6][5];
+
+
+
+
+
+//AWS Details 
+var $AWSDRsite = $locationDR;
+var $AWSSelectManagementService = $AWSmsName;
+
+var $AWSip = $l_Oracle_Low[14][2];
+var $AWSvpcid = $l_Oracle_Low[15][2];
+var $AWSsubnetid  = $l_Oracle_Low[16][2];
+var $AWSimageid =$l_Oracle_Low[17][2];
+var $AWSinstancetype = $l_Oracle_Low[18][2];
+var $AWSinstancename =$l_Oracle_Low[19][2];
+var $AWSsg =$l_Oracle_Low[20][2];
+var $AWSkeypair =$l_Oracle_Low[21][2];
+
+var $remoteUserNameValPR =$primaryPwd;
+var $remotePwdValPR =$primaryPwd;
+
+var $AWSpath = $SAHI_HOME + "\\AWSkeypair\\oracleDGPOC.pem";
+
+var $path=$AWSpath;
+//Component Status
+var $compnamePrimary = $primarysystemType+"SERVER"+"_"+$primaryip;
+var $compNamePR=$compnamePrimary;
+var $DatasetPrimary= "Oracle_"+$compnamePrimary;
+var $agentType=$CreatePrimaryServerType;
+var $compIPPR=$primaryip;
+var $primaryPanacesServer = $drmServer;
+
+
+
+//Dataset Status
+
+var $userPR = $primarydbusernameval;
+var $pwdPR = $primarydbpwdval;
+var $internalLogon = "sysdba";
+var $oracleListenerIPPR = $primaryip;
+var $dbSidSelect = $primarysid;
+var $compIPPR= $primaryip;
+var $remoteUserNameValPR = $primaryPwd;
+var $remotePwdValPR = $primaryPwd;
+var $datasetNamePR = $DatasetPrimary;
+
+// Data Status
+
+/*var $userDR = $primarydbusernameval;
+var $pwdDRR = $primarydbpwdval;
+var $internalLogon = "sysdba";
+var $oracleListenerIPDRR = $AmazonInstanceIP;
+var $dbSidSelect = $primarysid;
+var $compIPDR= $AmazonInstanceIP;
+var $remoteUserNameValDR = $primaryPwd;
+var $remotePwdValDR = $primaryPwd;
+var $datasetNameDR = $DataAmazonInstanceIP; */

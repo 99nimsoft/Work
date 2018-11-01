@@ -1,0 +1,123 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the local Agents parameters for DB2 HADR 
+ ** AuthorName : Anantha Sakthi
+ ** Created Date : Nov 2013
+ ***********************************************************************************************/
+
+if($BrowserLang == "N"){
+	var $l_DB2 = _readExcelFile($SAHI_HOME + "\\conf\\DB2\\DB2_HADR_Parameter.xls","Local");
+}
+else if($BrowserLang == "Y-JA"){
+	var $l_DB2 = _readExcelFile($SAHI_HOME + "\\conf\\DB2\\DB2_HADR_Parameter.xls","Local_JA");
+	}
+
+else if($BrowserLang == "Y-EN"){
+	var $l_DB2 = _readExcelFile($SAHI_HOME + "\\conf\\DB2\\DB2_HADR_Parameter.xls","Local_EN");
+	}
+
+//This user Input required to Login the DRM server
+
+var $username = $l_DB2[3][2]; // DRM server GUI user name e.g. "admin"
+var $password =  $l_DB2[4][2]; // DRM server GUI pwd
+
+//This user Input required to create the Site
+if($BrowserLang == "N"){
+	var $locationPR = "PR"; // PR Site Location
+	var $incharge = "drmadmin"; // Site Incharge
+	var $addressPR = "Mumbai"; // PR site Address
+	var $locationDR = "DR"; // DR Site Location
+	var $addressDR = "Bangalore";// DR site Address
+	}
+	else
+		{
+	var $locationPR = "一次"; // PR Site Location
+	var $incharge = "drmadmin"; // Site Incharge
+	var $addressPR = "ムンバイ"; // PR site Address
+	var $locationDR = "リモート"; // DR Site Location
+	var $addressDR = "バンガロール";// DR site Address
+		}
+
+//This user Input required to create the Component for Local or remote
+var $agentType = "Local"; // This if for agent type always enter as e.g. Local or Remote.Note Here first letter is upper case and remaining lower case.
+var $compIPPR = $l_DB2[7][2]; // PR Componenet ID
+var $compIPDR = $l_DB2[8][2]; // DR Componenet ID
+var $remoteUserNameValPR = $l_DB2[9][2]; // PR Machine user name. this information required for both local and remote
+var $remotePwdValPR = $l_DB2[10][2]; // PR Machine Pwd name. this information required for both local and remote
+var $remoteUserNameValDR = $l_DB2[11][2];// DR Machine user name. this information required for both local and remote
+var $remotePwdValDR = $l_DB2[12][2];// PR Machine Pwd name. this information required for both local and remote
+var $compNamePR = $l_DB2[13][2]; // PR Componenet Name
+var $compNameDR = $l_DB2[14][2]; // DR Componenet Name
+
+//This user Input required to create the dataset
+var $dataBaseName = $l_DB2[3][5];
+var $userPR =  $l_DB2[4][5];// for DB2 db connection
+var $pwdPR = $l_DB2[5][5];// for DB2 db connection
+var $userDR = $l_DB2[6][5];// for DB2 db connection
+var $pwdDR = $l_DB2[7][5];// for DB2 db connection
+var $datasetNamePR = $l_DB2[8][5]; // PR dataset name
+var $datasetNameDR = $l_DB2[9][5]; // DR dataset name
+
+var $db2ResultDirPR = $l_DB2[3][8];
+var $db2ResultDirDR =  $l_DB2[4][8];// for DB2 db connection
+
+//This user Input required to create the protection Scheme
+var $sernamePR = $l_DB2[12][5]; // PR Protection Scheme name
+var $sernameDR = $l_DB2[13][5]; // DR Protection Scheme name
+
+//This user Input required to create the Group
+var $groupName = $l_DB2[17][2]; // Group name
+var $systemType = $l_DB2[19][2];
+var $osType = $l_DB2[18][2];
+var $groupDescription = "DB2_HADR"; // Group description
+
+//*********************************************************************************************************************************************
+//Important Note : These details required for Panaces and Agent installation.
+//*********************************************************************************************************************************************
+
+//This user Input required to install the local agents
+var $localAgentPathPR = $l_DB2[16][5]; // this is the Path where user has install the agent on PR "/opt/panaces/"
+var $localAgentPathDR = $l_DB2[17][5]; // this is the Path where user has install the agent on DR "/opt/panaces/"
+
+//This user Input required to update DB2 Local Agent PanacesAgentsInstaller.properties
+var $agentBuildPR = "/opt/";
+var $agentBuildDR = "/opt/";
+
+
+// *********************************************************************************************************************************************
+// Important Note : Please don't modify/edit any below variable or its value.
+// If you made any changes of variable and its value, script will not execute.
+// *********************************************************************************************************************************************
+
+var $primaryPanacesServer = $drmServer; // this is Primary DRM server
+var $panacesAgentNodeAddressPR = $compIPPR;
+var $panacesAgentNodeAddressDR = $compIPDR;
+var $compsitePR = $locationPR;
+var $compsiteDR = $locationDR;
+var $primaryComponents = $compNamePR;
+var $remoteComponents = $compNameDR;
+var $primaryDatasets = $datasetNamePR;
+var $remoteDatasets = $datasetNameDR;
+var $primaryProtections = $sernamePR;
+var $remoteProtections = $sernameDR;
+var $mgmtHost_HADR_PR =$compNamePR+' ('+$compIPPR+')';
+var $mgmtHost_HADR_DR = $compNameDR+' ('+$compIPDR+')';
+var $dependentComponentNamePR = $compNamePR;
+var $dependentComponentNameDR = $compNameDR;
+var $desiredRpo = "300";
+var $rpoCompute = "300";
+if($BrowserLang == "N"){
+	var $SolutionSignature = "DB2 Logs with HADR"; // Solution type
+}
+else{
+	var $SolutionSignature ="HADRを使用したDB2ログ";
+}
+var $systemTypeProtection = "HADR"; // Protection Scheme type
+
+
+var $systemTypeDataset = "DB2"; // database subsystem
+var $datasetType = "DB2";// database Type
+
+var $db2AgentChk = "1";
+

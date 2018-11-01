@@ -1,0 +1,379 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name:DRM 
+ ** Objective : This script contains all the local agent test cases which are the part of  MySQL FDB with HP3PAR solution.
+ ** AuthorName : Omprakash V
+ ** Created Date : oct 2016
+ ************************************************************************/
+
+_log("=================================Pre-Condition===================================", "Custom1");
+
+//don't change the below line.
+_include("../Library/Solution_Signature/Include/MYSQL_FDB_HP3PAR_Include.sah");
+
+// mentioned the correct parameter file name which user are going to execute within the "" code.
+_include("../conf/DRMInstallation_Parameter.sah");
+_include("../conf/MYSQL_FDB_HP3PAR/MYSQL_FDB_HP3PAR_Local_Agent_Parameter.sah");
+
+_include("../conf/MYSQL_FDB_HP3PAR/UserSelected_MYSQL_FDB_HP3PAR_Testcase.sah");
+_include("../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+
+_include("../Library/Database/MYSQL/ObjectRepository/Mysql_ObjectRepository.sah");
+
+// *********************************************************************************************
+// Notes: below test cases for Local agent
+
+//WorkFlow_copy_001();
+//FO_Modify_WorkflowXML_Mysql();
+
+
+Agent_UnInstllation_001();
+
+AgentBuild_Copy_into_AgentHost_PR();
+AgentBuild_Copy_into_AgentHost_DR();
+Copy_Property_file();
+
+Update_PropertyFile_LocalAgent_PR();
+Update_PropertyFile_LocalAgent_DR();
+
+Install_Local_Agent_SilentMode_PR();
+Install_Local_Agent_SilentMode_DR();
+
+ADD_HP3PAR_TCL_PR_LOCAL(); //copy TCL files in both local machines
+ADD_HP3PAR_TCL_DR_LOCAL();
+
+//Verifying the mysql service if stopped it will start the Mysql service
+Verify_Mysql_service_PR();
+Verify_Mysql_service_DR();
+
+Create_MySQL_FDB_PR();		//Creates DB in PR machine
+Create_MySQL_FDB_DR();		//Creates DB in DR machine
+
+Login_001();
+
+_log("=================================Test========================================", "Custom1");
+if ($g_executeMysqlFDBAll == "Y" || $g_siteMysqlFDB == "Y") {
+	var $test1 = _testcase("Site_0003", "Test description has to update");
+	$test1.start();
+	Site_0003();
+	$test1.end();
+}
+
+if ($g_executeMysqlFDBAll == "Y" || $g_componentLocalMysqlFDB == "Y") {
+	var $test2 = _testcase("Object_Manager/ Common/ Components/ Component_04 ", "Component Local Discovery");
+	$test2.start();
+	MYSQL_FDB_HP3PAR_Component_Local_Discovery_0002();
+	$test2.end();
+}
+
+if ($g_executeMysqlFDBAll == "Y" || $g_datasetMysqlFDB == "Y") {
+	var $test3 = _testcase("Continuity_Manager/ Template/ MySQL_HP3PAR/ MySQL_0007", "Dataset Discovery");
+	$test3.start();
+	MYSQL_FDB_HP3PAR_Dataset_Discovery_0007();
+	$test3.end();
+}
+
+if ($g_executeMysqlFDBAll == "Y" || $g_datasetStatusMysqlFDB == "Y") {
+	var $test4 = _testcase("Continuity_Manager/ Template/ MySQL_HP3PAR/ MySQL_0011", "Dataset Status");
+	$test4.start();
+	MYSQL_FDB_HP3PAR_Dataset_status_0011();
+	$test4.end();
+}
+
+if ($g_executeMysqlFDBAll == "Y" || $g_protectionSchemeMysqlFDB == "Y") {
+	var $test5 = _testcase("Continuity_Manager/ Template/ MySQL_HP3PAR/ MySQL_0018", "Protection Scheme discovery");
+	$test5.start();
+	MYSQL_FDB_HP3PAR_Protectionscheme_Discovery_0018();
+	$test5.end();
+}
+
+if ($g_executeMysqlFDBAll == "Y" || $g_protectionSchemeStatusMysqlFDB == "Y") {
+	var $test6 = _testcase("Continuity_Manager/ Template/ MySQL_HP3PAR/ MySQL_0021", "Protection Scheme status");
+	$test6.start();
+	MYSQL_FDB_HP3PAR_Protectionscheme_status_0021();
+	$test6.end();
+}
+
+if ($g_executeMysqlFDBAll == "Y" || $g_groupCreationMysqlFDB == "Y") {
+	var $test7 = _testcase("Continuity_Manager/Template/MySQL_HP3PAR/MYSQL_0022", "MySql Group Creation");
+	$test7.start();
+	MYSQL_FDB_HP3PAR_GroupCreation_0022();
+	$test7.end();
+}
+
+if ($g_executeMysqlFDBAll == "Y" || $g_moveToManageMysqlFDB == "Y") {
+	var $test8 = _testcase("Continuity_Manager/Common/FG/Group/GroupCreation_0006", "Move group to manage");
+	$test8.start();
+	MYSQL_FDB_HP3PAR_Move_Group_Manage_0006();
+	$test8.end();
+}
+
+if ($g_executeMysqlFDBAll == "Y" || $g_changeContinuityStateMysqlFDB == "Y") {
+	var $test9 = _testcase("Continuity_Manager/Common/FG/Manage/Change_Continuity_State_0001", "Change group Continuity Status to Normal_Inactive");
+	$test9.start();
+	Change_ContinuityStatus_Group_Normal_Inactive();
+	$test9.end();
+}
+
+
+//***************************************Group Continuity State to Normal Inactive********************************************************
+
+
+
+
+if ($g_executeMysqlFDBAll == "Y" || $g_DropMySQLFDBDRDB == "Y") {
+	var $test10 = _testcase("Drop_MySQL_FDB_DR_DB", "Dropping DR side DB");
+	$test10.start();
+	Drop_MySQL_FDB_DR_DB();
+	$test10.end();
+}
+
+//Publishing the RepInfo BP worflow (PR)
+if ($g_executeMysqlFDBAll == "Y" || $g_PublishBPworkflowMysqlFDB == "Y") {
+	var $test11 = _testcase("Publish Replication Info Workflow for Mysql FDB HP3PAR ", "Publishing BP Workflow");
+	$test11.start();
+	Publish_BP_workflow_MySQL_FDB_HP3PAR_PR();
+	$test11.end();
+}
+
+
+if ($g_executeMysqlFDBAll == "Y" || $g_replicationMysqlFDB == "Y") {
+	var $test12 = _testcase("MYSQL_FDB_HP3PAR_Replication_0028", "navigating to Replication page ");
+	$test12.start();
+	MYSQL_FDB_HP3PAR_Replication_0028();
+	$test12.end();
+}
+
+//Checking the datalag and RepStatus in Monitor Replication page when Rep_state is UNKNOWN(PR)
+if ($g_executeMysqlFDBAll == "Y" || $g_VerifyRepStatusDataLagMysqlFDB == "Y") {
+	var $test13 = _testcase("Verify DATALAG and Replication Status in Monitor Replication page ","verify Replication & datalag status when repstate is unknown");
+	$test13.start();
+	Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_PR_UNKNOWN();
+	$test13.end();
+}
+
+if ($g_executeMysqlFDBAll == "Y" || $g_VerifyRepStatusDataLagMysqlFDB == "Y") {
+    var $test14 = _testcase("Verify DATALAG and Replication Status in Monitor Replication page ","verify Replication & datalag status when repstate is ACTIVE");
+    $test14.start();        
+    Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_PR_ACTIVE();
+    $test14.end();
+}
+if ($g_executeMysqlFDBAll == "Y" || $g_VerifyRepStatusDataLagMysqlFDB == "Y") {
+    var $test15 = _testcase("Verify DATALAG and Replication Status in Monitor Replication page ","verify Replication & datalag status when repstate is INACTIVE");
+    $test15.start();
+    Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_PR_INACTIVE();
+    $test15.end();
+}
+
+if ($g_executeMysqlFDBAll == "Y" || $g_StartReplicationButtonMysqlFDB == "Y") {
+    var $test16 = _testcase("Checking the Replication status after clicking Start Replication","starting replication");
+    $test16.start();
+    Start_Replication_Button_ACTIVE();
+    $test16.end();
+    }
+
+    //Checking the Replication status and Respective events in GUI after clicking Stop Replication
+if ($g_executeMysqlFDBAll == "Y" || $g_StopReplicationButtonMysqlFDB == "Y") {
+    var $test17 = _testcase("Checking the Replication status after clicking Stop Replications","stoping replication");
+    $test17.start();
+    Stop_Replication_Button_INACTIVE();
+    $test17.end();
+    }
+
+
+ if ($g_executeMysqlFDBAll == "Y" || $g_VerifyEventsMysqlFDB == "Y") {
+	var $test18 = _testcase("Verify_Events_GetStatustclTo_UNKNOWN_PR_Local", "Verify events when repstate is unknown");
+	$test18.start();
+	Verify_Events_GetStatustclTo_UNKNOWN_PR_Local();
+	$test18.end();
+}
+ 
+if ($g_executeMysqlFDBAll == "Y" || $g_VerifyEventsMysqlFDB == "Y") {
+	var $test19 = _testcase("Verify_Events_GetStatustclTo_INACTIVE_PR_Local", "Verify events when repstate is inactive");
+	$test19.start();
+	Verify_Events_GetStatustclTo_INACTIVE_PR_Local();
+	$test19.end();
+	}
+
+
+if ($g_executeMysqlFDBAll == "Y" || $g_VerifydatalagEventsMysqlFDB == "Y") {
+	var $test20 = _testcase("Verify_DatalagEvents_refinfotclTo_INACTIVE_Local_PR", "verify datalag event when repstate is Inactive");
+	$test20.start();
+	Verify_DatalagEvents_refinfotclTo_INACTIVE_Local_PR();
+	$test20.end();
+}
+
+ 
+ //Checking Datalag and Respective event when the datalag in RepInfo.TCL file is given greater than threshold value(PR)
+ if ($g_executeMysqlFDBAll == "Y" || $g_VerifyRepStatusDataLagMysqlFDB == "Y") {
+    var $test21 = _testcase("PR RepInfo status When datalag is deviated","verify replication & datalag status when datalag is deviated");
+    $test21.start();
+    Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_PR_Deviated();
+    $test21.end();
+}  
+ 
+//Checking the Protection scheme status and Respective events when RepState is UKNOWN in getStatus.TCL file(PR)
+if ($g_executeMysqlFDBAll == "Y" || $g_VerifyProtectionStatusMysqlFDB == "Y") {
+ 	var $test22 = _testcase("Verify Protection scheme status and Respective events", "verify protection scheme status when repstate is unknown");
+ 	$test22.start();
+ 	Verify_ProtectionSchemeStatus_PR_UNKNOWN();
+ 	$test22.end();
+} 	
+ 	
+
+//Checking the Protection scheme status and Respective events when RepState is INACTIVE in getStatus.TCL file(PR)
+if ($g_executeMysqlFDBAll == "Y" || $g_VerifyProtectionStatusMysqlFDB == "Y") {
+ 	var $test23 = _testcase("PR GetSatatusTCL_INACTIVE_001, When repState is inactive","verify protection scheme status when repstate is inactive");
+ 	$test23.start();
+ 	Verify_ProtectionSchemeStatus_PR_INACTIVE();
+ 	$test23.end();
+} 
+//Checking the Protection scheme status when RepState is ACTIVE in getStatus.TCL file(PR) 
+if ($g_executeMysqlFDBAll == "Y" || $g_VerifyProtectionStatusMysqlFDB == "Y") {
+ 	var $test24 = _testcase("PR GetSatatusTCL_ACTIVE_001, When repState is active","verify protection scheme status when repstate is Active");
+ 	$test24.start();
+ 	Verify_ProtectionSchemeStatus_PR_ACTIVE();
+ 	$test24.end();
+}	
+ 	
+
+//***************************************Group Conitnuity State in SwitchOver Inactive********************************************************
+ 
+//*************Droping DB in PR After SO******************
+ 
+if ($g_executeMysqlFDBAll == "Y" || $g_changeContinuityStateMysqlFDB == "Y") {
+ 	var $test25 = _testcase("Continuity_Manager/Common/FG/Manage/Change_Continuity_State_to_SO", "Change group Continuity Status to switchover inactive");
+ 	$test25.start();
+ 	Change_ContinuityStatus_Group_SO();
+ 	$test25.end();
+ }
+
+if ($g_executeMysqlFDBAll == "Y" || $g_createMySQLFDBDRDB == "Y") {
+ 	var $test26 = _testcase("Create_MySQL_FDB_DR", "Creating DR side Database");
+ 	$test26.start();
+ 	Create_MySQL_FDB_DR();
+ 	$test26.end();
+ }
+
+if ($g_executeMysqlFDBAll == "Y" || $g_DropMySQLFDBPRDB == "Y") {
+ 	var $test27 = _testcase("Drop_MySQL_FDB_PR_DB", "droping PR side Database");
+ 	$test27.start();
+ 	Drop_MySQL_FDB_PR_DB();
+ 	$test27.end();
+ }
+
+if ($g_executeMysqlFDBAll == "Y" || $g_DropMySQLFDBPRDB == "Y") {
+ 	var $test28 = _testcase("Publish_BP_workflow_MySQL_FDB_HP3PAR_DR", "publishing bp wokflow on DR");
+ 	$test28.start();
+ 	Publish_BP_workflow_MySQL_FDB_HP3PAR_DR();
+ 	$test28.end();
+ }
+ 
+if ($g_executeMysqlFDBAll == "Y" || $g_replicationMysqlFDB == "Y") {
+	var $test29 = _testcase("MYSQL_FDB_HP3PAR_Replication_0028", "navigating to Replication page ");
+	$test29.start();
+	MYSQL_FDB_HP3PAR_Replication_0028();
+	$test29.end();
+}
+
+ if ($g_executeMysqlFDBAll == "Y" || $g_VerifyRepStatusDataLagMysqlFDB == "Y") {
+ 	var $test30 = _testcase("Verify DATALAG and Replication Status in Monitor Replication page ","verify Replication & datalag status when repstate is UNKNOWN");
+ 	$test30.start();
+ 	Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_DR_UNKNOWN();
+ 	$test30.end();
+ }
+if ($g_executeMysqlFDBAll == "Y" || $g_VerifyRepStatusDataLagMysqlFDB == "Y") {
+    var $test31 = _testcase("Verify DATALAG and Replication Status in Monitor Replication page ","verify Replication & datalag status when repstate is ACTIVE");
+    $test31.start();        
+ 	Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_DR_ACTIVE();
+ 	$test31.end();
+ }
+ 
+if ($g_executeMysqlFDBAll == "Y" || $g_VerifyRepStatusDataLagMysqlFDB == "Y") {
+ 	 var $test32 = _testcase("Verify DATALAG and Replication Status in Monitor Replication page ","verify Replication & datalag status when repstate is INACTIVE");
+ 	$test32.start();
+ 	 Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_DR_INACTIVE();
+ 	$test32.end();
+ 	}  
+
+if ($g_executeMysqlFDBAll == "Y" || $g_StartReplicationButtonMysqlFDB == "Y") {
+    var $test33 = _testcase("Checking the Replication status after clicking Start Replication","starting replication button");
+    $test33.start();
+    Start_Replication_Button_ACTIVE();
+    $test33.end();
+    }
+
+    //Checking the Replication status and Respective events in GUI after clicking Stop Replication
+ if ($g_executeMysqlFDBAll == "Y" || $g_StopReplicationButtonMysqlFDB == "Y") {
+    var $test34 = _testcase("Checking the Replication status after clicking Stop Replications","stoping replication button");
+    $test34.start();
+    Stop_Replication_Button_INACTIVE();
+    $test34.end();
+    }
+
+ 
+
+ if ($g_executeMysqlFDBAll == "Y" || $g_VerifyEventsMysqlFDB == "Y") {
+	var $test35 = _testcase("Verify_Events_GetStatustclTo_UNKNOWN_DR_Local", "Verify events when repstate is unknown");
+	$test35.start();
+	Verify_Events_GetStatustclTo_UNKNOWN_DR_Local();
+	$test35.end();
+}
+
+if ($g_executeMysqlFDBAll == "Y" || $g_VerifyEventsMysqlFDB == "Y") {
+	var $test36 = _testcase("Verify_Events_GetStatustclTo_INACTIVE_DR_Local", "Verify events when repstate is inactive");
+	$test36.start();
+	Verify_Events_GetStatustclTo_INACTIVE_DR_Local();
+	$test36.end();
+	}
+
+if ($g_executeMysqlFDBAll == "Y" || $g_VerifydatalagEventsMysqlFDB == "Y") {
+	var $test37 = _testcase("Verify_DatalagEvents_refinfotclTo_INACTIVE_Local_DR", "verify datalag event when repstate is Inactive");
+	$test37.start();
+	Verify_DatalagEvents_refinfotclTo_INACTIVE_Local_DR();
+	$test37.end();
+}
+
+
+ 	//Checking Datalag and Respective event when the datalag in RepInfo.TCL file is given greater than threshold value(PR)
+if ($g_executeMysqlFDBAll == "Y" || $g_VerifyRepStatusDataLagMysqlFDB == "Y") {
+ 	 var $test38 = _testcase("DR RepInfo status When datalag is deviated","verify replication & datalag status when datalag is deviated");
+ 	$test38.start();
+ 	 Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_DR_Deviated();
+ 	$test38.end();
+ 	}   
+ 	
+//Checking the Protection scheme status and Respective events when RepState is UKNOWN in getStatus.TCL file(PR)
+if ($g_executeMysqlFDBAll == "Y" || $g_VerifyProtectionStatusMysqlFDB == "Y") {
+ 	var $test39 = _testcase("Verify Protection scheme status and Respective events", "verify protection scheme status when repstate is unknown");
+ 	$test39.start();
+ 	Verify_ProtectionSchemeStatus_DR_UNKNOWN();
+ 	$test39.end();
+    }
+ 
+//Checking the Protection scheme status and Respective events when RepState is INACTIVE in getStatus.TCL file(PR)
+if ($g_executeMysqlFDBAll == "Y" || $g_VerifyProtectionStatusMysqlFDB == "Y") {
+ 	var $test40 = _testcase("PR GetSatatusTCL_INACTIVE_001, When repState is inactive","verify protection scheme status when repstate is Inactive");
+ 	$test40.start();
+ 	Verify_ProtectionSchemeStatus_DR_INACTIVE();
+ 	$test40.end();
+ 	}
+//Checking the Protection scheme status when RepState is ACTIVE in getStatus.TCL file(PR) 
+if ($g_executeMysqlFDBAll == "Y" || $g_VerifyProtectionStatusMysqlFDB == "Y") {
+ 	var $test41 = _testcase("PR GetSatatusTCL_ACTIVE_001, When repState is active","verify protection scheme status when repstate is Active");
+ 	$test41.start();
+ 	Verify_ProtectionSchemeStatus_DR_ACTIVE();
+ 	$test41.end();
+ 	}
+ 	
+if($g_executeMysqlFDBAll == "Y" || $g_Validation_Manager_Execution == "Y"){
+	var $test50 = _testcase("APP_PFR/APP_PFR_Group_Health_Status_0101","Validation Manager Execution");
+	$test50.start();
+	Validation_Manager_Execution();
+	$test50.end();
+	}
+
+
+_log("================================Post-Condition================================== ", "Custom1");
+
+Logout_001();

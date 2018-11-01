@@ -1,0 +1,279 @@
+function Login_001() {
+	try {
+		login($username, $password);//In Common > Common_function.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Login_001(),Function: login ,execution got failed.kindly check the log for more details");
+		_fail("Login failed.So that stopping execution.");
+	}
+}
+
+function Logout_001() {
+	try {
+		logout();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Logout_001(),Function: logout ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Site_0003() {
+	try {
+		Create_Site_PR();//In Common > Common_function.sah
+		Create_Site_DR();//In Common > Common_function.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0003(),Function: Create_Site_PR or Create_Site_DR ,execution got failed.kindly check the log for more details");
+		_fail("site not created succesfully.So that stopping execution.");
+	}
+}
+
+function Agent_node_001() {
+	try {
+		Create_Agent_Node_Component();// In component > Windows > Windows.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Agent_node_001(),Function: Create_Agent_Node_Component(),execution got failed.kindly check the log for more details");
+		_fail("Agent Node component not created succesfully.So that stopping execution.");
+	}
+}
+
+function Default_WF_Publish() {
+	try {
+		publishBCO($groupName,"NormalCopy");
+		publishBCO($groupName,"ReverseNormalCopy");	
+		
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Agent_node_001(),Function: Create_Agent_Node_Component(),execution got failed.kindly check the log for more details");
+		_fail("Agent Node component not created succesfully.So that stopping execution.");
+	}
+}
+
+
+function DRM_Instllation_001() {
+	try {
+		Install_Panaces_Server_SilentMode();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: DRM_Instllation_001 () Function: Install_Panaces_Server_SilentMode(),execution got failed.kindly check the log for more details");
+		_fail("DRM not Installed succesfully .So that stopping execution.");
+	}
+
+}
+
+function DRM_UnInstllation_001() {
+	try {
+		UnInstall_Panaces_Server_SilentMode("0");
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: DRM_UnInstllation_001 () Function: UnInstall_Panaces_Server_SilentMode(),execution got failed.kindly check the log for more details");
+		_fail("DRM not UnInstalled succesfully .So that stopping execution.");
+	}
+}
+
+function Panaces_PropertyFile_Update_001() {
+	try {
+		Panaces_Build_Copy_into_DRM_Server();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Panaces_PropertyFile_Update_001 () Function: Panaces_Build_Copy_into_DRM_Server(),execution got failed.kindly check the log for more details");
+		_fail("Panaces Build not coppied succesfully .So that stopping execution.");
+	}
+	try {
+		update_Panaces_Server_propertyFile();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Panaces_PropertyFile_Update_001 () Function: update_Panaces_Server_propertyFile() ,execution got failed.kindly check the log for more details");
+		_fail("Panaces Property File not updated succesfully.So that stopping execution.");
+	}
+}
+
+function License_installation_001() {
+	try {
+		License_installation();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: License_installation_001 () Function: License_installation(),execution got failed.kindly check the log for more details");
+		_fail("License not installed succesfully .So that stopping execution.");
+	}
+}
+
+function Agent_PropertyFile_Update_001() {
+	try {
+		AgentBuild_Copy_into_AgentHost_PR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Agent_PropertyFile_Update_001 () Function: AgentBuild_Copy_into_AgentHost_PR(),execution got failed.kindly check the log for more details");
+		_fail("Agent Build not coppied succesfully on PR.So that stopping execution.");
+	}
+	try {
+		AgentBuild_Copy_into_AgentHost_DR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Agent_PropertyFile_Update_001 () Function: AgentBuild_Copy_into_AgentHost_DR ,execution got failed.kindly check the log for more details");
+		_fail("Agent Build not coppied succesfully on DR.So that stopping execution.");
+	}
+	try {
+		Update_PropertyFile_LocalAgent_PR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Agent_PropertyFile_Update_001 () Function: Update_PropertyFile_LocalAgent_PR() ,execution got failed.kindly check the log for more details");
+		_fail("Property File not updated succesfully on PR.So that stopping execution.");
+	}
+	try {
+		Update_PropertyFile_LocalAgent_DR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Agent_PropertyFile_Update_001 () Function: Update_PropertyFile_LocalAgent_DR,execution got failed.kindly check the log for more details");
+		_fail("Property File not updated succesfully on DR.So that stopping execution.");
+	}
+}
+
+function Agent_Instllation_001() {
+	try {
+		Install_Local_Agent_SilentMode_PR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Agent_Instllation_001() Function: Install_Local_Agent_SilentMode_PR(),execution got failed.kindly check the log for more details");
+		_fail("Agent not Instllaed succesfully on PR.So that stopping execution.");
+	}
+	try {
+		Install_Local_Agent_SilentMode_DR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Agent_Instllation_001() Function: Install_Local_Agent_SilentMode_DR(),execution got failed.kindly check the log for more details");
+		_fail("Agent not Instllaed succesfully on DR.So that stopping execution.");
+	}
+}
+
+
+function Agent_UnInstllation_001() {
+	try {
+		UnInstall_Local_Agent_SilentMode_PR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Agent_UnInstllation_001() Function: UnInstall_Local_Agent_SilentMode_PR(),execution got failed.kindly check the log for more details");
+		_fail("Agent not UnInstllaed succesfully on PR.So that stopping execution.");
+	}
+	try {
+		UnInstall_Local_Agent_SilentMode_DR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Agent_UnInstllation_001() Function: UnInstall_Local_Agent_SilentMode_DR(),execution got failed.kindly check the log for more details");
+		_fail("Agent not UnInstllaed succesfully on DR.So that stopping execution.");
+	}
+}
+
+function WorkFlow_copy_001() {
+	try {
+		copy_Workflow_xml_from_DrmServer();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: WorkFlow_copy_001() Function: copy_Workflow_xml_from_DrmServer(),execution got failed.kindly check the log for more details");
+		_fail("Workflows not copied succesfully on Sahi mAchine.So that stopping execution.");
+	}
+}
+
+function Change_ContinuityStatus_Group_SO(){
+	
+	try {
+		Change_ContinuityStatus_Group($groupName, "Switchover Inactive");
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Change_ContinuityStatus_Group Function: Change_ContinuityStatus_Group_SO(),execution got failed.kindly check the log for more details");
+		_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+	}
+}
+
+function Change_ContinuityStatus_Group_Normal_Inactive(){
+	
+	try {
+		Change_ContinuityStatus_Group($groupName, "Normal Inactive");
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Change_ContinuityStatus_Group Function: Change_ContinuityStatus_Group_Before_SO(),execution got failed.kindly check the log for more details");
+		_fail("Group continuity state is not changed to Normal Inactive. So that stopping execution.");
+	}
+}
+///////////////////////////////////////////////SC//////////////////////////////////////////////////////
+function SiteController_PropertyFile_Update_001() {
+	try {
+		SiteController_Binary_Copy_AgentHost_PR();
+		Copy_SC_Property_file();
+		update_SiteController_propertyFile_PR();		
+		SiteController_Binary_Copy_AgentHost_DR();
+		update_SiteController_propertyFile_DR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SiteController_PropertyFile_Update_001,execution got failed.kindly check the log for more details");
+		_fail("SiteController Build not coppied succesfully .So that stopping execution.");
+	}
+}
+
+function SiteController_Instllation_003() {
+	try {
+		SiteController_Instllation_SilentMode_PR();
+		SiteController_Instllation_SilentMode_DR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SiteController_Instllation_003,execution got failed.kindly check the log for more details");
+		_fail("SiteController_Instllation_003 not done succesfully .So that stopping execution.");
+	}
+}
+
+function SiteController_UnInstllation_002() {
+	try {
+		SiteController_UnInstllation_PR();
+		SiteController_UnInstllation_DR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SiteController_UnInstllation_002,execution got failed.kindly check the log for more details");
+		_fail("SiteController_UnInstllation_002 not done succesfully .So that stopping execution.");
+	}
+}
+
+function SiteController_Component_Local_Discovery() {
+	try {
+	    
+		Create_Local_Component($sytemType, $compNamePR, $compIPPR, $compsitePR);
+		Create_Local_Component($sytemType, $compNameDR, $compIPDR, $compsiteDR);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Component_Local_Discovery_0002(),Function: Create_Local_ComponentPR or Create_Local_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("component not created succesfully.So that stopping execution.");
+	}
+}
+
+function Windows_SiteController_Component_Local_Discovery() {
+	try {
+		Create_Local_Component("Windows", $compNamePR, $compIPPR, $compsitePR);
+		Create_Local_Component("Windows", $compNameDR, $compIPDR, $compsiteDR);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Windows_SiteController_Component_Local_Discovery(),Function: Create_Local_ComponentPR or Create_Local_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("Windows_SiteController_Component_Local_Discovery not created succesfully.So that stopping execution.");
+	}
+}
+
+function SiteController_COM_MODE_005() {
+	try {
+		SiteController_COM_MODE_PR();
+		SiteController_COM_MODE_DR();
+	} catch ($e) {
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SiteController_COM_MODE_005,execution got failed.kindly check the log for more details");
+		_fail("SiteController_COM_MODE_005 not done succesfully .So that stopping execution.");
+	}
+}
+
+function SiteController_Socket_MODE_006() {
+	try {
+		SiteController_Socket_MODE_PR();
+		SiteController_Socket_MODE_DR();
+	} catch ($e) {
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SiteController_Socket_MODE_006,execution got failed.kindly check the log for more details");
+		_fail("SiteController_Socket_MODE_006 not done succesfully .So that stopping execution.");
+	}
+}

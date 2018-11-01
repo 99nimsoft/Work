@@ -1,0 +1,60 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the Custom action test cases. 
+ ** AuthorName : Anantha Sakthi
+ ** Created Date : Aug 2014
+ ************************************************************************/
+
+
+_log("=================================Pre-Condition===================================", "Custom1");
+_include("../Library/Common/Common_Function.sah");
+_include("../Library/Solution_Signature/Include/APP_PFR_Include.sah");
+_include("../conf/DRMInstallation_Parameter.sah");
+//_include("../conf/DRMInstallation_Parameter_New.sah"); // DRM 2nd enable
+_include("../conf/SystemEvents/SystemEvents_Parameter.sah");
+_include("../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+_include("../Library/SystemEvents/SystemEvents_CommonFunction.sah");
+_include("../Library/SystemEvents/SystemEvents_TestCaseFunction.sah");
+
+//*************************************************************************************************************************************************
+Login_001();
+///
+PreCondition_CreateUsers();
+
+_log("=================================Test========================================", "SystemEvents");
+
+
+var $test1 = _testcase("System_Events_001", "Verify System Events page for SuperAdmin, Admin,Operator, NotificationMember");
+$test1.start();
+System_Events_001();
+$test1.end();
+
+var $test2 = _testcase("System_Events_002", "Verify System Events Warning message for SuperAdmin");
+$test2.start();
+System_Events_002();
+$test2.end();
+
+var $test3 = _testcase("System_Events_003", "Verify System Events Warning message for Administrator");
+$test3.start();
+System_Events_003();
+$test3.end();
+
+var $test4 = _testcase("System_Events_004", "Verify Notify UpdateSelection button in System Events page for SuperAdmin");
+$test4.start();
+System_Events_004();
+$test4.end();
+
+var $test5 = _testcase("System_Events_005", "Verify Notify UpdateSelection button in System Events page for Administartor");
+$test5.start();
+System_Events_005();
+$test5.end();
+
+var $test6 = _testcase("System_Events_006", "Verify User (superadmin/admin) Can take Metadata Backup");
+$test6.start();
+System_Events_006();
+$test6.end();
+
+_log("================================Post-Condition================================== ", "Custom1");
+
+Logout_001();

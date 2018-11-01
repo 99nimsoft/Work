@@ -1,0 +1,328 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains Creation of Component(LINUX) for both remote and local agents. 
+ ** AuthorName : Govinda Mengji 
+ ** Created Date : July 2013
+ ************************************************************************/
+
+
+/**
+* Function is for Creating  Dataset for PR  in  Sybase.
+*@param :  null
+*@return : null
+* Author:Govinda
+*
+*/
+
+function Create_Sybase_Dataset_PR(){
+
+Create_Sybase_Dataset($systemTypeDataset, $dependentComponentNamePR, $datasetNamePR,$serverNamePR,$usernamedbPR,$passwordPR, $portPR,$complevelPR,$compIPPR,$pathPR,$database,$dataDevNamePR,$dataDevSizePR,$logDevNamePR,$logDevSizePR);
+}
+
+/**
+* Function is for Creating  Dataset for DR  in  Sybase.
+*@param :  null
+*@return : null
+* Author:Govinda
+*
+*/
+
+function Create_Sybase_Dataset_DR() {
+
+Create_Sybase_Dataset($systemTypeDataset, $dependentComponentNameDR, $datasetNameDR,$serverNameDR,$usernamedbDR,$passwordDR, $portDR,$complevelDR,$compIPDR,$pathDR,$database,$dataDevNameDR,$dataDevSizeDR,$logDevNameDR,$logDevSizeDR);
+
+}
+
+/**
+* Function is for Creating  Dataset for  in  Sybase.
+*@param :  null
+*@return : null
+* Author:Govinda
+*
+*/
+function Create_Sybase_Dataset($systemTypeDataset, $dependentComponentName, $datasetName,$serverName,$usernamedb,$password, $port,$complevel,$compIP,$path,$database,$dataDevName,$dataDevSize,$logDevName,$logDevSize){
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($Datasets));
+	if (_exists(_link($datasetName))) {
+		_assertExists("Dataset already exists");
+	} else {
+	_setSelected(_select($systemType), $systemTypeDataset);
+	_click(_button($Go));
+	_setSelected(_select($dependentComponentName), $dependentComponentName);
+	_setValue(_textbox($datasetName), $datasetName);
+	var $i=0;
+       while (true) 
+       {
+              if (_exists(_link($RegisterAgent))) {
+                     _click(_link($RegisterAgent));
+                     _wait(10000);
+       }
+       if (!_exists(_link($RegisterAgents)) && !_exists(_link($CONNECTED))) {
+                          navigateToDiscovery()
+                           _click(_link($Subsystems));
+                           _click(_link($Datasets));
+                           _setSelected(_select($systemType), $systemTypeDataset);
+                           _click(_button($Go));
+                           _setSelected(_select($dependentComponentName), $dependentComponentName);
+                           _setValue(_textbox($datasetName), $datasetName);
+                           if($i == 10 ){
+                                  _fail();
+                           }
+                     } 
+                     else 
+                     {
+                           _log("go ahead");
+                           break;
+                     }
+       _wait(10000);
+       $i++;
+              }
+
+		
+		if (_exists(_link($CONNECTED))) 
+		{
+			
+			_wait(5000);
+			if(_exists(_textbox($addNewServer)))
+				{
+			_setValue(_textbox($addNewServer),$serverName);
+				}
+			else{
+			_setSelected(_select($serverName, _near(_cell($Servername))));	
+			}
+			_setValue(_textbox($username), $usernamedb);
+			_setValue(_password($password), $password);
+			_setValue(_textbox($port), $port);
+			
+			_setValue(_textbox($complevel), $complevel);
+			_setValue(_textbox($ipaddress), $compIP);
+			_setValue(_textbox($home), $path);
+
+			_setValue(_textbox($databaseName), $database);
+			_click(_button($TestCredentials1));
+			_wait(5000, _span($Success));
+			
+			_setValue(_textbox($dataDeviceName), $dataDevName);
+			_setValue(_textbox($allotedDataDeviceSize), $dataDevSize);
+			_click(_button($Add));
+			
+					
+			_setValue(_textbox($logDeviceName), $logDevName);
+			_setValue(_textbox($allotedLogDeviceSize), $logDevSize);
+			_click(_button($Add1));
+			
+			
+			
+			_wait(1000);
+			_click(_button($Save));
+			
+			
+			navigateToDiscovery();
+			_click(_link($Subsystems));
+			_click(_link($Datasets));
+
+		if (_exists(_link($datasetName))) 
+		{
+			_assertExists("dataset created succesfully");
+		} 
+		else 
+		{
+			_fail("dataset not created succesfully.");
+		}
+		}
+		}
+		}
+
+
+/**
+* Function is to Verify Dataset details from GUI and DB after dataset has been created in PR.
+*@param :  null
+*@return : null
+* Author:Govinda
+*
+*/
+
+function Verify_Sybase_Dataset_Details_PR() {
+	
+	Verify_Dataset_Discovery_Details($datasetNamePR,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+  
+}
+
+/**
+* Function is to Verify Dataset details from GUI and DB after dataset has been created in DR.
+*@param :  null
+*@return : null
+* Author: Govinda
+*
+*/
+function Verify_Sybase_Dataset_Details_DR() {
+	
+	Verify_Dataset_Discovery_Details_DR($datasetNameDR,$compIPDR,$remoteUserNameValDR,$remotePwdValDR);
+}
+
+/**
+* Function is to Verify Dataset details from GUI and DB after dataset has been created .
+*@param : $datasetName,$ip,$database,$user, $pwd
+*@return : null
+* Author: Govinda
+*
+*/
+function Verify_Dataset_Discovery_Details($datasetName,$compIP,$remoteUserNameVal,$remotePwdVal){
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($Datasets));
+	_click(_link($datasetName));
+
+    var $serverNameGui = _getText(_cell(1, _near(_cell($ServerName))));
+    _assertExists("Server Name GUI", $serverNameGui);
+    
+    var $serverNameGUI= $serverNameGui.toLowerCase();
+    
+    var $servername= SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $hostname);	
+	
+     
+    _assertNotEqual($servername,$serverNameGUI, "Comparing Server Name from DB and GUI");
+	
+	_wait(1000);
+	
+	var $databaseGui = _getText(_cell(1, _near(_cell($DatabaseName))));
+	_assertExists("Database Name GUI ", $databaseGui);
+	
+	_assertEqual($database,$databaseGui, "Comparing database Name from DB and GUI");
+
+}
+
+/**
+* Function is to Verify Dataset details from GUI and DB after dataset has been created .
+*@param : $datasetName,$ip,$database,$user, $pwd (DR side)
+*@return : null
+* Author: Govinda
+*
+*/
+
+function Verify_Dataset_Discovery_Details_DR($datasetName,$compIP,$remoteUserNameVal,$remotePwdVal){
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($Datasets));
+	_click(_link($datasetName));
+
+    var $serverNameGui = _getText(_cell(1, _near(_cell($ServerName))));
+    _assertExists("Server Name GUI", $serverNameGui);
+    
+    var $serverNameGUI= $serverNameGui.trim();
+    
+    var $servername= SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $hostname);	
+	
+     
+   _assertNotEqual($servername,$serverNameGUI, "Comparing Server Name from DB and GUI");
+	
+	_wait(1000);
+	
+	var $databaseGui = _getText(_cell(1, _near(_cell($DatabaseName))));
+	_assertExists("Database Name GUI ", $databaseGui);
+	
+	_assertEqual($database,$databaseGui, "Comparing database Name from DB and GUI");
+
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+
+/**
+* Function is for  get the local Sybase agent status from backend for PR
+*@param :null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+// Description: For Local Sybase agent get the status from backend for PR and DR
+function Get_Local_Dataset_Status_DB_PR_Sybase() {
+	return Get_Local_Dataset_Status_DB_Sybase($localAgentPathPR, $compIPPR, $remoteUserNameValPR, $remotePwdValPR);
+} // End of Get_Local_Dataset_Status_DB_PR_Sybase()
+
+
+/**
+* Function is for  get the local Sybase agent status from backend for DR
+*@param :null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function Get_Local_Dataset_Status_DB_DR_Sybase() {
+	return Get_Local_Dataset_Status_DB_Sybase($localAgentPathDR, $compIPDR, $remoteUserNameValDR, $remotePwdValDR);
+} // End of Get_Local_Dataset_Status_DB_DR_Sybase()
+
+/**
+* Function is to get local Sybase status from backend.
+*@param :$localAgentPath, $compIP, $remoteUserNameVal, $remotePwdVal
+*@return :$componentStatusDB
+*@Author: Govinda Mengji
+*
+*/
+function Get_Local_Dataset_Status_DB_Sybase($localAgentPath, $compIP, $remoteUserNameVal, $remotePwdVal) {
+	var $sshCommand = '../.' + $localAgentPath + "DRMAgents/SybaseAgent.sh status ";
+	var $SybaseAgentStatus = SecuredShellConnection($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommand);
+
+	_assertExists("SybaseAgentStatus", $SybaseAgentStatus);
+
+	if ($SybaseAgentStatus == "SybaseAgent is running.") {
+		var $DatasetStatus = "ACTIVE";
+		_assertExists("Dataset Status in DB is: ", $DatasetStatus);
+
+	} else if ($SybaseAgentStatus == "SybaseAgent is not running") {
+		var $DatasetStatus = "UNKNOWN";
+		_assertExists("Dataset Status in DB is: ", $DatasetStatus);
+
+	} else {
+		var $DatasetStatus = "UNKNOWN";
+		_assertExists("Dataset Status in DB is: ", $DatasetStatus);
+	}
+	var $DatasetStatusDB = new java.util.Properties();
+	$DatasetStatusDB.put($DatasetStatusdb, $DatasetStatus);
+
+	return $DatasetStatusDB;
+}// End of Get_Local_Dataset_Status_DB_Sybase()
+
+
+
+
+/**
+* Function is to get Local Sybase agent status from backend and GUI for PR.
+*@param :
+*@return :null
+*@Author: Govinda Mengji
+*
+*/
+
+function Verify_Dataset_Status_PR_Sybase() {
+	_wait(5000);
+	Popup_Handler();
+	
+  var $DatasetStatusDB = Get_Local_Dataset_Status_DB_PR_Sybase();
+  var $DatasetStatusGui = Get_Dataset_Status_Gui_PR();
+_assertEqual($DatasetStatusDB.get($DatasetStatusdb), $DatasetStatusGui.get("status"), "Comparing Dataset status from DB and GUI for PR");
+}// end of Verify_Dataset_Status_PR_Sybase()
+
+/**
+* Function is to get Local Sybase agent status from backend and GUI for DR.
+*@param :
+*@return :null
+*@Author: Govinda Mengji
+*
+*/
+
+function Verify_Dataset_Status_DR_Sybase() {
+	_wait(5000);
+	Popup_Handler();
+	
+   var $DatasetStatusDB = Get_Local_Dataset_Status_DB_DR_Sybase();
+   var $DatasetStatusGui = Get_Dataset_Status_Gui_DR();
+_assertEqual($DatasetStatusDB.get("DatasetStatusdb"),$DatasetStatusGui.get("status"), "Verifying Dataset Status is Equal in Db and GUI");
+}// end of Verify_Dataset_Status_DR_Sybase()
+
+
+

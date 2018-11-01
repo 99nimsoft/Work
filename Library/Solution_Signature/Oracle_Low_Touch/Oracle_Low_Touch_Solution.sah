@@ -1,0 +1,76 @@
+/**
+* Function for Verfiy_Protection_Schemes script.
+*@param :  null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+
+function Verfiy_Protection_Schemes_PR(){
+	Oracle_Low_Verfiy_Protection_Schemes($compNamePR);
+}
+
+
+function Verfiy_Protection_Schemes_DR(){
+	Oracle_Low_Verfiy_Protection_Schemes($CompAmazonInstanceIP);
+}
+
+function Oracle_Low_Verfiy_Protection_Schemes($Comp){
+	_click(_link("Admin"));
+	navigateToDiscovery();
+	_click(_link("Groups"));
+	_click(_link("Subsystems"));
+	_click(_link("Protection Schemes"));
+	 var $Protection_Schemes = "Oracle_DG_"+$Comp;
+	 _assertExists(_link($Protection_Schemes));
+	   _assertExists(_cell("ACTIVE", _near(_cell($Protection_Schemes))));
+}
+
+
+
+/**
+* Function for Verfiy_Protection_Schemes script.
+*@param :  null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+
+
+function Oracle_Low_Group_verification($primarysid){
+	_click(_link("Admin"));
+	navigateToDiscovery();
+	_click(_link("Groups"));	
+	var $groupName = $primarysid+"_Oracle_DG";
+	 _assertExists(_link($groupName));
+	_log("Oracle DG Low touch Group Create successful");
+	var $status = _getText(_cell(1, _near(_cell($groupName), _under(_tableHeader("Status")))));
+	if ($status == "DR Sync In Progress") {
+		_log("Oracle DG Low touch Group Create successfully & Group status is in DR Sync In Progress");
+	}
+	
+	navigateToDiscovery();
+	_click(_link("Groups"));
+	_click(_image("movetomaintenance_enabled.gif", _near(_link($groupName))));
+	
+	if (_exists(_link("Click here to Move to Maintenance"))) {
+		_log("Group is in  manage");
+	} else {
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+
+	_click(_link("Click here to change Continuity State"));
+	var $currentState = _getText(_cell(1, _near(_cell("Current Group State:"))));
+	if($currentState == "Normal(Inactive)"){
+		_log("Current Group State is in Normal(Inactive) Oracle Low touch provising done successfully");
+		navigateToDiscovery();
+		_click(_link("Groups"));
+	}
+	else{
+		_fail("Current Group State is NOT in Normal(Inactive) Oracle Low touch provising NOT  done successfully");
+	}
+	
+	
+}

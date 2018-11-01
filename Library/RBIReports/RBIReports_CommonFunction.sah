@@ -1,0 +1,199 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the common functions which are the part of RBI Reports
+ **@AuthorName : Anita 
+ ** Created Date : Feb 2017
+ ************************************************************************/
+
+//  Navigate to Report page
+
+function navigateToReportPage(){
+	_click(_link($Admin));
+	_click(_link($Reports));
+	_wait(2000);
+}
+
+/**
+ * Function is used to Verify Group exists in Group list
+ * @param :
+ * @return : null
+ * @Author:Anita
+ */
+
+function PreConditionGroupCheck(){
+	var $grp1 = PreConditionGroupCheckOne();
+	_log("Group1 as: "+$grp1);
+	var $grp2 = PreConditionGroupCheckTwo();
+	_log("Group2 as: "+$grp2);
+}
+
+function PreConditionGroupCheckOne(){
+	 NavigateToRGListingPage();	 
+	 if(_exists(_link($groupName))){
+		 _assertExists("Group Name present in RG list", $groupName);
+		 return $groupName;
+	 }
+	 else if(_exists(_link($groupName1))){
+		 _assertExists("Group Name present in RG list", $groupName1);
+		 return $groupName1;
+	 }
+	 else{
+		 _log("GroupName not presernt in RG List");
+		 return false;
+	 }
+}
+
+function PreConditionGroupCheckTwo(){
+	 NavigateToRGListingPage();
+	 if(_exists(_link($groupName2))){
+		 _assertExists("Group Name present in RG list", $groupName2);
+		 return $groupName2;
+	 }
+	 if(_exists(_link($groupName3))){
+		 _assertExists("Group Name present in RG list", $groupName3);
+		 return $groupName3;
+	 }
+}
+
+// select BAnking Report Type
+
+function SelectBankingReportType($repType){
+	_log($repType);
+	navigateToReportPage();
+	if($repType =="BCP Test Report"){
+		_setSelected(_select($reportTypeRBI), $repType);
+	}
+	else{
+		var $webele = $repType +" ";
+		_setSelected(_select($reportTypeRBI), $webele);
+	}
+	if($repType!="BCP Readiness Report"){
+		_wait(3000);	
+		_click(_image($imageFromDateDrillRBI));
+		_mouseOver(_div($Today));
+		_click(_div($Today));
+
+		_click(_image($imageToDateDrillRBI));
+		_mouseOver(_div($Today1));
+		_click(_div($Today1));
+	}
+}
+// EditComment_CuurentEvent
+function EditComment_CurrentEvent($grp2){
+	_click(_link($Admin));	
+	_click(_link($CurrentEvents));	
+	_click(_link($AdvancedFilter));
+	_wait(3000);
+	_uncheck(_checkbox($userInputRequired1));
+	_uncheck(_checkbox($severity2));
+	_check(_checkbox($severity3));
+	_setSelected(_select($groups), [$grp2]);
+	_click(_button($Apply));
+	_wait(3000);
+	var $i=0;
+	while($i<20){
+		var $infoDisp = _exists(_image($Serious, _near(_cell($grp2))));
+		if($infoDisp){			
+			break;
+		}
+		_wait(3000);
+	}
+	_click(_link(0, _near(_cell($grp2))));
+	_click(_link($Edit, _near(_cell($Comment))));
+	_setValue(_textarea($drSetupTextEdit), "");
+	_setValue(_textarea($drSetupTextEdit), $SeriousEventUpdatedRBIReport0024);
+	_click(_button($Save));
+	_wait(3000);
+}
+
+// verify back to view report
+
+function Verify_BackToViewReport($repType){
+
+	if(_exists(_button($BacktoViewReports))){
+		_click(_button($BacktoViewReports));
+		_wait(2000);
+		if(_exists(_cell($Reports))){
+			_assertExists($BacktoViewReportspagesuccessfull);
+		}
+		else{
+			_fail("Back to View Reports page unsuccessful");
+		}
+	}
+}
+
+//navigate to navigateDRILLworkflows 
+function navigateDrillworkflows($grp1,$ralName){
+	navigateToGroups();
+	_click(_link($grp1));
+	_click(_image($Drills));
+	_wait(3000);
+}
+
+// Waitfor_Drill_Completion($grp1, $ralName)
+
+function Waitfor_Drill_Completion($grp1, $ralName){
+	var $i = 0;
+	while ($i < 10) {
+		_log($i);
+		navigateDrillworkflows($grp1);
+		var $testStatus = _getText(_link(1, _near(_link($ralName))));
+		_log($testStatus);
+		if($testStatus =="SUCCESS"){
+			_log("Execution Status as : " + $testStatus);
+			break;		
+		}	 	
+		if ($testStatus == "AWAITING INPUT") {
+			_click(_link(1, _near(_link($ralName))));
+			_wait(3000);
+			_click(_button($AwaitingInput));
+			_wait(3000);
+			_click(_submit($QuitABORTuserInputButtonbtnbtnprimarybtnxsbtnbtninfo));
+			_log("Quit userInputButton btn clicked");
+			_wait(10000);
+			break;
+		}		
+		_wait(3000);
+		$i++;
+	}//end of loop
+}
+//function delete the exported PDF Report file if previous older pdf/ rtf file
+
+function Delete_Exported_Report_BeforeExecute($fileType){
+	 var $filepath= $SAHI_HOME +"Library\\RBIReports\\ReportFile\\";
+	 var $timeInterval = "\n\n";
+	 _writeFile("cd "+$filepath+$timeInterval+"del *."+$fileType, $filepath+"\\delReport.bat",true); // over writes content in file 
+	 _wait(3000);
+	 _execute($filepath+"\\delReport.bat",true);
+	 _wait(3000);
+	 _log($fileType + " Older Report has deleted succcessfully");
+}
+
+// precondition check before importing workflow if any awaiting input occcured at WF
+
+function PrecheckConditionImport($grp1){
+	navigateToReportPage();
+	if(_exists(_span(1, _near(_image($Eventswaitingforuserinput))))){
+		_click(_span(1, _near(_image($Eventswaitingforuserinput))));
+		_wait(3000);
+		var $getStr = _getText(_cell($grp1, _near(_link($UserInputRequired001))));
+		_log($getStr);
+		if($getStr == $grp1){
+			_log("UserInputRequired001");
+			_setSelected(_select($actionSelect), $Provideinput);	
+			_wait(3000);
+			_selectWindow($CloudResiliencyOrchestrationWorkflowExecution);
+			_wait(3000);
+			_click(_button($AwaitingInput));
+			_wait(3000);
+			_click(_submit($QuitABORTuserInputButtonbtnbtnprimarybtnxsbtnbtninfo));
+			_wait(10000);
+			_selectWindow(); // back to main window
+			_wait(5000);
+		}
+	}
+	else{
+		_log("There is no awaiting input for the Ral");
+	}
+}

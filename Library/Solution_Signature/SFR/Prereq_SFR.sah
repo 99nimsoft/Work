@@ -1,0 +1,39 @@
+/**
+*This function is to create script at backend.
+*@param :	null.
+
+*@return : null
+*@author : Aditi
+*/
+function create_Backend_Script(){
+	
+
+//var $sshCommand =   "touch " + "/tmp/test.sh";
+
+var $sshCommand =   _writeToFile("hi", "/tmp/test.sh");
+
+	SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+}
+
+
+/**
+*This function is to create files at PR to replicate at DR.
+*@param :	null.
+
+*@return : null
+*@author : Aditi
+*/
+
+function Create_fileAtPR_toRepli(){
+	while($i <=10){
+		
+	
+var $sshCommand =   "mkdir " + $filePath + "file_" + $i;
+SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+$i++;
+}
+}
+
+
+
+

@@ -1,0 +1,138 @@
+_log("=================================Pre-Condition===================================", "Custom1");
+_include("../Library/Solution_Signature/Include/APP_PFR_Include.sah");
+_include("../Library/Common/Common_Function.sah");
+_include("../conf/DRMInstallation_Parameter.sah");
+_include("../conf/APP_PFR/APP_PFR_Remote_Agent_Parameter.sah");
+_include("../Library/Solution_Signature/Include/UserRoleMgmt_Include.sah");
+_include("../Library/Common/CommonRepository/CommonDRM_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/CommonGUINavigation_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/GroupOperation_ObjRepository.sah");
+_include("../Library/UserRoleMgmt/ObjectRepository/User_Role_Management_ObjectRepository.sah");
+_include("../Library/Solution_Signature/APP_PFR/ObjectRepository/APPPFR_ObjectRepository.sah");
+_include("../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+_include("../Library/RAL/RAL_CommonFunction.sah");
+
+
+
+Login_001();
+/*createUsers_0001();
+
+preConditionForRAL_GroupCreation();*/
+
+_log("=================================Test========================================", "Fetchlog");
+
+var $test1 = _testcase("Assigning Groups To Users_0001", "Assigning Groups To Users");
+$test1.start();
+Assign_Group_User_0001();
+$test1.end();
+
+/*
+var $test1 = _testcase("User_Role_Management_0001", "Verifying  Create  User link different user");
+$test1.start();
+Verifying_CreateUserlink_0001();
+$test1.end();
+
+
+var $test2 = _testcase("User_Role_Management_0002", "Verifying SetSystemoption link different user");
+$test2.start();
+Verifying_SetSystemOption_0002();
+$test2.end();
+
+var $test3 = _testcase("User_Role_Management_0003", "Verifying UserPreference link different user");
+$test3.start();
+Verifying_UserPreference_0003();
+$test3.end();
+
+var $test4 = _testcase("User_Role_Management_0004", "Verifying UserModify Properties");
+$test4.start();
+Verify_UserModify_Properties_0004();
+$test4.end();
+
+var $test5 = _testcase("User_Role_Management_0005", "Verifying UserPreference link different user");
+$test5.start();
+Verify_DeleteUser_Link_0005();
+$test5.end();
+*/
+
+
+var $test6 = _testcase("User_Role_Management_0006", "Verifying UserPreference link different user");
+$test6.start();
+Verify_Agetns_Link_0006();
+$test6.end();
+
+var $test7 = _testcase("User_Role_Management_0007", "Verifying Different Tab Status for  different user");
+$test7.start();
+Verify_Tab_Status_0007();
+$test7.end();
+
+var $test8 = _testcase("User_Role_Management_0008", "Verifying TestCredential for different user");
+$test8.start();
+Verify_Credential_Check_0008();
+$test8.end();
+
+var $test9 = _testcase("User_Role_Management_0009", "Verifying Evevnt Status for different user");
+$test9.start();
+Verification_Events_Status_0009();
+$test9.end();
+
+
+var $test10= _testcase("User_Role_Management_0010", "Verifying Logs Status for different user");
+$test10.start();
+Verifying_Group_Details_0010();
+$test10.end();
+
+var $test11= _testcase("User_Role_Management_0011", "Verifying ManageTab Status for different user");
+$test11.start();
+Verification_ManageTab_Status_0011();
+$test11.end();
+
+var $test12= _testcase("User_Role_Management_0012", "Verifying Operational  Status for different user");
+$test12.start();
+Verification_OpHistory_Status_0012();
+$test12.end();
+
+var $test13= _testcase("User_Role_Management_0013", "Verifying Create Site for different user");
+$test13.start();
+Verification_Create_Site_0013();
+$test13.end();
+
+var $test14= _testcase("User_Role_Management_0014", "Verifying ComponentDatasetProtectionSchema  Status for different user");
+$test14.start();
+Verification_DS_Comp_Pro_0014();
+$test14.end();
+
+var $test15= _testcase("User_Role_Management_0015", "Verifying Notification  Status for different user");
+$test15.start();
+Verifiaction_Notification_Status_0015();
+$test15.end();
+
+var $test16= _testcase("User_Role_Management_0016", "Verifying ServerFailOver  Status for different user");
+$test16.start();
+Verifying_ServerFailOver_0016();
+$test16.end();
+
+var $test17= _testcase("User_Role_Management_0017", "Verifying License  Status for different user");
+$test17.start();
+Verifying_License_Status_0017();
+$test17.end();
+
+var $test18= _testcase("User_Role_Management_0018", "Verifying BusinessProcess  Status for different user");
+$test18.start();
+Verifying_BusinessProcess_0018();
+$test18.end();
+
+var $test19= _testcase("User_Role_Management_0019", "Verifying DashBOardHelpLink  Status for different user");
+$test19.start();
+Verifying_DashBoard_Help_0019();
+$test19.end();
+
+
+
+var $test20= _testcase("User_Role_Management_0020", "Verifying Drill Listing Status for different user");
+$test20.start();
+Verifying_Drill_Listing_Status_0020();
+$test20.end();
+
+_log("================================Post-Condition================================== ", "UserRoleManagement");
+
+Logout_001();

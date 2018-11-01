@@ -1,0 +1,354 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains Creation of Protection Scheme for both remote and local agents. 
+ ** AuthorName : Aditi Jain
+ ** Created Date : April 2013
+ ************************************************************************/
+
+/**
+* Function is for Creating Protection Schemes in OracleDG  solution for PR.
+*@param :  null
+*@return : null
+* Author: Aditi Jain
+*
+*/
+function Create_OracleDG_ProtectionSchemePR() {
+	Create_OracleDG_ProtectionScheme($systemTypeProtection, $sernamePR, $mgmtHostDGPR, $userNameVal, $pwdVal  ,$compIPPR, $userNameVal, $pwdVal, $dgDiscoverySID, $dgDiscoveryHostIPPR, $userPR, $pwdPR, $dgDiscoveryDest,$portdataset);
+}
+
+/**
+* Function is for Creating Protection Schemes in OracleDG  solution for DR.
+*@param :  null
+*@return : null
+* Author: Aditi Jain
+*
+*/
+function Create_OracleDG_ProtectionSchemeDR() {
+	Create_OracleDG_ProtectionScheme($systemTypeProtection, $sernameDR, $mgmtHostDGDR, $userNameVal, $pwdVal,$compIPDR, $userNameVal, $pwdVal    , $dgDiscoverySID, $dgDiscoveryHostIPDR, $userDR, $pwdDR, $dgDiscoveryDest,$portdataset);
+}
+
+/**
+* Function is for Creating Protection Schemes in OracleDG  solution.
+*@param :  $systemTypeProtection, $sername, $mgmtHostDG, $userNameVal, $pwdVal ,$compIP, $userNameVal, $pwdVal  , $dgDiscoverySID, $dgDiscoveryHostIP, $user, $pwd, $dgDiscoveryDest
+*@return : null
+* Author: Aditi Jain
+*
+*/
+
+function Create_OracleDG_ProtectionScheme($systemTypeProtection, $sername, $mgmtHostDG, $userNameVal, $pwdVal ,$compIP, $userNameVal, $pwdVal  , $dgDiscoverySID, $dgDiscoveryHostIP, $user, $pwd, $dgDiscoveryDest,$portdataset) {
+	
+	_log("PortNo= "+$portdataset);
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($ProtectionSchemes));
+
+	// Validation of Protection scheme.
+	if (_exists(_link($sername))) {
+		_assertExists($OR_Datagaurd_ProtectionSchemealreadyexists);
+	} 
+	else {
+	_setSelected(_select($OR_Datagaurd_systemType), $systemTypeProtection);
+	_wait(1000);
+	_click(_button($Go));
+	_setSelected(_select($OR_Datagaurd_mgmtHost_DG), $mgmtHostDG);
+	_setValue(_textbox($OR_Datagaurd_sername), $sername);
+
+	_wait(1000);
+
+	while (true) {
+		if (_exists(_link($RegisterAgent))) {
+			_click(_link($RegisterAgent));
+			_wait(30000);
+		}
+		else if (_exists(_cell($Agentisnotregistered))) {
+			_wait(5000);
+			navigateToDiscovery();
+			_click(_link($Subsystems));
+			_click(_link($ProtectionSchemes));
+			_setSelected(_select($OR_Datagaurd_systemType), $systemTypeProtection);
+			_wait(1000);
+			_click(_button($Go));
+			_setSelected(_select($OR_Datagaurd_mgmtHostDG), $mgmtHostDG);
+			_setValue(_textbox($OR_Datagaurd_sername), $sername);
+			
+			_wait(1000);
+		}
+		 else {
+				_log("go ahead");
+				break;
+			}
+	
+	} //while loop end
+		
+		if($agentType=="Remote"){
+		_setSelected(_select($OR_Datagaurd_credList), $Addnewcredential);
+		_setValue(_textbox($OR_Datagaurd_usernameval), $userNameVal);
+		_setValue(_password($OR_Datagaurd_pwdval), $pwdVal);
+		_click(_button($TestCredentials));
+		_wait(1000);
+		var $TestCredentialsPassed = $OR_Datagaurd_CredentialCheckPassed;
+		_assertExists($TestCredentialsPassed);
+		} else {
+				_log("LOCAL Agent");
+		}
+	
+		var $status = _getCellText(_cell(1, _near(_cell($StatusPS))));
+		_assertExists($OR_Datagaurd_Status,$status);
+		_click(_radio($OR_Datagaurd_existingSID));
+		_click(_button($GetSIDS));
+		_wait(2000);
+		_setValue(_textbox($OR_Datagaurd_dgDiscoveryPort), $portdataset);
+		//SID from GUI
+		var $sidGui1=_getCellText(_select($OR_Datagaurd_dgDiscoverySID));
+		var $sidGui2=$sidGui1.toString();
+		var $sidGui=$sidGui2+",";
+		_assertExists($OR_Datagaurd_SIDGUI,$sidGui);
+	
+		
+		//SID from DB
+	/*	var $sshCommand =  "lsnrctl status | grep Instance |awk ' { print $2 }' | uniq";
+		var $status = Execute_Ssh_Command($compIP, $userNameVal, $pwdVal, $sshCommand);
+		var $action = $status.get($output);
+		var $sidDB1 = $action.toString();			
+		var $siddb=$sidDB1.replace(/,,/g,",");			
+		var $sidDb=$siddb.replace(/\"/g,"");
+		var $sidDB = $sidDb.split($uniq);
+
+		_assertExists("SID DB",$sidDB);*/
+		//_assertEqual($sidDB[1],$sidGui,"Displaying all the sids equal in DB and GUI");
+		//sids found
+		
+		_setSelected(_select($OR_Datagaurd_dgDiscoverySID), $dgDiscoverySID);
+		_click(_cell($OR_Datagaurd_strFour));
+		_setValue(_textbox($OR_Datagaurd_dgDiscoveryHostIp), $dgDiscoveryHostIP);
+		if ($agentType == "Local"){
+			_log("local Agent");
+			if($OS_Authentication == "Y"){
+				_click(_radio($OR_Datagaurd_osAuthenticate));
+			}
+				else{
+				_click(_radio($OR_Datagaurd_dbAuthenticate));
+				}
+		} else {		
+			_log("Remote Agent");
+		}
+			_setValue(_textbox($OR_Datagaurd_dgDiscoveryUsername), $user);
+		_setValue(_password($OR_Datagaurd_dgDiscoveryPassword), $pwd);
+		_click(_button($TestCredentials1));
+		_wait(5000, _span($Success));
+		_click(_button($GetDestinations));
+		_wait(5000);
+		_setSelected(_select($OR_Datagaurd_dgDiscoveryDest), $dgDiscoveryDest);
+		_click(_button($Discover));
+		_wait(5000);
+		var $ReplicationPair1 = _getCellText(_cell(1, _near(_cell($ReplicationPair))));
+		_assertExists($OR_Datagaurd_ReplicationPair,$ReplicationPair1);
+		_clearLastAlert();
+		_click(_button($Save));
+		_wait(5000);
+	}
+	
+	_click(_link($Subsystems));
+	_click(_link($ProtectionSchemes));
+
+		// Validation after creating Protection Scheme
+	if (_exists(_link($sername))){
+			_assertExists($OR_Datagaurd_ProtectionSchemecreated);
+		} else {
+			_assertEqual($OR_Datagaurd_ProtectionSchemecreated,_lastAlert()); 	
+			_fail($OR_Datagaurd_Protectionschemenotcreated);
+		} 
+		
+}
+
+/**
+* Function is for Verifying Protection Schemes Details in OracleDG  solution for PR.
+*@param :  null
+*@return : null
+* Author: Aditi Jain
+*
+*/
+function Verify_Protection_Scheme_Details_PR(){
+	Verify_Protection_Scheme_Details($sernamePR,$userPR, $pwdPR,$internalLogon,$oracleListenerIPPR, $dbSidSelect,$dgDiscoveryHostIPPR);
+}
+
+/**
+* Function is for Verifying Protection Schemes Details in OracleDG  solution for DR.
+*@param :  null
+*@return : null
+* Author: Aditi Jain
+*
+*/
+function Verify_Protection_Scheme_Details_DR(){
+	Verify_Protection_Scheme_Details($sernameDR,$userDR, $pwdDR,$internalLogon,$oracleListenerIPDR, $dbSidSelect,$dgDiscoveryHostIPDR);
+}
+
+/**
+* Function is for Verifying Protection Schemes Details in OracleDG  solution.
+*@param : $sername,$user, $pwd,$internalLogon,$oracleListenerIP, $dbSidSelect,$dgDiscoveryHostIP
+*@return : null
+* Author: Aditi Jain
+*
+*/
+function Verify_Protection_Scheme_Details($sername,$user, $pwd,$internalLogon,$oracleListenerIP, $dbSidSelect,$dgDiscoveryHostIP)
+{
+navigateToDiscovery();
+_click(_link($Subsystems));
+_click(_link($ProtectionSchemes));
+_click(_link($sername));
+var $props = Get_User_Properties_for_OracleDb_Connection($user, $pwd, $internalLogon);
+var $conn = Get_Oracle_Db_Connection_URL($oracleListenerIP, $dbSidSelect);
+var $db = _getDB($OR_Datagaurd_oracleDriver, $conn, $props);
+
+//Database name 
+var $dbNameDB = $db.select($OR_Datagaurd_queryName);
+_assertExists($OR_Datagaurd_DatabaseNameDB, $dbNameDB);
+var $databaseName=_getCellText(_cell(1, _near(_cell($DatabaseName))));
+_assertExists($OR_Datagaurd_DatabaseNameGUI,$databaseName);
+_assertEqual($dbNameDB,$databaseName,$OR_Datagaurd_ValidatingDatabasenamefromDbandGui);
+
+//Port Number
+var $portNumber=_getCellText(_cell(1, _near(_cell($PortonwhichOraclelistens))));
+_assertExists($OR_Datagaurd_PortNumber,$portNumber);
+
+//Host IP
+var $hostIP=_getCellText(_cell(1, _near(_cell($IPaddressonwhichOraclelistens))));
+_assertExists($OR_Datagaurd_IPaddressonwhichOraclelistens,$hostIP);
+_assertEqual($hostIP,$dgDiscoveryHostIP,$OR_Datagaurd_ValidatingHostIP);
+
+//Role
+var $roleDB = $db.select($OR_Datagaurd_queryRole);
+_assertExists($OR_Datagaurd_SyncStatusDB, $roleDB);
+var $roleGui=_getCellText(_cell(1, _near(_cell($DatabaseRole))));
+_assertExists($OR_Datagaurd_DatabaseRoleGUI,$roleGui);
+_assertEqual($roleDB,$roleGui,$OR_Datagaurd_ComparingRolefromDBandGui);
+
+//Protection Mode
+var $protectionModeDB = $db.select($OR_Datagaurd_queryProtectionMode);
+_assertExists($OR_Datagaurd_ProtectionModeDB, $protectionModeDB);
+var $protectionModeGui=_getCellText(_cell(1, _near(_cell($ProtectionMode))));
+_assertExists($OR_Datagaurd_ProtectionModeGUI,$protectionModeGui);
+_assertEqual($protectionModeDB,$protectionModeGui,$OR_Datagaurd_ComparingProtectionModefromDBandGui);
+
+//Replication Pair
+var $replicationPair=_getCellText(_cell(1, _near(_cell($ReplicationPairVerify))));
+_assertExists($OR_Datagaurd_ReplicationPair,$replicationPair);
+
+	}
+
+
+/**
+* Function is for get Protection Schemes Status in OracleDG  solution from PR.
+*@param : null
+*@return : null
+* Author: Aditi Jain
+*
+*/
+function Get_Status_Protection_Scheme_PR(){
+	Get_Status_Protection_Scheme($drmServer, $drmUserName, $drmPassword,$compIPPR, $remoteUserNameValPR, $remotePwdValPR,$sernamePR);
+	 
+}
+
+/**
+* Function is for get Protection Schemes Status in OracleDG  solution from DR.
+*@param : null
+*@return : null
+* Author: Aditi Jain
+*
+*/
+function Get_Status_Protection_Scheme_DR(){
+	Get_Status_Protection_Scheme($drmServer, $drmUserName, $drmPassword,$compIPDR, $remoteUserNameValDR, $remotePwdValDR,$sernameDR);
+	}
+
+
+/**
+* Function is for get Protection Schemes Status in OracleDG  solution.
+*@param : $drmServer, $drmUserName, $drmPassword,$compIP, $remoteUserNameVal, $remotePwdVal,$sername
+*@return : null
+* Author: Aditi Jain
+*
+*/
+function Get_Status_Protection_Scheme($drmServer, $drmUserName, $drmPassword,$compIP, $remoteUserNameVal, $remotePwdVal,$sername) {
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($ProtectionSchemes));
+	if($agentType=="Remote"){
+		var $sshCommand = '../.' + $EAMSROOT + 'bin/'+"DataGuardAgent.sh status" + " " + $compIP + ' LINUXSERVER';
+		var $status = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+//		var $action = $status.get($output);
+//		var $actionStatus = $action.toString();
+		var $actionTime = $status.split("[");
+		var $year = currentYear();
+		var $actionStatus1 = $actionTime[0].split($year);
+		var $actionStatus = $actionStatus1.pop();
+		_assertExists($OR_Datagaurd_actionStatus,$actionStatus);
+		if ($actionStatus == $OR_Datagaurd_DataGuardAgentrunning) {
+			var $protectionSchemeStatus = $OR_Datagaurd_ACTIVE;
+		} else if ($actionStatus == $OR_Datagaurd_ThereisnoDataGuardAgentrunning) {
+			 $protectionSchemeStatus = $OR_Datagaurd_UNKNOWN;
+		} else {
+			 $protectionSchemeStatus = $OR_Datagaurd_INACTIVE;
+		}
+		_assertExists($OR_Datagaurd_protectionschemeStatusDB, $protectionSchemeStatus);
+	}
+	else if($agentType=="Local"){
+	var $sshCommand = '../.' + $localAgentPath + "DataGuardAgent.sh status";
+	var $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+
+	var $action = $status.get($OR_Datagaurd_output);
+	var $actionStatus1 = $action.toString();
+	var $actionStatus = $actionStatus1.split(",");
+	_assertExists($OR_Datagaurd_actionStatusis, $actionStatus[1]);
+	if ($actionStatus[1] == $OR_Datagaurd_DataGuardAgentisrunning) {
+		 $protectionSchemeStatus = $OR_Datagaurd_ACTIVE;
+	} else if ($actionStatus == $OR_Datagaurd_ThereisnoDataGuardAgentrunning) {
+		 $protectionSchemeStatus = $OR_Datagaurd_UNKNOWN;
+	} else {
+		 $protectionSchemeStatus = $OR_Datagaurd_INACTIVE;
+	}
+	_assertExists($OR_Datagaurd_protectionschemeStatusDB, $protectionSchemeStatus);
+}
+	var $protectionSchemeStatusDb=new java.util.Properties();
+	$protectionSchemeStatusDb.put($OR_Datagaurd_protectionschemeStatusDB, $protectionSchemeStatus);
+	return $protectionSchemeStatusDb;
+}
+
+/**
+* Function is for Verify Protection Schemes Status in OracleDG  solution from PR.
+*@param : null
+*@return : null
+* Author: Aditi Jain
+*
+*/
+function Verify_Protection_Scheme_Status_PR(){
+	Verify_Protection_Scheme_Status($drmServer, $drmUserName, $drmPassword,$compIPPR, $remoteUserNameValPR, $remotePwdValPR,$sernamePR);
+}
+
+/**
+* Function is for Verify Protection Schemes Status in OracleDG  solution from DR.
+*@param : null
+*@return : null
+* Author: Aditi Jain
+*
+*/
+function Verify_Protection_Scheme_Status_DR(){
+	Verify_Protection_Scheme_Status($drmServer, $drmUserName, $drmPassword,$compIPDR, $remoteUserNameValDR, $remotePwdValDR,$sernameDR);
+}
+
+/**
+* Function is for Verify Protection Schemes Status in OracleDG  solution.
+*@param : $drmServer, $drmUserName, $drmPassword,$compIP, $remoteUserNameVal, $remotePwdVal,$sername
+*@return : null
+* Author: Aditi Jain
+*
+*/
+function Verify_Protection_Scheme_Status($drmServer, $drmUserName, $drmPassword,$compIP, $remoteUserNameVal, $remotePwdVal,$sername){
+	var $protectionSchemeStatusDb=Get_Status_Protection_Scheme($drmServer, $drmUserName, $drmPassword,$compIP, $remoteUserNameVal, $remotePwdVal,$sername);
+	var $protectionSchemeStatusGui=Get_Protectionscheme_Status_Gui($sername);
+	
+	_assertEqual($protectionSchemeStatusDb.get($OR_Datagaurd_protectionschemeStatusDB),$protectionSchemeStatusGui.get($OR_Datagaurd_status),$OR_Datagaurd_ComparingReplicationStatusfromDbandGUI);
+	
+}
+
+

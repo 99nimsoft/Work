@@ -1,0 +1,176 @@
+
+_include("../Library/Solution_Signature/Include/Solution_function_Includes.sah");
+
+// mentioned the correct parameter file name which user are going to execute within the "" code.
+_include("../conf/DRMInstallation_Parameter.sah");
+_include("../conf/OracleFDB_SRDF/Oracle_FDB_SRDF_Remote_Agent_Parameter.sah");
+
+_include("../conf/OracleFDB_SRDF/UserSelected_OracleFDB_SRDF_Testcase.sah");
+
+
+Login_001();
+Get_latest_Build();
+WorkFlow_copy_001();
+Agent_UnInstllation_001();
+Agent_PropertyFile_Update_001();
+
+
+_log("=================================Test========================================","Custom1");
+
+
+/*
+if($g_executeOracleSRDFAll == "Y" || $g_siteOracleSRDF == "Y"){
+	var $test0 = _testcase("Site_0003","Create New Site");
+	$test0.start(); 
+		Site_0003();
+	$test0.end();
+}
+
+if($g_executeOracleSRDFAll == "Y" || $g_agentNodeOracleSRDF == "Y"){
+	var $test1 = _testcase("Object_Manager/ Common/ Components/ Component_04","Create Agent Node");
+	$test1.start();
+		Agent_node_001();
+	$test1.end();
+}
+
+if($g_executeOracleSRDFAll == "Y" || $g_componentRemoteDiscoveryOracleSRDF == "Y"){
+	var $test2 = _testcase("Object_Manager/ Common/ Components/ Component_04","Create New Component");
+	$test2.start();
+		OracleFDB_SRDF_Component_Local_Discovery_0002();
+	$test2.end();
+}
+
+if($g_executeOracleSRDFAll == "Y" || $g_datasetDiscoveryOracleSRDF == "Y"){
+	var $test3 = _testcase("Object_Manager/Dataset/Oracle/OraDiscovery_0006 ","Dataset Discovery");
+	$test3.start();
+		OracleSRDF_Dataset_Discovery_0007();
+	$test3.end();
+}
+
+if($g_executeOracleSRDFAll == "Y" || $g_datasetDiscoveryOracleSRDF == "Y"){
+	var $test4 = _testcase("Object_Manager/Dataset/Oracle/OraDiscovery_0006 ","Dataset Discovery");
+	$test4.start();
+		OracleSRDF_Auto_DatasetDiscovery0009();
+	$test4.end();
+}
+
+if($g_executeOracleSRDFAll == "Y" || $g_protectionSchemeDiscoveryOracleSRDF == "Y"){
+	var $test5 = _testcase("EMC_SRDF/RDFOraFDB_GrpDisc_001","Protection Scheme Discovery");
+	$test5.start();
+		OracleSRDF_Protectionscheme_Discovery_0018();
+	$test5.end();
+}
+
+if($g_executeOracleSRDFAll == "Y" || $g_groupCreationOracleSRDF == "Y"){
+	var $test6 = _testcase("EMC_SRDF/RDFOraFDB_GrpDisc_001","OracleSRDF Group Creation");
+	$test6.start();
+		OracleSRDF_GroupCreation_0022();
+	$test6.end();
+}
+
+if($g_executeOracleSRDFAll == "Y" || $g_moveGroupToManageOracleSRDF == "Y"){
+	var $test7 = _testcase("Continuity_Manager/Common/FG/Group/GroupCreation_0006","Move Group to Manage");
+	$test7.start();
+		OracleSRDF_Move_Group_Manage_0006();
+	$test7.end();
+}
+
+if($g_executeOracleSRDFAll == "Y" || $g_changeContinuityStateOracleSRDF == "Y"){
+	var $test8 = _testcase("Continuity_Manager/Common/FG/Manage/Change_Continuity_State_0001","Change Continuity Status");
+	$test8.start();
+		OracleSRDF_Change_Continuity_State_0001();
+	$test8.end();
+}
+
+
+
+
+if($g_executeOracleSRDFAll == "Y" || $g_continuityStatusOracleSRDF == "Y"){
+	var $test9 = _testcase("Continuity_Manager/Common/FG/Monitor/MON_0002","Check Continuity Status");
+	$test9.start();
+		OracleSRDF_Contiunity_Status_0002();
+	$test9.end();
+}
+
+if($g_executeOracleSRDFAll == "Y" || $g_continuityManagenentOracleSRDF == "Y"){
+	var $test10 = _testcase("Continuity_Manager/Common/FG/Manage/Continuity_Management_0015","Change Continuity Management");
+	$test10.start();
+		OracleSRDF_Continuity_Management_0015();
+	$test10.end();
+}
+
+if($g_executeOracleSRDFAll == "Y" || $g_startNCOracleSRDF == "Y"){
+	var $test11 = _testcase("Continuity_Manager/Common/FG/Manage/NormalCopy_0001","Start NC");
+	$test11.start();
+		OracleSRDF_Start_NormalCopy_0001();
+	$test11.end();
+}
+
+
+if($g_executeOracleSRDFAll == "Y" || $g_monitorRelationshipOracleSRDF == "Y"){
+	var $test12 = _testcase("Monitor Relationship screen","Monitor RelationShip");
+	$test12.start();
+		OracleSRDF_Monitor_Relationship_0030();
+	$test12.end();
+}
+
+if($g_executeOracleSRDFAll == "Y" || $g_manageDRSolutionOracleSRDF == "Y"){
+	var $test13 = _testcase("Manage DR Solution","Manage DR Solution");
+	$test13.start();
+	   OracleSRDF_Manage_DRsolution_0029();
+	$test13.end();
+}
+
+if($g_executeOracleSRDFAll == "Y" || $g_rtoNCOracleSRDF == "Y"){
+	var $test14 = _testcase("Oracle_FullDB/Monitor/FullDB_0013","RTO Calculation");
+	$test14.start();
+		OracleSRDF_NC_RTO_0027();
+	$test14.end();
+}
+
+if($g_executeOracleSRDFAll == "Y" || $g_rpoNCOracleSRDF == "Y"){
+	var $test15 = _testcase("Oracle_FullDB/Monitor/FullDB_0013","RPO Calculation");
+	$test15.start();
+		OracleSRDF_NC_RPO_0026();
+	$test15.end();
+}
+
+
+
+if($g_executeOracleSRDFAll == "Y" || $g_rtoNCOracleSRDF == "Y"){
+	var $test16 = _testcase("EMC_SRDF/SRDF_Monitor_002","Change Continuity Status");
+	$test16.start();
+		OracleSRDF_Replication();
+	$test16.end();
+}
+*/
+//Frame_Work/ Workflow_Manager/ Import_Export_Tool 
+
+/*
+if($g_executeOracleSRDFAll == "Y" || $g_importSOSBOracleSRDF == "Y"){
+	var $test17 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0007","Import SO & SB");
+	$test17.start();
+		OracleSRDF_Import_SOSB_0007();
+	$test17.end();
+}
+if($g_executeOracleSRDFAll == "Y" || $g_stopNCOracleSRDF == "Y"){
+	var $test18 = _testcase("Stop NC", "Stop NC");
+	$test18.start();
+		OracleSRDF_Stop_NC_0002();
+	$test18.end();
+}
+
+if($g_executeOracleSRDFAll == "Y" || $g_startSOOracleSRDF == "Y"){
+	var $test19 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0011", "Start SO");
+	$test19.start();
+		OracleSRDF_Start_SO_0011();
+	$test19.end();
+}
+
+if($g_executeOracleSRDFAll == "Y" || $g_SOExecutionOracleSRDF == "Y"){
+	var $test20 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0012", "SO Execution");
+	$test20.start();
+		OracleSRDF_SO_Execution_0012();
+	$test20.end();
+}
+*/

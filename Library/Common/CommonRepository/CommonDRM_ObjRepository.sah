@@ -1,0 +1,106 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the Common DRM LOGIN LOGOUT  web object parameters
+ ** AuthorName : Anita Gaded
+ ** Created Date : FEB 2017
+ ***********************************************************************************************/
+
+var $l_drmLogin=_readExcelFile($SAHI_HOME + "\\Library\\Common\\CommonRepository\\CommonDRM_ObjRepository.xls","DRMLogin");
+var $l_siteCreation=_readExcelFile($SAHI_HOME + "\\Library\\Common\\CommonRepository\\CommonDRM_ObjRepository.xls","CreateSite");
+var $l_component =_readExcelFile($SAHI_HOME + "\\Library\\Common\\CommonRepository\\CommonDRM_ObjRepository.xls","Component");
+
+//This user Input required to Select language
+var $g_selLang = $l_drmLogin[1][2];
+if($BrowserLang == "N"){
+	_setGlobal("Selected language is ","english");
+	var $colno = 2;
+}
+else if($BrowserLang == "Y-JA"){
+	_setGlobal("Selected language is ","japanese");
+	var $colno = 3;
+	}
+
+else if($BrowserLang == "Y-EN"){
+		_setGlobal("Selected language is ","japanese");
+		var $colno = 3;
+	}
+
+
+var $obj_loginInfo = $l_drmLogin[4][$colno]; 
+var $obj_username = $l_drmLogin[5][$colno]; 
+var $obj_password = $l_drmLogin[6][$colno];
+var $obj_submit = $l_drmLogin[7][$colno];
+var $obj_drmErrMsg = $l_drmLogin[8][$colno];
+var $obj_corrAction = $l_drmLogin[9][$colno];
+var $obj_apprx = $l_drmLogin[10][$colno];
+
+var $obj_Longmsg = $l_drmLogin[11][$colno];
+var $obj_yes1 = $l_drmLogin[12][$colno];
+
+var $obj_admin = $l_drmLogin[13][$colno];
+var $obj_logout = $l_drmLogin[14][$colno];
+var $obj_FirstLogin = $l_drmLogin[15][$colno];
+var $obj_AuthFail = $l_drmLogin[16][$colno];
+var $obj_PassChange = $l_drmLogin[17][$colno];
+
+var $obj_curpassword = $l_drmLogin[18][$colno];
+var $obj_newPassword = $l_drmLogin[19][$colno];
+var $obj_confPassword = $l_drmLogin[20][$colno];
+var $obj_newPswd1 = $l_drmLogin[21][$colno];  //Cloud123$
+var $obj_newPswd2 =	 $l_drmLogin[22][$colno]; //Cloud123456789$
+var $obj_confPswd1 =  $l_drmLogin[23][$colno]; //Cloud123$
+var $obj_confPswd2 =  $l_drmLogin[24][$colno]; //Cloud123456789$
+var $obj_Loginfailed =  $l_drmLogin[25][$colno];
+var $obj_agree =  $l_drmLogin[26][$colno];
+
+//Site creation objects
+var $g_selLangSite = $l_siteCreation[1][2];
+var $g_selLang = $l_drmLogin[1][2];
+
+var $obj_site = $l_siteCreation[4][$colno]; 
+var $obj_creatnewSite = $l_siteCreation[5][$colno]; 
+var $obj_location = $l_siteCreation[6][$colno];
+var $obj_incharge = $l_siteCreation[7][$colno];
+var $obj_address = $l_siteCreation[8][$colno];
+var $obj_save = $l_siteCreation[9][$colno];
+
+//Common Component objects
+
+var $g_selLangComp = $l_component[1][2];
+
+var $obj_subsystems = $l_component[4][$colno]; 
+var $obj_components = $l_component[5][$colno]; 
+var $obj_systemtype = $l_component[6][$colno];
+var $obj_go = $l_component[7][$colno];
+var $obj_comptype = $l_component[8][$colno];
+var $obj_compip = $l_component[9][$colno];
+var $obj_compname = $l_component[10][$colno];
+var $obj_ping = $l_component[11][$colno];
+var $obj_subscriberId = $l_component[12][$colno];
+var $obj_compsite = $l_component[13][$colno];
+var $obj_credList = $l_component[14][$colno];
+var $obj_addnewcredential = $l_component[15][$colno];
+var $obj_usernameval = $l_component[16][$colno];
+var $obj_pwdval = $l_component[17][$colno];
+var $obj_testcred = $l_component[18][$colno];
+var $obj_credcheckpassed = $l_component[19][$colno];
+var $obj_save = $l_component[20][$colno];
+
+var $obj_compsuccess = $l_component[21][$colno];
+var $obj_errmsgcomp =  $l_component[22][$colno];
+var $obj_drmagentnode = $l_component[23][$colno];
+
+
+
+
+
+
+
+
+
+
+
+
+
+

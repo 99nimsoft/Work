@@ -1,0 +1,148 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the Input parameters for the Custom RAL
+ ** AuthorName : Padmavathi
+ ** Created Date : Nov 2015
+ ***********************************************************************************************/
+
+
+
+var  $l_Custom_RAL_Inputs = _readExcelFile("../../../conf/RAL/CustomAction/CustomActionInput.xls","Script");  //To read the inputs from the drm_inputs excel file.
+
+var $DRMServer = $l_Custom_RAL_Inputs[3][2]; //DRM Component IP 
+var $DRMUserName = $l_Custom_RAL_Inputs[4][2]; //DRM User Name
+var $DRMPassword = $l_Custom_RAL_Inputs[5][2]; //DRM Password
+var $DRMGUIusername = $l_Custom_RAL_Inputs[6][2]; //DRM GUI User Name
+var $DRMGUIpassword = $l_Custom_RAL_Inputs[7][2]; //DRM GUI Password
+var $PRCompIP = $l_Custom_RAL_Inputs[8][2]; // PR Component IP
+var $PRCompName = $l_Custom_RAL_Inputs[9][2]; // PR Component Name
+var $PRCompSite = $l_Custom_RAL_Inputs[10][2]; // PR Component Site
+var $PRCompUsername = $l_Custom_RAL_Inputs[11][2]; // PR Component User Name
+var $PRCompPwd = $l_Custom_RAL_Inputs[12][2]; // PR Component Password
+var $DRCompIP = $l_Custom_RAL_Inputs[13][2]; // DR Component IP
+var $DRCompName = $l_Custom_RAL_Inputs[14][2]; // DR Component Name
+var $DRCompSite = $l_Custom_RAL_Inputs[15][2]; // DR Component Site
+var $DRCompUsername = $l_Custom_RAL_Inputs[16][2]; // DR Component User Name
+var $DRCompPwd = $l_Custom_RAL_Inputs[17][2]; // DR Component Password
+var $PRDatsetName = $l_Custom_RAL_Inputs[18][2]; // PR Dataset Name
+var $DRDatasetName = $l_Custom_RAL_Inputs[19][2]; // DR Dataset Name
+var $PRArchivePath = $l_Custom_RAL_Inputs[20][2]; // PR Archive Log Path
+var $DRArchivePath = $l_Custom_RAL_Inputs[21][2]; // DR Archive Log Path
+var $PRServerName = $l_Custom_RAL_Inputs[22][2];// PR Protection Schema Name
+var $DRServerName = $l_Custom_RAL_Inputs[23][2];// DR Protection Schema Name
+var $groupName = $l_Custom_RAL_Inputs[24][2]; //Group Name
+var $systemType = $l_Custom_RAL_Inputs[25][2]; // OS Type
+var $solrisOSType = $l_Custom_RAL_Inputs[29][2]; // OS Type for Solaris
+var $solarisCompIP = $l_Custom_RAL_Inputs[30][2]; //solaris Component Ip
+var $solarisCompName = $l_Custom_RAL_Inputs[31][2]; //solaris Component Name
+var $solarisCompUserName = $l_Custom_RAL_Inputs[32][2]; //solaris Component User Name
+var $solarisCompPwd = $l_Custom_RAL_Inputs[33][2]; //solaris Component Password
+var $solarisCompSite = $l_Custom_RAL_Inputs[34][2]; //solaris Component Site
+var $solarisCmdScriptPath = $l_Custom_RAL_Inputs[35][2];
+var $solarisscriptName = $l_Custom_RAL_Inputs[36][2];
+var $solarisCommand = $l_Custom_RAL_Inputs[37][2];
+var $customActionCompTypeKeySolaris = $l_Custom_RAL_Inputs[38][2]; // Custom Action Component Type Key
+var $customActionCompTypeStaticValueSolaris = $l_Custom_RAL_Inputs[39][2]; // Custom Action Component Type Static Value
+var $customActionCompTypeDynamicValueSolaris = $l_Custom_RAL_Inputs[40][2]; // Custom Action Component Type Dynamic Value
+var $customActionCompNameKeySolaris = $l_Custom_RAL_Inputs[41][2]; // Custom Action Component Name Key
+var $customActionCompNameStaticValueSolaris = $l_Custom_RAL_Inputs[42][2]; // Custom Action Component Name Static Value
+var $customActionCompNameDynamicValueSolaris = $l_Custom_RAL_Inputs[43][2]; // Custom Action Component Name Dynamic Value
+var $AIXOSType = $l_Custom_RAL_Inputs[29][4]; // OS Type for AIX
+var $AIXCompIP = $l_Custom_RAL_Inputs[30][4]; //AIX Component IP
+var $AIXCompName = $l_Custom_RAL_Inputs[31][4]; //AIX Component Name
+var $AIXCompUserName = $l_Custom_RAL_Inputs[32][4]; //AIX Component User Name
+var $AIXCompPwd = $l_Custom_RAL_Inputs[33][4]; //AIX Component Password
+var $AIXCompSite = $l_Custom_RAL_Inputs[34][4]; //AIX Component Site
+var $AIXCmdScriptPath = $l_Custom_RAL_Inputs[35][4];
+var $AIXScriptName = $l_Custom_RAL_Inputs[36][4];
+var $AIXCommand = $l_Custom_RAL_Inputs[37][4];
+var $customActionCompTypeKeyAIX = $l_Custom_RAL_Inputs[38][4]; // Custom Action Component Type Key
+var $customActionCompTypeStaticValueAIX = $l_Custom_RAL_Inputs[39][4]; // Custom Action Component Type Static Value
+var $customActionCompTypeDynamicValueAIX = $l_Custom_RAL_Inputs[40][4]; // Custom Action Component Type Dynamic Value
+var $customActionCompNameKeyAIX = $l_Custom_RAL_Inputs[41][4]; // Custom Action Component Name Key
+var $customActionCompNameStaticValueAIX = $l_Custom_RAL_Inputs[42][4]; // Custom Action Component Name Static Value
+var $customActionCompNameDynamicValueAIX = $l_Custom_RAL_Inputs[43][4]; // Custom Action Component Name Dynamic Value
+var $HPUXOSType = $l_Custom_RAL_Inputs[29][6]; // OS Type for HPUX
+var $HPUXCompIP = $l_Custom_RAL_Inputs[30][6]; //HPUX Component IP
+var $HPUXCompName = $l_Custom_RAL_Inputs[31][6]; //HPUX Component Name
+var $HPUXCompUserName = $l_Custom_RAL_Inputs[32][6]; //HPUX Component User Name
+var $HPUXCompPwd = $l_Custom_RAL_Inputs[33][6]; //HPUX Component Password
+var $HPUXCompSite = $l_Custom_RAL_Inputs[34][6];
+var $HPUXCmdScriptPath = $l_Custom_RAL_Inputs[35][6];
+var $HPUXScriptName = $l_Custom_RAL_Inputs[36][6];
+var $HPUXCommand = $l_Custom_RAL_Inputs[37][6];
+var $customActionCompTypeKeyHPUX = $l_Custom_RAL_Inputs[38][6]; // Custom Action Component Type Key
+var $customActionCompTypeStaticValueHPUX = $l_Custom_RAL_Inputs[39][6]; // Custom Action Component Type Static Value
+var $customActionCompTypeDynamicValueHPUX = $l_Custom_RAL_Inputs[40][6]; // Custom Action Component Type Dynamic Value
+var $customActionCompNameKeyHPUX = $l_Custom_RAL_Inputs[41][6]; // Custom Action Component Name Key
+var $customActionCompNameStaticValueHPUX = $l_Custom_RAL_Inputs[42][6]; // Custom Action Component Name Static Value
+var $customActionCompNameDynamicValueHPUX = $l_Custom_RAL_Inputs[43][6]; // Custom Action Component Name Dynamic Value
+var $workflowName = $l_Custom_RAL_Inputs[3][4]; //Workflow Name
+var $customActionCompTypeKey = $l_Custom_RAL_Inputs[4][4]; // Custom Action Component Type Key
+var $customActionCompTypeStaticValue = $l_Custom_RAL_Inputs[5][4]; // Custom Action Component Type Static Value
+var $customActionCompTypeDynamicValue = $l_Custom_RAL_Inputs[6][4]; // Custom Action Component Type Dynamic Value
+var $customActionCompNameKey = $l_Custom_RAL_Inputs[7][4]; // Custom Action Component Name Key
+var $customActionCompNameStaticValue = $l_Custom_RAL_Inputs[8][4]; // Custom Action Component Name Static Value
+var $customActionCompNameDynamicValue = $l_Custom_RAL_Inputs[9][4]; // Custom Action Component Name Dynamic Value
+var $serverName = $l_Custom_RAL_Inputs[10][4]; //Server Name
+var $cmdScriptPath = $l_Custom_RAL_Inputs[11][4]; // Comman or Script Path
+var $command = $l_Custom_RAL_Inputs[12][4]; // Command
+var $scriptName = $l_Custom_RAL_Inputs[13][4]; //Script Name
+var $sudo = $l_Custom_RAL_Inputs[14][4]; //Sudo is Enable or Disable
+var $sudoUserName = $l_Custom_RAL_Inputs[15][4]; // Sudo User Name
+var $sudoPassword = $l_Custom_RAL_Inputs[16][4]; // Sudo Password
+var $timeOut = $l_Custom_RAL_Inputs[17][4]; // Time Out
+var $ralString = $l_Custom_RAL_Inputs[18][4]; //Ral String to search category
+var $ralCategory = $l_Custom_RAL_Inputs[19][4]; //RAL Category Name
+var $ralName = $l_Custom_RAL_Inputs[20][4]; // RAL Name
+
+var $cmdScriptPathsudo=$l_Custom_RAL_Inputs[24][4];
+
+
+var $sshCommand = "sh " + $cmdScriptPath;
+//var $sshCommandSudo = "sudo -u " + $sudoUserName + " "  + $cmdScriptPath;
+var $sshCommandSudo = "sudo -u " + $sudoUserName + " "  + $cmdScriptPathsudo;
+var $sshCommandSolaris = "sh " + $solarisCmdScriptPath;
+var $sshCommandAIX = "sh " + $AIXCmdScriptPath;
+var $sshCommandHPUX = "sh " + $HPUXCmdScriptPath;
+
+
+var $cust_lnxSite="SCC_Site";
+var $cust_os_Lnx="Linux";
+var $cust_lnxSerIP=$l_Custom_RAL_Inputs[21][4];
+
+//var $compName=""Sudo";
+var $cust_lnxCompNm=$cust_os_Lnx+"_"+$cust_lnxSerIP;
+var $cust_lnxSerUserNm =$l_Custom_RAL_Inputs[22][4];
+var $cust_SerPassWord=$l_Custom_RAL_Inputs[23][4];
+
+//Windows
+var	$WindowsCommand=$l_Custom_RAL_Inputs[12][6];
+var	$WindowsCompIP=$l_Custom_RAL_Inputs[5][6];
+var	$WindowsCompUserName=$l_Custom_RAL_Inputs[7][6];
+var $WindowsCompPwd=$l_Custom_RAL_Inputs[8][6];
+var $WindowsCmdScriptPath=$l_Custom_RAL_Inputs[10][6];
+var $cust_WinSerIP=$l_Custom_RAL_Inputs[5][6];
+var $WindowsCompName=$l_Custom_RAL_Inputs[6][6];
+
+
+var $customActionCompTypeKeyWindows=$l_Custom_RAL_Inputs[13][6];
+var $customActionCompTypeDynamicValueWindows=$l_Custom_RAL_Inputs[14][6];
+var  $customActionCompNameKeyWindows=$l_Custom_RAL_Inputs[16][6];
+var $customActionCompNameDynamicValueWindows=$l_Custom_RAL_Inputs[17][6];
+//$WorkflowName, $WindowsCmdScriptPath, $customActionCompTypeKeyWindows, 
+//$customActionCompTypeStaticValueWindows, $customActionCompNameKeyWindows,
+//$customActionCompNameStaticValueWindows
+
+
+var $cust_WinSite="SCC_Site";
+var $cust_os_Win="Windows";
+
+var $cust_WinCompNm=$cust_os_Win+"_"+$cust_WinSerIP;
+
+//$systemType, $PRCompIP, $PRCompName, $PRCompSite
+var $os_Type=$l_Custom_RAL_Inputs[29][4];
+var $AIXPRCompIP=$l_Custom_RAL_Inputs[30][4];
+var $AIXPRCompName=$l_Custom_RAL_Inputs[31][4];
+var $AIXPRCompSite=$l_Custom_RAL_Inputs[10][2];

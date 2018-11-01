@@ -1,0 +1,319 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains Creation of Protection Scheme for both remote and local agents. 
+ ** AuthorName : Govinda Mengji
+ ** Created Date : July 2013
+ ************************************************************************/
+
+
+/**
+* Function is for Creating Protection Schemes in Oracle  solution for PR.
+*@param :  null
+*@return : null
+* Author: Govinda Mengji
+*
+*/
+		
+function Create_Oracle_PFR_ProtectionSchemePR() {
+   Create_Oracle_ProtectionScheme($systemTypeProtection, $sernamePR,  $mgmtHostPFRPR);
+   }//end of Oracle_ProtectionschemePR()
+   
+/**
+* Function is for Creating Protection Schemes in Oracle  solution for DR.
+*@param :  null
+*@return : null
+* Author: Govinda Mengji
+*
+*/
+function Create_Oracle_PFR_ProtectionSchemeDR() {
+   Create_Oracle_ProtectionScheme($systemTypeProtection, $sernameDR,  $mgmtHostPFRDR);
+   }//end of Oracle_ProtectionschemeDR() 
+
+/**
+* Function is for Creating Protection Schemes in Oracle  solution.
+*@param :  $systemType, $sername,  $mgmtHostPFR
+*@return : null
+* Author: Govinda Mengji
+*
+*/
+function Create_Oracle_ProtectionScheme($systemTypeProtection,$sername,$mgmtHostPFR)
+  {
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($ProtectionSchemes));
+	if (_exists(_link($sername))) {
+		_assertExists($OR_MSSQL_Protectionschemealreadyexists);
+	} else {
+	_setSelected(_select($OR_MSSQL_systemType), $systemTypeProtection);
+	_click(_button($Go));
+	
+	_setSelected(_select($OR_MSSQL_mgmtHost_PFR2), $mgmtHostPFR);
+	_setValue(_textbox($OR_MSSQL_sername), $sername);
+    if (_exists(_link($RegisterAgent))) 
+    {
+	_click(_link($RegisterAgent));
+	_wait(30000);//, _cell($CONNECTED));
+	} 
+	
+	var $status = _getCellText(_cell(1, _near(_cell($Status))));
+	if($status == $CONNECTED)
+	{
+	_assertExists($OR_MSSQL_AgentisCONNECTED);
+	}
+	// code -added
+	else if (_exists(_link($RegisterAgent))) 
+    {
+	_click(_link($RegisterAgent));
+	_wait(110000, _cell($CONNECTED));
+	} 
+	else
+	{
+	 _fail($OR_Oracle_Subsystems);
+	}
+	_clearLastAlert();
+	_click(_button($Save));
+	_wait(3000);
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($ProtectionSchemes));
+	if (_exists(_link($sername))) 
+	{
+	_assertExists($OR_MSSQL_ProtectionSchemescreatedsuccesfully);
+	} 
+	else 
+	{
+		_assertEqual($OR_MSSQL_ProtectionSchemecreated,_lastAlert()); 
+	_fail($OR_MSSQL_ProtectionSchemesnotcreatedsuccesfully);
+	}
+}
+}
+
+///////////////
+
+
+
+
+
+/**
+* Function is for get Protection Schemes Status in OracleDG  solution from PR.
+*@param : null
+*@return : null
+* Author: Govinda Mengji
+*
+*/
+function Get_Status_Protection_Scheme_PR(){
+	Get_Status_Protection_Scheme($drmServer, $drmUserName, $drmPassword,$localAgentPathPR,$compIPPR, $remoteUserNameValPR, $remotePwdValPR,$sernamePR);
+	 
+}
+
+/**
+* Function is for get Protection Schemes Status in OracleDG  solution from DR.
+*@param : null
+*@return : null
+* Author: Govinda Mengji
+*
+*/
+function Get_Status_Protection_Scheme_DR(){
+	Get_Status_Protection_Scheme($drmServer, $drmUserName, $drmPassword,$localAgentPathDR,$compIPDR, $remoteUserNameValDR, $remotePwdValDR,$sernameDR);
+	}
+
+
+/**
+* Function is for get Protection Schemes Status in OracleDG  solution.
+*@param : $drmServer, $drmUserName, $drmPassword,$compIP, $remoteUserNameVal, $remotePwdVal,$sername
+*@return : null
+* Author: Govinda Mengji
+*
+*/
+
+function Get_Status_Protection_Scheme($drmServer, $drmUserName, $drmPassword,$localAgentPath,$compIP, $remoteUserNameVal, $remotePwdVal,$sername) {
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($ProtectionSchemes));
+	//_assertExists($OR_Oracle_Agenttypeis, $agentType);
+	_log("Agent Type is:="+$agentType);
+	if($agentType=="Remote"){
+		var $sshCommand = '../..' + $EAMSROOT + 'bin/'+"PFRAgent.sh status" + " " + $compIP + ' LINUXSERVER';
+
+		var $status = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	
+		_wait(3000);
+
+		var $actionStatus =$status.match($OR_Oracle_PFRAgentrunning);
+		$actionStatus = $actionStatus.toString().replace(/[^a-zA-Z ]/g, "");
+
+		/*var $action = $status.get($output);
+		var $actionStatus = $action.toString();
+		var $actionTime = $actionStatus.split("[");
+		var $year = currentYear();
+		var $actionStatus1 = $actionTime[0].split($year);
+		var $actionStatus = $actionStatus1.pop();
+		*/
+		
+		_assertExists($OR_Oracle_actionStatus,$actionStatus);
+		if ($actionStatus == $OR_Oracle_PFRAgentrunning) {
+			var $protectionSchemeStatus = $OR_Oracle_ACTIVE;
+		} else if ($actionStatus == $OR_Oracle_ThereisnoPFRAgentisrunning) {
+			var $protectionSchemeStatus = $OR_Oracle_UNKNOWN;
+		} else {
+			var $protectionSchemeStatus = $OR_Oracle_INACTIVE;
+		}
+	}
+	//Local agentType
+	else{
+	_assertExists($OR_Oracle_Agenttypeis, $agentType); 
+	var $sshCommand = '../..' + $localAgentPath + "DRMAgents/PFRAgent.sh status";
+	//var $status = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	// code updaed here
+	var $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);	
+	var $actionStatus =$status;
+	$actionStatus = $actionStatus.toString().replace(/[^a-zA-Z ]/g, "");
+	_wait(3000);
+	
+	//var $action = $status.get("output");
+	//var $actionStatus1 = $action.toString();
+	//var $actionStatus = $actionStatus1.split(",");
+	//_assertExists("actionStatus is:", $actionStatus[1]);
+	_assertExists(LinuxAgentPFRStatus, $actionStatus);
+		if ($actionStatus == $OR_Oracle_PFRAgentisrunning) {
+			var $protectionSchemeStatus = $OR_Oracle_ACTIVE;
+		} else if ($actionStatus == $OR_Oracle_PFRAgentstopped){
+			var $protectionSchemeStatus = $OR_Oracle_UNKNOWN;
+		} else {
+			var $protectionSchemeStatus = $OR_Oracle_INACTIVE;
+		}
+		
+    }
+//	var $protectionSchemeStatusDb=new java.util.Properties();
+//	$protectionSchemeStatusDb.put($protectionschemeStatusDB, $protectionSchemeStatus);
+//	return $protectionSchemeStatusDb;
+	return $protectionSchemeStatus;
+}
+
+/**
+* Function is for Verify Protection Schemes Status in OracleDG  solution from PR.
+*@param : null
+*@return : null
+* Author: Aditi Jain
+*
+*/
+function Verify_Protection_Scheme_Status_PR(){
+	Verify_Protection_Scheme_Status($drmServer, $drmUserName, $drmPassword,$localAgentPathPR,$compIPPR, $remoteUserNameValPR, $remotePwdValPR,$sernamePR);
+}
+
+/**
+* Function is for Verify Protection Schemes Status in OracleDG  solution from DR.
+*@param : null
+*@return : null
+* Author: Aditi Jain
+*
+*/
+function Verify_Protection_Scheme_Status_DR(){
+	Verify_Protection_Scheme_Status($drmServer, $drmUserName, $drmPassword,$localAgentPathDR,$compIPDR, $remoteUserNameValDR, $remotePwdValDR,$sernameDR);
+}
+
+/**
+* Function is for Verify Protection Schemes Status in OracleDG  solution.
+*@param : $drmServer, $drmUserName, $drmPassword,$compIP, $remoteUserNameVal, $remotePwdVal,$sername
+*@return : null
+* Author: Aditi Jain
+*
+*/
+function Verify_Protection_Scheme_Status($drmServer, $drmUserName, $drmPassword,$localAgentPath,$compIP, $remoteUserNameVal, $remotePwdVal,$sername){
+	var $protectionSchemeStatusDb=Get_Status_Protection_Scheme($drmServer, $drmUserName, $drmPassword,$localAgentPath,$compIP, $remoteUserNameVal, $remotePwdVal,$sername);
+	var $protectionSchemeStatusGui=Get_Protectionscheme_Status_Gui($sername);
+	//_assertEqual($protectionSchemeStatusDb.get($OR_Oracle_protectionschemeStatusDB),$protectionSchemeStatusGui.get("status"),"Comparing Replication Status from Db and GUI");
+	_assertTrue($protectionSchemeStatusDb.toLowerCase()==$protectionSchemeStatusGui.toLowerCase(),"Comparing Replication Status from Db and GUI");
+}
+
+
+////
+/**
+* Function is for get Protection Schemes Status in APP PFR  solution from PR.
+*@param : null
+*@return : null
+* Author: Anita
+*
+*/
+function Get_Status_Protection_Scheme_PFR_PR(){
+	Get_Status_Protection_Scheme_PFR($drmServer, $drmUserName, $drmPassword,$localAgentPathPR,$compIPPR, $remoteUserNameValPR, $remotePwdValPR,$sernamePR);
+	 
+}
+
+/**
+* Function is for get Protection Schemes Status in APP PFR  solution from DR.
+*@param : null
+*@return : null
+* Author: Anita
+*
+*/
+function Get_Status_Protection_Scheme_PFR_DR(){
+	Get_Status_Protection_Scheme_PFR($drmServer, $drmUserName, $drmPassword,$localAgentPathDR,$compIPDR, $remoteUserNameValDR, $remotePwdValDR,$sernameDR);
+	}
+
+
+/**
+* Function is for get Protection Schemes Status in APP PFR  solution.
+*@param : $drmServer, $drmUserName, $drmPassword,$compIP, $remoteUserNameVal, $remotePwdVal,$sername
+*@return : null
+* Author: anita
+*/
+
+function Get_Status_Protection_Scheme_PFR($drmServer, $drmUserName, $drmPassword,$localAgentPath,$compIP, $remoteUserNameVal, $remotePwdVal,$sername) {
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($ProtectionSchemes));
+	_assertExists($OR_Oracle_Agenttypeis, $agentType);
+	if($agentType=="Remote"){
+		var $sshCommand = '../.' + $localAgentPath + 'bin/'+"PFR.sh status" + " " + $compIP + ' LINUXSERVER';
+		var $status = Execute_Ssh_Command($drmServer, $drmUserName, $drmPassword, $sshCommand);
+		var $action = $status.get("output");
+		var $actionStatus = $action.toString();
+		var $actionTime = $actionStatus.split("[");
+		var $year = currentYear();
+		var $actionStatus1 = $actionTime[0].split($year);
+		var $actionStatus = $actionStatus1.pop();
+		_assertExists("actionStatus",$actionStatus);
+		if ($actionStatus == $OR_Oracle_PFRAgentisrunning) {
+			var $protectionSchemeStatus = $OR_Oracle_ACTIVE;
+		} else if ($actionStatus == $OR_Oracle_ThereisnoPFRAgentisrunning) {
+			var $protectionSchemeStatus = $OR_Oracle_UNKNOWN;
+		} else {
+			var $protectionSchemeStatus = $OR_Oracle_INACTIVE;
+		}
+		_assertExists($OR_Oracle_protectionschemeStatusDB, $protectionSchemeStatus);
+	}
+	//Local agentType
+	else{
+	_assertExists("Agent type is:", $agentType); 
+	var $sshCommand = '../.' + $localAgentPath + "DRMAgents/PFRAgent.sh status";
+	//var $status = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	// code updaed here
+	var $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	var $actionStatus =$status;
+	//var $action = $status.get("output");
+	//var $actionStatus1 = $action.toString();
+	//var $actionStatus = $actionStatus1.split(",");
+	//_assertExists("actionStatus is:", $actionStatus[1]);
+	_assertExists($OR_Oracle_LinuxAgentPFRStatus, $actionStatus);
+		if ($actionStatus == $OR_Oracle_PFRAgentisrunning) {
+			var $protectionSchemeStatus = $OR_Oracle_ACTIVE;
+		} else if ($actionStatus == $OR_Oracle_PFRAgentstopped){
+			var $protectionSchemeStatus = $OR_Oracle_UNKNOWN;
+		} else {
+			var $protectionSchemeStatus = $OR_Oracle_INACTIVE;
+		}
+		_assertExists($OR_Oracle_protectionschemeStatusDB, $protectionSchemeStatus);
+    }
+	var $protectionSchemeStatusDb=new java.util.Properties();
+	
+	$protectionSchemeStatusDb.put($OR_Oracle_protectionschemeStatusDB, $protectionSchemeStatus);
+	return $protectionSchemeStatusDb;
+}
+
+
+
+
+
+

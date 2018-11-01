@@ -1,0 +1,198 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains APP PFR Solution specific
+ ** AuthorName : 
+ ** Created Date : 
+ ***********************************************************************************************/
+
+var $Excel1=_getExcel($SAHI_HOME + "\\Library\\Solution_Signature\\MSSQL_LOG_SHIPPING\\ObjectRepository\\MSSQL_LOGSHIPPING_ObjectRepository.xls","Param");
+
+var $Excel=$Excel1.getData();
+
+if($BrowserLang != "Y"){
+	_setGlobal("Selected language is ","english");
+	var $j = 2;
+}
+else{
+	_setGlobal("Selected language is ","japanese");
+	var $j = 3;
+}
+////////////////////Solution\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+var $DiscoverRecoveryGroup=$Excel[2][$j];
+var $Next=$Excel[3][$j];
+var $ServerComponent=$Excel[4][$j];
+var $PrimaryComponent=$Excel[5][$j];
+var $RemoteComponent=$Excel[6][$j];
+var $Save=$Excel[7][$j];
+var $ApplicationDataset=$Excel[8][$j];
+var $showAll=$Excel[9][$j];
+var $Save=$Excel[10][$j];
+var $Next=$Excel[11][$j];
+var $License=$Excel[12][$j];
+var $Recovery=$Excel[13][$j];
+var $Test=$Excel[14][$j];
+var $licensebutton=$Excel[15][$j];
+var $RPORTO=$Excel[16][$j];
+var $apply=$Excel[17][$j];
+var $Finish=$Excel[18][$j];
+var $SolutionDetails=$Excel[19][$j];
+var $ShowAdvancedConfiguration=$Excel[20][$j];
+var $CurrentDiskUtilization=$Excel[21][$j];
+var $CurrentDiskUtilization1=$Excel[22][$j];
+var $LastLogFilebackedup=$Excel[23][$j];
+var $LastLogFilebackedupat=$Excel[24][$j];
+var $LastLogFileRestored=$Excel[25][$j];
+var $LastLogFileRestoredat=$Excel[26][$j];
+var $LastLogFilebackedup=$Excel[27][$j];
+var $LastLogFilebackedup=$Excel[28][$j];
+var $LastLogFilebackedupat=$Excel[29][$j];
+var $LastLogFilebackedupat=$Excel[30][$j];
+var $LastLogFileRestored=$Excel[31][$j];
+var $LastLogFileRestored=$Excel[32][$j];
+var $LastLogFileRestoredat=$Excel[33][$j];
+var $LastLogFileRestoredat=$Excel[34][$j];
+var $Manage=$Excel[35][$j];
+var $GroupsListView=$Excel[36][$j];
+var $GroupInformation=$Excel[37][$j];
+var $LastLogFilebackedup=$Excel[38][$j];
+var $GoAhead=$Excel[39][$j];
+var $LastLogFilebackedup=$Excel[40][$j];
+var $LastLogFilebackedupat=$Excel[41][$j];
+var $LastLogFilebackedupat=$Excel[42][$j];
+var $LastLogFileRestored=$Excel[43][$j];
+var $LastLogFileRestored=$Excel[44][$j];
+var $LastLogFileRestoredat=$Excel[45][$j];
+var $LastLogFileRestoredat=$Excel[46][$j];
+var $LastTransactionIDLSN=$Excel[47][$j];
+var $LastTransactionIDLSN=$Excel[48][$j];
+var $LastTransactionIDLSN=$Excel[49][$j];
+var $LastTransactionTime=$Excel[50][$j];
+var $LastTransactionTime=$Excel[51][$j];
+var $LastTransactionIDLSN1=$Excel[52][$j];
+var $LastTransactionIDLSN1=$Excel[53][$j];
+var $LastTransactionIDLSN1=$Excel[54][$j];
+var $LastTransactionTime1=$Excel[55][$j];
+var $LastTransactionTime1=$Excel[56][$j];
+var $CurrentAppRPO=$Excel[57][$j];
+var $Test=$Excel[58][$j];
+var $TestListView=$Excel[59][$j];
+var $Configure4=$Excel[60][$j];
+var $InsertAction=$Excel[61][$j];
+var $actionCategory6=$Excel[62][$j];
+var $action=$Excel[63][$j];
+var $Select=$Excel[64][$j];
+var $Save1=$Excel[65][$j];
+var $Test=$Excel[66][$j];
+var $TestListView=$Excel[67][$j];
+var $StartTest4=$Excel[68][$j];
+var $IntegrityCheckoperationcompletedSUCCESSFULLY=$Excel[69][$j];
+var $ImportExportWorkflow=$Excel[70][$j];
+var $Export=$Excel[71][$j];
+var $Protection=$Excel[72][$j];
+var $PrimaryRemoteServices=$Excel[73][$j];
+var $DataLag=$Excel[74][$j];
+var $PrimaryRemoteServices=$Excel[75][$j];
+var $TotalReplicatedActualSize=$Excel[76][$j];
+var $LastReplicatedFile1=$Excel[77][$j];
+var $LastReplicatedFilesize=$Excel[78][$j];
+var $FileSystemModifiedFile=$Excel[79][$j];
+var $TotalPendingfiles=$Excel[80][$j];
+var $TotalPendingfilestobedeleted=$Excel[81][$j];
+var $LastReplicationFailureCause=$Excel[82][$j];
+var $TotalSkippedFiles=$Excel[83][$j];
+var $TotalFailedLockedFiles=$Excel[84][$j];
+var $TotalReplicatedSizeIO=$Excel[85][$j];
+var $ReplicationStartedat=$Excel[86][$j];
+var $ReplicationCompletedat=$Excel[87][$j];
+var $LastReplicationsuccesstime=$Excel[88][$j];
+var $LastReplicationfailuretime=$Excel[89][$j];
+var $Lastscantime=$Excel[90][$j];
+var $LastReplicatedFiletime=$Excel[91][$j];
+var $Throughput=$Excel[92][$j];
+var $FileSystemModifiedTime=$Excel[93][$j];
+var $Login=$Excel[94][$j];
+var $Add=$Excel[95][$j];
+var $Add=$Excel[96][$j];
+var $AddFileset=$Excel[97][$j];
+var $Enable=$Excel[98][$j];
+var $Enable=$Excel[99][$j];
+var $Logout=$Excel[100][$j];
+var $Subsystems=$Excel[101][$j];
+var $ProtectionSchemes=$Excel[102][$j];
+var $ProtectionSchemeFilesetName=$Excel[103][$j];
+var $ExecutionStatus=$Excel[104][$j];
+var $AwaitingInput1=$Excel[105][$j];
+var $AwaitingInput=$Excel[106][$j];
+var $OKtrueuserInputButtonbtnbtnprimarybtnxsbtnbtninfo=$Excel[107][$j];
+var $OKtrueuserInputButtonbtnbtnprimarybtnxsbtnbtninfo=$Excel[108][$j];
+var $ContinueassuccessCONTINUEASSUCCESSuserInputButtonbtnbtnprimarybtnxsbtnbtninfo=$Excel[109][$j];
+var $PANCOSA1011ExecutionofTCLscriptMSSQLSOExecRestorejobSyncCounttclfailed=$Excel[110][$j];
+var $ContinueassuccessCONTINUEASSUCCESSuserInputButtonbtnbtnprimarybtnxsbtnbtninfo=$Excel[111][$j];
+var $PANCOSA1011ExecutionofTCLscriptMSSQLSORecoverDBtclfailed=$Excel[112][$j];
+var $ContinueassuccessCONTINUEASSUCCESSuserInputButtonbtnbtnprimarybtnxsbtnbtninfo=$Excel[113][$j];
+var $SUCCESS=$Excel[114][$j];
+var $EXECUTING=$Excel[115][$j];
+var $FAILED=$Excel[116][$j];
+var $OKtrueuserInputButtonbtnbtnprimarybtnxsbtnbtninfo=$Excel[117][$j];
+var $OKtrueuserInputButtonbtnbtnprimarybtnxsbtnbtninfo=$Excel[118][$j];
+var $ContinueassuccessCONTINUEASSUCCESSuserInputButtonbtnbtnprimarybtnxsbtnbtninfo=$Excel[119][$j];
+var $PANCOSA1011ExecutionofTCLscriptMSSQLSBExecRestorejobSyncCounttclfailed=$Excel[120][$j];
+var $ContinueassuccessCONTINUEASSUCCESSuserInputButtonbtnbtnprimarybtnxsbtnbtninfo=$Excel[121][$j];
+var $PANCOSA1011ExecutionofTCLscriptMSSQLSBRecoverDBtclfailed=$Excel[122][$j];
+var $ContinueassuccessCONTINUEASSUCCESSuserInputButtonbtnbtnprimarybtnxsbtnbtninfo=$Excel[123][$j];
+var $PANCOSA1011ExecutionofTCLscriptMSSQLSBRecoverDBtclfailed=$Excel[124][$j];
+var $ContinueassuccessCONTINUEASSUCCESSuserInputButtonbtnbtnprimarybtnxsbtnbtninfo=$Excel[125][$j];
+var $PANCOSA1011ExecutionofTCLscriptMSSQLSBRecoverDBtclfailed=$Excel[126][$j];
+var $ContinueassuccessCONTINUEASSUCCESSuserInputButtonbtnbtnprimarybtnxsbtnbtninfo=$Excel[127][$j];
+
+/////////////Datasets\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+var $Subsystems=$Excel[128][$j];
+var $Datasets=$Excel[129][$j];
+var $Go=$Excel[130][$j];
+var $RegisterAgent=$Excel[131][$j];
+var $RegisterAgent=$Excel[132][$j];
+var $RegisterAgents=$Excel[133][$j];
+var $Subsystems=$Excel[134][$j];
+var $Datasets=$Excel[135][$j];
+var $Go=$Excel[136][$j];
+var $CONNECTED=$Excel[137][$j];
+var $TestCredentials=$Excel[138][$j];
+var $AddNew=$Excel[139][$j];
+var $Default=$Excel[140][$j];
+var $TestCredentials1=$Excel[141][$j];
+var $Discover=$Excel[142][$j];
+var $Save=$Excel[143][$j];
+var $Subsystems=$Excel[144][$j];
+var $Datasets=$Excel[145][$j];
+var $Subsystems=$Excel[146][$j];
+var $Datasets=$Excel[147][$j];
+var $DataFileNames=$Excel[148][$j];
+var $TransactionLogFileNames=$Excel[149][$j];
+var $Subsystems=$Excel[150][$j];
+var $Datasets=$Excel[151][$j];
+var $DataFileNames=$Excel[152][$j];
+var $TransactionLogFileNames=$Excel[153][$j];
+var $Subsystems=$Excel[154][$j];
+var $Datasets=$Excel[155][$j];
+var $DataFileNames=$Excel[156][$j];
+var $TransactionLogFileNames=$Excel[157][$j];
+var $Subsystems=$Excel[158][$j];
+var $Datasets=$Excel[159][$j];
+var $Go=$Excel[160][$j];
+var $RegisterAgent=$Excel[161][$j];
+var $RegisterAgent=$Excel[162][$j];
+var $RegisterAgents=$Excel[163][$j];
+var $Subsystems=$Excel[164][$j];
+var $Datasets=$Excel[165][$j];
+var $Go=$Excel[166][$j];
+var $CONNECTED=$Excel[167][$j];
+var $TestCredentials=$Excel[168][$j];
+var $TestCredentials1=$Excel[169][$j];
+var $Add=$Excel[170][$j];
+var $Transactionlogfilenameincludepath=$Excel[171][$j];
+var $Save=$Excel[172][$j];
+var $Subsystems=$Excel[173][$j];
+var $Datasets=$Excel[174][$j];

@@ -1,0 +1,126 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains Creation of postgres Dataset  
+ ** AuthorName : Aditi Jain
+ ** Created Date :nov 2013
+ ************************************************************************/
+
+
+/**
+* Function is for PR Dataset Creation of PostgreSQL SR solution
+*@param : null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+
+function Create_PostgresSR_DatasetPR(){
+	Create_PostgresSR_Dataset($systemTypeDatasetSR,$compNamePR, $datasetType,$datasetNamePR, $userNameValPR, $pwdValPR, $postgresHome, $postgresData, $compIPPR, $port,$userNamePR,$pwdPR,$dbSidSelect);
+	
+}
+
+/**
+* Function is for DR Dataset Creation of PostgreSQL SR solution
+*@param : null
+*@return : null
+*@Author: Aditi Jain
+*
+*/	
+function Create_PostgresSR_DatasetDR(){
+	Create_PostgresSR_Dataset($systemTypeDatasetSR,$compNameDR, $datasetType,$datasetNameDR, $userNameValDR, $pwdValDR, $postgresHome, $postgresData, $compIPDR, $port,$userNameDR,$pwdDR ,$dbSidSelect);
+	
+}
+
+/**
+* Function is for select the Dataset Creation page.
+*@param : null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+
+function datasetDiscovery(){
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($Datasets));
+}
+/**
+* Function is for Dataset Creation of PostgreSQL SR solution
+*@param : null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+/* --Objects Definitions Above-- */
+
+function Create_PostgresSR_Dataset($systemTypeDataset,$compName, $datasetType,$datasetName, $userNameVal, $pwdVal, $postgresHome, $postgresData, $compIP, $port,$userName,$pwd, $dbSidSelect){
+	datasetDiscovery();
+	if ( _exists( _link( $datasetName ) ) ) {
+		_log( "Dataset already exists" );
+
+	} else {
+
+		$i = 0;
+		while ( $i < 10 ) {
+			datasetDiscovery();
+
+			_setSelected( _select( "systemType" ), $systemTypeDataset );
+			_click( _button( "/Go/" ) );
+			_setSelected( _select( "dependentComponentName" ), $compName );
+			_setSelected( _select( "datasetType" ), $datasetType );
+			_setValue( _textbox( "datasetName" ), $datasetName );
+
+			if ( _exists( _link( $CONNECTED ) ) ) {
+				break;
+			}
+			
+			if ( _exists( _link( $RegisterAgent ) ) ) {
+				_click( _link( $RegisterAgent ) );
+				_wait( 30000 );
+			}
+			_wait( 10000 );
+			$i++ ;
+		}
+
+		if ( $agentType == "Remote" ) {
+			_setSelected( _select( "credList" ), "Add new credential" );
+			_setValue( _textbox( "usernameval" ), $userNameVal );
+			_setValue( _password( "pwdval" ), $pwdVal );
+			_click( _button( "Test Credentials" ) );
+		} else {
+			_log( "Local Agent" );
+		}
+
+		_setValue( _textbox( "postgresHome" ), $postgresHome );
+
+		if ( _exists( _textbox( "addpgdata" ) ) ) {
+			_setValue( _textbox( "addpgdata" ), $postgresData );
+
+		} else {
+			_setSelected( _select( "postgresData" ), $postgresData );
+		}
+		// _setValue(_textbox("postgresData"), $postgresData);
+		_setValue( _textbox( "ip" ), $compIP );
+		_setValue( _textbox( "port" ), $port );
+		_setValue( _textbox( "username" ), $userName );
+		_setValue( _password( "password" ), $pwd );
+
+		_setValue( _textbox( "dbName" ), $dbSidSelect );
+		_click( _button( $TestCredentials1) );
+		_wait( 10000, _span( $Success ) );
+		_click( _button( $Discover ) );
+		_wait( 4000 );
+		_click( _button( $Save ) );
+		_wait( 2000 );
+		datasetDiscovery();
+		_wait( 1000 );
+		if ( _exists( _link( $datasetName ) ) ) {
+			_log( "dataset created succesfully" );
+		} else {
+			_assertEqual( "dataset created succesfully", _lastAlert() );
+			_fail( "dataset not created succesfully" );
+		}
+	}
+}
+

@@ -1,0 +1,100 @@
+var $ComponentNamePR;
+function CreateManagementService_002() {
+	try {
+		CreateManagementService($locationPR,$msType,$vcentreNamePR,$mserviceipPR,$ManagementserviceUNPR,$ManagementservicePWDPR); //Vcentre PR, AWS DR
+		CreateManagementService($locationDR,$msType,$vcentreNameDR,$mserviceipDR,$ManagementserviceUNDR,$ManagementservicePWDDR);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:CreateManagementService_002(),Function: login ,execution got failed.kindly check the log for more details");
+		_fail("Create Management Service failed.So that stopping execution.");
+	}
+}
+
+function APP_PFR_Component_Remote_Discovery_VRA_ESX() {
+	try {
+		Create_Remote_ComponentPR();//Esx component creation PR
+		Create_Remote_ComponentDR();//Esx component creation  DR
+		Create_Remote_Component($systemType, $VRA_NamePR, $VRA_IPPR, $compsitePR, $VRA_UNPR, $VRA_PWDPR);
+		Create_Remote_Component($systemType, $VRA_NameDR, $VRA_IPDR, $compsiteDR, $VRA_UNDR, $VRA_PWDDR);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Component_Remote_Discovery_0018(),Function: Create_Remote_ComponentPR or Create_Remote_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("component not created succesfully.So that stopping execution.");
+	}
+}
+
+function APP_PFR_Component_Remote_Discovery_0018() {
+	try {
+		Create_Remote_ComponentPR();//Esx component creation PR
+		Create_Remote_ComponentDR();//Esx component creation  DR
+		Create_Remote_Component($systemType, $VRA_NamePR, $VRA_IPPR, $compsitePR, $VRA_UNPR, $VRA_PWDPR);
+		Create_Remote_Component($systemType, $VRA_NameDR, $VRA_IPDR, $compsiteDR, $VRA_UNDR, $VRA_PWDDR);
+		if($withExtendedDR=="yes") {
+		
+		Create_Remote_Component_Dummy_CR($system_TypeLinux,$dummyComponentNameCR,$dummyComponentIPCR,$locationCR);
+		}
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Component_Remote_Discovery_0018(),Function: Create_Remote_ComponentPR or Create_Remote_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("component not created succesfully.So that stopping execution.");
+	}
+}
+
+function Navigate_to_Appstack_SRM() {
+	try {
+		Navigate_to_Appstack_SRM($appStackName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:ApplicationDiscovery_VM(),Function: login ,execution got failed.kindly check the log for more details");
+		_fail("ApplicationDiscoveryOnAWS failed.So that stopping execution.");
+	}
+}
+
+function Create_Netapp_Protection_Schema() {
+	try {
+		if($withExtendedDR=="yes") {
+			var $ComponentNamePR=getComponentNamePR($vmIP1);
+			Create_Remote_Component_Dummy_CR($system_TypeLinux,$ComponentNamePR,$vmIP1,$locationPR);
+			Create_Oracle_ProtectionScheme_Dummy_CR($ProtectionType,$ProtectionType+"_"+$ComponentNamePR,$ComponentNamePR)
+			Create_Oracle_ProtectionScheme_Dummy_CR($ProtectionType,$ProtectionType+"_"+$dummyComponentNameCR,$dummyComponentNameCR);
+		}
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Create_Netapp_Protection_Schema(),Function: login ,execution got failed.kindly check the log for more details");
+		_fail("Create_Netapp_Protection_Schema failed.So that stopping execution.");
+	}
+}
+
+function create_AG_Extended_DR() {
+	try {
+		var $ComponentNamePR=getComponentNamePR($vmIP1);
+		Navigate_to_Appstack_SRM($appStackName1);
+		create_AG_With_Extended_DR($AGgroupName1,$locationCR,$ProtectionType+"_"+$dummyComponentNameCR,$ProtectionType+"_"+$ComponentNamePR,$drIP_Ex_DR);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:ApplicationDiscovery_VM(),Function: login ,execution got failed.kindly check the log for more details");
+		_fail("ApplicationDiscoveryOnAWS failed.So that stopping execution.");
+	}
+}
+
+
+function Create_Site_CR() {
+	try {
+		Create_site($locationCR, $incharge, $addressCR);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:ApplicationDiscovery_VM(),Function: login ,execution got failed.kindly check the log for more details");
+		_fail("ApplicationDiscoveryOnAWS failed.So that stopping execution.");
+	}
+}
+
+function Create_Crendetials_SRM_PRDR() {
+	try {
+		Create_Crendetials_SRM($mserviceipPR,$crendetialUNPR,$crendetialPWDPR);
+		Create_Crendetials_SRM($mserviceipDR,$crendetialUNDR,$crendetialPWDDR);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Create_Crendetials_SRM_PRDR(),Function: login ,execution got failed.kindly check the log for more details");
+		_fail("ApplicationDiscoveryOnAWS failed.So that stopping execution.");
+	}
+}

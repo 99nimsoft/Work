@@ -1,0 +1,8 @@
+#!/bin/bash   
+# User interface messages for the license in japanese locale
+
+errorInvalidoptionsspecifiedforLicenseGenutility="このサError! Invalid options specified for LicenseGen utility."
+invokingtheLicenseGenutilityininteractivemode="このサFor invoking the LicenseGen utility in interactive mode, simply execute the LicenseGen utility without any arguments. Example: sh LicenseGen.sh"
+invokingtheLicenseGenutilityinbatchmode="このサFor invoking the LicenseGen utility in batch mode, execute the LicenseGen utility with with --batchfile <arg> option. Example: sh LicenseGen.sh --batchfile commands.txt"
+fileNotAvailableInvokingLicenseGenInteractiveMode="このサThe file $2 is not available. Invoking the LicenseGen utility in interactive mode..."
+filenameContainingLicenseCommandsNotSpecified="このサThe file name containig the license commands is not specified"

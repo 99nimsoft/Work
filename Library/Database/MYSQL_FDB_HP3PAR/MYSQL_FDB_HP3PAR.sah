@@ -1,0 +1,148 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains Creation of Dataset for both remote and local agents. 
+ ** AuthorName : Omprakash V
+ ** Created Date : Oct 2016
+ ************************************************************************/
+
+/**
+* Function is for Creating of  Dataset for PR  in  MYSQL.
+*@param :  null
+*@return : null
+* Author: Omprakash V
+*
+*/
+
+function Create_Mysql_DatasetPR() {
+	Create_Mysql_Dataset($systemTypeDataset, $dependentComponentNamePR, $datasetType, $datasetNamePR, $addDataDirPR, $hostIPPR, $hostPortPR, $hostUserNamePR, $hostPasswordPR, $binLogDirectoryPR,
+			$databaseNamePR);
+}
+
+/**
+* Function is for Creating of  Dataset for DR  in  MYSQL.
+*@param :  null
+*@return : null
+* Author: Omprakash V
+*
+*/
+function Create_Mysql_DatasetDR() {
+	Create_Mysql_Dataset($systemTypeDataset, $dependentComponentNameDR, $datasetType, $datasetNameDR, $addDataDirDR, $hostIPDR, $hostPortDR, $hostUserNameDR, $hostPasswordDR, $binLogDirectoryDR,
+			$databaseNameDR);
+}
+
+/**
+* Function is for Creating of  Dataset in  MYSQL.
+*@param : $systemTypeDataset, $dependentComponentName, $datasetType, $datasetName, $addDataDir, $hostIP, $hostPort, $hostUserName, $hostPassword, $binLogDirectory, $databaseName
+*@return : null
+* Author: Omprakash V
+*
+*/
+function Create_Mysql_Dataset($systemTypeDataset, $dependentComponentName, $datasetType, $datasetName, $addDataDir, $hostIP, $hostPort, $hostUserName, $hostPassword, $binLogDirectory, $databaseName) {
+	Popup_Handler();
+	_wait(6000);
+	navigateToDiscovery();
+	_click(_link("Subsystems"));
+	_click(_link("Datasets"));
+	if (_exists(_link($datasetName))) {
+		_log("Dataset already exists");
+	} else {
+		_setSelected(_select("systemType"), $systemTypeDataset);
+		_wait(1000);
+		_click(_button("/Go/"));
+		_setSelected(_select("dependentComponentName"), $dependentComponentName);
+		var $Type = _getSelectedText(_select("datasetType"));
+		_assertExists("dataset Type:", $Type);
+		_assertEqual($datasetType, $Type, "Validating Dataset Type");
+		// Looping till Register Agent link appear
+		var $i = 0;
+		while ($i < 10) {
+			if ((!_exists(_link("Register Agent"))) && (!_exists(_cell("Agent is CONNECTED")))) {
+				_log("no option");
+				_wait(10000);
+				navigateToDiscovery();
+				_click(_link("Subsystems"));
+				_click(_link("Datasets"));
+				_setSelected(_select("systemType"), $systemTypeDataset);
+				_wait(1000);
+				_click(_button("/Go/"));
+				_setSelected(_select("dependentComponentName"), $dependentComponentName);
+				var $Type = _getSelectedText(_select("datasetType"));
+				_assertExists("dataset Type:", $Type);
+				_assertEqual($datasetType, $Type, "Validating Datase Type");
+				_setSelected(_select("datasetType"), $datasetType);
+				         if($i == 10 ){
+                                  _fail();
+                           }
+			} else {
+				_log("go ahead");
+				break;
+			}
+		 _wait(20000);
+         $i++;
+		} // while ended
+		_setValue(_textbox("datasetName"), $datasetName);
+		_wait(1000);
+		var $i = 0;
+		// Looping till Register Agent link appear
+		while ($i < 10) {
+			// Pause for 30 seconds
+			_log($i);
+			_wait(10000);
+
+			if (_exists(_link("Register Agent"))) {
+				_click(_link("Register Agent"));
+			} else if (_exists(_cell("Agent is CONNECTED"))) {
+				_log("Agent is CONNECTED");
+				break;
+			}
+			$i = $i + 1;
+
+		}
+		// Calling to function configure the agent
+
+		if(_containsText(_select("mysqlData"), $addDataDir)){
+			_setSelected(_select("mysqlData"), $addDataDir);
+		} else {
+			_setSelected(_select("mysqlData"), "Add new");
+			_setValue(_textbox("adddatadir"), $addDataDir);
+			_setValue(_textbox("ip"), $hostIP);
+			_setValue(_textbox("port"), $hostPort);
+			_setValue(_textbox("username"), $hostUserName);
+			_setValue(_password("password"), $hostPassword);
+		}
+		_setValue(_textbox("binLogdirectory"), $binLogDirectory);
+		_setValue(_textbox("dbName"), $databaseName);
+		_click(_button("Test Credentials[1]"));
+		_wait(10000);
+		_click(_button("Discover"));
+		var $a = 0;
+		// Looping till Agent connected
+		while ($a < 10) {
+			// Pause for 30 seconds
+			_log($a);
+			_wait(10000);
+			if (_exists(_cell("Socket"))) {
+				break;
+			} else {
+				_wait(30000);
+			}
+			$a = $a + 1;
+		}// while ended
+		_wait(1000);
+		_clearLastAlert();
+		_click(_button("Save"));
+		_wait(10000);
+		navigateToDiscovery();
+		_click(_link("Subsystems"));
+		_click(_link("Datasets"));
+
+		if (_exists(_link($datasetName))) {
+			_log("dataset created succesfully");
+		} else {
+			_assertEqual("dataset created succesfully",_lastAlert()); 
+			_fail("dataset not created succesfully");
+		}
+	}
+}// End of Mysql_Dataset()
+

@@ -1,0 +1,188 @@
+/**
+* Function to get the latest Agent,server and Sanovi Upgradekit
+*@param : $AgentNodesite,$AWSmsName,$aws_access_id,$aws_secret_key
+*@return : null
+*@Author: Sujata Rani Choudhury
+*
+*/
+function Get_latest_Build() {
+	
+	 $DRMbuildAgent = $DRMbuild + "/DRM_Build/Agents/";
+	 $AgentPath = $DRMbuild + "DRM_Build/Server/"; 
+	 $DRMSanoviUpgradeKit =$DRMbuild + "DRM_Build/DRMSanoviUpgradeKit/"; 
+}
+
+
+
+//final code
+
+/**
+* Function to verify the upload path
+*@param : 
+*@return : null
+*@Author: Sujata Rani Choudhury
+*
+*/
+function  Upload_Agents_DRM(){
+	Upload_Binary_Files();
+	var $UploadPath = "cd " +$EAMSROOT+ "upgrade/cli/bin/ && ./UploadClient.sh";
+	$status = SecuredShellConnection_Binary($drmServer,$drmUserName, $drmPassword,$UploadPath);
+}
+
+/**
+* Function to copy the agents from jenkin and unzip
+*@param : $AgentNodesite,$AWSmsName,$aws_access_id,$aws_secret_key
+*@return : null
+*@Author: Sujata Rani Choudhury
+*
+*/
+	
+	function Upload_Binary_Files() {	
+		//Testcases for copy the file
+		var $BinaryFilePath=  " " +$EAMSROOT+ "upgrade/cli/installer_binaries" ;
+		 var $sshCommand = 'sh ' + $BinaryFilePath;
+		$chekingDRMBuild = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand,"Y");
+		_assertExists("Verify build folder", $chekingDRMBuild);
+		
+		var $sshCommand = "wget -r -nd -P " + $BinaryFilePath + " " + $g_buildUrl + "SanoviDRM/Agents/*zip*/Agents.zip";
+
+		$status = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+		
+		_log($status);
+		
+		//TestCases for unzip and move the file
+		
+		var $sshCommand = "unzip -j " + $BinaryFilePath + "/Agents.zip" + " -d " + $BinaryFilePath ;
+
+		$status = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+		
+		var $sshCommand = " mv " + $BinaryFilePath + "/Agents.zip" +" "+ $BinaryFilePath + "/Agents.zip_old";
+
+		$status = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+		
+		
+		//var $sshCommand = $EAMSROOT + "/upgrade/cli/bin/UploadClient.sh";
+
+		//$status = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+		
+
+		
+		
+	}
+		
+	/**
+	* Function to upload the agents.
+	*@param : $AgentNodesite,$AWSmsName,$aws_access_id,$aws_secret_key
+	*@return : null
+	*@Author: Sujata Rani Choudhury
+	*
+	*/	
+		function SecuredShellConnection_Binary($sshIP, $sshUserID, $sshPassword, $sshCommand,$error) {
+
+		    var $outputAr = []; 
+		    try {
+
+		    conn = new  Packages.ch.ethz.ssh2.Connection($sshIP); /* Create a connection instance */
+		    conn.connect(); /* Now connect */
+		    _log("Connected Successfully");
+		    /*
+		    * Authenticate. If you get an IOException saying something like
+		    * "Authentication method password not supported by the server at this stage."
+		    * then please check the FAQ.
+		    */
+
+		    isAuthenticated = conn.authenticateWithPassword($sshUserID, $sshPassword);
+
+		    if (isAuthenticated == false) {
+		           _log("Authentication failed");
+		           _fail("Authentication failed");
+		           
+		    }         
+		    _log("Logged In Successfully");
+		    sess = conn.openSession();
+		    _log("session opened Successfully");
+		    try{
+		      sess.execCommand($sshCommand);
+		      _log("Command ---> " + $sshCommand + " executed Succesfully" );
+		          _wait(5000);
+		     }catch(e){
+		            _log($e.toString(),"Custom1");
+		     }
+		     _log("---------------------------------Command Output-----------------------------------------","Custom1");
+		    stdout = new Packages.ch.ethz.ssh2.StreamGobbler(sess.getStdout());
+		    stderr = new Packages.ch.ethz.ssh2.StreamGobbler(sess.getStderr());
+		    
+		    stdin = sess.getStdin();
+		    
+		    brOut = new java.io.BufferedReader( new  java.io.InputStreamReader(stdout));
+		    brErr = new java.io.BufferedReader( new  java.io.InputStreamReader(stderr));
+		    
+		  
+		    
+		    $i=0;
+		    while (($line = brOut.readLine()) != null) {           
+		            _log($line);
+		            
+		            if( $i == 1){
+		                  stdin.write(new java.lang.String("upload_installer_files\nexit\n").getBytes());
+		            }
+		            
+		           $outputAr.push($line);
+		           if($line >= 500){
+		               break;           
+		           }
+		           $i++;
+		    }     
+		    
+		    if($error == "Y" ){
+		          var $outputAr = [];
+		          while (($line = brErr.readLine()) != null) {           
+		              _log($line);
+		             $outputAr.push($line);
+		             if($line >= 500){
+		               break;           
+		             }
+		          }  
+		    }
+		    _log("---------------------------------------------------------------------------------------","Custom1"); 
+		    } catch ($e) {
+		       _log($e.toString(),"Custom1");
+		           sess.close(); /* Close this session */
+		           _log("Close this session");
+		           conn.close(); /* Close the connection */
+		           _log("Close the connection");          
+		          
+		    } 
+		    
+		    sess.close(); /* Close this session */
+		    _log("Close this session");
+		    conn.close(); /* Close the connection */
+		    _log("Close the connection");
+		    
+		    var $output = $outputAr.toString();
+		   // _assertExists("command output", $output);    
+
+		    return $output;    
+		}
+
+		
+
+
+		/* Deleting $DRMbuild server Folder
+
+		if ($chekingDRMBuild == $AgentPath + ": " + $AgentPath + ": " + "is a directory") {
+			_log("$chekingDRMBuild exsiting");
+			var $sshCommand = 'rm -rf ' + $AgentPath;
+			_assertExists("sshCommand", $sshCommand);
+			$status = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+			_log("Build folder Deleted successfully");
+		} else {
+			_log("There is no  build Folder existing ");
+		}*/ 
+	
+
+	//var $sshCommand =   "mkdir " + $EAMSROOT + " -p /upgrade/cli/installerbinaries";
+	//SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+		//TestCases for Upload file 
+		//3. go to /opt/panaces_32580/upgrade/cli/bin
+		

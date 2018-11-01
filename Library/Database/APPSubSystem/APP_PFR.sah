@@ -1,0 +1,188 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains Creation of Component(LINUX) for both remote and local agents. 
+ ** AuthorName : Govinda Mengji 
+ ** Created Date : July 2013
+ ************************************************************************/
+
+
+/**
+* Function is for Creating  Dataset for PR  in  MSSQL.
+*@param :  null
+*@return : null
+* Author:Govinda Mengji
+* added $systemTypeDataset1 variable
+*/
+
+function Create_APP_PFR_Dataset_PR()
+{
+	$tmpCompIP = $compIPPR;  // passing this parameter as this parameter is used in retry of creation of dataset
+	Create_APP_PFR_Dataset($datasetType, $dependentComponentNamePR, $datasetNamePR, $fileNameTextPathPR);
+}
+
+
+/**
+* Function is for Creating  Dataset for DR  in  MSSQL.
+*@param :  null
+*@return : null
+* Author:Govinda Mengji
+*
+*/
+
+function Create_APP_PFR_Dataset_DR()
+{
+	$tmpCompIP = $compIPDR; // passing this parameter as this parameter is used in retry of creation of dataset
+	Create_APP_PFR_Dataset($datasetType, $dependentComponentNameDR, $datasetNameDR, $fileNameTextPathDR);	
+}
+
+
+/**
+* Function is for Creating  Dataset for APP_PFR
+*@param :  null
+*@return : null
+* Author:Govinda Mengji
+*
+*/
+
+function Create_APP_PFR_Dataset($systemTypeDataset, $dependentComponentName, $datasetName, $fileNameTextPath){
+	navigateToDiscovery();
+	_click(_link($obj_subsystems));
+	_click(_link($Datasets));
+	if (_exists(_link($datasetName))) {
+		_assertExists($ObRepo_DatasetalreadyExists);
+	} else {
+	_setSelected(_select($ObRepo_systemType), $systemTypeDataset);
+	_click(_button($Go));
+	_setSelected(_select($ObRepo_dependentComponentName), $dependentComponentName);
+	_setValue(_textbox($ObRepo_datasetName), $datasetName);
+	_setValue(_textbox($ObRepo_fileNameText), $fileNameTextPath);
+	_click(_button($Add));
+	_click(_button($Save));
+	_click(_link($Subsystems));
+	_click(_link($Datasets));
+	if (_exists(_link($datasetName))){
+		_assertExists($ObRepo_DatasetCreated);
+	} else {
+		retryCreation_APP_PFR_Dataset($systemTypeDataset, $dependentComponentName, $datasetName, $fileNameTextPath);
+		//_assertEqual($ObRepo_datasetcreatedsuccesfully,_lastAlert()); 	
+		//_fail($ObRepo_Datasetnotcreated);
+	}
+}
+}
+
+function retryCreation_APP_PFR_Dataset($systemTypeDataset, $dependentComponentName, $datasetName, $fileNameTextPath){
+	
+	 navigateToDiscovery();
+	_click(_link($obj_subsystems));
+	_click(_link($obj_components));
+	var $dependentComponentName = _getText(_link("/.*/", _leftOf(_cell($tmpCompIP))));
+	
+	//navigateToDiscovery();
+	_click(_link($obj_subsystems));
+	_click(_link($Datasets));
+	
+	_setSelected(_select($ObRepo_systemType), $systemTypeDataset);
+	_click(_button($Go));
+	_setSelected(_select($ObRepo_dependentComponentName), $dependentComponentName);
+	_setValue(_textbox($ObRepo_datasetName), $datasetName);
+	_setValue(_textbox($ObRepo_fileNameText), $fileNameTextPath);
+	_click(_button($Add));
+	_click(_button($Save));
+	_click(_link($Subsystems));
+	_click(_link($Datasets));
+	if (_exists(_link($datasetName))){
+		_assertExists($ObRepo_DatasetCreated);
+	} else {
+		_assertEqual($ObRepo_datasetcreatedsuccesfully,_lastAlert()); 	
+		_fail($ObRepo_Datasetnotcreated);
+	}
+}
+
+/**
+* Function is to Verify Dataset status from GUI and DB from PR.
+*@param : null
+*@return : null
+* Author: Govinda Mengji
+*
+*/
+function Verify_APP_PFR_Dataset_Status_PR() {
+	Verify_Dataset_Status($datasetNamePR);
+}
+
+/**
+* Function is to Verify Dataset status from GUI and DB from DR.
+*@param : null
+*@return : null
+* Author: Govinda Mengji
+*
+*/
+function Verify_APP_PFR_Dataset_Status_DR() {
+	Verify_Dataset_Status($datasetNameDR);
+}
+
+/**
+* Function is to Verify Dataset status from GUI and DB.
+*@param : erName, $drmPassword,$compIP, $remoteUserNameValPR, $remotePwdValPR,$sernamePR,$datasetName
+*@return : null
+* Author: Govinda Mengji
+*
+*/
+function Verify_Dataset_Status($datasetName) {
+     var $datasetStatusGui = Get_Dataset_Status_Gui($datasetName);
+	//_assertExists($datasetStatusGui.get($ObRepo_status),$ObRepo_DatasetStatusfromGUI);
+	_assertTrue($datasetStatusGui.toLowerCase()==$ObRepo_DatasetStatusfromGUI.toLowerCase(),"Dataset status on GUI is :-"+$datasetStatusGui+" ,instead of :-"+$ObRepo_DatasetStatusfromGUI);
+}
+
+
+
+
+
+
+/**
+* Function is to Verify_Dataset_Details from GUI PR
+*@param : null
+*@return : null
+* Author: Govinda Mengji
+*
+*/
+
+
+function Verify_Dataset_Details_APP_PFR_PR(){
+	Verify_Dataset_Details($datasetNamePR);
+	
+}
+
+/**
+* Function is to Verify_Dataset_Details from GUI DR
+*@param : null
+*@return : null
+* Author: Govinda Mengji
+*
+*/
+
+function Verify_Dataset_Details_APP_PFR_DR(){
+	Verify_Dataset_Details($datasetNameDR);
+	
+}
+
+/**
+* Function is to Verify_Dataset_Details from GUI 
+*@param :$datasetName
+*@return : null
+* Author: Govinda Mengji
+*
+*/
+
+function Verify_Dataset_Details($datasetName){
+	
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($Datasets));
+	_click(_link($datasetName));
+	
+	var $applicationSubSystemPathLocations=_getCellText(_cell(1,_near(_cell($ApplicationSubSystemPathLocation))));
+	var $applicationSubSystemPathLocation=$applicationSubSystemPathLocations.split(",");
+	_assertExists($ObRepo_ApplicationSubSystemPath_Location, $applicationSubSystemPathLocation[0]);
+	
+}

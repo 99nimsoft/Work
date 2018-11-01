@@ -1,0 +1,169 @@
+
+var $l_userInputsOracle_FDB_Netapp = _readExcelFile($SAHI_HOME + "\\conf\\OraFDB_NetApp\\OraFDB_NetApp_Parameter.xls","User Seleeted Case");
+var $userDataLengthOraFDB_NetApp  = $l_userInputsOracle_FDB_Netapp.length-1;
+
+var $flag = 0;
+for($i = 3 ; $i <= $userDataLengthOraFDB_NetApp ; $i++){
+	if($l_userInputsOracle_FDB_Netapp[$i][4] == "Y"){	
+		$flag=$flag+1;	
+	}
+}
+
+//-----------Execution of Individual Testcase------------------------------
+
+var $g_siteOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[17][4];
+var $g_agentNodeOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[18][4];
+var $g_componentRemoteDiscoveryOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[19][4];
+var $g_componentLocalDiscoveryOraFDB_NetApp= $l_userInputsOracle_FDB_Netapp[20][4];
+var $g_datasetDiscoveryOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[21][4];;
+var $g_datasetAutoDiscoveryOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[22][4];
+var $g_protectionSchemeDiscoveryOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[23][4];;
+var $g_protectionSchemeDetailsOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[24][4];
+var $g_groupCreationOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[25][4];
+var $g_moveGroupToManageOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[26][4];
+
+var $g_changeContinuityStateOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[27][4];
+var $g_postGroupCreationOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[28][4];
+var $g_componentStatusOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[29][4];
+var $g_datasetStatusOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[30][4];
+var $g_protectionSchemeStatusOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[31][4];
+
+var $g_continuityManagenentOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[32][4];
+var $g_importNCOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[33][4];
+var $g_importFOOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[34][4];
+var $g_startNCOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[35][4];
+var $g_monitorRelationshipOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[36][4];
+
+var $g_manageDRSolutionOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[37][4];
+var $g_groupInformationOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[38][4];;
+var $g_groupSnapshotOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[39][4];;
+var $g_replicationNCOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[40][4];
+var $g_rpoNCOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[41][4];
+var $g_rtoNCOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[42][4];
+var $g_importSOSBOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[43][4];
+var $g_stopNCOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[44][4];
+var $g_startSOOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[45][4];
+var $g_SOExecutionOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[46][4];
+
+var $g_replicationSOOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[47][4];
+var $g_importRNCOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[48][4];
+var $g_startRNCOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[49][4];
+var $g_groupInformaitionRNCOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[50][4];
+var $g_groupSnapshotOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[51][4];
+var $g_rpoRNCOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[52][4];
+var $g_replicationRNCOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[53][4];
+var $g_stopRNCOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[54][4];
+var $g_startSBOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[55][4];
+var $g_SBExecutionOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[56][4];
+
+var $g_monitorManageSBOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[57][4];
+var $g_remoteStopOraFDB_NetAppAgent = $l_userInputsOracle_FDB_Netapp[58][4];
+var $g_remoteStartOraFDB_NetAppAgent = $l_userInputsOracle_FDB_Netapp[59][4];
+var $g_localStopOraFDB_NetAppAgent = $l_userInputsOracle_FDB_Netapp[60][4];
+var $g_localStartOraFDB_NetAppAgent = $l_userInputsOracle_FDB_Netapp[61][4];
+var $g_replicaionStopOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[62][4];
+var $g_replicaionStartOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[63][4];
+var $g_startFOOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[64][4];
+var $g_FOExecutionOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[65][4];
+var $g_continuityStatusFOOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[66][4];
+
+var $g_rpoFOOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[67][4];
+var $g_monitorManageFOOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[68][4];
+
+//---------------For Executing All the Testcases------------------------
+var $g_executeOraFDB_NetAppAll = $l_userInputsOracle_FDB_Netapp[4][4];
+var $g_groupCreationOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[8][4];
+var $g_postGroupCreationOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[9][4];
+var $g_executeNCOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[10][4];
+var $g_executeSOSBOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[11][4];
+var $g_eventExecutionOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[12][4];
+var $g_executeFOOraFDB_NetApp = $l_userInputsOracle_FDB_Netapp[13][4];
+
+//--------------For Group Creation--------------------------------------
+
+if ($g_groupCreationOraFDB_NetApp == "Y"){
+
+var $g_siteOraFDB_NetApp = "Y";
+var $g_agentNodeOraFDB_NetApp = "Y";
+	if($agentType == "Remote"){
+		var $g_componentRemoteDiscoveryOraFDB_NetApp = "Y";
+	}else{
+		var $g_componentLocalDiscoveryOraFDB_NetApp= "Y";
+	}
+var $g_datasetDiscoveryOraFDB_NetApp = "Y";
+var $g_datasetAutoDiscoveryOraFDB_NetApp = "Y";
+var $g_protectionSchemeDiscoveryOraFDB_NetApp = "Y";
+var $g_protectionSchemeDetailsOraFDB_NetApp = "Y";
+var $g_groupCreationOraFDB_NetApp = "Y";
+var $g_moveGroupToManageOraFDB_NetApp= "Y";
+var $g_changeContinuityStateOraFDB_NetApp= "Y";
+}
+//-------------Post Group Creation-------------------------------------------------
+
+if ($g_postGroupCreationOraFDB_NetApp == "Y"){
+var $g_postGroupCreationOraFDB_NetApp= "Y";
+var $g_componentStatusOraFDB_NetApp= "Y";
+var $g_datasetStatusOraFDB_NetApp= "Y";
+var $g_protectionSchemeStatusOraFDB_NetApp= "Y";
+var $g_continuityStatusOraFDB_NetApp="Y";
+var $g_continuityManagenentOraFDB_NetApp= "Y";
+}
+//-----------Start NC ,Import FO WorkFlow and Verify Screens During NC---------------
+
+if ($g_executeNCOraFDB_NetApp == "Y"){
+var $g_importNCOraFDB_NetApp= "Y";
+var $g_importFOOraFDB_NetApp= "Y";
+var $g_startNCOraFDB_NetApp= "Y";
+var $g_monitorRelationshipOraFDB_NetApp= "Y";
+var $g_manageDRSolutionOraFDB_NetApp= "Y";
+var $g_groupInformationOraFDB_NetApp= "Y";
+var $g_groupSnapshotOraFDB_NetApp= "Y";
+var $g_replicationNCOraFDB_NetApp= "Y";
+var $g_rpoNCOraFDB_NetApp= "Y";
+var $g_rtoNCOraFDB_NetApp= "Y";
+}
+//------------Import SO and SB Workflow,stop NC and start SO,RNC and SB------------------------
+
+if ($g_executeSOSBOraFDB_NetApp == "Y"){
+var $g_importSOSBOraFDB_NetApp= "Y";
+var $g_stopNCOraFDB_NetApp= "Y";
+var $g_startSOOraFDB_NetApp= "Y";
+var $g_SOExecutionOraFDB_NetApp= "Y";
+var $g_replicationSOOraFDB_NetApp= "Y";
+var $g_importRNCOraFDB_NetApp= "Y";
+var $g_startRNCOraFDB_NetApp= "Y";
+var $g_groupInformaitionRNCOraFDB_NetApp= "Y";
+var $g_groupSnapshotOraFDB_NetApp= "Y";
+var $g_rpoRNCOraFDB_NetApp= "Y";
+var $g_replicationRNCOraFDB_NetApp= "Y";
+var $g_stopRNCOraFDB_NetApp= "Y";
+var $g_startSBOraFDB_NetApp= "Y";
+var $g_SBExecutionOraFDB_NetApp= "Y";
+var $g_monitorManageSBOraFDB_NetApp= "Y";
+}
+//------------Event for Agent and Replication start and Stop-------------------------
+if ($g_eventExecutionOraFDB_NetApp == "Y"){	
+	if($agentType == "Remote"){
+var $g_remoteStopOraFDB_NetAppAgent= "Y";
+var $g_remoteStartOraFDB_NetAppAgent= "Y";
+	}else {
+var $g_localStopOraFDB_NetAppAgent= "Y";
+var $g_localStartOraFDB_NetAppAgent= "Y";
+	}
+var $g_replicaionStopOraFDB_NetApp= "Y";
+var $g_replicaionStartOraFDB_NetApp= "Y";
+}
+//--------------FO Execution-----------------------------------------------
+if($g_executeFOOraFDB_NetApp == "Y"){
+var $g_startFOOraFDB_NetApp= "Y";
+var $g_FOExecutionOraFDB_NetApp= "Y";
+var $g_continuityStatusFOOraFDB_NetApp= "Y";
+var $g_rpoFOOraFDB_NetApp= "Y";
+var $g_monitorManageFOOraFDB_NetApp= "Y";
+}
+
+
+
+if($flag == 0){
+	$g_executeOraFDB_NetAppAll = "Y";
+}

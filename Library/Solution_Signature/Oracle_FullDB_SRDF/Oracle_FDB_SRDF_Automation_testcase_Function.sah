@@ -1,0 +1,265 @@
+
+function Login_001() {
+	try {
+		login($username, $password);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Login_001(),Function: login ,execution got failed.kindly check the log for more details");
+		_fail("Login failed.So that stopping execution.");
+	}
+}
+
+function Site_0003() {
+	try {
+		Create_Site_PR();
+		Create_Site_DR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0003(),Function: Create_Site_PR or Create_Site_DR ,execution got failed.kindly check the log for more details");
+		_fail("site not created succesfully.So that stopping execution.");
+	}
+}
+
+function Agent_node_001() {
+	try {
+		Create_Agent_Node_Component();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Agent_node_001(),Function: Create_Agent_Node_Component(),execution got failed.kindly check the log for more details");
+		_fail("Agent Node component not created succesfully.So that stopping execution.");
+	}
+}
+
+
+function OracleSRDF_Component_Local_Discovery_0002() {
+	try {
+		Create_Local_ComponentPR("Y");
+		Create_Local_ComponentDR("Y");
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Component_Local_Discovery_0002(),Function: Create_Local_ComponentPR or Create_Local_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("component not created succesfully.So that stopping execution.");
+	}
+}
+
+function OracleSRDF_Component_Remote_Discovery_0018() {
+	try {
+		Create_Remote_ComponentPR("Y");
+		Create_Remote_ComponentDR("Y");
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Component_Remote_Discovery_0018(),Function: Create_Remote_ComponentPR or Create_Remote_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("component not created succesfully.So that stopping execution.");
+	}
+}
+
+function OracleSRDF_Dataset_Discovery_0007() {
+	try {
+		Create_OracleDG_Dataset_PR();
+		_log("123");
+		Create_OracleDG_DatasetSRDF_DR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:OracleSRDF_Dataset_Discovery_0007(),Function: Create_OracleSRDF_Dataset_PR or Create_OracleSRDF_DatasetSRDF_DR ,execution got failed.kindly check the log for more details");
+		_fail("dataset not created succesfully.So that stopping execution.");
+	}
+
+}
+
+function OracleSRDF_Auto_DatasetDiscovery0009() {
+	try {
+		Verify_Dataset_Details_PR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:OracleDG_Auto_DatasetDiscovery0009(),Function: Verify_Dataset_Details_PR or Verify_Dataset_Details_DR,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleSRDF_Dataset_status_0011() {
+	try {
+		Verify_Dataset_Status_PR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:OracleFDB_SRDF_Dataset_status_0011(),Function: Verify_Dataset_Status_PR ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		Verify_Dataset_Status_DR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:OracleFDB_SRDF_Dataset_status_0011(),Function: Verify_Dataset_Status_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleSRDF_Protectionscheme_Discovery_0018() {
+	try {
+		Oracle_FullDB_SRDF_ProtectionScheme_PR($sernamePR);
+		Oracle_FullDB_SRDF_ProtectionScheme_DR($sernameDR);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: OracleFDB_SRDF_Protectionscheme_Discovery_0018(),Function: Oracle_FullDB_SRDF_ProtectionScheme_PR or Oracle_FullDB_SRDF_ProtectionScheme_DR ,execution got failed.kindly check the log for more details");
+		_fail("Protection Schemes not created succesfully.So that stopping execution.");
+	}
+}
+
+function OracleSRDF_GroupCreation_0022() {
+	try {
+		Oracle_FG_SRDF_Group_Creation();
+		Import_WF_PreRPO();
+		Import_WF_PostRPO();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: OracleFDB_SRDF_GroupCreation_0022(),Function: Oracle_FG_SRDF_Group_Creation ,execution got failed.kindly check the log for more details");
+		_fail("Group not created succesfully.So that stopping execution.");
+	}
+
+}
+
+function OracleSRDF_Move_Group_Manage_0006() {
+	try {
+		Move_To_Manage_Group($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: OracleFDB_SRDF_Move_Group_Manage_0006(),Function: Move_To_Manage_Group ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+
+}
+
+function OracleSRDF_Change_Continuity_State_0001() {
+	try {
+		Change_ContinuityStatus_Group($groupName, "Normal Inactive");
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Change_Continuity_State_0001(),Function: Change_ContinuityStatus_Group ,execution got failed.kindly check the log for more details");
+		_fail("Current group state is not correct,so that stopping execution");
+	}
+}
+
+function OracleSRDF_Contiunity_Status_0002() {
+	try {
+		Verify_Continuitystatus_Before_NC();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Contiunity_Status_0002(),Function: Verify_Continuitystatus_Before_NC ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleSRDF_Continuity_Management_0015() {
+	try {
+		Group_Managedrsolution();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Continuity_Management_0015(),Function: Group_Managedrsolution ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleSRDF_Start_NormalCopy_0001() {
+	try {
+		Execute_NC();
+		Verify_Continuitystatus_In_NC();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_NormalCopy_0001(),Function: Execute_NC or Verify_Continuitystatus_In_NC ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+function OracleSRDF_Monitor_Relationship_0030() {
+	try {
+		OracleSRDF_Monitor_Relationship($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Monitor_Relationship_0030(),Function: Monitor_Relationship ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleSRDF_Manage_DRsolution_0029() {
+	try {
+		NC_Execution_Status($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: OracleSRDF_Manage_DRsolution_0029(),Function: NC_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("NC workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+}
+
+function OracleSRDF_NC_RPO_0026() {
+	try {
+		OracleSRDF_Rpo();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: OracleSRDF_NC_RPO_0026(),Function: OracleSRDF_Rpo ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleSRDF_NC_RTO_0027() {
+	try {
+		OracleSRDF_RTO();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: OracleSRDF_NC_RTO_0027(),Function: OracleSRDF_Rto ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+
+
+
+function OracleSRDF_Import_SOSB_0007() {
+	try {
+		Import_WF_SO();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Import_SOSB_0007(),Function: Import_WF_SO ,execution got failed.kindly check the log for more details");
+		_fail("workflow not imported succesfully.So that stopping execution.");
+	}
+	try {
+		Import_WF_SB();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Import_SOSB_0007(),Function: Import_WF_SB ,execution got failed.kindly check the log for more details");
+		_fail("workflow not imported succesfully.So that stopping execution.");
+	}
+}
+
+function OracleSRDF_Stop_NC_0002() {
+	try {
+		NC_Execution_Status($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_NC_0002(),Function: NC_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("NC workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+	try {
+		Stop_NC($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_NC_0002(),Function: Stop_NC ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleSRDF_Start_SO_0011() {
+	try {
+		Start_SO($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_SO_0011(),Function: Start_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleSRDF_SO_Execution_0012() {
+	try {
+		Verify_Continuitystatus_In_SO();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SO_Execution_0012(),Function: Verify_Continuitystatus_In_SO ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		SO_Execution_Status($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SO_Execution_0012(),Function: SO_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("SO workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+}

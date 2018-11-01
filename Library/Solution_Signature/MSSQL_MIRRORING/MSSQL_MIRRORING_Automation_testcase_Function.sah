@@ -1,0 +1,592 @@
+
+function MSSQL_MIRR_Component_Local_Discovery_0001() {
+	try {
+		Create_Local_ComponentPR();// In component > Windows > Windows.sah
+		Create_Local_ComponentDR();// In component > Windows > Windows.sah
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Component_Local_Discovery_0002(),Function: Create_Local_ComponentPR or Create_Local_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("component not created succesfully.So that stopping execution.");
+	}
+}
+
+function MSSQL_MIRR_Component_Remote_Discovery_0001() {
+	try {
+		Create_Remote_ComponentPR();// In component > Windows > Windows.sah
+		Create_Remote_ComponentDR();// In component > Windows > Windows.sah
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Component_Remore_Discovery_0001(),Function: Create_Remote_ComponentPR or Create_Remote_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("component not created succesfully.So that stopping execution.");
+	}
+}
+
+function MSSQL_MIRR_Dataset_Discovery_0002() {
+	try {
+		Create_Mssql_DatasetPR();// In Database > MSSQL.sah
+		Create_Mssql_Mirror_DatasetDR();// In Database > MSSQL.sah
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:MSSQL_MIRR_Dataset_Discovery_0002(),Function: Create_MSSQL_Dataset_PR or Create_MSSQL_Dataset_DR ,execution got failed.kindly check the log for more details");
+		_fail("dataset not created succesfully.So that stopping execution.");
+	}
+
+}
+
+function MSSQL_MIRR_Auto_DatasetDiscovery0003() {
+	try {
+		Verify_Mssql_Dataset_Details_PR();// In Database > MSSQL.sah
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:MSSQL_MIRR_Auto_DatasetDiscovery0003(),Function: Verify_Dataset_Details_PR or Verify_Dataset_Details_DR,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+
+function MSSQL_MIRR_GroupCreation_0004(){
+	try {
+		Create_MSSQL_MIRR_Group($groupName,$groupDescription,$SolutionSignature,$primaryComponents,$remoteComponents,$primaryDatasets,$remoteDatasets); //In Solution signature > MSSQL_Logshipping_Solution.sah
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MSSQL_GroupCreation_0004(),Function: MSSQL_MIRRORING_FG_DG_Group_Creation ,execution got failed.kindly check the log for more details");
+		_fail("Group not created succesfully.So that stopping execution.");
+	}
+
+}
+
+function MSSQL_MIRR_Move_Group_Manage_0005() {
+	try {
+		Move_To_Manage_Group($groupName); // In Common > Group_Operation.sah
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Move_Group_Manage_0005(),Function: Move_To_Manage_Group ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+
+}
+
+function MSSQL_MIRR_Change_Continuity_State_0006() {
+	try {
+		Change_ContinuityStatus_Group($groupName, "Normal Inactive"); // In Common > Group_Operation.sah
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Change_Continuity_State_0006(),Function: Change_ContinuityStatus_Group ,execution got failed.kindly check the log for more details");
+		_fail("Current group state is not correct,so that stopping execution");
+	}
+}
+
+
+
+function MSSQL_MIRR_Component_Remote_Status_0007() {
+	try {
+		
+		publishBCO( $groupName, "Failover" );
+		Verify_Component_Status_PR_Windows();
+		Verify_Component_Status_DR_Windows();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Component_Remote_Status_0007(),Function: Verify_Component_Status_PR or Verify_Component_Status_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+//Local
+function MSSQL_MIRR_Component_Local_Status_0007() {
+	try {
+		publish($groupName, "Failover");
+		Get_Local_Componenet_Status_DB_PR_Windows();
+		Get_Local_Componenet_Status_DB_DR_Windows();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Component_Local_Status_0001(),Function: Verify_Component_Status_PR or Verify_Component_Status_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_MIRR_Contiunity_Status_0008() {
+	try {
+		Verify_Continuity_Status($groupName, "DR Sync In Progress");
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Contiunity_Status_0008(),Function: Verify_Continuitystatus_Before_NC ,execution got failed.kindly check the log for more details");
+	}
+}
+function MSSQL_MIRR_Continuity_Management_0015() {
+	try {
+		Group_Managedrsolution();// In Common > Group_Operation.sah
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Continuity_Management_0015(),Function: Group_Managedrsolution ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+function MSSQL_MIRR_Start_NormalCopy_0009() {
+	try {
+		//Execute_NC();// In Common > Group_Operation.sah
+		Execute_NC( $groupName,"NormalCopy" );
+		Verify_Continuitystatus_In_NC();// In Common > Group_Operation.sah
+		
+		publishBCO( $groupName, "Failover" );
+		$count = 0;
+		while($count<10){
+			_wait(30000);
+		$count++;	
+		}
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_NormalCopy_0009(),Function: Execute_NC or Verify_Continuitystatus_In_NC ,execution got failed.kindly check the log for more details");
+	}
+	
+}
+function MSSQL_MIRR_Monitor_Relationship_0010() {
+	try {
+		MSSQL_MIRR_Monitor_Relationship($groupName);// In Common > Group_Operation.sah
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MSSQL_MIRR_Monitor_Relationship_0010(),Function: MSSQL_MIRR_Monitor_Relationship ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_MIRR_Continuity_Work_Flow_NC_0011() {
+	try {
+		 //In Solution signature > MSSQL_Logshipping_Solution.sah
+		
+		MSSQL_MIRR_Continuity($groupName,"NormalCopy");
+
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MSSQL_MIRR_Continuity_Work_Flow_0011(),Function: Mssql_ContiniutyWorkFlow,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_MIRR_Continuity_Work_Flow_RNC_0021() {
+	try {
+		 //In Solution signature > MSSQL_Logshipping_Solution.sah
+		
+		MSSQL_MIRR_Continuity($groupName,"ReverseNormalCopy");
+
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MSSQL_MIRR_Continuity_Work_Flow_0021(),Function: Mssql_ContiniutyWorkFlow,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+function MSSQL_MIRR_Replication_Flow_NC_0012() {
+	try {
+		MSSQL_MIRR_GroupSnapshot();//In Solution signature > MSSQL_Logshipping_Solution.sah
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MSSQL_MIRR_GroupSnapshot_Monitor_0012(),Function: Mssql_GroupSanpshot ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_MIRR_NC_RPO_0013() {
+	try {
+		//publishBCO( $groupName, "Failover" );
+		MSSQL_MIRR_RPO();//In Solution signature > MSSQL_Logshipping_Solution.sah
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: NC_MSSQL_MIRR_RPO_0013(),Function: MSSQL_Rpo ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_MIRR_NC_RTO_0014() {
+	try {
+		MSSQL_MIRR_RTO();//In Solution signature > MSSQL_Logshipping_Solution.sah
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: NC_MSSQL_MIRR_RTO_0014(),Function: MSSQL_Rto ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+function MSSQL_MIRR_Stop_NC_0015() {
+	try {
+		NC_Execution_Status($groupName);// In Common > Group_Operation.sah
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_NC_0015(),Function: NC_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("NC workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+	try {
+		Stop_NC($groupName);// In Common > Group_Operation.sah
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_NC_0002(),Function: Stop_NC ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_MIRR_Start_SO_0016() {
+	try {
+		Start_SO($groupName);// In Common > Group_Operation.sah
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_SO_0016(),Function: Start_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_MIRR_SO_Execution_0017() {
+	try {
+		//Verify_Continuity_Status($groupName, "");
+		Verify_Continuitystatus_In_SO();// In Common > Group_Operation.sah
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SO_Execution_0017(),Function: Verify_Continuitystatus_In_SO ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		if($agentType=="Remote"){
+			SO_Execution_Status($groupName);// In Common > Group_Operation.sah
+			}
+			else 
+				{
+				Mirroring_SO_Execution_Status($groupName);
+				}// In Common > Group_Operation.sah
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SO_Execution_0012(),Function: Mirroring_SO_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("SO workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+}
+
+function MSSQL_MIRR_SO_Continuity_Status_0018(){
+	try {
+		Verify_Continuity_Status($groupName, "DR Resync In Progress");
+		//Verify_Continuitystatus_After_SO();// In Common > Group_Operation.sah
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SO_Replication_0018(),Function: Verify_Continuitystatus_After_SO or MSSQL_Replication_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_MIRR_Start_RNC_0019() {
+	try {
+		Execute_Reverse_Normal_Copy($groupName);//In Common > Group_Operation.sah
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_RNC_0019(),Function: Execute_Reverse_Normal_Copy or MSSQL_Managedrsolution_PostSO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_MIRR_RNC_Execution_0020() {
+	try {
+		RNC_Execution_Status($groupName);//In Common > Group_Operation.sah
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: RNC_Execution_0020(),Function: RNC_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("RNC workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+	/*try {
+		MSSQL_MIRR_GroupInformation_Post_SO();//In Solution signature > MSSQL_Logshipping_Solution.sah
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MSSQL_MIRR_RNC_Groupinformation_Monitor_0022(),Function: MSSQL_Groupinformation_Post_SO ,execution got failed.kindly check the log for more details");
+	}*/
+}
+
+function MSSQL_MIRR_Replication_Flow_RNC_0022() {
+	try {
+		MSSQL_MIRR_GroupSnapshot_Post_SO();//In Solution signature > MSSQL_Logshipping_Solution.sah
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MSSQL_MIRR_Replication_Flow_RNC_0022(),Function: MSSQL_Groupsnapshot_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_MIRR_RNC_RPO_Monitor_0023() {
+	try {
+		MSSQL_MIRR_RPO_Post_SO();//In Solution signature > MSSQL_Logshipping_Solution.sah
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MSSQL_MIRR_RNC_Rpo_Monitor_0023(),Function: MSSQL_Rpo_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_MIRR_Stop_RNC_0024() {
+	try {
+		RNC_Execution_Status($groupName);//In Common > Group_Operation.sah
+	} catch ($e) {
+		_log("for test Case ID: Stop_RNC_0024(),Function: RNC_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("RNC workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+	try {
+		//Stop_Reverse_Normal_Copy($groupName);//In Common > Group_Operation.sah
+		Stop_Reverse_Normal_Copy($groupName)
+	} catch ($e) {
+		_log("for test Case ID: Stop_RNC_0024(),Function: Stop_Reverse_Normal_Copy ,execution got failed.kindly check the log for more details");
+	}
+}
+
+//Events
+function MSSQL_MIRR_Remote_Stop_MSSQL_Agent_SO_InActive_0025() {
+	try {
+		MSSQL_Mirroring_Remote_PR_MSSQL_Agent_Stop_Event_SO_InActive();
+		MSSQL_Mirroring_Remote_DR_MSSQL_Agent_Stop_Event_SO_InActive();
+	} catch ($e) {
+		_log("for test Case ID: Remote_Stop_MSSQL_Agent_0025(),Function: MSSQL_Remote_PR_MSSQL_Agent_Stop_Event_SO_InActive or MSSQL_Remote_DR_MSSQL_Agent_Stop_Event_SO_InActive ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_MIRR_Remote_Start_MSSQL_Agent_SO_InActive_0026() {
+	try {
+		MSSQL_Mirroring_Remote_PR_MSSQL_Agent_Start_Event_SO_InActive();
+		MSSQL_Mirroring_Remote_DR_MSSQL_Agent_Start_Event_SO_InActive();
+	} catch ($e) {
+		_log("for test Case ID: Remote_Start_MSSQL_Agent_0026(),Function: MSSQL_Remote_PR_MSSQL_Agent_Start_Event_SO_InActive or MSSQL_Remote_DR_MSSQL_Agent_Start_Event_SO_InActive ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_MIRR_Local_Stop_MSSQL_OS_Agent_SO_InActive_005() {
+	try {
+		MSSQL_MIRR_Local_PR_MSSQL_Agent_Stop_Event_SO_InActive();
+		MSSQL_MIRR_Local_DR_MSSQL_Agent_Stop_Event_SO_InActive();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Local_Stop_MSSQL_Agent_0039(),Function: MSSQL_Local_PR_MSSQL_Agent_Stop_Event_SO_InActive or MSSQL_Local_DR_MSSQL_Agent_Stop_Event_SO_InActive ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_MIRR_Local_Start_MSSQL_OS_Agent_SO_InActive_0024() {
+	try {
+		MSSQL_MIRR_Local_PR_MSSQL_Agent_Start_Event_SO_InActive();
+		MSSQL_MIRR_Local_DR_MSSQL_Agent_Start_Event_SO_InActive();
+	} catch ($e) {
+		_log("for test Case ID: Local_Start_MSSQL_Agent_0038(),Function: MSSQL_Local_PR_MSSQL_Agent_Start_Event_SO_InActive or MSSQL_Local_DR_MSSQL_Agent_Start_Event_SO_InActive ,execution got failed.kindly check the log for more details");
+	}
+}
+
+ 
+function MSSQL_MIRR_Remote_Stop_Windows_OS_Agent_SO_InActive_0027() {
+	try {
+		MSSQL_Mirroring_Remote_PR_Windows_OS_Agent_Stop_Event_SO_InActive();
+		MSSQL_Mirroring_Remote_DR_Windows_OS_Agent_Stop_Event_SO_InActive();
+	} catch ($e) {
+		_log("for test Case ID: Remote_Stop_MSSQL_Agent_0027(),Function: MSSQL_Remote_PR_MSSQL_Agent_Stop_Event_SO_InActive or MSSQL_Remote_DR_MSSQL_Agent_Stop_Event_SO_InActive ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_MIRR_Remote_Start_Windows_OS_Agent_SO_InActive_0028() {
+	try {
+		MSSQL_Mirroring_Remote_PR_Windows_OS_Agent_Start_Event_SO_InActive();
+		MSSQL_Mirroring_Remote_DR_Windows_OS_Agent_Start_Event_SO_InActive();
+	} catch ($e) {
+		_log("for test Case ID: Remote_Start_MSSQL_Agent_0028(),Function: MSSQL_Remote_PR_MSSQL_Agent_Start_Event_SO_InActive or MSSQL_Remote_DR_MSSQL_Agent_Start_Event_SO_InActive ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_MIRR_Local_Stop_Windows_OS_Agent_SO_InActive_005() {
+	try {
+		MSSQL_MIRR_Local_PR_Windows_Agent_Stop_Event_SO_InActive();
+		MSSQL_MIRR_Local_DR_Windows_Agent_Stop_Event_SO_InActive();
+	} catch ($e) {
+		_log("for test Case ID: Local_Stop_MSSQL_Agent_0039(),Function: MSSQL_Local_PR_MSSQL_Agent_Stop_Event_SO_InActive or MSSQL_Local_DR_MSSQL_Agent_Stop_Event_SO_InActive ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_MIRR_Local_Start_Windows_OS_Agent_SO_InActive_0024() {
+	try {
+		MSSQL_MIRR_Local_PR_Windows_Agent_Start_Event_SO_InActive();
+		MSSQL_MIRR_Local_DR_Windows_Agent_Start_Event_SO_InActive();
+	} catch ($e) {
+		_log("for test Case ID: Local_Start_MSSQL_Agent_0038(),Function: MSSQL_Local_PR_MSSQL_Agent_Start_Event_SO_InActive or MSSQL_Local_DR_MSSQL_Agent_Start_Event_SO_InActive ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+function MSSQL_MIRR_Start_SB_0029() {
+	try {
+		Verify_Continuity_Status($groupName, "DR Resync In Progress");
+		Start_SB($groupName);
+	} catch ($e) {
+		_log("for test Case ID: Start_SB_0029(),Function: Verify_Continuitystatus_Stop_RNC or Start_SB ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+function MSSQL_MIRR_SB_Execution_0030() {
+
+	try {
+		if($agentType=="Remote"){
+			SB_Execution_Status($groupName);// In Common > Group_Operation.sah
+			}
+			else 
+				{
+				Mirroring_SB_Execution_Status($groupName);//In Common > Group_Operation.sah
+				}
+			} catch ($e) {
+				_log($e.toString(),"Custom1");
+		_log("for test Case ID: SB_Execution_0030(),Function: Mirroring_SB_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("SB workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+}
+
+function MSSQL_MIRR_SB_Monitor_Manage_0031() {
+	try {
+		Verify_Continuity_Status($groupName, "DR Sync In Progress");//In Common > Group_Operation.sah
+   } catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SB_Monitor_Manage_0031(),Function: managedrsolution or Replication or Gruopsnapshot or Managegroupinformation or RPO or RTO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_MIRR_Dryrun_Report_Testcase() {
+	try {
+		Dryrun_for_Diffrent_Workflows("NormalFullCopy");
+		Dryrun_for_Diffrent_Workflows("NormalCopy");
+		Dryrun_for_Diffrent_Workflows("Switchover");
+		Dryrun_for_Diffrent_Workflows("ReverseNormalCopy");
+		Dryrun_for_Diffrent_Workflows("Switchback");
+		Dryrun_for_Diffrent_Workflows("Failover");
+		Dryrun_for_Diffrent_Workflows("FallbackResync");
+		Dryrun_for_Diffrent_Workflows("Fallback");
+} catch ($e) {
+	_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MSSQL_MIRR_Dryrun_Report_Testcase(),Function: MSSQL_MIRR_Dryrun_Report,execution got failed.kindly check the log for more details");
+	}
+}
+//Events
+
+function MSSQL_MIRR_Remote_Stop_MSSQL_Agent_0039() {
+	
+	try {
+		MSSQL_Mirroring_Remote_PR_MSSQL_Agent_Stop_Event();
+		MSSQL_Mirroring_Remote_DR_MSSQL_Agent_Stop_Event();
+	} catch ($e) {
+		_log("for test Case ID: Remote_Stop_MSSQL_Agent_0039(),Function: MSSQL_Mirroring_Remote_PR_MSSQL_Agent_Stop_Event or MSSQL_Mirroring_Remote_DR_MSSQL_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_MIRR_Remote_Start_MSSQL_Agent_0038() {
+	try {
+		MSSQL_Mirroring_Remote_PR_MSSQL_Agent_Start_Event();
+		MSSQL_Mirroring_Remote_DR_MSSQL_Agent_Start_Event();
+	} catch ($e) {
+		_log("for test Case ID: Remote_Start_MSSQL_Agent_0038(),Function: MSSQL_Remote_PR_MSSQL_Agent_Start_Event or MSSQL_Remote_DR_MSSQL_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_MIRR_Local_Stop_MSSQL_Agent_0039() {
+	try {
+		MSSQL_MIRR_Local_PR_MSSQL_Agent_Stop_Event();
+		MSSQL_MIRR_Local_DR_MSSQL_Agent_Stop_Event();
+	} catch ($e) {
+		_log("for test Case ID: Local_Stop_MSSQL_Agent_0039(),Function: MSSQL_Local_PR_MSSQL_Agent_Stop_Event or MSSQL_Local_DR_MSSQL_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_MIRR_Local_Start_MSSQL_Agent_0038() {
+	try {
+		MSSQL_MIRR_Local_PR_MSSQL_Agent_Start_Event();
+		MSSQL_MIRR_Local_DR_MSSQL_Agent_Start_Event();
+	} catch ($e) {
+		_log("for test Case ID: Local_Start_MSSQL_Agent_0038(),Function: MSSQL_Local_PR_MSSQL_Agent_Start_Event or MSSQL_Local_DR_MSSQL_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+///////////////////////////////////////////////////////////////////////////////////////
+
+function MSSQL_MIRR_Remote_Stop_Windows_OS_Agent_0046() {
+	
+	try {
+		MSSQL_Mirroring_Remote_PR_Windows_OS_Agent_Stop_Event();
+		MSSQL_Mirroring_Remote_DR_Windows_OS_Agent_Stop_Event();
+	} catch ($e) {
+		_log("for test Case ID: Remote_Stop_MSSQL_Agent_0039(),Function: MSSQL_Mirroring_Remote_PR_MSSQL_Agent_Stop_Event or MSSQL_Mirroring_Remote_DR_MSSQL_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_MIRR_Remote_Start_Windows_OS_Agent_0045() {
+	try {
+		MSSQL_Mirroring_Remote_PR_Windows_OS_Agent_Start_Event();
+		MSSQL_Mirroring_Remote_DR_Windows_OS_Agent_Start_Event();
+	} catch ($e) {
+		_log("for test Case ID: Remote_Start_MSSQL_Agent_0038(),Function: MSSQL_Remote_PR_MSSQL_Agent_Start_Event or MSSQL_Remote_DR_MSSQL_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+//////Local
+function MSSQL_MIRR_Local_Stop_Windows_OS_Agent_0039() {
+	try {
+		MSSQL_MIRR_Local_PR_Windows_Agent_Stop_Event();
+		MSSQL_MIRR_Local_DR_Windows_Agent_Stop_Event();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Local_Stop_MSSQL_Agent_0039(),Function: MSSQL_Local_PR_MSSQL_Agent_Stop_Event or MSSQL_Local_DR_MSSQL_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_MIRR_Local_Start_Windows_OS_Agent_0038() {
+	try {
+		MSSQL_MIRR_Local_PR_Windows_Agent_Start_Event();
+		MSSQL_MIRR_Local_DR_Windows_Agent_Start_Event();
+	} catch ($e) {
+		_log("for test Case ID: Local_Start_MSSQL_Agent_0038(),Function: MSSQL_Local_PR_MSSQL_Agent_Start_Event or MSSQL_Local_DR_MSSQL_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_MIRR_Start_FO_0001() {
+	try {
+		Stop_NC($groupName);//In Common > Group_Operation.sah
+		Start_FO($groupName);//In Common > Group_Operation.sah
+		Verify_Continuitystatus_In_FO();//In Common > Group_Operation.sah
+	} catch ($e) {
+		_log("for test Case ID: Start_FO_0001(),Function: Stop_NC or Start_FO or Verify_Continuitystatus_In_FO  ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_MIRR_FO_execution_0058() {
+	try {
+		FO_Execution_Status($groupName);//In Common > Group_Operation.sah
+	} catch ($e) {
+		_log("for test Case ID: FO_execution_0058(),Function: FO_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("Fail over workflow execution faild.So that stopping execution.Kindly check the logs for further details");
+	}
+}
+
+
+function MSSQL_MIRR_FO_RPO_0003() {
+	try {
+		Calculate_RPO_Post_FO($groupName);//In Common > Group_Operation.sah
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: FO_RPO_0003(),Function: Calculate_RPO_Post_FO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_MIRR_FO_Monitor_Manage_0006() {
+	try {
+		Gruopsnapshot_Post_FO($groupName);//In Solution signature > MSSQL_Logshipping_Solution.sah
+		Groupinformation_Post_FO($groupName);//In Solution signature > MSSQL_Logshipping_Solution.sah
+		Replication_Post_FO($groupName);
+	} catch ($e) {
+		_log("for test Case ID: FO_Monitor_Manage_0006(),Function: Gruopsnapshot_Post_FO or Groupinformation_Post_FO or Replication_Post_FO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_MIRR_Continuity_Status_FO_0007() {
+	try {
+		Verify_Continuitystatus_After_FO();//In Common > Group_Operation.sah
+	} catch ($e) {
+		_log("for test Case ID: Continuity_Status_FO_0007(),Function: Verify_Continuitystatus_After_FO ,execution got failed.kindly check the log for more details");
+	}
+}
+//FailOver Events
+function MSSQL_MIRR_Remote_Stop_Windows_OS_Agent_FO_Active_0047() {
+	
+	try {
+		MSSQL_Mirroring_Remote_DR_Windows_OS_Agent_Stop_Event_Failover_Active();
+	} catch ($e) {
+		_log("for test Case ID: Remote_Stop_MSSQL_Agent_0039(),Function: MSSQL_Mirroring_Remote_PR_MSSQL_Agent_Stop_Event or MSSQL_Mirroring_Remote_DR_MSSQL_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_MIRR_Remote_Start_Windows_OS_Agent_FO_Active_0051() {
+	
+	try {
+		MSSQL_Mirroring_Remote_DR_Windows_OS_Agent_Start_Event_Failover_Active();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Stop_MSSQL_Agent_0039(),Function: MSSQL_Mirroring_Remote_PR_MSSQL_Agent_Stop_Event or MSSQL_Mirroring_Remote_DR_MSSQL_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+

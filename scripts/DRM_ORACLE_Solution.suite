@@ -1,0 +1,17 @@
+#MSSQL_LOG_PFR_Automation_RemoteAgent_Testcase.sah
+#PostgresSQL_Automation_LocalAgent_Testcase.sah
+#DB2_HADR_Automation_LocalAgent_testcase.sah
+#Sybase_PFR_LocalAgent_TestCases.sah
+#Oracle_PFR_Automation_LocalAgent_TestCases.sah
+#APP_PFR_Automation_RemoteAgent_TestCases.sah
+#APP_PFR_Automation_LocalAgent_TestCases.sah
+#Oracle_DG_Automation_LocalAgent_testcase.sah
+
+
+Oracle_DG_Automation_RemoteAgent_testcase.sah
+Oracle_PFR_Automation_LocalAgent_TestCases.sah
+#PostgresSQL_Automation_RemoteAgent_Testcase.sah
+#DB2_HADR_Automation_LocalAgent_testcase.sah
+#MSSQL_Log_Shipping_Automation_RemoteAgent_Testcase.sah
+RAL\CustomAction_TestCases.sah
+RAL\StartProcessRAL_TestCases.sah

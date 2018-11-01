@@ -1,0 +1,725 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM
+ ** Objective : This script contains all the remote agent test cases which are the part of  APP_PFR solution.
+ ** AuthorName : Govinda Mengji
+ ** Created Date : June 2013
+ ** AuthorName : 
+ ** Modified Date: DEC 2015
+************************************************************************/
+
+
+_log("=================================Pre-Condition===================================","Custom1");
+
+ 
+//don't change the below line.
+
+_include("../Library/Solution_Signature/Include/APP_PFR_Include.sah");
+_include("../conf/DRMInstallation_Parameter.sah");
+_include("../Library/Common/CommonRepository/CommonDRM_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/CommonGUINavigation_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/GroupOperation_ObjRepository.sah");
+_include("../Library/Solution_Signature/APP_PFR/ObjectRepository/APPPFR_ObjectRepository.sah");
+_include("../Library/Solution_Signature/APP_PFR/ObjectRepository/AppPFR_Event_ObjectRepository.sah");
+_include("../conf/APP_PFR/APP_PFR_Local_Agent_Parameter.sah");
+_include("../conf/APP_PFR/UserSelected_APP_PFR_Testcase.sah");
+_include("../Library/Validation_Manager/ObjectRepository/Validation_Manager_ObjectRepository.sah");
+_include("../Library/Validation_Manager/Validation_Manager.sah");
+_include("../Library/RAL/RAL_CommonFunction.sah");
+_include("../Library/RAL/SFR/SFR_RAL.sah");
+/*_include("../Library/RAL/SFR/SFR_TestCaseFunctions.sah");
+_include("../conf/RAL/SFR/SFR_RaLParameter.sah");*/
+
+
+// *************************************************************************************************************************************************
+
+//Notes: below test cases for PFR service 
+
+
+UnInstall_Remote_Agent_SilentMode_PR();  //uninstalling remote Agent. Pfr Services for PR
+
+UnInstall_Remote_Agent_SilentMode_DR();  //uninstalling remote Agent. Pfr Services for DR
+
+AgentBuild_Copy_into_PFRFile_PR();
+
+AgentBuild_Copy_into_PFRFile_DR();
+
+Copy_Property_file();  
+
+Update_PropertyFile_RemoteAgent_PR();
+
+Update_PropertyFile_RemoteAgent_DR(); 
+
+Install_Remote_Agent_SilentMode_PR();  // installing the PFR service 
+
+Install_Remote_Agent_SilentMode_DR();   // installing the PFR service 
+
+ //Notes: below test cases for Local Agent 
+
+Agent_UnInstllation_001(); 
+
+AgentBuild_Copy_into_AgentHost_PR(); 
+
+AgentBuild_Copy_into_AgentHost_DR(); 
+
+Copy_Property_file();
+
+Update_PropertyFile_LocalAgent_PR();
+
+Update_PropertyFile_LocalAgent_DR();  
+
+Install_Local_Agent_SilentMode_PR();
+
+Install_Local_Agent_SilentMode_DR(); 
+
+// checking the status of PFR service after installing local agents
+Status_Remote_PFR_SilentMode_PR(); 
+Status_Remote_PFR_SilentMode_DR();
+
+
+//Login_001();
+
+
+_log("=================================Test========================================","Custom1");
+
+
+if($g_executeAPP_PFRAll == "Y" || $g_siteAPP_PFR == "Y"){
+
+var $test0 = _testcase("Site_0003","Create New Site");
+
+$test0.start();
+
+       Site_0003();  
+
+$test0.end();
+
+} 
+
+
+if($g_executeAPP_PFRAll == "Y" || $g_agentNodeAPP_PFR == "Y"){
+
+var $test1 = _testcase("Object_Manager/ Common/ Components/ Component_04","Create Agent Node");
+
+$test1.start();
+
+       Agent_node_001(); 
+
+$test1.end();
+
+}
+
+
+if($g_executeAPP_PFRAll == "Y" || $g_componentLocalDiscoveryAPP_PFR == "Y"){
+
+var $test2 = _testcase("Object_Manager/ Common/ Components/ Component_04","Create New Component");
+
+$test2.start();
+
+       
+       APP_PFR_Component_Local_Discovery_0002();
+
+$test2.end();
+
+}
+
+
+
+if($g_executeAPP_PFRAll == "Y" || $g_datasetDiscoveryAPP_PFR == "Y"){
+
+var $test3 = _testcase("Object_Manager/Dataset/APP/OraDiscovery_0006 ","Dataset Discovery");
+
+$test3.start();
+
+       APP_PFR_Dataset_Discovery_0007();
+
+$test3.end();
+
+}
+
+
+
+if($g_executeAPP_PFRAll == "Y" || $g_datasetAutoDiscoveryAPP_PFR == "Y"){
+
+var $test4 = _testcase("Object_Manager/Dataset/APP/Ora_Auto_DatasetDiscovery0002","APP Auto Dataset Discovery");
+
+$test4.start();
+
+       APP_PFR_Auto_DatasetDiscovery0009();
+
+$test4.end();
+
+}
+
+ 
+
+if($g_executeAPP_PFRAll == "Y" || $g_protectionSchemeDiscoveryAPP_PFR == "Y"){
+
+var $test5 = _testcase("Object_Manager/ProtectionScheme/DataGaurd/APP_PFR_Discovery0002","Protection Scheme Discovery");
+
+$test5.start();
+
+		//checking the status of PFR agent after installing local agents
+		//Status_Local_PFRAgent_SilentMode_PR();
+		//Status_Local_PFRAgent_SilentMode_DR();	
+       APP_PFR_Protectionscheme_Discovery_0018();
+
+$test5.end();
+
+} 
+
+
+
+if($g_executeAPP_PFRAll == "Y" || $g_groupCreationAPP_PFR == "Y"){
+
+var $test6= _testcase("Continuity_Manager/Common/FG/Group/GroupCreation_0001","APP_PFR Group Creation");
+
+$test6.start();
+
+       APP_PFR_GroupCreation_0022();
+
+$test6.end();
+
+} 
+
+
+
+if($g_executeAPP_PFRAll == "Y" || $g_moveGroupToManageAPP_PFR == "Y"){
+
+var $test7 = _testcase("Continuity_Manager/Common/FG/Group/GroupCreation_0006","Move Group to Manage");
+
+$test7.start();
+
+       APP_PFR_Move_Group_Manage_0006();
+
+$test7.end();
+
+} 
+
+
+
+
+if($g_executeAPP_PFRAll == "Y" || $g_postGroupCreationAPP_PFR == "Y"){
+
+var $test8 = _testcase("Object_Manager/ProtectionScheme/DataGaurd/APP_PFR_Start_NFC_0006","Start NFC");
+
+$test8.start();
+
+APP_PFR_Start_NFC_0006();
+
+$test8.end();
+
+}
+
+
+
+if($g_executeAPP_PFRAll == "Y" || $g_postGroupCreationAPP_PFR == "Y"){
+
+var $test8 = _testcase("Object_Manager/ProtectionScheme/DataGaurd/APP_PFR_Discovery_0010","Post Group Creation");
+
+$test8.start();
+
+      APP_PFR_Post_Group_Creation_0010();
+
+$test8.end();
+
+}
+
+ 
+/*
+if($g_executeAPP_PFRAll == "Y" || $g_componentStatusAPP_PFR == "Y"){
+
+var $test9 = _testcase("Object_Manager/ Common/ Components/ Subsystem_Moinitoring_0001 ","Component Status");
+
+$test9.start();
+
+       APP_PFR_Component_Status_0001();
+
+$test9.end();
+
+}
+
+ 
+
+if($g_executeAPP_PFRAll == "Y" || $g_datasetStatusAPP_PFR == "Y"){
+
+var $test10 = _testcase("Object_Manager/Dataset/APP/Ora_Auto_DatasetDiscovery0009","Dataset Status");
+
+$test10.start();
+
+       APP_PFR_Dataset_status_0011();
+
+$test10.end();
+
+}*/
+
+ 
+
+if($g_executeAPP_PFRAll == "Y" || $g_continuityStatusAPP_PFR == "Y"){
+
+var $test11 = _testcase("Continuity_Manager/Common/FG/Monitor/MON_0002","Continuity Status");
+
+$test11.start();
+
+      APP_PFR_Contiunity_Status_0002();
+
+$test11.end();
+
+}
+
+
+
+if($g_executeAPP_PFRAll == "Y" || $g_startNCAPP_PFR == "Y"){
+
+var $test13 = _testcase("Continuity_Manager/Common/FG/Manage/NormalCopy_0001","Start NC");
+
+$test13.start();
+
+      APP_PFR_Start_NormalCopy_0001();
+
+$test13.end();
+
+}
+
+ 
+
+if($g_executeAPP_PFRAll == "Y" || $g_startNCAPP_PFR == "Y"){
+
+       var $test14 = _testcase("Continuity_Manager/Common/FG/Manage/NormalCopy_0001","Conitinuity Workflows");
+
+       $test14.start();
+
+       APP_PFR_Continuity_Workflows_NC();
+
+       $test14.end();
+
+}
+
+
+
+if($g_executeAPP_PFRAll == "Y" || $g_monitorRelationshipAPP_PFR == "Y"){
+
+var $test15 = _testcase("Site_0003","Monitor Relationship");
+
+$test15.start();
+
+       APP_PFR_Monitor_Relationship_0030();
+
+$test15.end();
+
+}
+
+
+
+ 
+
+if($g_executeAPP_PFRAll == "Y" || $g_replicationNCAPP_PFR == "Y"){
+
+var $test19 = _testcase("Continuity_Manager/Template/APP_Log/APP_PFR/APP_PFR_ProtectionMonitoring0001","NC Replication");
+
+$test19.start();
+
+       APP_PFR_NC_Replication_0028();
+
+$test19.end();
+
+}
+
+
+
+if($g_executeAPP_PFRAll == "Y" || $g_rpoNCAPP_PFR == "Y"){
+
+var $test20 = _testcase("Continuity_Manager/Common/FG/Monitor/RPO_0008","NC RPO");
+
+$test20.start();
+
+       APP_PFR_NC_RPO_0026();
+
+$test20.end();
+
+} 
+
+
+if($g_executeAPP_PFRAll == "Y" || $g_rtoNCAPP_PFR == "Y"){
+
+       var $test48 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0023","NC RTO");
+
+       $test48.start();
+
+              APP_PFR_NC_RTO_0027();
+
+       $test48.end();
+
+}
+
+/*if($g_executeAPP_PFRAll == "Y" || $g_protectionSchemeStatusAPP_PFR == "Y"){
+
+    var $test14 = _testcase("Object_Manager/ProtectionScheme/DataGaurd/APP_PFR_Discovery0011","Protection Scheme Status");
+
+    $test14.start();
+
+    APP_PFR_Protectionscheme_status_0021();
+
+    $test14.end();
+
+}*/
+
+
+if($g_executeAPP_PFRAll == "Y" || $g_stopNCAPP_PFR == "Y"){
+
+var $test21 = _testcase("Site_0003","Stop NC");
+
+$test21.start();
+
+       APP_PFR_Stop_NC_0002();
+
+$test21.end();
+
+}
+
+
+if($g_executeAPP_PFRAll == "Y" || $g_startSOAPP_PFR == "Y"){
+
+var $test22 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0011","Start SO");
+
+$test22.start();
+
+       APP_PFR_Start_SO_0011();
+
+$test22.end();
+
+}
+
+ 
+
+
+if($g_executeAPP_PFRAll == "Y" || $g_SOExecutionAPP_PFR == "Y"){
+
+var $test23 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0012","SO Execution");
+
+$test23.start();
+
+       APP_PFR_SO_Execution_0012();
+
+$test23.end();
+
+}
+
+ 
+
+if($g_executeAPP_PFRAll == "Y" || $g_replicationSOAPP_PFR == "Y"){
+
+var $test24 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0013","SO Replication");
+
+$test24.start();
+
+       APP_PFR_SO_Verify_Continuitystatus_013();
+
+$test24.end();
+
+}
+
+
+
+if($g_executeAPP_PFRAll == "Y" || $g_startRNCAPP_PFR == "Y"){
+
+var $test25 = _testcase("Continuity_Manager/Template/APP_Log/Monitor/OraLog_RNC_0001","Start RNC");
+
+$test25.start();
+
+       APP_PFR_Start_RNC_0033();
+
+$test25.end();
+
+}
+
+
+if($g_executeAPP_PFRAll == "Y" || $g_startNCAPP_PFR == "Y"){
+
+       var $test27 = _testcase("Continuity_Manager/Common/FG/Manage/NormalCopy_0001","Conitinuity Workflows");
+
+       $test27.start();
+
+       APP_PFR_Continuity_Workflows_RNC();
+
+       $test27.end();
+
+       }
+
+ 
+
+
+
+if($g_executeAPP_PFRAll == "Y" || $g_rpoRNCAPP_PFR == "Y"){
+
+var $test28 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0023","RNC RPO Monitor");
+
+$test28.start();
+
+       APP_PFR_RNC_Rpo_Monitor_0023();
+
+$test28.end();
+
+}
+
+ 
+
+if($g_executeAPP_PFRAll == "Y" || $g_replicationRNCAPP_PFR == "Y"){
+
+var $test29 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0024","RNC Replication");
+
+$test29.start();
+
+       APP_PFR_RNC_Replication_0024();
+
+$test29.end();
+
+}
+
+
+if($g_executeAPP_PFRAll == "Y" || $g_replicaionStopAPP_PFR == "Y"){
+
+	var $test33 = _testcase("Continuity_Manager/ Template/ APP_Log/ APP_PFR/ APP_PFR_Manage_Replication ","Stop Replication");
+
+	$test33.start();
+
+	APP_PFR_Local_Stop_APP_PFR_Agent_SO_InActive_0039();
+
+	$test33.end();
+
+	}
+
+	if($g_executeAPP_PFRAll == "Y" || $g_remoteStopAPP_PFRAgent == "Y"){
+		var $test50 = _testcase("APP_PFR/APP_PFR_Group_Health_Status_0101","Group Status based on events");
+		$test50.start();
+		Group_Status_BasedONEvents_0101();
+		$test50.end();
+		}
+
+
+	if($g_executeAPP_PFRAll == "Y" || $g_replicaionStartAPP_PFR == "Y"){
+
+	var $test34 = _testcase("Continuity_Manager/ Template/ APP_Log/ APP_PFR/ APP_PFR_Manage_Replication ","Start Replication");
+
+	$test34.start();
+
+	APP_PFR_Local_Start_APP_PFR_Agent_SO_InActive_0038();
+
+	$test34.end();
+
+	}
+
+	if($g_executeAPP_PFRAll == "Y" || $g_remoteStopAPP_PFRAgent == "Y"){
+		var $test50 = _testcase("APP_PFR/APP_PFR_Group_Health_Status_0101","Group Status based on events");
+		$test50.start();
+		Group_Status_BasedONEvents_0101();
+		$test50.end();
+		}
+
+
+	if($g_executeAPP_PFRAll == "Y" || $g_stopRNCAPP_PFR == "Y"){
+
+	       var $test30 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0033","Stop RNC");
+
+	       $test30.start();
+
+	              APP_PFR_Stop_RNC_0033();
+
+	       $test30.end();
+
+	       }
+
+
+	if($g_executeAPP_PFRAll == "Y" || $g_startSBAPP_PFR == "Y"){
+
+	var $test35 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0034","Start SB");
+
+	$test35.start();
+
+	       APP_PFR_Start_SB_0034();
+
+	$test35.end();
+
+	}
+
+
+
+	if($g_executeAPP_PFRAll == "Y" || $g_SBExecutionAPP_PFR == "Y"){
+
+	var $test36 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0035","SB Execution");
+
+	$test36.start();
+
+	       APP_PFR_SB_Execution_0035();
+
+	$test36.end();
+
+	}
+
+///////////////////DRYRUN REPORT SCRIPT/////////////////////////////////////
+
+	if ($g_executeAPP_PFRAll == "Y" || $g_APP_PFR_Dryrun_Report == "Y") {
+		var $test26 = _testcase("Continuity_Manager/Common/FG/DryRun_Report_Function", "verify Dry run reports");
+		$test26.start();
+		APP_PFR_Dryrun_Report_Testcase();
+	    $test26.end();
+	}
+
+/*
+	if($g_executeAPP_PFRAll == "Y" || $g_remoteStopAPP_PFRAgent == "Y"){
+
+	var $test38 = _testcase("Continuity_Manager/Template/APP_Log/APP_PFR/APP_PFR_Object_Health_Events0001","Stopping Local Agent");
+
+	$test38.start();
+
+	APP_PFR_Local_Stop_Linux_Agent_0051();
+
+	$test38.end();
+
+	}
+
+	if($g_executeAPP_PFRAll == "Y" || $g_remoteStopAPP_PFRAgent == "Y"){
+		var $test50 = _testcase("APP_PFR/APP_PFR_Group_Health_Status_0101","Group Status based on events");
+		$test50.start();
+		Group_Status_BasedONEvents_0101();
+		$test50.end();
+		} 
+
+	if($g_executeAPP_PFRAll == "Y" || $g_remoteStartAPP_PFRAgent == "Y"){
+
+	var $test39 = _testcase("Continuity_Manager/Template/APP_Log/APP_PFR/APP_PFR_Object_Health_Events0001","Starting Local Agent");
+
+	$test39.start();
+
+	APP_PFR_Local_Start_Linux_Agent_0052();
+
+	$test39.end();
+
+	}
+	 
+	if($g_executeAPP_PFRAll == "Y" || $g_remoteStopAPP_PFRAgent == "Y"){
+		var $test50 = _testcase("APP_PFR/APP_PFR_Group_Health_Status_0101","Group Status based on events");
+		$test50.start();
+		Group_Status_BasedONEvents_0101();
+		$test50.end();
+		}
+	if($g_executeAPP_PFRAll == "Y" || $g_replicaionStopAPP_PFR == "Y"){
+
+	var $test40 = _testcase("Continuity_Manager/ Template/ APP_Log/ APP_PFR/ APP_PFR_Manage_Replication in GUI ","Stop Replication");
+
+	$test40.start();
+
+	       
+	APP_PFR_Local_Stop_APP_PFR_Agent_0039();
+
+	$test40.end();
+
+	}
+
+	if($g_executeAPP_PFRAll == "Y" || $g_remoteStopAPP_PFRAgent == "Y"){
+		var $test50 = _testcase("APP_PFR/APP_PFR_Group_Health_Status_0101","Group Status based on events");
+		$test50.start();
+		Group_Status_BasedONEvents_0101();
+		$test50.end();
+		} 
+
+	if($g_executeAPP_PFRAll == "Y" || $g_replicaionStartAPP_PFR == "Y"){
+
+	var $test41 = _testcase("Continuity_Manager/ Template/ APP_Log/ APP_PFR/ APP_PFR_Manage_Replication in GUI","Start Replication");
+
+	$test41.start();
+
+	APP_PFR_Local_Start_APP_PFR_Agent_0038();
+	         
+
+	$test41.end();
+
+	}
+
+	if($g_executeAPP_PFRAll == "Y" || $g_remoteStopAPP_PFRAgent == "Y"){
+		var $test50 = _testcase("APP_PFR/APP_PFR_Group_Health_Status_0101","Group Status based on events");
+		$test50.start();
+		Group_Status_BasedONEvents_0101();
+		$test50.end();
+		}*/
+	
+if($g_executeAPP_PFRAll == "Y" || $g_Validation_Manager_Execution == "Y"){
+	var $test50 = _testcase("APP_PFR/APP_PFR_Group_Health_Status_0101","Validation Manager Execution");
+	$test50.start();
+	Validation_Manager_Execution();
+	$test50.end();
+	}
+/*
+	if($g_executeAPP_PFRAll == "Y" || $g_startFOAPP_PFR == "Y"){
+
+	var $test42 = _testcase("Continuity_Manager/ Common/ FG/ Monitor/ Failover_0001 ","Start FO");
+
+	$test42.start();
+
+	APP_PFR_Start_FO_0001();
+
+	$test42.end();
+
+	}
+
+
+	if($g_executeAPP_PFRAll == "Y" || $g_FOExecutionAPP_PFR == "Y"){
+
+	var $test43 = _testcase("Continuity_Manager/ Common/ FG/ Monitor/ Failover_0001 ","FO Execution");
+
+	$test43.start();
+
+	       APP_PFR_FO_execution_0058();
+
+	$test43.end();
+
+	}
+
+	 
+
+	if($g_executeAPP_PFRAll == "Y" || $g_continuityStatusFOAPP_PFR == "Y"){
+
+	var $test44 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0007","Continuity Status During FO");
+
+	$test44.start();
+
+	       APP_PFR_Continuity_Status_FO_0007();
+
+	$test44.end();
+
+	}
+
+	 
+
+	if($g_executeAPP_PFRAll == "Y" || $g_rpoFOAPP_PFR == "Y"){
+
+	var $test45 = _testcase("Continuity_Manager/Common/FG/Monitohttp://localhost:9999/_s_/dyn/pro/DBReportsr/Failover_0003","RPO during FO");
+
+	$test45.start();
+
+	APP_PFR_FO_RPO_0003();
+
+	$test45.end();
+
+	}
+
+	 
+
+	if($g_executeAPP_PFRAll == "Y" || $g_rpoFOAPP_PFR == "Y"){
+
+	       var $test46 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0003","RPO during FO");
+
+	       $test46.start();
+
+	       APP_PFR_FO_RTO_0004();
+
+	       $test46.end();
+
+	}
+*/
+
+	_log("================================Post-Condition================================== ","Custom1");
+
+
+	Logout_001(); 
+	
+

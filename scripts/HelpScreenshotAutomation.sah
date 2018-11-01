@@ -1,0 +1,204 @@
+/*************************************************************************
+ ** CompanyName		 : Sanovi an IBM Company
+ ** Application Name : Sanovi Cloud Continuity Server
+ ** Project name 	 : Blue Wash
+ ** Objective		 : This script does storing of all images from Online Help page into the given folder
+ ** AuthorName 		 : Srinivas Pulamarasetti
+ ** Created Date 	 : Feb 2017
+ ************************************************************************/
+
+//////////////////////// HEADERS //////////////////////////////////////////////////
+_include("../Library/Common/Common_Function.sah");
+_include("../conf/DRMInstallation_Parameter.sah");
+_include("../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+_include("../conf/UserSelected_Installation_Testcase.sah");
+_include("../Library/Solution_Signature/Include/Common_Automation_testcase_Function.sah");
+
+
+/////////////////////// VARIABLES AND FOLDER CREATION /////////////////////////////
+var $drmServer; 
+var $usernm="sai";
+var $passwd="Sanovi123$%";
+var $group_nm;
+var $workflowName="Switchback";
+var $oldCopy = false;
+var $oldCopyFile = "c:\\WhiteLableData\\OldCopy\\";
+var $newCopyFile = "c:\\WhiteLableData\\NewCopy\\";
+	if($oldCopy == true){
+		$drmServer="192.168.2.234";
+		$group_nm="App_PFR_90";
+	}
+	else{
+		$drmServer="172.168.20.62";
+		$group_nm="App_PFR_90";
+	}
+var $newfolder;
+var $htmlSourceFolder;
+var $htmlSourceFolderPath;
+var $myObject;
+if(new java.io.File("c:\\WhiteLableData\\").exists() == false){
+	$newfolder = new java.io.File("c:\\WhiteLableData\\").mkdir();
+}
+if(new java.io.File($oldCopyFile).exists() == false){
+	$newfolder = new java.io.File($oldCopyFile).mkdir();	
+}
+if(new java.io.File($newCopyFile).exists() == false){
+	$newfolder = new java.io.File($newCopyFile).mkdir();
+}
+
+$htmlSourceFolderPath = "c:\\WhiteLableData\\" + getDateTimeString();
+//_log($htmlSourceFolderPath);
+  if(new java.io.File($htmlSourceFolderPath).exists() == false)
+{
+	$newfolder = new java.io.File($htmlSourceFolderPath).mkdir();
+	//$newResultsfile = new java.io.File($htmlSourceFolderPath).mkdir();
+	$filePath = $htmlSourceFolderPath + "\\Results.csv";	
+	var $header = [];
+	$header[0] = ["Page","Line Number","Description"];
+	_writeCSVFile( $header, $filePath, true);      
+}
+////////////////////////////////////////////////////////////////////////////////
+
+
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SCRIPTS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
+_navigateTo('http://' + $drmServer + ':8080/PanacesGUI/help/PanacesHelp.htm#Sanovi_Cloud_Continuity_Online_Help.htm#<id=0'); 
+_wait(5000);
+image1();
+image2();
+image3();
+image4();
+image5();
+image6();
+image7();
+image8();
+image9();
+image10();
+image11();
+image12();
+image13();
+image14();
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
+
+
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<< FUNCTION DECLARATIONS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//
+function image1(){
+	_click(_link("Introduction"));
+	_click(_link("Getting Started"));
+		imageScreenshotsInHelpPage("Loginpage.gif","loginpage.gif");
+		_log("image from"+":"+" Home > Introduction > Getting Started");
+}
+function image2(){
+	_click(_link("Configuration"));
+	_click(_link("Getting Started"));
+	_click(_link("Using Sanovi Cloud Continuity GUI"));
+	_click(_link("Navigation Bar"));
+		imageScreenshotsInHelpPage("homeicon.gif","homeicon.gif");
+		_log("image from"+":"+" Home > Introduction > Getting Started > Using Sanovi Cloud Continuity GUI > Navigation Bar");
+}
+function image3(){
+	_click(_link("Architecture Overview"));
+	_click(_link("Understanding Concepts"));
+	_click(_link("Discovery"));
+	_click(_link("Home page"));
+		imageScreenshotsInHelpPage("homepage.gif","homepage.gif");
+		_log("image from"+":"+" Home > Introduction > Architecture Overview > Understanding Concepts > Discovery > Home page");
+}
+function image4(){
+	_click(_link("Configuration"));
+	_click(_link("Low Touch Oracle DG"));
+	_click(_link("Primary Server"));
+		imageScreenshotsInHelpPage("Primaryserver.jpg","Primaryserver.jpg");
+		_log("image from"+":"+" Home > Configuration > Low Touch Oracle DG > Primary Server");
+}
+function image5(){
+	_click(_link("Configuration"));
+	_click(_link("Vault Framework"));
+	_click(_link("Configuring Vault"));
+	_click(_link("Configuring Vault with SCC GUI"));
+		imageScreenshotsInHelpPage("Capture1.gif","Capture1.gif");
+		_log("image from"+":"+" Home > Configuration > Vault Framework > Configuring Vault > Configuring Vault with SCC GUI");
+}
+function image6(){
+	commonNavigation();
+	_click(_link("Configuring Components with Vault"));
+		imageScreenshotsInHelpPage("Capture2.gif","Capture2.gif");
+		imageScreenshotsInHelpPage("Capture3.gif","Capture3.gif");
+		_log("image from"+":"+" Home > Configuration > Vault Framework > Configuring Vault > Configuring Subsystems to use Vault with SCC GUI > Configuring Components with Vault");
+}
+function image7(){
+	commonNavigation();
+	_click(_link("Configuring Datasets with Vault"));
+		imageScreenshotsInHelpPage("Capture4.gif","Capture4.gif");
+		imageScreenshotsInHelpPage("Capture5.gif","Capture5.gif");
+		_log("image from"+":"+" Home > Configuration > Vault Framework > Configuring Vault > Configuring Subsystems to use Vault with SCC GUI > Configuring Datasets with Vault");
+}
+function image8(){
+	commonNavigation();
+	_click(_link("Configuring Protection Schemes with Vault"));
+		imageScreenshotsInHelpPage("Capture6.gif","Capture6.gif");
+		_log("image from"+":"+" Home > Configuration > Vault Framework > Configuring Vault > Configuring Subsystems to use Vault with SCC GUI > Configuring Protection Schemes with Vault");
+}
+function image9(){
+	commonNavigationCyberArk();
+	_click(_link("Configuring CyberARK with SCC GUI"));
+		imageScreenshotsInHelpPage("Capture13.gif","Capture13.gif");
+		_log("image from"+":"+" Home > Configuration > Vault Framework > CyberARK > SCC Integration with CyberARK > Configuring CyberARK with SCC GUI");
+}
+function image10(){
+	commonNavigationCyberArk();
+	_click(_link("Configuring Subsystems to use CyberARK with SCC GUI"));
+	_click(_link("Configuring Components with CyberARK"));
+		imageScreenshotsInHelpPage("Capture14.gif","Capture14.gif");
+		imageScreenshotsInHelpPage("Capture15.gif","Capture15.gif");
+		_log("image from"+":"+" Home > Configuration > Vault Framework > CyberARK > SCC Integration with CyberARK > Configuring Subsystems to use CyberARK with SCC GUI > Configuring Components with CyberARK");
+}
+function image11(){
+	commonNavigationCyberArk();
+	_click(_link("Configuring Subsystems to use CyberARK with SCC GUI"));
+	_click(_link("Configuring Datasets with CyberARK"));
+		imageScreenshotsInHelpPage("Capture16.gif","Capture16.gif");
+		imageScreenshotsInHelpPage("Capture17.gif","Capture17.gif");
+		_log("image from"+":"+" Home > Configuration > Vault Framework > CyberARK > SCC Integration with CyberARK > Configuring Subsystems to use CyberARK with SCC GUI > Configuring Datasets with CyberARK");
+}
+function image12(){
+	commonNavigationCyberArk();
+	_click(_link("Configuring Subsystems to use CyberARK with SCC GUI"));
+	_click(_link("Configuring Protection Schemes with CyberARK"));
+		imageScreenshotsInHelpPage("Capture18.gif","Capture18.gif");
+		_log("image from"+":"+" Home > Configuration > Vault Framework > CyberARK > SCC Integration with CyberARK > Configuring Subsystems to use CyberARK with SCC GUI > Configuring Protection Schemes with CyberARK");
+}
+function image13(){
+	_click(_link("Dashboards"));
+	_click(_link("DR Operational Dashboard"));
+		imageScreenshotsInHelpPage("image62.jpg","image62.jpg");
+		_log("image from"+":"+" Home > Dashboards > DR Operational Dashboard");
+}
+function image14(){
+	_click(_link("Dashboards"));
+	_click(_link("DR Manager Dashboard"));
+		imageScreenshotsInHelpPage("image59.jpg","image59.jpg");
+		_log("image from"+":"+" Home > Dashboards > DR Manager Dashboard");
+}
+
+function imageScreenshotsInHelpPage($imageName,$img){
+	if($oldCopy == true){
+		_takePageScreenShot(_image($imageName),$oldCopyFile + $img);
+	}else{
+		_takePageScreenShot(_image($imageName),$newCopyFile + $img);
+	}
+}
+
+function commonNavigation(){
+	_click(_link("Configuration"));
+	_click(_link("Vault Framework"));
+	_click(_link("Configuring Vault"));
+	_click(_link("Configuring Subsystems to use Vault with SCC GUI"));
+}
+
+function commonNavigationCyberArk(){
+	_click(_link("Configuration"));
+	_click(_link("Vault Framework"));
+	_click(_link("CyberARK"));
+	_click(_link("SCC Integration with CyberARK"));
+}
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>//

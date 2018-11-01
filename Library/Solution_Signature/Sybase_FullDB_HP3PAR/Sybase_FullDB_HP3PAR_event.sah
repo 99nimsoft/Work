@@ -1,0 +1,69 @@
+
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are the part of  Sybase PFR solution generating events.
+ ** AuthorName : Debabrat
+ ** Created Date : April 2013
+ ************************************************************************/
+
+
+/****
+ *Function is for remote agent stop the Sybase agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Debabrat
+ */
+         // Sybase_HP3PAR_InActive_State_Event()
+function Sybase_HP3PAR_InActive_State_Event_PR() {
+	var $server = Get_Local_Agent_Event($compIPPR, $remoteUserNameValPR, $remotePwdValPR," "," ");
+	 Event_Verification($server.get("Server Time"), $groupName, "BCSSybaseFullDBHP3PAR001", "Primary:Replication is OFF/Stopped.", "WARNING");
+}// End of Local_PR_Sybase_Agent_Stop_Event()
+/****
+ *Function is for remote agent stop the Sybase agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Debabrat
+ */
+         // Sybase_HP3PAR_InActive_State_Event()
+function Sybase_HP3PAR_InActive_State_Event_DR() {
+	var $server = Get_Local_Agent_Event($compIPDR, $remoteUserNameValDR, $remotePwdValDR," "," ");
+	 Event_Verification($server.get("Server Time"), $groupName, "BCSSybaseFullDBHP3PAR001", "Secondary:Replication is OFF/Stopped.", "WARNING");
+}// End of Local_PR_Sybase_Agent_Stop_Event()
+
+/**
+ *Function is for remote agent stop the Sybase agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+function Sybase_HP3PAR_Unknown_State_Event_PR() {
+	var $server = Get_Local_Agent_Event($compIPPR, $remoteUserNameValPR, $remotePwdValPR," "," ");
+	 Event_Verification($server.get("Server Time"), $groupName, "BCSSybaseFullDBHP3PAR005", "Primary:Replication Status Unknown", "WARNING");
+}// End of Local_PR_Sybase_Agent_Stop_Event()
+/**
+ *Function is for remote agent stop the Sybase agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+function Sybase_HP3PAR_Unknown_State_Event_DR() {
+	var $server = Get_Local_Agent_Event($compIPDR, $remoteUserNameValDR, $remotePwdValDR," "," ");
+	 Event_Verification($server.get("Server Time"), $groupName, "BCSSybaseFullDBHP3PAR005", "Primary:Replication Status Unknown", "WARNING");
+}// End of Local_PR_Sybase_Agent_Stop_Event()
+/**
+ *Function is for remote agent start the Sybase agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+
+function Sybase_HP3PAR_INActive_RepInfo_State_Event() {
+	var $server = Get_Local_Agent_Event($compIPPR, $remoteUserNameValPR, $remotePwdValPR," "," ");
+	 Event_Verification($server.get("Server Time"), $groupName, "BCSMGR_DATALAG1", "Data Lag deviated more than the specified threshold value", "WARNING");
+}// End of Local_PR_Sybase_Agent_Stop_Event()
+
+
+
+
+

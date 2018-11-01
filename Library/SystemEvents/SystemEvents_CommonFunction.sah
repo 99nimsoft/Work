@@ -1,0 +1,401 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the common functions which are the part of SystemEvents
+ **@AuthorName : Anita 
+ ** Created Date : Dec 2016
+ ************************************************************************/
+/**
+ * Function is used to create SuperAdmin, Admin,Operator, NotificationMember
+ * @param :$userName_super,$userName_admin,$userName_oper,$userName_notif
+ * @return : null
+ * @Author:Anita
+ * 
+ */
+
+function PreCondition_CreateUsers(){
+	_click(_link($Admin));
+	_click(_link($GotoUsers));
+	CreateUser($userName_super,$userPswd_super);
+	CreateUser($userName_admin,$userPswd_admin);
+	CreateUser($userName_oper,$userPswd_oper);
+	CreateUser($userName_notif,$userPswd_notif);
+	Assign_Group_ToUser($userName_super,$groupName);
+	Assign_Group_ToUser($userName_admin,$groupName);
+}
+
+// Create users with their username and password
+
+function CreateUser($a_user,$a_pswd){	
+	/*_click(_link($Admin));
+	_click(_link($GotoUsers));*/
+	if(_exists(_link($a_user))){
+		_log("Already User created  with this name: "+$a_user);
+	}else{
+		_click(_link($CreateNewUser));
+		_setValue(_textbox("loginId"), $a_user);
+		_setValue(_password("newPassword"), $a_pswd);
+		_setValue(_password("confPassword"), $a_pswd);
+		
+		if($a_user == $userName_super){
+			_click(_radio("ucat"));
+	     }
+		
+		if($a_user == $userName_admin){
+			_click(_radio("ucat[1]"));
+		}
+		
+		if($a_user == $userName_oper){
+			_click(_radio("ucat[2]"));
+		}
+		
+		if($a_user == $userName_notif){
+			_click(_radio("ucat[3]"));
+		}
+	_setValue(_textbox("userFullName"), $a_user);
+	_setSelected(_select("homePage"), $EventsListView);
+	_setValue(_textbox("email"), "auto@sanovi.com");
+	_click(_submit($Save));
+  }
+}
+
+// Login_As_User with given usertype
+
+function Login_As_User($a_user,$a_pswd){
+	if(_exists(_link($Logout))){
+		_log("Logout from current user");
+		Logout_001();
+	}
+	_log("Login user type as: "+$a_user);
+	
+	if($a_user==$userName_notif){
+		verify_Login_UserType($a_user,$a_pswd);
+	}
+	else{
+		login($a_user,$a_pswd);
+	}
+}
+
+
+// Verify_SystemEvents_UserType
+
+function Verify_SystemEvents_UserType($a_user){
+	navigateSystemEventsPage();
+	if(_exists(_div($systemEventsListTable))){
+		var $symEvtList = _getText(_div($systemEventsListTable));
+		_log($symEvtList);
+		_log("System Event List Table displayed succesful for the user:"+$a_user);
+	}
+	else if ($a_user==$userName_oper){
+		_log("View System Event List not previladged for this user: "+$a_user);
+	}
+	else{
+		_fail("System Event List Table not displayed for the user:"+$a_user);
+	}
+}
+
+// navigate to system event page
+
+function navigateSystemEventsPage(){
+	_click(_link($Admin));
+	_click(_link($GotoSystemEvents));
+	_wait(3000);
+}
+
+//navigate to Notification page
+
+function navigateNotificationPage(){
+	_click(_link($Admin));
+	_click(_link($GotoNotification));
+	_wait(3000);
+}
+//naviagte to backup manager page
+function NavigateBackupManager(){
+	_click(_link($Admin));
+	_click(_link($GotoBackup));
+	_assertExists(_getText(_cell($BackupManager)));
+}
+// verify Verify_Login_UserType $notification member
+
+function verify_Login_UserType($b_user,$b_pswd){
+	_navigateTo('http://' + $drmServer + ':8080/PanacesGUI');
+	_wait(2000);
+	if (_exists(_textbox("username"))) {
+		_setValue(_textbox("username"), $b_user);
+		_setValue(_password("password"), $b_pswd);
+		_click(_submit($Submit));
+		if(_exists(_font($SorryYoudonothaveloginpermissions))){
+			_assertExists(_getText(_font($SorryYoudonothaveloginpermissions)));
+			_log("Login previladged not for this user: "+$b_user);
+			_log("View System Events not previladged for this user");
+		}
+		else{
+			_log("Not met the expected condition for this user: "+$b_user);
+		}
+	}
+}
+
+
+//Verify_SystemEvents_Warning MSG before config for usertype
+
+function Verify_WarnigMessage_BeforeConfig($a_user){
+	navigateSystemEventsPage();
+	if(_exists(_strong($NotificationisnotconfiguredforSystemEvents))){
+		var $warnMsg = _getText(_strong($NotificationisnotconfiguredforSystemEvents));
+		_log($warnMsg);
+		_log("Warning Message displayed Successfull as per expected: "+$a_user);
+	}
+	else{
+		_log("Warning Message displayed not displayed as per expected: "+$a_user);
+	}
+}
+
+//Verify_SystemEvents_Warning MSG After config for usertype
+
+function Config_WarnigMessage_SystemEvents($a_user,$groupName,$notifLstName,$snmpFWDLstName,$trapdestIP,$udpPort){
+	navigateNotificationPage();
+	if(_exists(_link($AddNotificationList))){
+		_click(_link($AddNotificationList));
+		if(_exists(_cell($notifLstName, _near(_span($Notifications))))){
+			_log("Notification List already exists");
+		}
+		else{
+			_setValue(_textbox("uname", _near(_cell($NotificationListName))), $notifLstName);
+			_setSelected(_select("list1"), [$a_user]);
+			_click(_button("smlbtn[1]"));
+			_click(_submit($Save));
+			_assertEqual($NotificationListSuccessfullyAdded, _lastAlert());
+			_wait(3000);
+			var $notifList = _getText(_table("report"));
+			_assertExists($notifList);
+			_log("Notification List Name Successfully Added for the user " +$a_user);
+		}
+	}
+	else{
+		_fail("Unable to configure notification list " +$a_user);
+	}
+	navigateNotificationPage();
+	if(_exists(_link($AddSNMPTrapForwarder))){
+		_click(_link($AddSNMPTrapForwarder));
+		if(_exists(_link($snmpFWDLstName, _near(_span($SNMPList))))){
+			_log("SNMP Trap Forwarder List already exists");
+		}
+		else{
+			_setValue(_textbox("uid5"), $snmpFWDLstName);
+			_setValue(_textbox("uid4"), $trapdestIP);
+			_setValue(_textbox("uid22"), $udpPort);
+			_wait(1000);
+			_setSelected(_select("groups"), [$groupName]);
+			_click(_button($Save));
+			_assertEqual($SuccessfullyConfigured, _lastAlert());
+			_wait(3000);
+			var $snmpTrapFwdList = _getText(_table("report[1]"));
+			_assertExists($snmpTrapFwdList);
+			_log("SNMP Trap Forwarder List Successfully Added for the user: "+$a_user);
+		}
+	}
+	else{
+		_fail("Unable to configure SNMP Trap Forwarder List: "+$a_user);
+	}
+}
+
+// verify System event page after config the Notification Name List for the user
+
+function Verify_WarnigMessage_AfterConfig_NotifList($a_user,$notifLstName){
+	var $notflag = select_NotificationList($notifLstName);
+	_log($notflag);
+	_log("Verify the Warning Message after Notifcation list configured for the user");
+	navigateSystemEventsPage();
+	if(_exists(_strong($NotificationisnotconfiguredforSystemEvents))){
+		var $warnMsg = _getText(_strong($NotificationisnotconfiguredforSystemEvents));
+		_log($warnMsg);
+		_fail("Actual:Warning Message is displayed Since atleast one notification has not configured: "+$a_user);
+	}
+	else{
+		_log("Warning Message vanished succcessfully after configered atleast one notification list to user: "+$a_user);
+	}
+}
+
+// check and uncheck the notificationListForSystemEvents
+
+function select_NotificationList($notifLstName){
+	navigateSystemEventsPage();
+	if(_exists(_link($EditViewNotificationlistforSystemEvents))){
+		_click(_link($EditViewNotificationlistforSystemEvents));
+		_wait(1000);
+		_click(_checkbox("notificationListForSystemEvents",_near(_cell($notifLstName))));
+		_wait(1000);	
+		_click(_submit($Save));
+		_wait(1000);
+		_click(_link($EditViewNotificationlistforSystemEvents));
+		_wait(1000);
+		_log("Atleast one notification list checked and saved successfully");
+		var $chkdflag = _checkbox("notificationListForSystemEvents",_near(_cell($notifLstName))).checked;
+		return $chkdflag;
+	}
+}
+
+function deselect_NotificationList($notifLstName){
+	navigateSystemEventsPage();
+	if(_exists(_link($EditViewNotificationlistforSystemEvents))){
+		_click(_link($EditViewNotificationlistforSystemEvents));
+		_wait(1000);
+		_click(_checkbox("notificationListForSystemEvents",_near(_cell($notifLstName))));
+		_wait(1000);
+		_click(_submit($Save));
+		_wait(1000);
+		_click(_link($EditViewNotificationlistforSystemEvents));
+		_wait(1000);
+		_log("unchecked the notification list and saved successfully");
+		var $chkdflag = _checkbox("notificationListForSystemEvents",_near(_cell($notifLstName))).checked;
+		return $chkdflag;
+	}
+}
+
+//verify System event page after configured the SNMP Trap FWD list for the user
+
+function Verify_WarnigMessage_AfterConfig_SNMPTrapList($a_user,$notifLstName,$snmpFWDLstName){
+	_log("Uncheck the notification list if configered");
+	var $notflag = deselect_NotificationList($notifLstName);
+	_log($notflag);
+	Verify_WarnigMessage_BeforeConfig($a_user);
+	var $trapflag = select_SNMPTrapList($snmpFWDLstName);
+	_log($trapflag);
+	_log("Verify the Warning Message after Configured SNMP Trap Forwarders list for the user");
+	navigateSystemEventsPage();
+	if(_exists(_strong($NotificationisnotconfiguredforSystemEvents))){
+		var $warnMsg = _getText(_strong($NotificationisnotconfiguredforSystemEvents));
+		_log($warnMsg);
+		_fail("Actual:Warning Message is displayed Since atleast one SNMP trap list has not configured: "+$a_user);
+	}
+	else{
+		_log("Warning Message vanished succcessfully after configered atleast one SNMPTrapForwarders list to user: "+$a_user);
+	}
+}
+
+// check the associatiedTrapIdStrings
+
+function select_SNMPTrapList($snmpFWDLstName){
+	navigateSystemEventsPage();
+	if(_exists(_link($EditViewSNMPTrapForwardersforSystemEvents))){
+		_click(_link($EditViewSNMPTrapForwardersforSystemEvents));
+		_wait(1000);
+		_click(_checkbox("associatiedTrapIdStrings",_near(_cell($snmpFWDLstName))));
+		_wait(1000);			
+		_click(_submit($Save1));
+		_wait(1000);
+		_click(_link($EditViewSNMPTrapForwardersforSystemEvents));
+		_wait(1000);
+		_log("Atleast one SNMP Trap Forwarders list added and saved successfully");
+		var $chkdflag = _checkbox("associatiedTrapIdStrings",_near(_cell($snmpFWDLstName))).checked;
+		return $chkdflag;
+	}
+}
+
+// assign group to user
+
+function Assign_Group_ToUser($a_user,$groupName){
+	_click(_link($Admin));
+	_click(_link($GotoUsers));
+	_click(_image("edit.png", _near(_link($a_user))));
+
+	var $chkgrpSel= _getText(_select("assignedGroups"), [$groupName]);
+	_log($chkgrpSel);
+	if($chkgrpSel == $groupName){
+		_log("group already assigned to this user");
+	}
+	else{
+		_setSelected(_select("remainingGroups"), [$groupName]);
+		_click(_button("smlbtn[1]"));
+	}
+	_click(_button($Save)); 
+    _wait(5000);
+   	_assertEqual($UserDetailsModifiedSuccessfully, _lastAlert());
+}
+
+// verify Notify update selection function
+
+function Verify_NotifyUpdateSelection($a_user,$notifLstN,$snmpFWDLstN){
+	_log("Select Atleast one notification list");
+	var $notflag = select_NotificationList($notifLstN);
+	_log($notflag);
+	if($notflag=="false"){
+		var $notflag = select_NotificationList($notifLstN);
+		_log($notflag);
+	}
+	_log("select the notify event to be update selction");
+	_click(_checkbox("eventIDForNotification", _near(_cell($EVENTMGR02))));
+	_wait(1000);
+	_click(_checkbox("eventIDForNotification", _near(_cell($HASystemEvent001))));
+	_wait(1000);
+	_click(_button($UpdateSelection));
+	_wait(10000);
+	var $chkflg1 = _checkbox("eventIDForNotification", _near(_cell($EVENTMGR02))).checked;
+	var $chkflg2 = _checkbox("eventIDForNotification", _near(_cell($HASystemEvent001))).checked;
+	_log($chkflg1 +" and "+ $chkflg2);
+	if($chkflg1=="false" && $chkflg2 == "false"){
+		_fail("Changes are not reflected unsuccessfully after notify update selection.. please check the logs");
+	}
+	else{
+		_log("Changes reflected successfully after notify update selection");
+	}
+}
+
+// verify Metadata backup Error Msg if given wrong path
+function Verify_ErrorMsg_WrongPath($freq){
+	NavigateBackupManager();
+	_setValue(_textbox("despath", _near(_strong($DestinationPath))), "/opt/SymEvnt");
+	_setSelected(_select("region"), $freq);
+	_click(_button($Save));
+	_assertEqual($Givenpathservermachine, _lastAlert());
+}
+
+// verify user can take metadata config successfully
+function Config_MetadataBackup($metabackupPath,$freq){
+	Create_BackupPath_Server($metabackupPath,$drmServer,$drmUserName,$drmPassword);
+	NavigateBackupManager();
+	_setValue(_textbox("despath", _near(_strong($DestinationPath))), $metabackupPath);
+	_setSelected(_select("region"), $freq);
+	_click(_button($Save));
+	_wait(5000);
+	_assertEqual($BackupConfigurationdone, _lastAlert());
+}
+
+// create destination path for metadata backup path in DRM server
+
+function Create_BackupPath_Server($metabackupPath,$drmServer,$drmUserName,$drmPassword){
+	_log("delete metadata backpath if already exsits");
+	var $sshCommand = 'rm -rf ' + $metabackupPath;
+	SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	var $sshCommand = "mkdir " + $metabackupPath;
+	SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+    _log("metadata backup path directory created successfully in DRM");
+}
+
+function Verify_Take_BackupNow($metabackupPath,$drmServer, $drmUserName, $drmPassword){
+	NavigateBackupManager();
+	if(_exists(_button($BackupNow))){
+		_log("Backup Configuration done you can proceed take backup now");
+		_click(_button($BackupNow));
+		_wait(30000);
+		_assertEqual($Backupsuccessfullytaken, _lastAlert());
+	}
+	var $bakpathGUI = _getText(_cell(1, _near(_strong($BackupFileName))));
+	_log("DRM GUI: "+ $bakpathGUI);
+	_assertExists(_getText(_cell(1, _near(_strong($SizeofBackup)))));
+	_assertExists(_getText(_cell(1, _near(_strong($TimeofLastBackup)))));
+	
+	var $sshCommand = 'ls ' + $metabackupPath;
+	var $bakpathDRM = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	_log("DRM server: "+ $bakpathDRM);
+	_assertEqual($bakpathGUI, $bakpathDRM, "Comparing backupfile path from GUI and DRM server");
+	_log("Metadata backup taken successfully");
+}
+
+// delete the backup file in DRM after Verification
+
+function Delete_BackupFile_DRM($metabackupPath,$drmServer, $drmUserName, $drmPassword){
+	_log("delete metadata backpath after test verification done");
+	var $sshCommand = 'rm -rf ' + $metabackupPath;
+	SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+}

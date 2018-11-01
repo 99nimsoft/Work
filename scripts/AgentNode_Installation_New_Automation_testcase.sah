@@ -1,0 +1,84 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains installation and Uninstallation. 
+ ** AuthorName : Automation Team
+ ** Created Date : June 2016
+ ************************************************************************/
+
+_log("=================================Pre-Condition===================================", "Custom1");
+
+//don't change the below line.
+_include("../Library/Solution_Signature/Include/Solution_function_Includes.sah");
+
+// mentioned the correct parameter file name which user are going to execute within the "" code.
+_include("../conf/AgentNode_Installation_Parameter.sah");
+_include("../Library/Common/AgentNodeFunction.sah");
+//_include("../conf/UserSelected_Installation_Testcase.sah");
+
+// *************************************************************************************************************************************************
+// Notes: below test cases for Local agent
+
+
+//AgentNode_Build_Copy_into_AgentNode_Server();//Copy AgentNode Build into AgentNode Server
+
+
+_log("=================================Test========================================", "Custom1");
+
+/*if ($g_executeAll == "Y" || $g_uninstall == "Y") {
+	var $test1 = _testcase("001", "Update AgentNode property file");
+	$test1.start();
+	AgentNode_PropertyFile_Update_002();
+	$test1.end();
+}
+
+if ($g_executeAll == "Y" || $g_uninstall == "Y") {
+	var $test1 = _testcase("001", "UnInstall the AgentNode server in silent mode");
+	$test1.start();
+	UnInstall_AgentNode_SilentMode();
+	$test1.end();
+}
+
+if ($g_executeAll == "Y" || $g_install == "Y") {
+	var $test2 = _testcase("Object_Manager/ Common/ Installation/ Server_Installation/ Server_Installation_09", "Silent mode install of Sanovi DRM server");
+	$test2.start();
+	AgentNode_Instllation_001();
+	$test2.end();
+}
+
+var $test1 = _testcase("001", "Update AgentNode property file");
+$test1.start();
+AgentNode_PropertyFile_Update_002();
+$test1.end();
+
+var $test2 = _testcase("001", "UnInstall the AgentNode server in silent mode");
+$test2.start();
+AgentNode_UnInstllation_001();
+$test2.end();
+
+var $test3 = _testcase("001", "Install the AgentNode server in silent mode");
+$test3.start();
+AgentNode_Instllation_001();
+$test3.end();
+*/
+
+var $test4 = _testcase("001", "Install the AgentNode server in silent mode");
+$test4.start();
+Login_001();
+$test4.end();
+
+var $test5 = _testcase("001", "Install the AgentNode server in silent mode");
+$test5.start();
+Create_AgentNode_Component();
+$test5.end();
+
+var $test6 = _testcase("001", "Install the AgentNode server in silent mode");
+$test6.start();
+AgentNode_ServerIP_Mapping();
+$test6.end();
+
+
+_log("================================Post-Condition================================== ", "Custom1");
+
+
+//Logout_001(); 

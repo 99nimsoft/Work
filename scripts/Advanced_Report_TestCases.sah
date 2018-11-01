@@ -1,0 +1,56 @@
+/*************************************************************************
+ ** CompanyName : Sanovi an IBM company.
+ ** Application Name : SCC 
+ ** Objective : This script contains all the Advanced report test cases. 
+ ** AuthorName : Omprakash.V
+ ** Created Date : FEB 2017.
+ ************************************************************************/
+
+
+_log("=================================Pre-Condition===================================", "Custom1");
+
+_include("../Library/Solution_Signature/Include/Advance_Reporter_Include.sah");
+_include("../Library/Common/Common_Function.sah");
+_include("../conf/DRMInstallation_Parameter.sah");
+_include("../conf/Advanced_report_Param/Advance_report_Paramter.sah");
+_include("../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+
+
+_log("=================================Test========================================", "Advanced reporter");
+
+var $test1 = _testcase("Panaces_PropertyFile_Update_001", "Panaces propertyfile update");
+$test1.start();
+Panaces_PropertyFile_Update_001();
+$test1.end();
+
+var $test2 = _testcase("Advanced_Report_Installation_0001", "Advanced Report Installation");
+$test2.start();
+Advanced_Report_Installation_0001();
+$test2.end();
+
+var $test3 = _testcase("Advanced_Report_Configuration_0002", "Advanced Report Cofiguration");
+$test3.start();
+Advanced_Report_Configuration_0002();
+$test3.end();
+
+Login_001();
+
+var $test4 = _testcase("Verifying_Advanced_Report_Configuration_0003", "verifying Advanced Report Cofiguration");
+$test4.start();
+Verifying_Advanced_Report_Configuration_0003();
+$test4.end();
+
+Logout_001();
+
+var $test5 = _testcase("Verifying_Report_Tab_0004", "verifying Report tab ");
+$test5.start();
+Verifying_Report_Tab_0004();
+$test5.end();
+
+var $test6 = _testcase("Verifying_Scheduled_Report_Tab_0005", "verifying Scheduled Report tab ");
+$test6.start();
+Verifying_Scheduled_Report_Tab_0005();
+$test6.end();
+
+_log("================================Post-Condition================================== ", "Custom1");
+

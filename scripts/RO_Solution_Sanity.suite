@@ -1,0 +1,8 @@
+
+APP_PFR_Automation_RemoteAgent_TestCases.sah
+APP_PFR_Automation_LocalAgent_TestCases.sah
+Oracle_DG_Automation_RemoteAgent_testcase.sah
+Oracle_PFR_Automation_LocalAgent_TestCases.sah
+DB2_HADR_Automation_LocalAgent_testcase.sah
+MSSQL_ALWAYS_ON_Remote_Agent_Testcases.sah
+MSSQL_ALWAYS_ON_Local_Agent_Testcases.sah

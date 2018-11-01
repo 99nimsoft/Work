@@ -1,0 +1,238 @@
+
+function After_DRMUpgrade_Screenshots() {
+	OverviewPage();
+	Recovery_Group_Page();
+	//Application_Group_Page($AG_grp_name);
+	Drill();
+	Reports();
+	Admin();
+		
+	 
+}
+
+/**
+* Function is for Navigation Page
+*@param : $groupName
+*@return : null
+*@Author: Sujata Rani Choudhury
+*
+*/
+
+
+function navigateToOverviewPage(){
+	//_wait(2000);
+	_click(_link("Admin"));
+	_click(_link("Overview"));
+	}
+
+function navigateToAGPage(){
+	//_wait(2000);
+	_click(_link("Admin"));
+	_click(_link("Overview"));
+	_click(_link("Application Groups"));
+	}
+
+function navigateToSite(){
+	//_wait(2000);
+	_click(_link("Admin"));
+	_click(_link("Overview"));
+	_click(_link("Sites"));
+	}
+function navigateToRGPage(){
+	//_wait(2000);
+	_click(_link("Admin"));
+	_click(_link("Overview"));
+	_click(_link("Recovery Groups"));
+	}
+
+
+
+
+
+//final code
+
+
+function  OverviewPage(){
+
+navigateToOverviewPage();
+_focusWindow();
+_takePageScreenShot();
+
+navigateToSite();
+_focusWindow();
+_takePageScreenShot();
+
+navigateToAGPage();
+_click(_link("View All"));
+_focusWindow();
+_takePageScreenShot();
+
+navigateToRGPage();
+_click(_link("View All"));
+_focusWindow();
+_takePageScreenShot();
+///////////////////
+
+
+navigateToOverviewPage();
+_click(_link("Executing Workflows"));
+_focusWindow();
+_takePageScreenShot();
+
+}
+
+
+
+function  Recovery_Group_Page()
+
+
+
+////////////////////////////
+/* Recovery Group details*/
+
+{
+	
+navigateToRGPage();
+//var $grp_name= "guru_Oracle_DG";
+_click(_link($RG_grp_name, _near(_heading4("Recovery Groups"))));
+_focusWindow();
+_takePageScreenShot();
+
+
+navigateToRGPage();
+_click(_link($RG_grp_name, _near(_heading4("Recovery Groups"))));
+_click(_link("RTO"));
+_focusWindow();
+_takePageScreenShot();
+
+
+navigateToRGPage();
+_click(_link($RG_grp_name, _near(_heading4("Recovery Groups"))));
+_click(_link("RTO"));
+_focusWindow();
+_takePageScreenShot();
+
+
+navigateToRGPage();
+_click(_link($RG_grp_name, _near(_heading4("Recovery Groups"))));
+_click(_link("RPO"));
+_focusWindow();
+_takePageScreenShot();
+
+
+navigateToRGPage();
+_click(_link($RG_grp_name, _near(_heading4("Recovery Groups"))));
+_click(_link("Replication"));
+_focusWindow();
+_takePageScreenShot();
+
+
+
+navigateToRGPage();
+_click(_link($RG_grp_name, _near(_heading4("Recovery Groups"))));
+_click(_link("Replication"));
+_focusWindow();
+_takePageScreenShot();
+
+
+navigateToRGPage();
+_click(_link($RG_grp_name, _near(_heading4("Recovery Groups"))));
+_click(_link("Events"));
+_focusWindow();
+_takePageScreenShot();
+
+
+navigateToRGPage();
+_click(_link($RG_grp_name, _near(_heading4("Recovery Groups"))));
+_click(_link("Validation"));
+_focusWindow();
+_takePageScreenShot();
+
+}
+
+
+
+function  Application_Group_Page($AG_grp_name){
+////////////////////
+
+////////////////////////////
+/* Application Group details*/
+
+	navigateToAGPage();
+//var $AG_grp_name= "guru_Oracle_DG";
+_click(_link("View All"));
+_focusWindow();
+_takePageScreenShot();
+
+navigateToAGPage();
+_click(_link($AG_grp_name, _near(_heading4("Application Groups"))));
+_click(_link("RTO"));
+_focusWindow();
+_takePageScreenShot();
+
+navigateToAGPage();
+_click(_link($AG_grp_name, _near(_heading4("Application Groups"))));
+_click(_link("Events"));
+_focusWindow();
+_takePageScreenShot();
+
+}
+
+
+////////////////////////////
+/* -------------------------DRILL start -----------------------------------*/
+function  Drill(){
+_click(_link("Admin"));
+_click(_link("Drill"));
+_focusWindow();
+_takePageScreenShot();
+
+_click(_link("Admin"));
+_click(_link("Drill"));
+_click(_heading4("Executing"));
+_focusWindow();
+_takePageScreenShot(); 	
+
+
+
+_click(_link("Admin"));
+_click(_link("Drill"));
+_click(_heading4("Scheduled"));
+_focusWindow();
+_takePageScreenShot(); 	
+
+
+_click(_link("Admin"));
+_click(_link("Drill"));
+_click(_heading4("Summary", _near(_heading4("Scheduled"))));
+_click(_link("View All"));
+_focusWindow();
+_takePageScreenShot();
+
+/* -------------------------DRILL End-----------------------------------*/
+
+}
+
+
+/*
+////////////////////////////
+/* -------------------------Reports start -----------------------------------*/
+function  Reports(){
+_click(_link("Admin"));
+_click(_link("Reports"));
+_focusWindow();
+_takePageScreenShot();
+
+}
+
+/* -------------------------Admin  start -----------------------------------*/
+function  Admin(){
+_click(_link("Admin"));
+_click(_link("Reports"));
+_focusWindow();
+_takePageScreenShot();
+
+}
+
+
+

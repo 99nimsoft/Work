@@ -1,0 +1,1549 @@
+
+function GC_TC03(){
+	try{
+		var $output = SecuredShellConnection($drmServer, $drmUserName, $drmPassword,"cd "+$EAMSROOT+"/installconfig && test -f Remote_RestClient.properties; echo $?","N");
+		
+		if($output==0){
+		_log("file Remote_RestClient.properties exist");	
+		}
+		else{
+			_log("file Remote_RestClient.properties not exist or installation path is not updated in DRMSheetin conf folder","FAILURE");
+		}
+	}
+	catch ($e) {
+		_log("Exception while executing TC03:"+$e,"FAILURE");
+	}
+}
+
+function GC_TC04(){
+	
+	try{
+		var $sshCommand = "cd "+$EAMSROOT+"installconfig && cat Remote_RestClient.properties";
+		var $output = SecuredShellConnection($drmServer, $drmUserName, $drmPassword,$sshCommand,"N");
+
+		var $excel= _getExcel($SAHI_HOME +"conf/GlobalConsole/GlobalConsole.xls","Installation");
+		var $data= $excel.getData();
+
+		for(var $i=10;$i<$data.length;$i++){
+			try {
+				if($output.indexOf($data[$i][1]) >= 0){
+					_log("IP"+$data[$i][1]+" ,exists in Remote_RestClient.properties","CUSTOM4");
+				}
+				else{
+					_log("IP "+$data[$i][1]+" ,NOT EXIST in Remote_RestClient.properties","FAILURE");
+				}
+			} catch ($e) {
+				_log("IP "+$data[$i][1]+" ,NOT EXIST in Remote_RestClient.properties","FAILURE");
+			}				
+		}
+	}
+	catch ($e) {
+		_log("Exception while executing TC04:"+$e,"FAILURE");
+	}
+}
+
+function GC_TC05(){
+
+	try{
+		navigateToGlobalConsole();
+
+		var $excel= _getExcel($SAHI_HOME +"conf/GlobalConsole/GlobalConsole.xls","Installation");
+		var $data= $excel.getData();
+		_click(_image("Delete", _rightOf(_cell($data[10][1]))));
+		var $sshCommand = "cd "+$EAMSROOT+"installconfig && cat Remote_RestClient.properties";
+		var $output = SecuredShellConnection($drmServer, $drmUserName, $drmPassword,$sshCommand,"N");
+		
+		if($output.indexOf($data[10][1]) >= 0){
+			_log("IP "+$data[10][1]+" ,still exists in Remote_RestClient.properties after deletion from GUI","FAILURE");
+		}
+		else{
+			_log("IP "+$data[10][1]+" ,removed from Remote_RestClient.properties after deletion from GUI","PASS");		
+		}	
+	}
+	catch ($e) {
+		_log("Exception while executing TC05:"+$e,"FAILURE");
+	}
+	finally{
+		//adding deleted RO instance again since its needed in furthur test cases
+		addROInstance($data[10][1]);
+	}
+}
+
+function GC_TC06(){
+
+	try{
+		getInGCTab("/drManager/");
+		//navigateToGCTabs($drmServer,"manager");
+		
+		_set($countFromManagerDashboard_AG,_getText(_span("/.*/", _in(_paragraph("bx--type-delta manager-db-heading")))));
+		_log("Count in Manager Dashboard :"+$countFromManagerDashboard_AG,"CUSTOM4");
+		
+		_popup($IBMResiliencyOrchestrationManagerDashboard).close();
+		_selectWindow();
+		
+		getInGCTab("/opertator/");
+		//navigateToGCTabs($drmServer,"operational");
+		
+		_set($countFromOperationalDashboard_AG,_getText(_span("/.*/", _in(_paragraph("bx--type-delta manager-db-heading")))));
+		_log("Count in Operational Dashboard :"+$countFromOperationalDashboard_AG,"CUSTOM4");
+		
+		_popup($IBMResiliencyOrchestrationOperationalDashboard).close();
+		_selectWindow();
+		
+		
+		var $excel= _getExcel($SAHI_HOME +"conf/GlobalConsole/GlobalConsole.xls","RealTimeData");
+		var $data= $excel.getData();
+		
+//		if($data[8][19] != $countFromManagerDashboard_AG){
+//			_log("Manager dashboard showing wrong aggregate AG details","FAILURE");
+//		}
+//		if($data[8][19] != $countFromOperationalDashboard_AG){
+//			_log("Operational dashboard showing wrong aggregate AG details","FAILURE");
+//		}
+		var $totalAGs = totalAGCount_ConfiguredROs("ag",$SAHI_HOME +"conf/GlobalConsole/GlobalConsole.xls","Installation");    // this statement will work if configured RO count is less, if more configured ro are there like configured RO count to be 50 then this will take too much of time.
+		
+		if($totalAGs != $countFromManagerDashboard_AG){
+			_log("Manager dashboard showing wrong aggregate AG details","FAILURE");
+		}
+		if($totalAGs != $countFromOperationalDashboard_AG){
+			_log("Operational dashboard showing wrong aggregate AG details","FAILURE");
+		}
+	}
+	catch ($e) {
+		_log("Exception while executing TC06:"+$e,"FAILURE");
+	}
+}
+
+
+function GC_TC10(){
+	
+	var $count1=0;
+	var $count2=0;
+	var $count1_removed=0;
+	var $count2_removed=0;
+	var $countAG_NewlyAddedRO=0;
+	
+	//**
+	var $countAGAfterROAdd=0;
+	//**
+	
+	try{
+		removeAllROInstances();
+		configureROInstances($SAHI_HOME +"conf\\GlobalConsole\\GlobalConsole.xls","Installation");
+		
+		_log("------------------------------------------------------Navigate to Manager and Operation Page and Take Count","CUSTOM4");
+			
+			if(_exists(_image("IBM"))==true){
+				_click(_image("IBM"));
+			}
+			_click(_div("Disaster Recovery") || _div("drManagerHtmlEnabled"));
+			_selectWindow($IBMResiliencyOrchestrationManagerDashboard);
+			$count1 = _getText(_span("/.*/", _in(_paragraph("/bx--type-delta manager-db-heading/"))));
+			_log("AG count on Manager Page:-"+$count1,"CUSTOM4");
+			_popup($IBMResiliencyOrchestrationManagerDashboard).close();
+			_selectWindow();
+			_click(_div("Operation") || _div("opertatorHtmlEnabled"));
+			_selectWindow($IBMResiliencyOrchestrationOperationalDashboard);
+			$count2 = _getText(_span("/.*/", _in(_paragraph("/bx--type-delta manager-db-heading/"))));
+			_log("AG count on Operation Page:-"+$count2,"CUSTOM4");
+			_popup($IBMResiliencyOrchestrationOperationalDashboard).close();
+			_selectWindow();
+			
+
+		_log("------------------------------------------------------Navigate to Global Console to Add RO","CUSTOM4");
+			navigateToGlobalConsole();
+			
+			configureROInstances($SAHI_HOME +"conf\\GlobalConsole\\GlobalConsole.xls","AdditionalROServers");
+
+		_log("------------------------------------------------------Count AG on newly added RO","CUSTOM4");
+			$countAG_NewlyAddedRO = count_AG_RG_OnROServer($AddedROServer,$isAddedROServerSecured,$portAddedROServer).split("-")[0];
+
+		_log("------------------------------------------------------Navigate back to Manger and operation page to check increased count","CUSTOM4");
+
+			getInGCTab("/drManager/");
+			//navigateToGCTabs($drmServer,"manager");
+			//**
+			$countAGAfterROAdd=parseInt(_getText(_span("/.*/", _in(_paragraph("/bx--type-delta manager-db-heading/")))));
+			_log("Total AG count after adding RO:"+$countAGAfterROAdd+" ,previously it was "+$count1,"CUSTOM4");
+			//**
+			if(parseInt(_getText(_span("/.*/", _in(_paragraph("/bx--type-delta manager-db-heading/"))))) == parseInt($count1)+parseInt($countAG_NewlyAddedRO)){
+				_log("Count of AG increased by "+$countAG_NewlyAddedRO+"after adding RO on Manager Page","CUSTOM4");
+			}
+			else{
+				_log("No change in AG count","FAILURE");
+			}
+
+			_popup($IBMResiliencyOrchestrationManagerDashboard).close();
+			_selectWindow();
+
+			getInGCTab("/opertator/");
+			//navigateToGCTabs($drmServer,"operational");
+			//**
+			$countAGAfterROAdd=parseInt(_getText(_span("/.*/", _in(_paragraph("/bx--type-delta manager-db-heading/")))));
+			_log("Total AG count after adding RO:"+$countAGAfterROAdd+" ,previously it was "+$count2,"CUSTOM4");
+			//**
+			if(parseInt(_getText(_span("/.*/", _in(_paragraph("/bx--type-delta manager-db-heading/"))))) == parseInt($count2)+parseInt($countAG_NewlyAddedRO)){
+				_log("Count of AG increased by "+$countAG_NewlyAddedRO+"after adding RO on Operations Page","CUSTOM4");
+			}
+			else{
+				_log("No change in AG count","FAILURE");
+			}
+			_popup($IBMResiliencyOrchestrationOperationalDashboard).close();
+			_selectWindow();
+			
+			_log("------------------------------------------------------Remove RO from Global Console Page","CUSTOM4");
+			var $tmp = removeROReturnItsAGCount($AddedROServer,$isAddedROServerSecured,$portAddedROServer);
+			
+			_log("------------------------------------------------------Navigate back to Manager page and check AG count reduced","CUSTOM4");
+			
+			_click(_image("IBM"));
+			_click(_div("/drManager/"));
+			_selectWindow($IBMResiliencyOrchestrationManagerDashboard);
+			$count1_removed = parseInt(_getText(_span("/.*/", _in(_paragraph("/bx--type-delta manager-db-heading/")))));
+			
+			if($count1_removed<$countAGAfterROAdd){
+				_log("Count of AG reduced after removing RO on Manager Page,before count :-"+$countAGAfterROAdd+" ,after removal:-"+$count1_removed,"CUSTOM4");
+			}
+			else{
+				_log("Count of AG before removing"+$countAGAfterROAdd+" ,After removing"+$count1_removed,"FAILURE");
+			}
+			_popup($IBMResiliencyOrchestrationManagerDashboard).close();
+			_selectWindow();
+
+			_log("------------------------------------------------------Navigate back to Operation page and check AG count reduced","CUSTOM4");
+				_click(_div("/opertator/"));
+				_selectWindow($IBMResiliencyOrchestrationOperationalDashboard);
+				$count2_removed = parseInt(_getText(_span("/.*/", _in(_paragraph("/bx--type-delta manager-db-heading/")))));
+				_log("AG count on Operation Page:-"+$count2_removed,"CUSTOM4");
+				
+				if($count2_removed<$countAGAfterROAdd){
+					_log("Count of AG reduced after removing RO on Operation Page before count :-"+$countAGAfterROAdd+" ,after removal:-"+$count2_removed,"CUSTOM4");
+				}
+				else{
+					_log("Count of AG before removing"+$countAGAfterROAdd+" ,After removing"+$count2_removed,"FAILURE");
+				}
+	}
+	catch ($e) {
+		_log("Exception while executing TC10:"+$e,"FAILURE");
+	}
+	finally{
+		_popup($IBMResiliencyOrchestrationOperationalDashboard).close();
+		_selectWindow();
+	}		
+}
+
+
+function GC_TC11(){
+	
+	var $countShouldReduceBy=0;
+	var $countRemovedRO=0;
+	var $TotalROs=0;
+
+	try{
+		
+_log("//****************************************************************** removing all ro instances configured in host RO Server","CUSTOM5");		
+		removeAllROInstances();
+_log("//****************************************************************** Adding ROs in host RO server","CUSTOM5");
+		$TotalROs = configureROInstances($SAHI_HOME +"conf\\GlobalConsole\\GlobalConsole.xls","Installation");
+_log("//****************************************************************** Adding +1 in Total ROs 'cause we need to count host RO too","CUSTOM5");		
+		$TotalROs = $TotalROs+1;
+_log("//****************************************************************** Fetching count of AG from manager and operator dashboard as we will need it for comparisong later","CUSTOM5");
+		var $countAG_manager=navigateToDashboardsReturnCount("manager");
+		var $countAG_operator=navigateToDashboardsReturnCount("opertator");
+
+		_log("Initial AG count on manager page:-"+$countAG_manager,"CUSTOM4");
+		_log("Initial AG count on operator page:-"+$countAG_operator,"CUSTOM4");
+_log("//****************************************************************** Except host RO we will remove common user from all other ROs present in Installation sheet","CUSTOM5");
+			var $excel= _getExcel($SAHI_HOME +"conf/GlobalConsole/GlobalConsole.xls","Installation");
+			var $data= $excel.getData();
+			for(var $i=10;$i<$data.length;$i++){
+				try {
+					$countRemovedRO ++;
+					$countShouldReduceBy += parseInt(count_AG_RG_OnROServer($data[$i][1],$data[$i][4],$data[$i][5]).split("-")[0]);
+					
+					_log("AG count on RO Server:"+$data[$i][1]+" ,is "+$countShouldReduceBy,"CUSTOM4");
+					
+					var $tmpDRMServer = $drmServer;
+					var $tmpsecuredUrl=$securedUrl;
+					var $tmpurlPortNo=$urlPortNo;
+					
+					$drmServer=$data[$i][1];			
+					$drmServer =$data[$i][1];
+					$securedUrl =$data[$i][4];
+					$urlPortNo = $data[$i][5];
+
+					createUserWithDifferentPriviledges("tempUserForGC","SUPER ADMINISTRATOR","tempUserForGC");
+					deleteUserFromRO($data[$i][1],$data[$i][2]);
+							
+					$drmServer=$tmpDRMServer;
+					$securedUrl=$tmpsecuredUrl;
+					$urlPortNo=$tmpurlPortNo;
+			
+				}
+				catch (e) {
+					_log("could not delete user","FAILURE");
+				}
+			}
+		_log("Count of RO from which common Users are removed:-"+$countRemovedRO,"CUSTOM4");
+		_log("AG Count should get reduced by:-"+$countShouldReduceBy,"CUSTOM4");
+
+_log("//****************************************************************** Login to host RO and check count should get reduced as we have removed common users from other RO Servers","CUSTOM5");
+		Login_001();
+		
+		var $tmpCount1=navigateToDashboardsReturnCount("manager");
+		var $tmpCount2=navigateToDashboardsReturnCount("opertator");
+
+
+		_log("Previous count of AG on manager Page: "+$countAG_manager,"CUSTOM4");
+		_log("Count should get reduced by: "+$countShouldReduceBy,"CUSTOM4");
+		_log("Current AG count on manager page:"+$tmpCount1,"CUSTOM4");
+		
+		if(($countAG_manager-$countShouldReduceBy)==$tmpCount1){
+			_log("AG count reduced on manager page as same user has been removed from other RO servers","CUSTOM4");
+		}
+		else{
+			_log("No change in AG count on manager page","FAILURE");
+		}
+
+		_log("Previous count of AG on operator Page: "+$countAG_operator,"CUSTOM4");
+		_log("Count should get reduced by: "+$countShouldReduceBy,"CUSTOM4");
+		_log("Current AG count on operator page:"+$tmpCount2,"CUSTOM4");
+		
+		if(($countAG_operator-$countShouldReduceBy)==$tmpCount2){
+			_log("AG count reduced on operator page as same user has been removed from other RO servers","CUSTOM4");
+		}
+		else{
+			_log("No change in AG count on operator page","FAILURE");
+		}
+		
+		clickNavigateToGCTabs("manager");
+_log("//****************************************************************** In management server popup box veryfying ROs active and inactive, those ROs from which common users are removed should have cross mark","CUSTOM5");
+		var $ManagementServerAvailability_Active = parseInt(_getText(_span("/.*/", _in(_paragraph("/Management Server availability/")))).split("/")[0].trim());
+		var $ManagementServerAvailability_Available = parseInt(_getText(_span("/.*/", _in(_paragraph("/Management Server availability/")))).split("/")[1].trim());
+_log("//****************************************************************** removing all ro instances configured in host RO Server","CUSTOM5");
+		_assertTrue($TotalROs==$ManagementServerAvailability_Available,"Total Management Server Count is shown as wrong");
+		_assertTrue(($TotalROs-$countRemovedRO)==$ManagementServerAvailability_Active,"Total Active RO count is wrong");
+
+		for(var $i=10;$i<$data.length;$i++){
+			try {		
+				var $tmp = verifyActiveInActiveManagementServer($data[$i][1]);
+				if($tmp=="active"){
+					_log("ROIP:-"+$data[$i][1]+" ,should be inactive but its showing as active","FAILURE");
+				}
+				else{
+					_log("As expected ROIP:-"+$data[$i][1]+" ,is inactive","CUSTOM4");
+				}
+			}
+			catch (e) {
+				_log("could not count total ag rg on configured ro server","FAILURE");
+			}
+		}	
+	}
+	catch ($e) {
+		_log("Exception occurred while executing TC"+$e);
+	}
+	finally{
+		clickNavigateToGCTabs("close manager");
+		_log("Creating same users again in all the ros","CUSTOM4");
+		for(var $i=10;$i<$data.length;$i++){
+			try {
+				var $tmpDRMServer = $drmServer;
+				var $tmpsecuredUrl=$securedUrl;
+				var $tmpurlPortNo=$urlPortNo;
+				var $tmpusername=$username;
+				//$drmServer=$data[$i][1];			
+				$drmServer =$data[$i][1];
+				$securedUrl =$data[$i][4];
+				$urlPortNo = $data[$i][5];
+				$username="tempUserForGC";
+				createUserWithDifferentPriviledges($data[$i][2],"SUPER ADMINISTRATOR",$UserName);	
+				$drmServer=$tmpDRMServer;
+				$securedUrl=$tmpsecuredUrl;
+				$urlPortNo=$tmpurlPortNo;
+				$username=$tmpusername;
+			}
+			catch ($e) {
+				_log("could not count total ag rg on configured ro server,excption"+$e,"FAILURE");
+			}
+	}
+	}
+}
+
+
+function GC_TC12(){
+	
+	try{
+		//****************************************************************** removing all ro instances configured in host RO Server		
+		removeAllROInstances();
+		//****************************************************************** Adding ROs in host RO server
+		$TotalROs = configureROInstances($SAHI_HOME +"conf\\GlobalConsole\\GlobalConsole.xls","Installation");
+		
+		//** Taking initial coung of AGs from parent RO dashboard
+		var $countAG_manager=navigateToDashboardsReturnCount("manager");
+		var $countAG_operator=navigateToDashboardsReturnCount("opertator");
+
+		_log("Initial AG count on manager page:-"+$countAG_manager,"CUSTOM4");
+		_log("Initial AG count on operator page:-"+$countAG_operator,"CUSTOM4");
+
+		//** Reading excel file to fetch last RO details -from whose user group needs to be removed 
+		var $excel= _getExcel($SAHI_HOME +"conf/GlobalConsole/GlobalConsole.xls","Installation");
+		var $data= $excel.getData();
+		var $tmpVar=$data.length-1;
+
+		//** Unassigned groups from user
+		var $countGroupsRemoved = unAssignGroupFromUser($data[$tmpVar][1],$data[$tmpVar][2],$data[$tmpVar][3],$data[$tmpVar][4],$data[$tmpVar][5],"all",false);
+
+		//** going back to parent RO dashborad and verifying data
+		var $countAG_manager_2=navigateToDashboardsReturnCount("manager");
+		_log("Count after groups untagged from user:"+$countAG_manager_2,"CUSTOM4");
+		if($countAG_manager>$countAG_manager_2){
+			if(_exists(_cell($data[$tmpVar][1], _under(_tableHeader("Management Server[1]"))))==false){
+				_log("AG belong to RO server not visible in Application Details Table as expected","CUSTOM4");
+			}
+			else{
+				_log("AG belong to RO server visible in Application Details Table,it should not be visible","FAILURE");
+			}
+		}
+		else{
+			_log("No change in count","FAILURE");
+		}
+
+
+		var $countAG_operator_2=navigateToDashboardsReturnCount("opertator");
+
+		if($countAG_operator>$countAG_operator_2){
+			_log("Count after groups untagged from user:"+$countAG_operator_2,"CUSTOM4");
+			if(_exists(_cell($data[$tmpVar][1], _under(_tableHeader("Management Server[1]"))))==false){
+				_log("AG belong to RO server not visible in Application Details Table as expected","CUSTOM4");
+			}
+			else{
+				_log("AG belong to RO server visible in Application Details Table,it should not be visible","FAILURE");
+			}
+		}
+		else{
+			_log("No chnage in count","FAILURE");
+		}
+	}
+	catch ($e) {
+		_log("Exception occurred while performing TC12,"+$e,"FAILURE");
+	}
+	finally{
+		_log("Post Step: Assigning all users back to server's common user and then login to main ro server","CUSTOM");
+		var $countGroupsRemoved = unAssignGroupFromUser($data[$tmpVar][1],$data[$tmpVar][2],$data[$tmpVar][3],$data[$tmpVar][4],$data[$tmpVar][5],"all",true);
+		_log("Assigned:"+$countGroupsRemoved+" ,groups backto RO Server:"+$data[$tmpVar][1]+" ,for user:"+$data[$tmpVar][2],"CUSTOM4");
+		Login_001();
+	}
+}
+
+
+function GC_TC13_1(){
+
+	try{
+		if(parseInt(_getText(_span("/.*/", _in(_paragraph("/bx--type-delta manager-db-heading/")))))==0){
+			_log("Applications label value is shown as 0","CUSTOM4");
+		}
+		else{
+			_log("Application label value is not shown as 0","FAILURE");
+		}
+
+		var $tmpArry = new Array();
+
+		$tmpArry=fetchDataFromDashboard("ManagerDashboard","ApplicationStatus");
+		for(var $i=0;$i<$tmpArry.length;$i++){
+			var $tmp = parseInt($tmpArry[$i].split("#")[1]);
+			if($tmp!=0){
+				_log("Widget Application Status is not showing zero value on manager dashborad for "+$tmpArry[$i].split("#")[0],"FAILURE");
+			}
+			else{
+				_log("As expected Widget Application Status is showing zero value on manager dashborad for"+$tmpArry[$i].split("#")[0],"CUSTOM4");
+			}
+		}
+
+		$tmpArry=[];
+		$tmpArry=fetchDataFromDashboard("ManagerDashboard","DrillStatus");
+		for(var $i=0;$i<$tmpArry.length;$i++){
+			var $tmp = parseInt($tmpArry[$i].split("#")[1]);
+			if($tmp!=0){
+				_log("Widget DrillStatus is not showing zero value on manager dashborad for "+$tmpArry[$i].split("#")[0],"FAILURE");
+			}
+			else{
+				_log("As expected Widget DrillStatus is showing zero value on manager dashborad for"+$tmpArry[$i].split("#")[0],"CUSTOM4");
+			}
+		}
+
+		$tmpArry = [];
+		$tmpArry=fetchDataFromDashboard("ManagerDashboard","ReplicationSnapshot");
+		for(var $i=0;$i<$tmpArry.length;$i++){
+			var $tmp = parseInt($tmpArry[$i].split("#")[1]);
+			if($tmp!=0){
+				_log("Widget ReplicationSnapshot is not showing zero value on manager dashborad for "+$tmpArry[$i].split("#")[0],"FAILURE");
+			}
+			else{
+				_log("As expected Widget ReplicationSnapshot is showing zero value on manager dashborad for"+$tmpArry[$i].split("#")[0],"CUSTOM4");
+			}
+		}
+
+		$tmpArry = [];
+		$tmpArry=fetchDataFromDashboard("ManagerDashboard","RPODeviation");
+		for(var $i=0;$i<$tmpArry.length;$i++){
+			var $tmp = parseInt($tmpArry[$i].split("#")[1]);
+			if($tmp!=0){
+				_log("Widget RPODeviation is not showing zero value on manager dashborad for "+$tmpArry[$i].split("#")[0],"FAILURE");
+			}
+			else{
+				_log("As expected Widget RPODeviation is showing zero value on manager dashborad for"+$tmpArry[$i].split("#")[0],"CUSTOM4");
+			}
+		}
+
+		$tmpArry = [];
+		$tmpArry=fetchDataFromDashboard("ManagerDashboard","DatalagDeviation");
+		for(var $i=0;$i<$tmpArry.length;$i++){
+			var $tmp = parseInt($tmpArry[$i].split("#")[1]);
+			if($tmp!=0){
+				_log("Widget DatalagDeviation is not showing zero value on manager dashborad for "+$tmpArry[$i].split("#")[0],"FAILURE");
+			}
+			else{
+				_log("As expected Widget DatalagDeviation is showing zero value on manager dashborad for"+$tmpArry[$i].split("#")[0],"CUSTOM4");
+			}
+		}
+
+		$tmpArry = [];
+		$tmpArry=fetchDataFromDashboard("ManagerDashboard","WorkflowSnapshot");
+		for(var $i=0;$i<$tmpArry.length;$i++){
+			var $tmp = parseInt($tmpArry[$i].split("#")[1]);
+			if($tmp!=0){
+				_log("Widget WorkflowSnapshot is not showing zero value on manager dashborad for "+$tmpArry[$i].split("#")[0],"FAILURE");
+			}
+			else{
+				_log("As expected Widget WorkflowSnapshot is showing zero value on manager dashborad for"+$tmpArry[$i].split("#")[0],"CUSTOM4");
+			}
+		}
+
+		$tmpArry = [];
+		$tmpArry=fetchDataFromDashboard("ManagerDashboard","WorkflowSnapshot");
+		for(var $i=0;$i<$tmpArry.length;$i++){
+			var $tmp = parseInt($tmpArry[$i].split("#")[1]);
+			if($tmp!=0){
+				_log("Widget WorkflowSnapshot is not showing zero value on manager dashborad for "+$tmpArry[$i].split("#")[0],"FAILURE");
+			}
+			else{
+				_log("As expected Widget WorkflowSnapshot is showing zero value on manager dashborad for"+$tmpArry[$i].split("#")[0],"CUSTOM4");
+			}
+		}
+
+		if(_exists(_cell("No Data Available", _near(_paragraph("Application Details"))))==true){
+			_log("As expected Application Details Table is showing --No Data Available--","CUSTOM4");
+		}
+		else{
+			_log("Application Details Table is showing data","FAILURE");
+		}
+	}
+	catch ($e) {
+		_log("Exception while executing TC13_1:"+$e,"FAILURE");
+	}
+}
+
+
+function GC_TC13_2(){
+	
+	try{
+		if(parseInt(_getText(_span("/.*/", _in(_paragraph("/bx--type-delta manager-db-heading/")))))==0){
+			_log("Applications label value is shown as 0","CUSTOM4");
+		}
+		else{
+			_log("Application label value is not shown as 0","FAILURE");
+		}
+
+		var $tmpArry = new Array();
+
+		$tmpArry=fetchDataFromDashboard("OperationalDashboard","ApplicationStatus");
+		for(var $i=0;$i<$tmpArry.length;$i++){
+			var $tmp = parseInt($tmpArry[$i].split("#")[1]);
+			if($tmp!=0){
+				_log("Widget Application Status is not showing zero value on Operational Dashboard for "+$tmpArry[$i].split("#")[0],"FAILURE");
+			}
+			else{
+				_log("As expected Widget Application Status is showing zero value on Operational Dashboard for"+$tmpArry[$i].split("#")[0],"CUSTOM4");
+			}
+		}
+
+		$tmpArry=[];
+		$tmpArry=fetchDataFromDashboard("OperationalDashboard","WorkflowSnapshot");
+		for(var $i=0;$i<$tmpArry.length;$i++){
+			var $tmp = parseInt($tmpArry[$i].split("#")[1]);
+			if($tmp!=0){
+				_log("Widget WorkflowSnapshot is not showing zero value on OperationalDashboard for "+$tmpArry[$i].split("#")[0],"FAILURE");
+			}
+			else{
+				_log("As expected Widget WorkflowSnapshot is showing zero value on OperationalDashboard for"+$tmpArry[$i].split("#")[0],"CUSTOM4");
+			}
+		}
+
+		$tmpArry=[];
+		$tmpArry=fetchDataFromDashboard("OperationalDashboard","ReplicationSnapshot");
+		for(var $i=0;$i<$tmpArry.length;$i++){
+			var $tmp = parseInt($tmpArry[$i].split("#")[1]);
+			if($tmp!=0){
+				_log("Widget ReplicationSnapshot is not showing zero value on OperationalDashboard for "+$tmpArry[$i].split("#")[0],"FAILURE");
+			}
+			else{
+				_log("As expected Widget ReplicationSnapshot is showing zero value on OperationalDashboard for"+$tmpArry[$i].split("#")[0],"CUSTOM4");
+			}
+		}
+		
+		if(_exists(_cell("No Data Available", _near(_paragraph("Application Details"))))==true){
+			_log("As expected Application Details Table is showing --No Data Available--","CUSTOM4");
+		}
+		else{
+			_log("Application Details Table is showing data","FAILURE");
+		}
+	}
+	catch ($e) {
+		_log("Exception while executing TC13_2:"+$e,"FAILURE");
+	}
+}
+
+function GC_TC13(){
+
+	var $arrTmp = [];
+	
+	try{
+		var $excel= _getExcel($SAHI_HOME +"conf/GlobalConsole/GlobalConsole.xls","Installation");
+		var $data= $excel.getData();
+		
+		for(var $i=9;$i<$data.length;$i++){
+			$arrTmp[$i-9]=[];
+			$arrTmp=moveAGsToMaintenance($data[$i][1],$data[$i][2],$data[$i][3],$data[$i][4],$data[$i][5]);
+		}
+		//--
+		Login_001();
+		//--
+		clickNavigateToGCTabs("manager");
+		
+		GC_TC13_1();
+		
+		clickNavigateToGCTabs("close manager");
+		
+		clickNavigateToGCTabs("opertator");
+		
+		GC_TC13_2();			
+	}
+	catch ($e) {
+		_log("Exception while executing TC13:"+$e,"FAILURE");
+	}
+	finally{
+
+		clickNavigateToGCTabs("close opertator");
+		
+		_log("Changing all Ags to managed state","CUSTOM");
+		
+		for(var $i=9;$i<$data.length;$i++){
+			moveAllAGToManage($data[$i][1],$data[$i][2],$data[$i][3],$data[$i][4],$data[$i][5]);
+		}	
+	}
+}
+
+
+function GC_TC14_1($argUserName,$argInstanceID){
+	
+	if($argInstanceID==""){
+		
+	    var $instanceId=_launchNewBrowser(URL());
+		_selectBrowser($instanceId);  // selecting the newly opened browser window
+
+		//createUserWithDifferentPriviledges($argUserName,"OPERATOR",$argUserName);
+		login($argUserName, $password);
+		
+		_selectBrowser();   // selecting the base browser
+
+		_selectWindow();
+		
+		return $instanceId;
+	}
+	else{
+		
+		 deleteUser($argUserName);
+		_selectBrowser($argInstanceID);
+		_closeBrowser();
+		_selectBrowser();  
+		_selectWindow();
+		
+	}
+	
+}
+
+
+function GC_TC14(){
+	/*
+	 * As per discussion with Abdul writing script for this tc as data will be reflecting for host RO
+	 * 
+	 */
+	var $instanceID="";
+	var $rndmStr=Math.random().toString(36).substr(7).replace(/[0-9]/g,'');
+	try{
+	
+		createUserWithDifferentPriviledges("GCXIV"+$rndmStr,"OPERATOR","GCXIV"+$rndmStr);
+		Login_001();
+		
+		$instanceID=GC_TC14_1("GCXIV"+$rndmStr,"");
+
+		clickNavigateToGCTabs("opertator");
+
+		var $tmpArry = new Array();
+		$tmpArry=fetchDataFromDashboard("OperationalDashboard","ServerSnapshot");
+		if($tmpArry[0].split("#")[0]=="User Currently logged in"){
+			if(parseInt($tmpArry[0].split("#")[1])>1){
+				_log("As Expected 'users currently logged' is greater than one since along with log in user we have created one more user on host server and have logged in with that too","CUSTOM4");
+			}
+			else{
+				_log("Users currently logged in value should be greater than one","FAILURE");
+			}
+		}
+
+		if($tmpArry[1].split("#")[0]=="Admin roles"){
+			if(parseInt($tmpArry[1].split("#")[1])>=1){
+				_log("As Expected 'Admin roles' users currently logged is greater than equal to one","CUSTOM4");
+			}
+			else{
+				_log("Admin role users currently logged in value should be greater than equal to one","FAILURE");
+			}
+		}
+
+		if($tmpArry[2].split("#")[0]=="Other roles"){
+			if(parseInt($tmpArry[2].split("#")[1])>=1){
+				_log("As Expected 'Other roles' users currently logged is greater equal to one, since we have created and logged in with one more user with operator role","CUSTOM4");
+			}
+			else{
+				_log("'Other roles' user currently logged in value should be greater than equal to one","FAILURE");
+			}
+		}
+
+		if($tmpArry[3].split("#")[0]=="Server Up Time"){
+			var $tmp1=$tmpArry[3].split("#")[1].indexOf("hour");
+			var $tmp2=$tmpArry[3].split("#")[1].indexOf("minute");
+			if($tmp1>0 || $tmp2>0){
+				_log("Expected Server Up Time successfully reflected as:"+$tmpArry[3].split("#")[1],"CUSTOM4");
+			}
+			else{
+				_log("Server up time not reflected in valid hour minute format","FAILURE");
+			}
+		}
+
+		if($tmpArry[4].split("#")[0]=="Last Successful Backup"){
+			
+			if($tmpArry[4].split("#")[1]=="Backup is not configured"){
+				_log("As expected Last Successful Backup is reflected as Backup is not configured","CUSTOM4");
+			}
+			else{
+				_log("Last Successful Backup is NOT reflected as Backup is not configured","FAILURE");
+			}
+		}	
+	}
+	catch ($e) {
+		_log("Exception while executing TC14:"+$e,"FAILURE");
+	}
+	finally{
+		_log("Post step deleting created user and closing opened browser","CUSTOM");
+		clickNavigateToGCTabs("close opertator");
+		GC_TC14_1("GCXIV"+$rndmStr,$instanceID);			
+	}	
+}
+
+
+function GC_TC15(){
+	
+	try{
+		_click(_link("Admin")||_label("Admin"));
+
+		var $timeAdminPage=_getText(_paragraph("/Up Time.*/")).split("Up Time :")[1].trim();
+
+		clickNavigateToGCTabs("opertator");
+
+		var $tmpArry=fetchDataFromDashboard("OperationalDashboard","ServerSnapshot");
+		
+		_log("Server Up Time on Admin Page:"+$timeAdminPage,"CUSTOM4");
+		_log("Server Up Time on Operational dashboard Page:"+$tmpArry[3].split("#")[1],"CUSTOM4");
+
+		if($tmpArry[3].split("#")[1]==$timeAdminPage){
+			_log("Server Up Time is same on Admin Page and Operational Dasboard Server Snapshot widget","CUSTOM4");
+		}
+		else{
+			_log("Failed to verify Server Up Time, on Admin page its reflecting as:"+$timeAdminPage+" ,on Operational Dashboard its like:"+$tmpArry[3].split("#")[1],"FAILURE");
+		}
+
+		//var $tmp1=$tmpArry[3].split("#")[1].split(",")[0].indexOf("hour");
+		//var $tmp2=$tmpArry[3].split("#")[1].split(",")[1].indexOf("minute");
+
+		var $tmp1=$tmpArry[3].split("#")[1].indexOf("hour");
+		var $tmp2=$tmpArry[3].split("#")[1].indexOf("minute");
+		
+		if($tmp1>0 || $tmp2>0){
+			_log("Expected Server Up Time successfully reflected in hour minute format","CUSTOM4");
+		}
+		else{
+			_log("Server up time not reflected in valid hour minute format","FAILURE");
+		}
+	}
+	catch ($e) {
+		_log("Exception in TC15:"+$e,"FAILURE");
+	}
+	finally{
+		clickNavigateToGCTabs("close opertator");
+	}
+}
+
+function GC_TC16(){
+	
+	try{
+		var $arrTable = new Array();
+
+		var $tmp = $nameColumnsTableTC16.split(",");
+
+		var $excel= _getExcel($SAHI_HOME +"conf/GlobalConsole/GlobalConsole.xls","Installation");
+		var $data= $excel.getData();
+
+
+		clickNavigateToGCTabs("manager");
+
+		for(var $i=0;$i<$tmp.length;$i++){
+			var $cntTmp=_getTableContents(_table(_byXPath("//div[contains(@class,'list-table')]//table[contains(@class,'v2')]"))).toString().indexOf($tmp[$i]);
+			if($cntTmp>=0){
+				_log("As expected Column Name:"+$tmp[$i]+" ,present in table Application Details on Manager Dashboard","CUSTOM4");
+			}
+			else{
+				_log("Column Name:"+$tmp[$i]+" ,NOT present in table Application Details on Manager Dashboard","FAILURE");
+			}
+		}
+
+		$arrTable=fetchDataFromTable("applicationDetailsTable");
+
+		for(var $i=9;$i<$data.length;$i++){
+			if($arrTable.toString().indexOf($data[$i][1])>=0){
+				_log("As expected ROIP:"+$data[$i][1]+" ,present in Management Server Column of Application Details Table","CUSTOM4");
+			}
+			else{
+				_log("ROIP:"+$data[$i][1]+" ,NOT present in Management Server Column of Application Details Table","FAILURE");
+			}
+		}
+
+		clickNavigateToGCTabs("close manager");
+
+		clickNavigateToGCTabs("opertator");
+
+		for(var $i=0;$i<$tmp.length;$i++){
+			var $cntTmp=_getTableContents(_table(_byXPath("//div[contains(@class,'list-table')]//table[contains(@class,'v2')]"))).toString().indexOf($tmp[$i]);
+			if($cntTmp>=0){
+				_log("As expected Column Name:"+$tmp[$i]+" ,present in table Application Details on Operational Dashboard","CUSTOM4");
+			}
+			else{
+				_log("Column Name:"+$tmp[$i]+" ,NOT present in table Application Details on Operational Dashboard","FAILURE");
+			}
+		}
+
+		$arrTable=fetchDataFromTable("applicationDetailsTable");
+
+		for(var $i=9;$i<$data.length;$i++){
+			if($arrTable.toString().indexOf($data[$i][1])>=0){
+				_log("As expected ROIP:"+$data[$i][1]+" ,present in Management Server Column of Application Details Table","CUSTOM4");
+			}
+			else{
+				_log("ROIP:"+$data[$i][1]+" ,NOT present in Management Server Column of Application Details Table","FAILURE");
+			}
+		}
+	}
+	catch ($e) {
+		_log("Exception occurred while exceuting TC16:"+$e,"FAILURE");
+	}
+	finally{
+		clickNavigateToGCTabs("close opertator");
+	}	
+}
+
+
+function GC_TC19(){
+
+	var $excel= _getExcel($SAHI_HOME +"conf/GlobalConsole/GlobalConsole.xls","Installation");
+	var $data= $excel.getData();
+	var $modechangedFor = new Array();
+	
+	try{
+	
+_log("//------------------------------------------ Taking initial AG count from manager and operator page","CUSTOM5");
+		var $countAG_manager=navigateToDashboardsReturnCount("manager");
+		_log("Initial AG count on manager page:"+$countAG_manager,"CUSTOM4");
+		var $countAG_operator=navigateToDashboardsReturnCount("opertator");
+		_log("Initial AG count on operator page:"+$countAG_operator,"CUSTOM4");
+		
+_log("//------------------------------------------ Pulling one IP from Installation sheet from which to make its RG in maintenance","CUSTOM5");	
+		$modechangedFor=moveAGsToMaintenance($data[10][1],$data[10][2],$data[10][3],$data[10][4],$data[10][5]);
+		_log("Number of AGs:"+$modechangedFor.length+" ,changed to maintenance mode for RO:"+$data[10][1],"CUSTOM4");
+		
+_log("//------------------------------------------ Navigating to manager and operator page to check count by how much it reduced","CUSTOM5");
+		clickNavigateToGCTabs("manager");
+		$countCurr=parseInt(_getText(_span("/.*/", _in(_paragraph("/bx--type-delta manager-db-heading/")))));
+		_log("Initial AG count on manager page was:"+$countAG_manager,"CUSTOM4");
+		_log("AG count reduced by:"+$modechangedFor.length,"CUSTOM4");
+		_log("Current AG count"+$countCurr,"CUSTOM");
+		if($countCurr==($countAG_manager-$modechangedFor.length)){	
+			_log("As expected Current AG count on manager page"+$countCurr,"CUSTOM4");
+		}
+		else{
+			_log("AG count not reduced on manager dashboard","FAILURE");
+		}
+		clickNavigateToGCTabs("close manager");
+
+		clickNavigateToGCTabs("opertator");
+		$countCurr=parseInt(_getText(_span("/.*/", _in(_paragraph("/bx--type-delta manager-db-heading/")))));
+		_log("Initial AG count on operator page was:"+$countAG_operator,"CUSTOM4");
+		_log("AG count reduced by:"+$modechangedFor.length,"CUSTOM4");
+		_log("Current AG count"+$countCurr,"CUSTOM");
+		if($countCurr==($countAG_manager-$modechangedFor.length)){
+			_log("As expected Current AG count on operational page"+$countCurr,"CUSTOM4");
+		}
+		else{
+			_log("AG count not reduced on operational dashboard","FAILURE");
+		}
+	}
+	catch ($e) {
+		_log("Exception thrown while executing TC16,"+$e,"FAILURE");
+	}
+	finally{
+_log("//------------------------------------------ Moving back all AGs to manage state of the RO","CUSTOM5");	
+		clickNavigateToGCTabs("close opertator");
+		moveAllAGToManage($data[10][1],$data[10][2],$data[10][3],$data[10][4],$data[10][5]);
+	}
+}
+
+function GC_TC20(){
+	try{
+		configureROInstances($SAHI_HOME +"conf\\GlobalConsole\\GlobalConsole.xls","Installation");
+
+		clickNavigateToGCTabs("manager");
+		var $ManagementServerAvailability_Active_Manager = parseInt(_getText(_span("/.*/", _in(_paragraph("/Management Server availability/")))).split("/")[0].trim());
+		_log("Active RO Server Count on Manager Page"+$ManagementServerAvailability_Active_Manager,"CUSTOM4");
+		var $ManagementServerAvailability_Available_Manager = parseInt(_getText(_span("/.*/", _in(_paragraph("/Management Server availability/")))).split("/")[1].trim());
+		_log("Available RO Server Count on Manager Page"+$ManagementServerAvailability_Available_Manager,"CUSTOM4");
+		clickNavigateToGCTabs("close manager");
+		
+		clickNavigateToGCTabs("opertator");
+		var $ManagementServerAvailability_Active_Operator = parseInt(_getText(_span("/.*/", _in(_paragraph("/Management Server availability/")))).split("/")[0].trim());
+		_log("Active RO Server Count on Operational Dashboard"+$ManagementServerAvailability_Active_Operator,"CUSTOM4");
+		var $ManagementServerAvailability_Available_Operator = parseInt(_getText(_span("/.*/", _in(_paragraph("/Management Server availability/")))).split("/")[1].trim());
+		_log("Available RO Server Count on Operational"+$ManagementServerAvailability_Available_Operator,"CUSTOM4");
+		clickNavigateToGCTabs("close opertator");
+
+
+		navigateToGlobalConsole();
+		_setValue(_textbox("ip_addr"),"192.168.20.01");
+		_click(_button("Add"));
+		_windowAction("refresh");
+		if (_exists(_cell("192.168.20.01", _under(_tableHeader("RO IP Address", _near(_image("Delete")))))) == false) {
+			_log("Fail to add INVALID RO Server 192.168.20.01","FAILURE");
+		}
+		else{
+			_log("Successfully added invalid ip 192.168.20.01","CUSTOM4");
+		}
+
+		
+		clickNavigateToGCTabs("manager");
+		var $ManagementServerAvailability_Active_Manager_Current = parseInt(_getText(_span("/.*/", _in(_paragraph("/Management Server availability/")))).split("/")[0].trim());
+		_log("Active RO Server Count on Manager Page after adding Invalid IP"+$ManagementServerAvailability_Active_Manager_Current,"CUSTOM4");
+		var $ManagementServerAvailability_Available_Manager_Current = parseInt(_getText(_span("/.*/", _in(_paragraph("/Management Server availability/")))).split("/")[1].trim());
+		_log("Available RO Server Count on Manager Page after adding Invalid IP"+$ManagementServerAvailability_Available_Manager_Current,"CUSTOM4");
+		
+		var $excel= _getExcel($SAHI_HOME +"conf/GlobalConsole/GlobalConsole.xls","Installation");
+		var $data= $excel.getData();
+		for(var $i=10;$i<$data.length;$i++){
+			var $tmp = verifyActiveInActiveManagementServer($data[$i][1]);
+			if($tmp=="active"){
+				_log("As expected ROIP:-"+$data[$i][1]+" ,is active in Management Server Availability PopUp","CUSTOM4");
+			}
+			else{
+				_log("ROIP:-"+$data[$i][1]+" ,is inactive, but it should be active","FAILURE");
+			}
+		}
+
+		var $state = verifyActiveInActiveManagementServer("192.168.20.01");
+
+		if($state=="active"){
+			_log("INVALID ROIP 192.168.20.01 is displayed as active in Management Server Availability PopUp","FAILURE");
+		}
+		else{
+			_log("As expected ROIP 192.168.20.01 ,is displayed as inactive","CUSTOM4");
+		}	
+		
+		clickNavigateToGCTabs("close manager");
+		
+		clickNavigateToGCTabs("opertator");
+		var $ManagementServerAvailability_Active_Operator_Current = parseInt(_getText(_span("/.*/", _in(_paragraph("/Management Server availability/")))).split("/")[0].trim());
+		_log("Active RO Server Count on Operational Dashboard Page after adding Invalid IP"+$ManagementServerAvailability_Active_Operator_Current,"CUSTOM4");
+		var $ManagementServerAvailability_Available_Operator_Current = parseInt(_getText(_span("/.*/", _in(_paragraph("/Management Server availability/")))).split("/")[1].trim());
+		_log("Available RO Server Count on Operational Dashboard Page after adding Invalid IP"+$ManagementServerAvailability_Available_Operator_Current,"CUSTOM4");
+		
+		var $excel= _getExcel($SAHI_HOME +"conf/GlobalConsole/GlobalConsole.xls","Installation");
+		var $data= $excel.getData();
+		for(var $i=10;$i<$data.length;$i++){
+			var $tmp = verifyActiveInActiveManagementServer($data[$i][1]);
+			if($tmp=="active"){
+				_log("As expected ROIP:-"+$data[$i][1]+" ,is active in Management Server Availability PopUp","CUSTOM4");
+			}
+			else{
+				_log("ROIP:-"+$data[$i][1]+" ,is inactive, but it should be active","FAILURE");
+			}
+		}
+
+		var $state = verifyActiveInActiveManagementServer("192.168.20.01");
+
+		if($state=="active"){
+			_log("INVALID ROIP 192.168.20.01 is displayed as active in Management Server Availability PopUp","FAILURE");
+		}
+		else{
+			_log("As expected ROIP 192.168.20.01 ,is displayed as inactive","CUSTOM4");
+		}	
+		
+		clickNavigateToGCTabs("close opertator");
+
+		
+		if($ManagementServerAvailability_Active_Manager==$ManagementServerAvailability_Active_Manager_Current){
+			_log("As expected there is no change in management server Active RO count ","CUSTOM4");
+		}
+		else{
+			_log("management server Active RO count changed on manager page after adding invalid RO IP","FAILURE");
+		}
+		if($ManagementServerAvailability_Available_Manager<$ManagementServerAvailability_Available_Manager_Current){
+			_log("As expected available management server count increased after adding invalid RO IP on manager page","CUSTOM4");
+		}
+		else{
+			_log("There is no change in available management server count after adding invalid IP , it should increase on manager page","FAILURE");
+		}
+
+		if($ManagementServerAvailability_Active_Operator==$ManagementServerAvailability_Active_Operator_Current){
+			_log("As expected there is no change in management server Active RO count on operational dashboard","CUSTOM4");
+		}
+		else{
+			_log("management server Active RO count changed  on operational dashboard after adding invalid RO IP","FAILURE");
+		}
+		if($ManagementServerAvailability_Available_Operator<$ManagementServerAvailability_Available_Operator_Current){
+			_log("As expected available management server count increased after adding invalid RO IP  on operational dashboard","CUSTOM4");
+		}
+		else{
+			_log("There is no change in available management server count after adding invalid IP , it should increase  on operational dashboard","FAILURE");
+		}		
+	}
+	catch ($e) {
+		_log("Exception thrown while executing TC:20"+$e,"FAILURE");
+	}
+	finally{
+		_log("Post Step: Removing invalid IP 192.168.20.01 from configured RO Servers","CUSTOM");
+
+		var $blnStep=removeConfiguredRO("192.168.20.01");
+		if($blnStep==true){
+			_log("Successfully removed invalid IP 192.168.20.01 from configured RO Servers list","CUSTOM4");
+		}
+		else{
+			_log("Failed to remove invalid IP 192.168.20.01 from configured RO Servers list","FAILURE");
+		}
+	}
+}
+
+
+function GC_TC21(){
+	
+	var $bln = true;
+	try{
+		var $excel= _getExcel($SAHI_HOME +"conf/GlobalConsole/GlobalConsole.xls","Installation");
+		var $data= $excel.getData();
+
+		_log("Checking precondition --Configure all ROs with HTTPs-- ","CUSTOM");
+		for(var $i=9;$i<$data.length;$i++){
+			$bln=precondition_CheckhttpsAccess($data[$i][1],$data[$i][4],$data[$i][5]);	
+		}
+		
+		Login_001();
+		
+		if($bln==true){
+_log("//****************************************************************** removing all ro instances configured in host RO Server","CUSTOM5");		
+			removeAllROInstances();
+_log("//****************************************************************** Adding ROs in host RO server","CUSTOM5");	
+			configureROInstances($SAHI_HOME +"conf\\GlobalConsole\\GlobalConsole.xls","Installation");
+			
+			var $countAG_manager=navigateToDashboardsReturnCount("manager");
+			var $countAG_operator=navigateToDashboardsReturnCount("opertator");
+
+			_log("Successfully navigated to Manager Dashboard,No Error in dashboard Page and AG count is:"+$countAG_manager,"CUSTOM4");
+			_log("Successfully navigated to Operational Dashboard,No Error in dashboard Page and AG count is:"+$countAG_operator,"CUSTOM4");
+		}
+		else{
+			_log("Precondition check failed, configure RO for https access first","FAILURE");
+		}
+	}
+	catch ($e) {
+		_log("Exception thrown while executing TC:21"+$e,"FAILURE");
+	}
+}
+
+function GC_TC22(){
+	
+	var $bln = true;
+
+	try{
+		var $excel= _getExcel($SAHI_HOME +"conf/GlobalConsole/GlobalConsole.xls","Installation");
+		var $data= $excel.getData();
+
+		_log("Checking precondition --Configure some ROs with HTTPs and few with HTTP, it will test it based on data provided in conf sheet-- ","CUSTOM");
+		for(var $i=9;$i<$data.length;$i++){
+			$bln=precondition_CheckhttpsAccess($data[$i][1],$data[$i][4],$data[$i][5]);			
+		}
+		
+		
+		Login_001();
+		
+		if($bln==true){
+_log("//****************************************************************** removing all ro instances configured in host RO Server","CUSTOM5");	
+			removeAllROInstances();
+_log("//****************************************************************** Adding ROs in host RO server","CUSTOM5");	
+			configureROInstances($SAHI_HOME +"conf\\GlobalConsole\\GlobalConsole.xls","Installation");
+			
+			var $countAG_manager=navigateToDashboardsReturnCount("manager");
+			var $countAG_operator=navigateToDashboardsReturnCount("opertator");
+
+			_log("Successfully navigated to Manager Dashboard,No Error in dashboard Page and AG count is:"+$countAG_manager,"CUSTOM4");
+			_log("Successfully navigated to Operational Dashboard,No Error in dashboard Page and AG count is:"+$countAG_operator,"CUSTOM4");
+		}
+		else{
+			_log("Precondition check failed, configure RO for http/s access first","FAILURE");	
+		}
+	}
+	catch ($e) {
+		_log("Exception thrown while executing TC:21"+$e,"FAILURE");
+	}
+}
+
+function GC_TC23(){
+	clickNavigateToGCTabs("opertator");
+
+	_assertTrue(_exists(_image("print this page"))==true);
+
+	clickNavigateToGCTabs("close opertator");
+}
+
+
+function checkAutoRefresh($argDashboardName){
+	
+_log("//****************************************************************** creating temporary User","CUSTOM5");		
+	createUserWithDifferentPriviledges("twtyfr","SUPER ADMINISTRATOR","twtyfr");
+	
+	Login_001();
+	
+_log("//****************************************************************** removing all ro instances configured in host RO Server","CUSTOM5");		
+	removeAllROInstances();
+	
+_log("//****************************************************************** Adding ROs in host RO server","CUSTOM5");	
+	configureROInstances($SAHI_HOME +"conf\\GlobalConsole\\GlobalConsole.xls","Installation");
+
+	clickNavigateToGCTabs($argDashboardName);
+
+	$countAG=parseInt(_getText(_span("/.*/", _in(_paragraph("/bx--type-delta manager-db-heading/")))));
+
+	_log("AG Count on "+$argDashboardName+" Page:"+$countAG,"CUSTOM4");
+
+	_selectWindow();            // navigating to base window before launching another browser
+
+	var $url="";
+	if($securedUrl =="yes" || $securedUrl =="YES" || $securedUrl =="Yes"){
+		$url = 'https://' + $drmServer + ':'+ $urlPortNo +'/PanacesGUI';
+	}
+	else if ($urlPortNo != "na" || $urlPortNo != ""){
+		$url = 'http://' + $drmServer + ':'+ $urlPortNo +'/PanacesGUI';
+	}
+	var $instanceId=_launchNewBrowser($url);
+	_selectBrowser($instanceId);  // selecting the newly opened browser window
+
+	login("twtyfr",$password);
+	
+	navigateToGlobalConsole();
+
+	var $excel= _getExcel($SAHI_HOME +"conf/GlobalConsole/GlobalConsole.xls","Installation");
+	var $data= $excel.getData();
+	var $blnStep=removeConfiguredRO($data[10][1]);
+	if($blnStep==true){
+		_log("Successfully removed IP "+$data[10][1]+" from configured RO Servers list","CUSTOM4");
+	}
+	else{
+		_log("Failed to remove invalid IP "+$data[10][1]+" from configured RO Servers list","FAILURE");
+	}
+
+	_closeBrowser();    // closing the newly opened browser window
+	_selectBrowser();   // selecting the base browser
+
+	_selectWindow();    
+	if($argDashboardName=="manager"){
+		_selectWindow($IBMResiliencyOrchestrationManagerDashboard);
+	}
+	if($argDashboardName=="opertator"){
+		_selectWindow($IBMResiliencyOrchestrationOperationalDashboard);
+	}
+	var $count=0;
+	while(parseInt(_getText(_span("/.*/", _in(_paragraph("/bx--type-delta manager-db-heading/")))))==$countAG && $count<5){
+	_log("Waiting for 1 minute for the page to auto refresh and show updated AG count","CUSTOM");
+	_wait(60000);
+	$count++;
+	}
+	if(parseInt(_getText(_span("/.*/", _in(_paragraph("/bx--type-delta manager-db-heading/")))))<$countAG){
+		_log("Auto Refresh functionality is working fine ,value of "+$argDashboardName+" page got auto updated in "+$count+" ,minutes","CUSTOM4");
+	}
+	else{
+		if($argDashboardName=="manager"){
+			clickNavigateToGCTabs("close manager");
+			clickNavigateToGCTabs("manager");
+		}
+		if($argDashboardName=="opertator"){
+			clickNavigateToGCTabs("close opertator");
+			clickNavigateToGCTabs("opertator");
+		}
+		if(parseInt(_getText(_span("/.*/", _in(_paragraph("/bx--type-delta manager-db-heading/")))))<$countAG){
+			_log("Auto refresh functionality is not working we have to manually refresh page to see updated value","FAILURE");
+		}
+		else{
+			_log("Value not updated even after manually refreshing page,check logs for failure reason","FAILURE");
+		}
+	}
+	if($argDashboardName=="manager"){
+		clickNavigateToGCTabs("close manager");
+	}
+	if($argDashboardName=="opertator"){
+		clickNavigateToGCTabs("close opertator");
+	}
+}
+
+function GC_TC24(){
+	checkAutoRefresh("manager");
+	checkAutoRefresh("opertator");
+	
+	_click(_link("Admin")||_label("Admin"));
+}
+
+function GC_TC17(){
+	try{
+		var $tmpArry = new Array();
+		var $url="";
+		var $rndmStr=Math.random().toString(36).substr(7).replace(/[0-9]/g,'');
+
+_log("//****************************************************************** removing all ro instances configured in host RO Server","CUSTOM5");		
+		removeAllROInstances();
+
+_log("//****************************************************************** Adding ROs in host RO server","CUSTOM5");	
+		configureROInstances($SAHI_HOME +"conf\\GlobalConsole\\GlobalConsole.xls","Installation");
+
+_log("//****************************************************************** Navigate to operator tab and take count","CUSTOM5");	
+		clickNavigateToGCTabs("opertator");
+
+		$tmpArry=fetchDataFromDashboard("OperationalDashboard","ServerSnapshot");
+
+		$UserCurrentlyloggedin_Before=parseInt($tmpArry[0].split("#")[1]);
+		_log("Before creating users with different roles and log in with them in host RO ServerSnapshot Widget shows count for User Currently logged in as: "+$UserCurrentlyloggedin_Before,"CUSTOM4");
+		$Adminroles_Before=parseInt($tmpArry[1].split("#")[1]);
+		_log("Before creating users with different roles and log in with them in host RO ServerSnapshot Widget shows count for Admin roles in as: "+$Adminroles_Before,"CUSTOM4");
+		$Otherroles_Before=parseInt($tmpArry[2].split("#")[1]);
+		_log("Before creating users with different roles and log in with them in host RO ServerSnapshot Widget shows count for Other roles in as: "+$Otherroles_Before,"CUSTOM4");
+
+		clickNavigateToGCTabs("close opertator");
+
+_log("//****************************************************************** Open new browser window and create users with Admin and operator roles","CUSTOM5");	
+
+		if($securedUrl =="yes" || $securedUrl =="YES" || $securedUrl =="Yes"){
+			$url = 'https://' + $drmServer + ':'+ $urlPortNo +'/PanacesGUI';
+		}
+		else if ($urlPortNo != "na" || $urlPortNo != ""){
+			$url = 'http://' + $drmServer + ':'+ $urlPortNo +'/PanacesGUI';
+		}
+		var $instanceId=_launchNewBrowser($url);
+		_selectBrowser($instanceId);  // selecting the newly opened browser window
+
+		createUserWithDifferentPriviledges("onesvnO"+$rndmStr,"ADMINISTRATOR","onesvnO"+$rndmStr);
+
+		_closeBrowser();    // closing the newly opened browser window
+		_selectBrowser();   // selecting the base browser
+
+		_selectWindow();   
+
+		var $instanceId=_launchNewBrowser($url);
+		_selectBrowser($instanceId);  // selecting the newly opened browser window
+
+		createUserWithDifferentPriviledges("onesvnT"+$rndmStr,"OPERATOR","onesvnT"+$rndmStr);
+
+		_closeBrowser();    // closing the newly opened browser window
+		_selectBrowser();   // selecting the base browser
+
+		_selectWindow();   
+
+_log("//****************************************************************** get back to operational dashboard window and check count","CUSTOM5");
+		Login_001();
+
+		clickNavigateToGCTabs("opertator");
+
+		$tmpArry=fetchDataFromDashboard("OperationalDashboard","ServerSnapshot");
+
+		$UserCurrentlyloggedin_After=parseInt($tmpArry[0].split("#")[1]);
+		_log("Before creating users with different roles and log in with them in host RO ServerSnapshot Widget shows count for User Currently logged in in as: "+$UserCurrentlyloggedin_After,"CUSTOM4");
+		$Adminroles_After=parseInt($tmpArry[1].split("#")[1]);
+		_log("Before creating users with different roles and log in with them in host RO ServerSnapshot Widget shows count for Admin roles in as: "+$Adminroles_After,"CUSTOM4");
+		$Otherroles_After=parseInt($tmpArry[2].split("#")[1]);
+		_log("Before creating users with different roles and log in with them in host RO ServerSnapshot Widget shows count for Other roles in as: "+$Otherroles_After,"CUSTOM4");
+
+		clickNavigateToGCTabs("close opertator");
+
+_log("//****************************************************************** verify count increased","CUSTOM5");	
+		_assertTrue($UserCurrentlyloggedin_After>$UserCurrentlyloggedin_Before,"As expected User Currently Logged in count incresed","CUSTOM4");
+
+		_assertTrue($Adminroles_After>$Adminroles_Before,"As expected Admin Roles count incresed","CUSTOM4");
+
+		_assertTrue($Otherroles_After>$Otherroles_Before,"As expected Other Roles count incresed","CUSTOM4");
+	}
+	catch ($e) {
+		_log("Exception while executing TC17"+$e,"FAILURE");
+	}
+}
+
+
+
+
+
+function GC_TC18_1(){
+
+	try{
+		var $tmpArry = new Array();
+
+		$tmpArry=fetchDataFromDashboard("ManagerDashboard","ApplicationStatus");
+		for(var $i=0;$i<$tmpArry.length;$i++){
+			var $tmp = $tmpArry[$i].split("#")[1];
+			if($tmp==""){
+				_log("Widget Application Status is not displayed properly on manager dashboard for "+$tmpArry[$i].split("#")[0],"FAILURE");
+			}
+			else{
+				_log("As expected Widget Application Status is showing proper values on manager dashborad for"+$tmpArry[$i].split("#")[0],"CUSTOM4");
+			}
+		}
+
+		$tmpArry=[];
+		$tmpArry=fetchDataFromDashboard("ManagerDashboard","DrillStatus");
+		for(var $i=0;$i<$tmpArry.length;$i++){
+			var $tmp = $tmpArry[$i].split("#")[1];
+			if($tmp==""){
+				_log("Widget DrillStatus is not displayed properly on manager dashborad for "+$tmpArry[$i].split("#")[0],"FAILURE");
+			}
+			else{
+				_log("As expected Widget DrillStatus is showing proper values on manager dashborad for"+$tmpArry[$i].split("#")[0],"CUSTOM4");
+			}
+		}
+
+		$tmpArry = [];
+		$tmpArry=fetchDataFromDashboard("ManagerDashboard","ReplicationSnapshot");
+		for(var $i=0;$i<$tmpArry.length;$i++){
+			var $tmp = $tmpArry[$i].split("#")[1];
+			if($tmp==""){
+				_log("Widget ReplicationSnapshot is not displaying properly on on manager dashborad for "+$tmpArry[$i].split("#")[0],"FAILURE");
+			}
+			else{
+				_log("As expected Widget ReplicationSnapshot is showing proper values on manager dashborad for"+$tmpArry[$i].split("#")[0],"CUSTOM4");
+			}
+		}
+
+		$tmpArry = [];
+		$tmpArry=fetchDataFromDashboard("ManagerDashboard","RPODeviation");
+		for(var $i=0;$i<$tmpArry.length;$i++){
+			var $tmp =$tmpArry[$i].split("#")[1];
+			if($tmp==""){
+				_log("Widget RPO Deviation is not displaying properly on manager dashborad for "+$tmpArry[$i].split("#")[0],"FAILURE");
+			}
+			else{
+				_log("As expected Widget RPO Deviation is showing proper values on manager dashborad for"+$tmpArry[$i].split("#")[0],"CUSTOM4");
+			}
+		}
+
+		$tmpArry = [];
+		$tmpArry=fetchDataFromDashboard("ManagerDashboard","DatalagDeviation");
+		for(var $i=0;$i<$tmpArry.length;$i++){
+			var $tmp = $tmpArry[$i].split("#")[1];
+			if($tmp==""){
+				_log("Widget DatalagDeviation is not displaying properly on manager dashborad for "+$tmpArry[$i].split("#")[0],"FAILURE");
+			}
+			else{
+				_log("As expected Widget DatalagDeviation is showing proper values on manager dashborad for"+$tmpArry[$i].split("#")[0],"CUSTOM4");
+			}
+		}
+
+		$tmpArry = [];
+		$tmpArry=fetchDataFromDashboard("ManagerDashboard","WorkflowSnapshot");
+		for(var $i=0;$i<$tmpArry.length;$i++){
+			var $tmp = $tmpArry[$i].split("#")[1];
+			if($tmp==""){
+				_log("Widget WorkflowSnapshot is not displaying properly on manager dashborad for "+$tmpArry[$i].split("#")[0],"FAILURE");
+			}
+			else{
+				_log("As expected Widget WorkflowSnapshot is showing proper values on manager dashborad for"+$tmpArry[$i].split("#")[0],"CUSTOM4");
+			}
+		}
+
+		$tmpArry = [];
+		$tmpArry=fetchDataFromDashboard("ManagerDashboard","WorkflowSnapshot");
+		for(var $i=0;$i<$tmpArry.length;$i++){
+			var $tmp = $tmpArry[$i].split("#")[1];
+			if($tmp==""){
+				_log("Widget WorkflowSnapshot is not displaying properly on manager dashborad for "+$tmpArry[$i].split("#")[0],"FAILURE");
+			}
+			else{
+				_log("As expected Widget WorkflowSnapshot isshowing proper values on manager dashborad for"+$tmpArry[$i].split("#")[0],"CUSTOM4");
+			}
+		}
+
+		if(_exists(_cell("No Data Available", _near(_paragraph("Application Details"))))==true){
+			_log("Application Details Table is showing --No Data Available--","FAILURE");
+		}
+		else{
+			_log("Application Details Table is showing data","CUSTOM4");
+		}
+	}
+	catch ($e) {
+		_log("Exception while executing TC18_1:"+$e,"FAILURE");
+	}
+}
+
+
+function GC_TC18_2(){
+	
+	try{
+		var $tmpArry = new Array();
+
+		$tmpArry=fetchDataFromDashboard("OperationalDashboard","ApplicationStatus");
+		for(var $i=0;$i<$tmpArry.length;$i++){
+			var $tmp = $tmpArry[$i].split("#")[1];
+			if($tmp==""){
+				_log("Widget Application Status is not displaying properly on Operational Dashboard for "+$tmpArry[$i].split("#")[0],"FAILURE");
+			}
+			else{
+				_log("As expected Widget Application Status is showing proper values on Operational Dashboard for"+$tmpArry[$i].split("#")[0],"CUSTOM4");
+			}
+		}
+
+		$tmpArry=[];
+		$tmpArry=fetchDataFromDashboard("OperationalDashboard","WorkflowSnapshot");
+		for(var $i=0;$i<$tmpArry.length;$i++){
+			var $tmp = $tmpArry[$i].split("#")[1];
+			if($tmp==""){
+				_log("Widget WorkflowSnapshot is not displaying properly on OperationalDashboard for "+$tmpArry[$i].split("#")[0],"FAILURE");
+			}
+			else{
+				_log("As expected Widget WorkflowSnapshot is showing proper values on OperationalDashboard for"+$tmpArry[$i].split("#")[0],"CUSTOM4");
+			}
+		}
+
+		$tmpArry=[];
+		$tmpArry=fetchDataFromDashboard("OperationalDashboard","ReplicationSnapshot");
+		for(var $i=0;$i<$tmpArry.length;$i++){
+			var $tmp = $tmpArry[$i].split("#")[1];
+			if($tmp==""){
+				_log("Widget ReplicationSnapshot is not displaying properly on OperationalDashboard for "+$tmpArry[$i].split("#")[0],"FAILURE");
+			}
+			else{
+				_log("As expected Widget ReplicationSnapshot showing proper values on OperationalDashboard for"+$tmpArry[$i].split("#")[0],"CUSTOM4");
+			}
+		}
+		
+		if(_exists(_cell("No Data Available", _near(_paragraph("Application Details"))))==true){
+			_log("As expected Application Details Table is showing --No Data Available--","FAILURE");
+		}
+		else{
+			_log("Application Details Table is showing data","CUSTOM4");
+		}
+	}
+	catch ($e) {
+		_log("Exception while executing TC18_2:"+$e,"FAILURE");
+	}
+}
+
+
+function GC_TC18(){
+
+	var $url="";
+	var $arrInstanceID = new Array();
+	
+	try{
+		
+		_log("//---------------------------------------------- Creating Common Users across all the RO Servers","CUSTOM5");
+		createCommonUserAcrossServers($SAHI_HOME +"conf/GlobalConsole/GlobalConsole.xls","Installation","GCTCXVIII");	
+	
+		var $excel= _getExcel($SAHI_HOME +"conf/GlobalConsole/GlobalConsole.xls","Installation");
+		var $data= $excel.getData();
+		for(var $i=9;$i<$data.length;$i++){
+			
+			if($data[$i][4].toLowerCase() =="yes"){
+				$url = 'https://' + $data[$i][1] + ':'+ $data[$i][5] +'/PanacesGUI';
+			}
+			else{
+				$url = 'http://' + $data[$i][1] + ':'+ $data[$i][5] +'/PanacesGUI';
+			}
+			
+			_log("//----------------------------------------------- Open New Browser and Login","CUSTOM5");
+			var $tmp = openBrowserLogin($url,"GCTCXVIII","Cloud123456789$");
+			$arrInstanceID.push($tmp);
+			
+			_selectBrowser();
+			_selectWindow();
+		}
+		
+		_log("//----------------------------------------------- Login to host RO Server and configure RO Instances","CUSTOM5");
+		Login_001();
+
+		removeAllROInstances();
+
+		configureROInstances($SAHI_HOME +"conf\\GlobalConsole\\GlobalConsole.xls","Installation");
+		
+		_log("//----------------------------------------------- Navigate to manager dashboard and check data","CUSTOM5");
+		clickNavigateToGCTabs("manager");
+		if(_exists(_div("Unable To Retrieve Data"))==true){
+			_log("Widgets showing unable to retriive data","FAILURE");
+		}
+		GC_TC18_1();
+
+		clickNavigateToGCTabs("close manager");
+		
+		_log("//----------------------------------------------- Navigate to operational dashboard and check data","CUSTOM5");
+		clickNavigateToGCTabs("opertator");
+
+		if(_exists(_div("Unable To Retrieve Data"))==true){
+			_log("Widgets showing unable to retriive data","FAILURE");
+		}
+		
+		GC_TC18_2();
+
+		clickNavigateToGCTabs("close opertator");
+	}
+	catch ($e) {
+		_log("Exception thrown while executing TC18:"+$e,"FAILURE");
+	}
+	finally{
+		for(var $i=0;$i<$arrInstanceID.length;$i++){
+			
+			_log("//----------------------------------------------- Close othere browser instances except default","CUSTOM5");
+			closeOpenedBrowser($arrInstanceID[$i]);
+		}
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

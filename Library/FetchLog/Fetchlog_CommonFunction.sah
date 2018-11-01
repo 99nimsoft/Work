@@ -1,0 +1,190 @@
+/**
+* Function is for Creating  Different Users
+*@param :  $a_user
+*@return : null
+* Author: Debabrat
+*/
+
+function CreateUser($a_user){
+	
+	_click(_link($Admin));
+	_click(_link($GotoUsers));
+	if(_exists(_link($a_user))){
+		_log("User exist with  name"+" "+$a_user);
+	}else{
+		_click(_link($CreateNewUser));
+		_setValue(_textbox("loginId"), $a_user);
+		_setValue(_password("newPassword"), "Sanovi123$");
+		_setValue(_password("confPassword"), "Sanovi123$");
+		
+	
+	
+	if($a_user == $supadmin){
+	_click(_radio("ucat"));
+     }
+	
+	if($a_user == $admin){
+		_click(_radio("ucat[1]"));
+	}
+	
+	if($a_user == $operator){
+		_click(_radio("ucat[2]"));
+	}
+	
+	if($a_user == $notification){
+		_click(_radio("ucat[3]"));
+	}
+	_setValue(_textbox("userFullName"), $a_user);
+	_setSelected(_select("homePage"), $obj_EventsListView);
+	_setValue(_textbox("email"), "auto@sanovi.com");
+	_click(_submit($Save));
+}
+
+}
+
+/**
+* Function is for Assigning groups  to Different Users
+*@param :  $a_user,$groupName
+*@return : null
+* Author: Debabrat
+*/
+
+function Assign_Group_User($a_user,$groupName){
+	_click(_link($Admin));
+	_click(_link($obj_GoToUser));
+	_click(_image("edit.png", _near(_link($a_user))));
+	var $chkgrpSel= _getText(_select("assignedGroups"), [$groupName]);
+	_log($chkgrpSel);
+	if($chkgrpSel == $groupName){
+		_log("group already assigned to this user");
+	}
+	else{
+		_setSelected(_select("remainingGroups"), [$groupName]);
+		_click(_button("smlbtn[1]"));
+	}
+	_click(_button($obj_save)); 
+    _wait(5000);
+   	_assertEqual($UserDetailsModifiedSuccessfully, _lastAlert());
+}
+
+/**
+* Function is for Checking  downloading of   operator
+*@param :  $a_user,$groupName
+*@return : null
+* Author: Debabrat
+*/
+function    Fetch_Log_Opr(){
+	_click(_link($Admin));
+	 _click(_link($GotoLogs));
+	 _click(_link($FetchLogs));
+	if(_exists(_button($okbuttondisableLink))){
+		_log("Button is not  Clickable");
+	}
+}
+
+function  Fetch_Log_Normal(){
+	_click(_link($Admin));
+	 _click(_link($GotoLogs));
+	 _click(_link($FetchLogs));
+	_click(_button($FetchLog));
+	while(_isVisible(_button($FetchLog))){
+		_log("Button is  Clickable");
+		break;
+	}
+
+}
+
+function Fetch_Log($groupName){
+	_click(_link($Admin));
+	_click(_link($GotoLogs));
+	_click(_link($FetchLogs));
+	_click(_link($Advanced));
+	_click(_image($Dateselector));
+	_wait(5000);
+	_click(_div($Today));
+	_click(_image($Dateselector1));
+	_wait(5000);
+	_click(_div($Today1));
+	_setSelected(_select("selectedGroups"), [$groupName]);
+	_check(_checkbox("agentLogSource"));
+	_check(_checkbox("serverLogSource"));
+	_click(_button($FetchLog1));
+	//_wait(60000);
+	while(_isVisible(_button($FetchLog1))){
+		_log("Button is  Clickable");
+		break;
+	}
+}
+
+/**
+* Function is for Download of fetch logs in CLI
+*@param :  $groupName
+*@return : null
+* Author: Debabrat
+*/
+
+function  Fetch_Log_AdvanceTab($groupName){
+	delete_FetchLogs_BeforeFetch($logspath);
+	Fetch_Log($groupName);
+	SecuredShellConnection($SerIP, $SerUserNm, $SerPassWord, $logspath, "Y");
+	var $strFileName = _lastDownloadedFileName();
+	_log($strFileName);
+	if (_lastDownloadedFileName() != null) {
+		_log("Last Downloaded File Name"+" "+_lastDownloadedFileName());
+		
+	}
+}
+
+/**
+* Function is for Download of fetch logs in Windows
+*@param :  $groupName
+*@return : null
+* Author: Debabrat
+*/
+
+function  Fetch_Log_AdvanceTab_Windows($groupName){
+	delete_FetchLogs_windows();
+	Fetch_Log($groupName);
+	_log("Last Downloadedfile Name"+_lastDownloadedFileName());
+	var $downloadfilename = _lastDownloadedFileName();
+	var $path = _userDataDir()+"\\Fetchlog\\"+$downloadfilename;
+	_log($path);
+	if (_lastDownloadedFileName() != null) {
+		_log("Last Downloaded File Name"+" "+_lastDownloadedFileName());
+		_saveDownloadedAs($path);
+	}
+	
+
+	var $onlyfilenm=$downloadfilename.split(".");
+	_log($onlyfilenm);
+	var $onlyfilenm1=$onlyfilenm[0];
+	_log($onlyfilenm1);
+	var $fetchlogfile= _userDataDir()+"\\Fetchlog\\"+$onlyfilenm1;
+	_log($fetchlogfile);
+	_execute($SAHI_HOME+"\\tools\\jdk1.8.0_11\\bin\\jar -xvf "+$path);
+	_log($SAHI_HOME+"\\tools\\jdk1.8.0_11\\bin\\jar -xvf "+$path);
+	 
+}
+
+
+/**
+* Function is for delete older fetch logs
+*@param :  $logspath
+*@return : null
+* Author: Debabrat
+*/
+function delete_FetchLogs_BeforeFetch($logspath){
+	var $sshCommand = 'rm -rf ' + $logspath +"/FetchLog_SanoviLogs_*.zip";
+	SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	_log("Before fetching system logs an Older system capture logs deleted in drm server");
+}
+
+function delete_FetchLogs_windows(){
+	var $path= _userDataDir()+"\\Fetchlog\\";
+	 var $timeInterval = "\n\n";
+	 _writeFile("cd "+$path+$timeInterval+"del "+"FetchLog_SanoviLogs_*.zip", $path+"\\delzip.bat",true); // over writes content in file 
+	 _wait(3000);
+	 _execute($path+"\\delzip.bat",true);
+	 _wait(3000);
+	 _log(" older zip files has been deleted succcessfully in the path: "+$path);
+}

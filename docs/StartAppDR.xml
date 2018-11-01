@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><ws:workflow xmlns:ws="http://www.sanovi.com/panaces/workflow/">
+    <userDef size="0"/>
+    <name>StartAppDR</name>
+    <version>7.2 43941</version>
+    <description>null</description>
+    <approverList/>
+    <action-list>
+        <action id="0" successPathId="1" failurePathId="1">
+            <registeredName>VmwareVcPowerOnVM</registeredName>
+            <name>PowerOnVM</name>
+            <description>PowerOnVM</description>
+            <timeToExecute>60</timeToExecute>
+            <deletable>false</deletable>
+            <operationType>26</operationType>
+            <actionFailureEvent severity="INFO"/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:VmwareVcPowerOnVM mgmtServiceName="DR_MANAGEMENT_SERVICE" dcName="DR_DATACENTER_NAME" vmName="DR_VM_NAME"/>
+            </privateProperties>
+            <joinId>7796</joinId>
+            <version>7.2 43941</version>
+        </action>
+        <action id="1" successPathId="2" failurePathId="2">
+            <registeredName>Custom</registeredName>
+            <name>PLACEHOLDER_startApplication</name>
+            <uniqueName/>
+            <description>Placeholder action for StartApplication</description>
+            <deletable>false</deletable>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction type="cmd" etcComputationType="userDefined">
+                    <serverName/>
+                    <command/>
+                    <sudoUsername/>
+                    <execDir/>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>7797</joinId>
+            <version>7.2 43941</version>
+        </action>
+        <action id="2" final="true">
+            <registeredName>Custom</registeredName>
+            <name>PLACEHOLDER_checkApplicationStatus</name>
+            <uniqueName/>
+            <description>Placeholder for Check Application Status</description>
+            <deletable>false</deletable>
+            <actionFailureEvent severity="INFO"/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction type="cmd" etcComputationType="userDefined">
+                    <serverName/>
+                    <command/>
+                    <timeout>180</timeout>
+                    <sudoUsername/>
+                    <execDir/>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>7798</joinId>
+            <version>7.2 43941</version>
+        </action>
+    </action-list>
+</ws:workflow>

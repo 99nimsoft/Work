@@ -1,0 +1,36 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the Remote Agents parameters for APP PFR Events
+ ** AuthorName : Govinda Mengji
+ ** Created Date : April 2015
+ ***********************************************************************************************/
+
+
+ $g_Events_APP_PFR = _readExcelFile($SAHI_HOME + "\\conf\\Events\\Events.xls","APP_PFR");
+
+
+//This user Input required to Login the DRM server
+var $username =  $g_Events_APP_PFR[3][2]; // DRM server GUI user name e.g. "swati"
+var $password =  $g_Events_APP_PFR[4][2]; // DRM server GUI pwd
+
+//This user Input required to create the Component for Local or remote
+
+var $compIPPR = $g_Events_APP_PFR[3][4]; // PR Componenet ID
+var $compIPDR = $g_Events_APP_PFR[4][4]; // DR Componenet ID
+var $remoteUserNameValPR = $g_Events_APP_PFR[5][4]; // PR Machine user name. this information required for both local and remote
+var $remotePwdValPR = $g_Events_APP_PFR[6][4]; // PR Machine Pwd name. this information required for both local and remote
+var $remoteUserNameValDR = $g_Events_APP_PFR[7][4];// DR Machine user name. this information required for both local and remote
+var $remotePwdValDR = $g_Events_APP_PFR[8][4];// PR Machine Pwd name. this information required for both local and remote
+
+
+ 
+var $groupName = $g_Events_APP_PFR[3][6];// Group name
+var $AgentType =   $g_Events_APP_PFR[4][6];
+var $localAgentPathPR=$g_Events_APP_PFR[5][6];
+var $localAgentPathDR=$g_Events_APP_PFR[6][6];
+var $SOActive= $g_Events_APP_PFR[7][6]; // SO is done or not
+//This user Input required to install the local agents
+/*var $RemoteAgentPathPR =  $g_Events_APP_PFR[5][5]; // this is the Path where user has install the agent on PR "/opt/panaces/"
+var $RemoteAgentPathDR =  $g_Events_APP_PFR[6][5]; // this is the Path where user has install the agent on DR "/opt/panaces/"
+*/

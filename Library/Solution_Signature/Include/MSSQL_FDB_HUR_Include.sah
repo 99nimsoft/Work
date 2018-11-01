@@ -1,0 +1,13 @@
+_include("../../../Library/Common/Common_Function.sah");
+_include("../../../Library/Solution_Signature/Include/Common_Automation_testcase_Function.sah");
+_include("../../../Library/Component/Component_Common.sah");
+_include("../../../Library/Common/Operation_On_FG/Group_Operation.sah");
+_include("../../../Library/Component/WINDOWS/Windows.sah");
+_include("../../../Library/Component/SOLARIS/Solaris.sah");
+_include("../../../Library/Database/MSSQL/MSSQLPFR.sah");
+_include("../../../Library/Replication/Hitachi/Hitachi.sah");
+_include("../../../Library/Solution_Signature/MSSQL_FDB_HUR/MSSQL_FDB_HUR_Solution.sah");
+_include("../../../Library/Solution_Signature/MSSQL_FDB_HUR/MSSQL_FDB_HUR_events.sah");
+_include("../../../Library/Solution_Signature/MSSQL_FDB_HUR/MSSQL_FDB_HUR_Automation_testcase_Function.sah");
+
+

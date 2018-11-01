@@ -1,0 +1,278 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the Remote Agents parameters for APP PFR
+ ** AuthorName : Govinda Mengji
+ ** Created Date : Nov 2013
+ ***********************************************************************************************/
+
+
+
+var $l_APP_PFR=_readExcelFile($SAHI_HOME + "\\conf\\BugsRetest\\APP_PFR_Parameter.xls","Remote");
+
+
+
+//This user Input required to Login the DRM server
+var $username = $l_APP_PFR[3][2]; // DRM server GUI user name e.g. "swati"
+var $password = $l_APP_PFR[4][2]; // DRM server GUI pwd
+
+//This user Input required to install the local agents
+var $RemoteAgentPathPR = $l_APP_PFR[13][5]; // this is the Path where user has install the agent on PR "/opt/panaces/"
+var $RemoteAgentPathDR = $l_APP_PFR[14][5]; // this is the Path where user has install the agent on DR "/opt/panaces/"
+
+
+//Remote Agent Installation
+var $agentBuildPR =$l_APP_PFR[15][5];
+var $agentBuildDR=$l_APP_PFR[16][5];
+var $PfrStart="1";
+var $PfrServicePath=$l_APP_PFR[17][5];
+var $systemType = $l_APP_PFR[19][2];
+var $osType = $l_APP_PFR[18][2];
+
+
+
+
+//This user Input required to create the Site
+var $locationPR = "PR"; // PR Site Location
+var $incharge = "drmadmin"; // Site Incharge
+var $addressPR = "Mumbai"; // PR site Address
+var $locationDR = "DR"; // DR Site Location
+var $addressDR = "Bangalore";// DR site Address
+
+//This user Input required to create the Component for Local or remote
+var $agentType = "Remote"; // This if for agent type always enter as e.g. Local or Remote.Note Here first letter is upper case and remaining lower case.
+var $compIPPR = $l_APP_PFR[7][2]; // PR Componenet ID
+var $compIPDR = $l_APP_PFR[8][2]; // DR Componenet ID
+var $remoteUserNameValPR = $l_APP_PFR[9][2]; // PR Machine user name. this information required for both local and remote
+var $remotePwdValPR = $l_APP_PFR[10][2]; // PR Machine Pwd name. this information required for both local and remote
+var $remoteUserNameValDR = $l_APP_PFR[11][2];// DR Machine user name. this information required for both local and remote
+var $remotePwdValDR = $l_APP_PFR[12][2];// PR Machine Pwd name. this information required for both local and remote
+var $compNamePR = $l_APP_PFR[13][2]; // PR Componenet Name
+var $compNameDR = $l_APP_PFR[14][2]; // DR Componenet Name
+
+
+//This user Input required to create the dataset
+var $systemTypeDataset = "Application SubSystem";
+var $datasetNamePR = $l_APP_PFR[3][5]; // PR dataset name
+var $datasetNameDR = $l_APP_PFR[4][5]; // DR dataset name
+var $fileNameTextPathPR = $l_APP_PFR[5][5];
+var $fileNameTextPathDR = $l_APP_PFR[6][5];
+
+
+//This user Input required to create the protection Scheme
+var $sernamePR = $l_APP_PFR[9][5]; // PR Protection Scheme name
+var $sernameDR = $l_APP_PFR[10][5]; // DR Protection Scheme name
+var $mgmtHostPFRPR = $compNamePR + " (" + $compIPPR + ")"; 
+var $mgmtHostPFRDR = $compNameDR + " (" + $compIPDR + ")"; 
+
+//This user Input required to create the Group
+var $groupName = $l_APP_PFR[17][2];// Group name
+
+
+var $groupDescription = "APP PFR"; // Group description
+
+// *********************************************************************************************************************************************
+// Important Note : Please don't modify/edit any below variable or its value.
+// If you made any changes of variable and its value, script will not execute.
+// *********************************************************************************************************************************************
+
+var $primaryPanacesServer = $drmServer; // this is Primary DRM server
+var $panacesAgentNodeAddressPR = $compIPPR;
+var $panacesAgentNodeAddressDR = $compIPDR;
+var $compsitePR = $locationPR;
+var $compsiteDR = $locationDR;
+var $primaryComponents = $compNamePR;
+var $remoteComponents = $compNameDR;
+var $primaryDatasets = $datasetNamePR;
+var $remoteDatasets = $datasetNameDR;
+
+var $primaryProtections = $sernamePR;
+var $remoteProtections = $sernameDR;
+
+var $mgmtHostDGPR =$compNamePR+' ('+$compIPPR+')';
+var $mgmtHostDGDR = $compNameDR+' ('+$compIPDR+')';
+var $dependentComponentNamePR = $compNamePR;
+var $dependentComponentNameDR = $compNameDR;
+var $incharge = "drmadmin";
+var $desiredRpo = "300";
+var $rpoCompute = "300";
+var $systemTypeProtection = "PFR"; // Protection Scheme type
+/*var $SolutionSignature = "DB2 Full Database with HP3PAR"; // Solution type
+var $systemTypeDataset = "DB2 Full Database with HP3PAR"; // database subsystem
+var $datasetType = "DB2 Full Database with HP3PAR";// database Type     */
+if($BrowserLang == "N"){
+	var $SolutionSignature = "Application SubSystem with PFR"; // Solution type
+}
+else{
+	var $SolutionSignature = "Application Subsystem With PFR"; // Solution type
+}
+
+var $systemTypeDataset = "Application SubSystem"; // database subsystem
+var $datasetType = "Application SubSystem";// database Type
+
+
+var $drmDbUserName = "automation"; // DRM server database user id
+var $drmDbPassword = "sanovi";// DRM server database password
+var $APP_PFRAgentChk = "1";
+var $localAgentPathPR =  $RemoteAgentPathPR;
+var $localAgentPathDR = $RemoteAgentPathDR;
+
+
+var $l_APP_PFR_CustomerSC = _readExcelFile($SAHI_HOME + "\\conf\\APP_PFR\\APP_PFR_Parameter.xls","CustomerSC");
+
+
+
+function ReadCustomerScenarios_Values($index){
+	$No_Of_Files = 	$l_APP_PFR_CustomerSC[$index][2];
+	$File_Size = 	$l_APP_PFR_CustomerSC[$index][3];
+	$FileName_Length	= $l_APP_PFR_CustomerSC[$index][4];
+	$NoOfFiles_ToDelete = $l_APP_PFR_CustomerSC[$index][5];
+	$NoOffolders_TDdelete = $l_APP_PFR_CustomerSC[$index][6];
+}
+
+
+
+var $l_APP_PFR=_readExcelFile($SAHI_HOME + "\\conf\\BugsRetest\\APP_PFR_Parameter.xls","BUG_38916");
+
+var $gmailEmailID = $l_APP_PFR[3][2]; 
+var $gmailPassword = $l_APP_PFR[4][2]; 
+var $gmailUserID = $l_APP_PFR[5][2]; 
+
+var $bug44350 =_readExcelFile($SAHI_HOME + "\\conf\\BugsRetest\\APP_PFR_Parameter.xls","BUG_44350");
+
+var $noteCopyRight = $bug44350[3][2];
+var $noteCopyRight_Japan = $bug44350[4][2];
+
+//////////////////******************************************************************************////////////////////////
+
+var $bug40908l_DB2 = _readExcelFile($SAHI_HOME + "\\conf\\BugsRetest\\APP_PFR_Parameter.xls","BUG_40908");
+
+//This user Input required to Login the DRM server
+
+var $bug40908username = $bug40908l_DB2[3][2]; // DRM server GUI user name e.g. "admin"
+var $bug40908password =  $bug40908l_DB2[4][2]; // DRM server GUI pwd
+
+//This user Input required to create the Site
+var $bug40908locationPR = "Prod"; // PR Site Location
+var $bug40908incharge = "drmadmin"; // Site Incharge
+var $bug40908addressPR = "Mumbai"; // PR site Address
+var $bug40908locationDR = "sec"; // DR Site Location
+var $bug40908addressDR = "Bangalore";// DR site Address
+
+//This user Input required to create the Component for Local or remote
+var $bug40908agentType = "Local"; // This if for agent type always enter as e.g. Local or Remote.Note Here first letter is upper case and remaining lower case.
+var $bug40908compIPPR = $bug40908l_DB2[7][2]; // PR Componenet ID
+var $bug40908compIPDR = $bug40908l_DB2[8][2]; // DR Componenet ID
+var $bug40908remoteUserNameValPR = $bug40908l_DB2[9][2]; // PR Machine user name. this information required for both local and remote
+var $bug40908remotePwdValPR = $bug40908l_DB2[10][2]; // PR Machine Pwd name. this information required for both local and remote
+var $bug40908remoteUserNameValDR = $bug40908l_DB2[11][2];// DR Machine user name. this information required for both local and remote
+var $bug40908remotePwdValDR = $bug40908l_DB2[12][2];// PR Machine Pwd name. this information required for both local and remote
+var $bug40908compNamePR = $bug40908l_DB2[13][2]; // PR Componenet Name
+var $bug40908compNameDR = $bug40908l_DB2[14][2]; // DR Componenet Name
+
+//This user Input required to create the dataset
+var $bug40908dataBaseName = $bug40908l_DB2[3][5];
+var $bug40908userPR =  $bug40908l_DB2[4][5];// for DB2 db connection
+var $bug40908pwdPR = $bug40908l_DB2[5][5];// for DB2 db connection
+var $bug40908userDR = $bug40908l_DB2[6][5];// for DB2 db connection
+var $bug40908pwdDR = $bug40908l_DB2[7][5];// for DB2 db connection
+var $bug40908datasetNamePR = $bug40908l_DB2[8][5]; // PR dataset name
+var $bug40908datasetNameDR = $bug40908l_DB2[9][5]; // DR dataset name
+
+var $bug40908db2ResultDirPR = $bug40908l_DB2[3][8];
+var $bug40908db2ResultDirDR =  $bug40908l_DB2[4][8];// for DB2 db connection
+
+//This user Input required to create the protection Scheme
+var $bug40908sernamePR = $bug40908l_DB2[12][5]; // PR Protection Scheme name
+var $bug40908sernameDR = $bug40908l_DB2[13][5]; // DR Protection Scheme name
+
+//This user Input required to create the Group
+var $bug40908groupName = $bug40908l_DB2[17][2]; // Group name
+var $bug40908systemType = $bug40908l_DB2[19][2];
+var $bug40908osType = $bug40908l_DB2[18][2];
+var $bug40908groupDescription = "DB2_FDB_HP3PAR"; // Group description
+
+//*********************************************************************************************************************************************
+//Important Note : These details required for Panaces and Agent installation.
+//*********************************************************************************************************************************************
+
+//This user Input required to install the local agents
+var $bug40908localAgentPathPR = $bug40908l_DB2[16][5]; // this is the Path where user has install the agent on PR "/opt/panaces/"
+var $bug40908localAgentPathDR = $bug40908l_DB2[17][5]; // this is the Path where user has install the agent on DR "/opt/panaces/"
+
+//This user Input required to update DB2 Local Agent PanacesAgentsInstaller.properties
+var $bug40908agentBuildPR = "/opt/";
+var $bug40908agentBuildDR = "/opt/";
+
+//This user Input required to update Datalag
+var $bug40908dataLagPR_DR = "3";
+var $bug40908dataLagPR = "350";
+var $bug40908dataLagDR = "160";
+
+//Tcl files path
+var $bug40908TclPath_PR=$bug40908localAgentPathPR + "DRMAgents";
+var $bug40908TclPath_DR=$bug40908localAgentPathDR + "DRMAgents"
+	
+	
+//*********************************************************************************************************************************************
+//Important Note : Please don't modify/edit any below variable or its value.
+//If you made any changes of variable and its value, script will not execute.
+//*********************************************************************************************************************************************
+
+var $bug40908primaryPanacesServer = $drmServer; // this is Primary DRM server
+var $bug40908panacesAgentNodeAddressPR = $bug40908l_DB2[7][2];
+var $bug40908panacesAgentNodeAddressDR = $bug40908l_DB2[8][2];
+var $bug40908compsitePR = $locationPR;
+var $bug40908compsiteDR = $locationDR;
+var $bug40908primaryComponents = $bug40908compNamePR;
+var $bug40908remoteComponents = $bug40908compNameDR;
+var $bug40908primaryDatasets = $bug40908datasetNamePR;
+var $bug40908remoteDatasets = $bug40908datasetNameDR;
+var $bug40908primaryProtections = $bug40908sernamePR;
+var $bug40908remoteProtections = $bug40908sernameDR;
+var $bug40908mgmtHost_HP3PAR_PR =$bug40908compNamePR+' ('+$bug40908compIPPR+')';
+var $bug40908mgmtHost_HP3PAR_DR = $bug40908compNameDR+' ('+$bug40908compIPDR+')';
+var $bug40908dependentComponentNamePR = $bug40908compNamePR;
+var $bug40908dependentComponentNameDR = $bug40908compNameDR;
+var $bug40908desiredRpo = "300";
+var $bug40908rpoCompute = "300";
+var $bug40908systemTypeProtection = "HP3PAR"; // Protection Scheme type
+var $bug40908SolutionSignature = "DB2 Full Database with HP3PAR"; // Solution type
+var $bug40908systemTypeDataset = "DB2"; // database subsystem
+var $bug40908datasetType = "DB2";// database Type
+
+var $db2AgentChk = "1";
+
+var $bug40908siteControllerPRnode = "";
+var $bug40908siteControllerDRnode = "";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

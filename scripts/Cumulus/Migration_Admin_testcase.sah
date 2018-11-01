@@ -1,0 +1,103 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : Migration 
+ ** Objective : This script contains Admin Page test cases. 
+ ** AuthorName : Rajan Velayutham
+ ** Created Date : July 2015
+ ************************************************************************/
+
+_log("=================================Pre-Condition===================================","Custom1");
+
+_include("../../Library/Common/Common_Function.sah");
+_include("../../Library/Solution_Signature/Include/Common_Automation_testcase_Function.sah");
+_include("../../conf/DRMInstallation_Parameter.sah");
+_include("../../conf/Cumulus/Admin/Admin_Parameter.sah");
+_include("../../Library/Cumulus/Admin/Admin.sah");
+
+
+Login_001();
+
+_log("=================================Test========================================","Custom1");
+
+
+var $test0 = _testcase("AdminPage_001", "Admin Page Links");
+$test0.start();
+AdminPageLinks();
+$test0.end();
+
+var $test1 = _testcase("AdminPage_002", "Admin Page Sections");
+$test1.start();
+AdminPageSections();
+$test0.end();
+
+var $test2 = _testcase("AdminPage_003", "User Summary");
+$test2.start();
+UserSummary();
+$test2.end();
+
+var $test3 = _testcase("AdminPage_004", "Organization Summary");
+$test3.start();
+OrganizationSummary();
+$test3.end();
+
+var $test4 = _testcase("AdminPage_005", "Notification Summary");
+$test4.start();
+NotificationSummary();
+$test4.end();
+
+var $test5 = _testcase("AdminPage_006", "Agent Summary");
+$test5.start();
+AgentsSummary();
+$test5.end();
+
+var $test6 = _testcase("AdminPage_007", "Logs Summary");
+$test6.start();
+LogsSummary();
+$test6.end();
+
+var $test7 = _testcase("AdminPage_008", "Backup Summary");
+$test7.start();
+BackupSummary();
+$test7.end();
+
+var $test8 = _testcase("AdminPage_009", "FailOver Summary");
+$test8.start();
+FailoverSummary();
+$test8.end();
+
+var $test9 = _testcase("AdminPage_010", "System Events Summary");
+$test9.start();
+SystemEvents();
+$test9.end();
+
+/*var $test10 = _testcase("AdminPage_011", "Group Label Summary");
+$test10.start();
+GroupLabel();
+$test10.end();
+*/
+var $test11 = _testcase("AdminPage_012", "License Summary");
+$test11.start();
+LicenseSummary();
+$test11.end();
+
+/*var $test12 = _testcase("AdminPage_013", "Operational History Summary");
+$test12.start();
+OpHistorySummary();
+$test12.end();
+*/
+
+var $test13 = _testcase("AdminPage_014", "User Summary Page Verification");
+$test13.start();
+UserSummaryVerify();
+$test13.end();
+
+var $test14 = _testcase("AdminPage_015", "Agent Summary Page Verification");
+$test14.start();
+AgentSummaryVerify();
+$test14.end();
+
+
+
+_log("================================Post-Condition================================== ","Custom1");
+
+Logout_001();

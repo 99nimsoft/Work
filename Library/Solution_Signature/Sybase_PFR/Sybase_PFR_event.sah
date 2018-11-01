@@ -1,0 +1,218 @@
+
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are the part of  Sybase PFR solution generating events.
+ ** AuthorName : Govinda Mengji 
+ ** Created Date : April 2013
+ ************************************************************************/
+
+
+/****
+ *Function is for remote agent stop the Sybase agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+
+function Sybase_PFR_Local_PR_Sybase_Agent_Stop_Event() {
+	var $server = Get_Local_Agent_Event($compIPPR,$remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "SybaseAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSSybaseLogPFREvent014", "Sybase database agent is down on the primary server.", "WARNING");
+}// End of Local_PR_Sybase_Agent_Stop_Event()
+
+/**
+ *Function is for remote agent stop the Sybase agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+function Sybase_PFR_Local_DR_Sybase_Agent_Stop_Event() {
+	var $server = Get_Local_Agent_Event($compIPDR,$remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "SybaseAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSSybaseLogPFREvent005", "Sybase database agent is down on the DR server.", "WARNING");
+}// Local_DR_Sybase_Agent_Stop_Event
+
+/**
+ *Function is for remote agent start the Sybase agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+
+
+
+function Sybase_PFR_Local_PR_Sybase_Agent_Start_Event() {
+	var $server = Get_Local_Agent_Event($compIPPR,$remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "SybaseAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSSybaseLogPFREvent018", "Sybase agent on the primary server is up.", "Information");
+}// End of Local_PR_Sybase_Agent_Start_Event
+
+/**
+ *Function is for remote agent start the Sybase agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+function Sybase_PFR_Local_DR_Sybase_Agent_Start_Event() {
+	var $server = Get_Local_Agent_Event($compIPDR,$remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "SybaseAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSSybaseLogPFREvent006", "Sybase database agent is up on the DR server.", "Information");
+}// End of Local_DR_Sybase_Agent_Start_Event
+
+////PFR////////////////////////////////////////////////////////////////////////////////
+
+
+
+//////////Local SOActive
+
+
+/**
+ *Function is for Local agent stop the Sybase agent from back end for PR (Current DR)
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+
+function Sybase_PFR_Local_PR_Sybase_Agent_Stop_Event_SO_InActive() {
+	var $server = Get_Local_Agent_Event($compIPPR,$remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "SybaseAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSSybaseLogPFREvent005", "Sybase database agent is down on the DR server.", "WARNING");
+}// End of Local_PR_Sybase_Agent_Stop_Event()
+
+/**
+ *Function is for Local agent stop the Sybase agent from back end for DR (Current PR)
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+function Sybase_PFR_Local_DR_Sybase_Agent_Stop_Event_SO_InActive() {
+	var $server = Get_Local_Agent_Event($compIPDR, $remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR,"SybaseAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSSybaseLogPFREvent014", "Sybase database agent is down on the primary server.", "WARNING");
+	
+	
+}// Local_DR_Sybase_Agent_Stop_Event
+
+/**
+ *Function is for Local agent start the Sybase agent from back end for PR (Current DR)
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+function Sybase_PFR_Local_PR_Sybase_Agent_Start_Event_SO_InActive() {
+	var $server = Get_Local_Agent_Event($compIPPR,$remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "SybaseAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSSybaseLogPFREvent006", "Sybase database agent is up on the DR server.", "Information");
+}// End of Local_PR_Sybase_Agent_Start_Event
+
+/**
+ *Function is for Local agent start the Sybase agent from back end for DR (Current PR)
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+function Sybase_PFR_Local_DR_Sybase_Agent_Start_Event_SO_InActive() {
+	var $server = Get_Local_Agent_Event($compIPDR,$remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "SybaseAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSSybaseLogPFREvent018", "Sybase agent on the primary server is up.", "Information");
+	
+}// End of Local_DR_Sybase_Agent_Start_Event
+
+
+////PFR Local
+
+////PFR////////////////////////////////////////////////////////////////////////////////
+
+
+
+/**
+ *Function is for Local agent stop the PFR agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+
+function Sybase_PFR_Local_PR_PFR_Agent_Stop_Event() {
+	var $server = Get_Local_Agent_Event($compIPPR,$remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "PFRAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSSybaseLogPFREvent019", "PFR agent on primary server is down.", "WARNING");
+}// End of Local_PR_Sybase_Agent_Stop_Event()
+
+/**
+ *Function is for Local agent stop the Sybase agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+function Sybase_PFR_Local_DR_PFR_Agent_Stop_Event() {
+	var $server = Get_Local_Agent_Event($compIPDR,$remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "PFRAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSSybaseLogPFREvent020", "PFR agent on DR server is down.", "WARNING");
+}// Local_DR_Sybase_Agent_Stop_Event
+
+/**
+ *Function is for Local agent start the Sybase agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+function Sybase_PFR_Local_PR_PFR_Agent_Start_Event() {
+	var $server = Get_Local_Agent_Event($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR,"PFRAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSSybaseLogPFREvent021", "PFR agent on primary server is up.", "Information");
+}// End of Local_PR_Sybase_Agent_Start_Event
+
+/**
+ *Function is for Local agent start the Sybase agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+function Sybase_PFR_Local_DR_PFR_Agent_Start_Event() {
+	var $server = Get_Local_Agent_Event($compIPDR,$remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "PFRAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSSybaseLogPFREvent022", "PFR agent on the DR server is up.", "Information");
+}// End of Remote_DR_Sybase_Agent_Start_Event
+
+
+///PFR SOInActive
+
+
+/**
+ *Function is for Local agent stop the PFR agent from back end for PR (Current DR)
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+
+function Sybase_PFR_Local_PR_PFR_Agent_Stop_Event_SO_InActive() {
+	var $server = Get_Local_Agent_Event($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR,"PFRAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSSybaseLogPFREvent020", "PFR agent on DR server is down.", "WARNING");
+}// End of Remote_PR_Sybase_Agent_Stop_Event()
+
+/**
+ *Function is for Local agent stop the Sybase agent from back end for DR (Current PR)
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+function Sybase_PFR_Local_DR_PFR_Agent_Stop_Event_SO_InActive() {
+	var $server = Get_Local_Agent_Event($compIPDR, $remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR,"PFRAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSSybaseLogPFREvent019", "PFR agent on primary server is down.", "WARNING");
+	
+	
+}// Local_DR_Sybase_Agent_Stop_Event
+
+/**
+ *Function is for Local agent start the PFR agent from back end for PR (Current DR)
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+function Sybase_PFR_Local_PR_PFR_Agent_Start_Event_SO_InActive() {
+	var $server = Get_Local_Agent_Event($compIPPR,$remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "PFRAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSSybaseLogPFREvent022", "PFR agent on the DR server is up.", "Information");
+}// End of Remote_PR_oracle_Agent_Start_Event
+
+/**
+ *Function is for Local agent start the PFR agent from back end for DR (Current PR)
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+function Sybase_PFR_Local_DR_PFR_Agent_Start_Event_SO_InActive() {
+	var $server = Get_Local_Agent_Event($compIPDR,$remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "PFRAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSSybaseLogPFREvent021", "PFR agent on primary server is up.", "Information");
+	
+}// End of Local_DR_Sybase_Agent_Start_Event
+
+

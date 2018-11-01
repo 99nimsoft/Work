@@ -1,0 +1,438 @@
+        
+function add_Start_Stop_Tclfiles(){
+	try{
+		Create_TCL_PR();
+		Create_TCL_DR();
+	}catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0000(),Adding  Ticle  files  to  the  Agent Path");
+		_fail("Tickle file not created succesfully.So that stopping execution.");
+	}
+}
+
+
+function  add_RepInfo_Tclfile(){
+	try{
+		//Create_TicklePath_PR();
+		//Create_TicklePath_DR();
+		RepInfo_Tclfile_PR();
+		RepInfo_Tclfile_DR();
+	}catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0000(),Adding  Ticle  files  to  the  Agent Path");
+		_fail("Tickle file not created succesfully.So that stopping execution.");
+	}
+	
+}
+
+
+
+function Change_ContinuityStatus_Group_SO_0020(){
+	try {
+	Change_ContinuityStatus_Group($groupName, "Switchover Inactive");
+	} catch ($e) { 
+	  _log($e.toString(),"Custom1");
+	_log("for test Case ID: Change_ContinuityStatus_Group Function: Change_ContinuityStatus_Group_SO(),execution got failed.kindly check the log for more details");
+	_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+	}
+	}
+
+
+function  Add_BP_RepInfoWorkflw_PR(){
+	
+	try {
+		Add_RepInfoTCL_BP_RepInfoWorkflw_Sybase_HP3PAR($compNamePR,$pathofTClPR);
+		} catch ($e) { 
+		  _log($e.toString(),"Custom1");
+		_log("for test Case ID: Change_ContinuityStatus_Group Function: Change_ContinuityStatus_Group_SO(),execution got failed.kindly check the log for more details");
+		_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+
+
+}
+
+
+function  Add_BP_RepInfoWorkflw_DR(){
+	try {
+		Add_RepInfoTCL_BP_RepInfoWorkflw_Sybase_HP3PAR($compNameDR,$pathofTClDR);
+		} catch ($e) { 
+		  _log($e.toString(),"Custom1");
+		_log("for test Case ID: Change_ContinuityStatus_Group Function: Change_ContinuityStatus_Group_SO(),execution got failed.kindly check the log for more details");
+		_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+
+
+	}
+
+//Edit_Replication_WorkflowTickle_PR()  
+function Edit_Replication_WorkflowTcl_PR_0013(){
+	//edit_Replication_TickleFile_PR();
+	//edit_Replication_TickleFile_DR();
+	
+	try {
+		edit_Replication_Tcl_PR();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0003(),Function: Create_Site_PR or Create_Site_DR ,execution got failed.kindly check the log for more details");
+		_fail("site not created succesfully.So that stopping execution.");
+	}
+	
+	
+	try {
+		Datalag_RepStatus_RepInfoTCL_Unknown();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0003(),Function: Create_Site_PR or Create_Site_DR ,execution got failed.kindly check the log for more details");
+		_fail("site not created succesfully.So that stopping execution.");
+	}
+	
+}
+
+//Edit_Replication_WorkflowTickle_PR();
+//Edit_Replication_WorkflowTickle_PR_0013();
+function Edit_Replication_WorkflowTickle_DR_0021(){
+	//edit_Replication_TickleFile_PR();
+	//edit_Replication_TickleFile_DR();
+	
+	try {
+		edit_Replication_Tcl_DR();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0003(),Function: Create_Site_PR or Create_Site_DR ,execution got failed.kindly check the log for more details");
+		_fail("site not created succesfully.So that stopping execution.");
+	}
+	
+	
+	try {
+		Datalag_RepStatus_RepInfoTCL_Unknown();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0003(),Function: Create_Site_PR or Create_Site_DR ,execution got failed.kindly check the log for more details");
+		_fail("site not created succesfully.So that stopping execution.");
+	}
+	
+}
+//HereSybase_HP3PAR_Active_RepInfo_State_Event()
+function Sybase_EventVerification_RepInfo_PR(){
+	//edit_Replication_TickleFile_PR();
+	//edit_Replication_TickleFile_DR();
+	
+	try {
+		Event_Verification_RepInfo_InActive_State_PR();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0003(),Function: Create_Site_PR or Create_Site_DR ,execution got failed.kindly check the log for more details");
+		_fail("site not created succesfully.So that stopping execution.");
+	}
+	
+	
+}
+
+
+function Sybase_Stop_Replication_Workflow_PR_0014(){
+	//edit_Replication_TickleFile_PR();
+	//edit_Replication_TickleFile_DR();
+	
+	try {
+		Stop_Replication_Button_INACTIVE();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0003(),Function: Create_Site_PR or Create_Site_DR ,execution got failed.kindly check the log for more details");
+		_fail("site not created succesfully.So that stopping execution.");
+	}
+	
+	
+}
+
+
+function Sybase_Start_Replication_Workflow_PR_0015(){
+	//edit_Replication_TickleFile_PR();
+	//edit_Replication_TickleFile_DR();
+	
+	try {
+		//Sybase_Verify_Start_Button_PR();
+		
+		Start_Replication_Button_ACTIVE();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0003(),Function: Create_Site_PR or Create_Site_DR ,execution got failed.kindly check the log for more details");
+		_fail("site not created succesfully.So that stopping execution.");
+	}
+	
+	
+}
+function Sybase_Stop_Replication_Workflow_DR_0022(){
+	//edit_Replication_TickleFile_PR();
+	//edit_Replication_TickleFile_DR();
+	
+	try {
+		Stop_Replication_Button_INACTIVE();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0003(),Function: Create_Site_PR or Create_Site_DR ,execution got failed.kindly check the log for more details");
+		_fail("site not created succesfully.So that stopping execution.");
+	}
+	
+	
+}
+//Sybase_Start_Replication_Workflow_DR_0023()
+
+function Sybase_Start_Replication_Workflow_DR_0023(){
+	//edit_Replication_TickleFile_PR();
+	//edit_Replication_TickleFile_DR();
+	
+	try {
+		Start_Replication_Button_ACTIVE();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0003(),Function: Create_Site_PR or Create_Site_DR ,execution got failed.kindly check the log for more details");
+		_fail("site not created succesfully.So that stopping execution.");
+	}
+	
+	
+}
+
+
+function  Status_InActive_ProtectionSchema_PR_0016(){ 
+	
+	try {
+		Verify_ProtectionSchema_Status_InactivePR();
+		
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0003(),Function: Create_Site_PR or Create_Site_DR ,execution got failed.kindly check the log for more details");
+		_fail("site not created succesfully.So that stopping execution.");
+	}
+
+}
+
+function Status_Active_ProtectionSchema_PR_0029(){
+	try {
+		Verify_ProtectionSchema_Status_ActivePR();
+		
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0003(),Function: Create_Site_PR or Create_Site_DR ,execution got failed.kindly check the log for more details");
+		_fail("site not created succesfully.So that stopping execution.");
+	}
+}
+
+function  Status_InActive_ProtectionSchema_DR_0024(){ 
+	
+	try {
+		
+		Verify_ProtectionSchema_Status_InactiveDR();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0003(),Function: Create_Site_PR or Create_Site_DR ,execution got failed.kindly check the log for more details");
+		_fail("site not created succesfully.So that stopping execution.");
+	}
+
+}
+
+
+function  Status_UnKnown_ProtectionSchema_0017(){ 
+	try {
+		Verify_ProtectionSchema_Status_UnknownPR();	
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0003(),Function: Create_Site_PR or Create_Site_DR ,execution got failed.kindly check the log for more details");
+		_fail("site not created succesfully.So that stopping execution.");
+	}
+
+}
+
+         
+function  Status_UnKnown_ProtectionSchema_0025(){ 
+	try {
+		Verify_ProtectionSchema_Status_UnKnownDR();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0003(),Function: Create_Site_PR or Create_Site_DR ,execution got failed.kindly check the log for more details");
+		_fail("site not created succesfully.So that stopping execution.");
+	}
+
+}
+
+function State_Inactive_EventVerification_0018(){
+	try {
+		Event_Verification_InActive_State_PR();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0003(),Function: Create_Site_PR or Create_Site_DR ,execution got failed.kindly check the log for more details");
+		_fail("site not created succesfully.So that stopping execution.");
+	}
+}
+
+function State_Unknown_EventVerification_0019(){
+	try {
+		Event_Verification_Unknown_State_PR();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0003(),Function: Create_Site_PR or Create_Site_DR ,execution got failed.kindly check the log for more details");
+		_fail("site not created succesfully.So that stopping execution.");
+	}
+}
+
+function State_Inactive_EventVerification_0026(){
+	try {
+		Event_Verification_InActive_State_DR();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0003(),Function: Create_Site_PR or Create_Site_DR ,execution got failed.kindly check the log for more details");
+		_fail("site not created succesfully.So that stopping execution.");
+	}
+}
+
+function State_Unknown_EventVerification_0027(){
+	try {
+		Event_Verification_Unknown_State_DR();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0003(),Function: Create_Site_PR or Create_Site_DR ,execution got failed.kindly check the log for more details");
+		_fail("site not created succesfully.So that stopping execution.");
+	}
+}
+
+function Sybase_FullDB_HP3PAR_Component_Local_Discovery_0002() {
+	try {
+		Create_Local_ComponentPR();
+		Create_Local_ComponentDR();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Component_Local_Discovery_0002(),Function: Create_Local_ComponentPR or Create_Local_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("component not created succesfully.So that stopping execution.");
+	}
+}
+
+function Sybase_FullDB_HP3PAR_Dataset_Discovery_0003(){
+	try {
+		Create_Sybase_Dataset_PR();
+		Create_Sybase_Dataset_DR();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Sybase_PFR_Dataset_Discovery_0007(),Function: Create_Sybase_PFR_Dataset_PR or Create_Sybase_PFR_Dataset_DR ,execution got failed.kindly check the log for more details");
+		_fail("dataset not created succesfully.So that stopping execution.");
+	}
+
+}
+
+function Sybase_FullDB_HP3PAR_Auto_DatasetDiscovery0004() {
+	try {
+		Verify_Sybase_Dataset_Details_PR();
+		Verify_Sybase_Dataset_Details_DR();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Sybase_PFR_Auto_DatasetDiscovery0009(),Function: Verify_Dataset_Details_PR or Verify_Dataset_Details_DR,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Sybase_HP3PAR_Dataset_status_0011(){
+	try {
+		Verify_Dataset_Status_PR_Sybase();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Sybase_PFR_Dataset_status_0011(),Function: Verify_Dataset_Status_PR ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		Verify_Dataset_Status_DR_Sybase();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Sybase_PFR_Dataset_status_0011(),Function: Verify_Dataset_Status_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+function Sybase_FullDB_HP3PAR_Protectionscheme_Discovery_0005() {
+	try {
+		Create_Sybase_HP3PAR_ProtectionSchemePR();
+		Create_Sybase_HP3PAR_ProtectionSchemeDR();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Sybase_PFR_Protectionscheme_Discovery_0018(),Function: Create_Sybase_PFR_ProtectionSchemePR or Create_Sybase_PFR_ProtectionSchemeDR ,execution got failed.kindly check the log for more details");
+		_fail("Protection Schemes not created succesfully.So that stopping execution.");
+	}
+}
+
+
+function Sybase_HP3PAR_GroupCreation_0006() {
+	try {
+		Create_Sybase_HP3PAR_Group();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Sybase_PFR_GroupCreation_0022(),Function: Sybase_FG_DG_Group_Creation ,execution got failed.kindly check the log for more details");
+		_fail("Group not created succesfully.So that stopping execution.");
+	}
+
+}
+
+function Sybase_HP3PAR_Move_Group_Manage_0007() {
+	try {
+		Move_To_Manage_Group($groupName);
+		_wait(100);
+		Change_ContinuityStatus_Group($groupName, "Normal Inactive");
+		_wait(100);
+	//	Execute_NFC($groupName, "NormalFullCopy" ); 
+		_wait(100);
+		//Waitfor_TestWF_Completion_NFC_sybase($groupName, "NormalFullCopy");
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Move_Group_Manage_0006(),Function: Move_To_Manage_Group ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+}
+
+
+function Sybase_HP3_Post_Group_Creation_0009() {
+	try {
+		Post_Group_Creation();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Post_Group_Creation_0010(),Function: Post_Group_Creation ,execution got failed.kindly check the log for more details");
+	}
+}
+
+//Sybase_HP3PAR_Component_Status_0010()
+function Sybase_HP3PAR_Component_Status_0010() {
+	try {
+		
+		if($systemType == "Linux"){
+			Verify_Component_Status_PR("Local");
+			Verify_Component_Status_DR("Local");
+		}
+		else {
+		Verify_Component_Status_PR_Solaris();
+		Verify_Component_Status_DR_Solaris();
+		}
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Component_Status_0001(),Function: Verify_Component_Status_PR or Verify_Component_Status_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+//Sybase_PFR_Contiunity_Status_0002();
+	//Sybase_HP3PAR_Contiunity_Status_0012()
+
+function Sybase_HP3PAR_Contiunity_Status_0012(){
+	try {
+		Verify_Continuitystatus_Before_NC();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Contiunity_Status_0002(),Function: Verify_Continuitystatus_Before_NC ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+function DatalagRepStateUpdted_PR_0028(){
+	try{
+		Sybase_Datalag_Updated_Inactive_PR();
+	}
+	catch($e){
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		  _log("Datalag update or Deviation Event raising got failed, kindly check the logs for more details");
+	}
+}
+
+
+
+

@@ -1,0 +1,12 @@
+@ECHO ON
+SET SAHI_HOME=..\..
+SET SAHI_USERDATA_DIR=..
+SET SAHI_EXT_CLASS_PATH="../extlib/*"
+SET SAHI_EXT_CLASS_PATH=%SAHI_EXT_CLASS_PATH%;%SAHI_HOME%\extlib\Drivers\mysql-connector-java-5.1.20-bin.jar;%SAHI_HOME%\extlib\Drivers\sqljdbc4.jar
+SET SAHI_EXT_CLASS_PATH=%SAHI_EXT_CLASS_PATH%;%SAHI_HOME%\extlib\Drivers\ojdbc6.jar;%SAHI_HOME%\extlib\Drivers\db2jcc_license_cu.jar
+SET SAHI_EXT_CLASS_PATH=%SAHI_EXT_CLASS_PATH%;%SAHI_HOME%\extlib\Drivers\PanacesServer.jar;%SAHI_HOME%\extlib\Drivers\db2jcc.jar
+SET SAHI_EXT_CLASS_PATH=%SAHI_EXT_CLASS_PATH%;%SAHI_HOME%\extlib\Drivers\enchanter-core-0.6.jar;%SAHI_HOME%\extlib\Drivers\ganymed-ssh2-build210.jar
+SET SAHI_EXT_CLASS_PATH=%SAHI_EXT_CLASS_PATH%;%SAHI_HOME%\extlib\Drivers\mail.jar;%SAHI_HOME%\lib\ant-sahi.jar;
+SET SAHI_EXT_CLASS_PATH=%SAHI_EXT_CLASS_PATH%;%SAHI_HOME%\extlib\Drivers\jconn2.jar
+CALL setjava.bat
+CALL %SAHI_HOME%\bin\dashboard.bat

@@ -1,0 +1,121 @@
+
+var $l_drmInstallInputs = _readExcelFile("../conf/DRM_Inputs.xls","Install");  //To read the inputs from the drm_inputs excel file.
+
+var $BrowserLang= $l_drmInstallInputs[21][4];
+var $EAMSROOT = $l_drmInstallInputs[16][4]; // This path of EAMSROOT
+var $tomcatHome = $l_drmInstallInputs[20][4]; // by default TOMCAT_HOME ="/opt/jboss-ews-2.0/tomcat7"
+// This user Input required to Login the DRM Server from backend
+var $drmServer = $l_drmInstallInputs[4][4];//DRM server IP
+var $drmUserName = $l_drmInstallInputs[5][4];// DRM server user name
+var $drmPassword = $l_drmInstallInputs[6][4];// DRM server password
+
+var $g_isDailyBuild = $l_drmInstallInputs[13][4];
+var $securedUrl=$l_drmInstallInputs[23][4]; // is secured https url
+var $urlPortNo=$l_drmInstallInputs[24][4]; // http port no
+var $osHardening=$l_drmInstallInputs[25][4]; // DRM OS hardened
+var $gpl_jarReplaceReq = $l_drmInstallInputs[26][4]; // GPL and Thirdparty jar replacement 
+var $withSiteController = $l_drmInstallInputs[28][4];  //Is Solution Sanity With SiteCotroller if yes then provide Sitecontroller PR DR Ips
+var $siteControllerPRnode = $l_drmInstallInputs[28][5]; 
+var $siteControllerDRnode = $l_drmInstallInputs[28][6];
+
+//For Sitecontroller details
+var $siteControllerPRUser = $l_drmInstallInputs[39][4]; 
+var $siteControllerPRPwd = $l_drmInstallInputs[39][5];
+var $siteControllerPRPath = $l_drmInstallInputs[39][6];
+var $siteControllerDRUser = $l_drmInstallInputs[40][4];
+var $siteControllerDRPwd = $l_drmInstallInputs[40][5];
+var $siteControllerDRPath = $l_drmInstallInputs[40][6];
+var $siteControllerPRName = $l_drmInstallInputs[39][7];
+var $siteControllerDRName = $l_drmInstallInputs[40][7];
+
+// Is RO GUI login pswd GDPR compliance 15 char?
+var $g_isGDPRCompliancepswd = $l_drmInstallInputs[42][4]; 
+// Is RO with VMprotection Flag enable?
+var $g_vmProtectionFlag = $l_drmInstallInputs[43][4]; 
+
+
+if($g_isDailyBuild == "Y"){
+$revisionNo = _readFile("../conf/latest_rev");
+$revisionNo = $revisionNo.replace(/\n/g,"");
+var $g_buildUrl  = "http://192.168.1.201:8080/jenkins/job/Jasper_Yellow_Nightly_T1/ws/Jasper_Yellow_T1_SP2"+ $revisionNo +"/panacesDVDVJasper_Yellow_T1_SP2" + $revisionNo + "/";
+var $g_licenseZipPath = "http://192.168.1.201:8080/jenkins/job/Jasper_Yellow_Nightly_T1/ws/Jasper_Yellow_T1_SP2"+$revisionNo+"/panacesDVDVJasper_Yellow_T1_SP2"+$revisionNo+"/installroot/opt/panaces/license/LicenseGen.zip";
+
+_setGlobal("newBuildName",$g_buildUrl);
+_setGlobal("EAMSROOT = "+$EAMSROOT);
+_setGlobal("DRM Server = "+$drmServer);
+_setGlobal("TOMCAT HOME= "+$tomcatHome);
+_setGlobal("isRO_GDPR_Compliance= "+$g_isGDPRCompliancepswd);
+
+_writeFile($revisionNo, "../conf/RevisionNo.txt", true);
+} else {
+	var $g_licenseZipPath = "http://172.168.20.43/jenkins/job/DRM_Automation/ws/Automation/License/LicenseGen.zip";
+	var $g_buildUrl = $l_drmInstallInputs[12][4];
+	_setGlobal("newBuildName",$g_buildUrl);
+	_setGlobal("EAMSROOT = "+$EAMSROOT);
+	_setGlobal("DRM Server = "+$drmServer);
+	_setGlobal("TOMCAT HOME= "+$tomcatHome);
+	_setGlobal("isRO_GDPR_Compliance= "+$g_isGDPRCompliancepswd);
+}
+
+var $installedDRMBuildPath = $l_drmInstallInputs[8][4]; // This is the Path where user has install the server and path of bin directory
+
+var $DRMbuild = $l_drmInstallInputs[11][4]; // This is the path where build will copy
+
+var $DRMbuildAgent = $DRMbuild + "/DRM_Build/Agents/";
+var $DRMbuildServer = $DRMbuild + "/DRM_Build/Server/";
+
+var $username = "drmadmin";//$l_PostgresSR[3][2]; // DRM server GUI user name e.g. "swati"
+
+if($g_isGDPRCompliancepswd =="yes" || $g_isGDPRCompliancepswd =="Yes" || $g_isGDPRCompliancepswd =="YES"){
+	
+	var $password = "Orchestration123$"; // RO GDPR server GUI pwd
+}
+else{
+	var $password = "Drmadmin123$"; // RO server GUI pwd
+}
+
+$oraclePort = "1521";
+// This user Input required to update the PanacesServerInstaller.properties file which is required for installation of drm in silent mode
+
+
+var $refreshExistingSchema = $l_drmInstallInputs[17][4]; //This value is required for refreshing the existing schema by default is 0.O for no and 1 for yes
+var $userManagementMode = $l_drmInstallInputs[18][4]; // By default USER_MANAGEMENT_MODE = "Basic"
+var $advancedServerType = $l_drmInstallInputs[19][4]; // By default ADVANCED_SERVER_TYPE = "AD"
+
+
+var $licenseScriptPath = $DRMbuild + "/DRM_Build/License/automaticLicenseGen.sh";//$l_drmInstallInputs[20][4];
+var $zipPath = $DRMbuild + "/DRM_Build/License/";
+
+var $SecondaryPanacesServer = $l_drmInstallInputs[7][4]; //This is Secondary DRM server,Primary and secondary both are same then don't change it.Else use "172.168.20.176"
+
+var $primaryPanacesServer = $drmServer; //this is Primary DRM server
+
+$JAVA_HOME = $EAMSROOT + "/jdk1.8.0_131"; //Java path of drm server
+
+$g_sahiBuildUrl = "http://172.168.20.43/jenkins/job/DRM_Automation/ws/DRM_Automation_Pumice/";
+
+$PFRfilePath = "/SanoviDRM/SFR/PFRInstaller.properties";
+
+$agentfilePath  = "/SanoviDRM/Agents/PanacesAgentsInstaller.properties";
+
+var $systemTypeAgent = "Linux";
+
+var $subscriber = "Default";
+
+var $packagename = "DRM_Automation_CrossPlatform";
+
+var $SAHI_HOME = Get_Sahi_Home_Path();
+
+var $userPassword = "Sanovi0123456789$";
+
+
+
+
+
+
+
+
+
+
+
+

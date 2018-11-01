@@ -1,0 +1,727 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the common functions which are the part of SFR RAL( Recovery automation library). 
+ **@AuthorName : Anantha Sakthi
+ ** Created Date : July 2015
+ ************************************************************************/
+
+/**
+ * Function is used to add the custom action for command execution with sudo and dry run option. 
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * @Modified By:Debabrat Sahu
+ */
+function AddCustomActionWithCommand($compnm,$compnmval,$comptyp,$comptypval,$compName1,$commandToExecute,$absolutePathcommand,$logPath,$timeOut,$sudo,$sudoUserName)
+{
+	    
+	_doubleClick(_div($CustomWorkflow));
+	_click(_link($ActionProperties));
+	if($compName1==0){
+	_setSelected(_select($serverName), $compName1);
+	_click(_select($serverName));
+	}else{
+		_setSelected(_select($serverName), $compName1);
+	}
+
+	_wait(3000);
+	_click(_radio($command));
+	if($sudo == "Y"){
+		_check(_checkbox($isSudo));
+		_setValue(_textbox($sudousrname), $sudoUserName);
+	} else {
+		_uncheck(_checkbox($isSudo));
+	}
+
+	_setValue(_textbox($executecommandPath), $commandToExecute);
+	_setValue(_textbox($commandAbsolutePath), $absolutePathcommand);
+	_setValue(_textbox($serverLocation), $logPath);
+	_setValue(_textbox($timeout), $timeOut);
+	_click(_button("close", _near(_heading4($Custom))));
+   
+    if($compName1 == 0){
+    //started 	
+    	//_click(_image($dragpng));
+		_setValue(_textbox($inputKey),$comptyp);
+		_assertEqual($comptyp, _getValue(_textbox($inputKey)));
+		
+		_setValue(_textbox($inputValue),$comptypval);
+		_assertEqual($comptypval, _getValue(_textbox($inputValue)));
+		_click(_link($AddkeyValue));
+		_wait(1000);
+		_setValue(_textbox($inputKey), $compnm);
+		_assertEqual($compnm, _getValue(_textbox($inputKey)));
+		_setValue(_textbox($inputValue),$compnmval);
+		_assertEqual($compnmval, _getValue(_textbox($inputValue)));
+		_click(_link($AddkeyValue));		
+    }
+    _wait(2000);
+    _click(_link($SaveNow));
+    
+}
+
+
+
+function customAction_commandCategory($os_Type,$command,$dirPath,$compVal,$serIP,$serUsernm,$serPassword,$compnm,$compnmval,$comptyp,$comptypval){
+
+	createWorkFlow($groupName,$WorkflowName);
+	navigateDrillListing($groupName);
+	$versionNo = _getText(_span(0, _rightOf(_link($WorkflowName))));
+	
+	if("Version: 0" == $versionNo){		
+		
+		NavigateToDrillWorkflowEditor($groupName,$workflowName);
+		AddRalIntoLayout($ralString,$ralCategory,$ralName);
+	} else {
+		NavigateToDrillWorkflowEditor($groupName,$workflowName);
+	}	
+
+		AddCustomActionWithCommand($compnm,$compnmval,$comptyp,$comptypval,$compVal,$dirPath,$command,"","150","","");
+		publishWorkflow();
+		executeWorkflow($groupName,$WorkflowName);
+		Drills_Workflow_Execution_Status($WorkflowName,$ralName);
+		//ValidateTheWorkflowListingPage($WorkflowName);
+		ValidateTheBackendServer($command +" "+$dirPath,$serIP,$serUsernm,$serPassword,$os_Type);
+		
+}
+
+
+
+
+
+
+
+/**
+ * Function is used to add the custom action for command execution with sudo and dry run option. 
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+function AddCustomActionWithScript($compName,$scriptToExecute,$absolutePathScript,$logPath,$timeOut,$sudo,$sudoUserName){
+	_doubleClick(_div($CustomWorkflow));
+	_click(_link($ActionProperties));
+	_setSelected(_select($serverName), $compName);
+	_setValue(_radio($command), "true");
+	
+	if($sudo == "Y"){
+		_check(_checkbox($isSudo));
+		_setValue(_textbox($sudousrname), $sudoUserName);
+	}
+
+	_setValue(_textbox($executecommandPath), $scriptToExecute);
+	_setValue(_textbox($commandAbsolutePath), $absolutePathScript);
+	_setValue(_textbox($serverLocation), $logPath);
+	_setValue(_textbox($timeout), $timeOut);
+	
+	 _click(_button("close", _near(_heading4($Custom))));
+    _click(_span($SaveNow));
+	
+}
+
+/**
+ * Function is used to add the custom action for command execution with sudo and dry run option. 
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+function AddCustomActionWithTCL($compName,$tclToExecute,$absolutePathTcl,$logPath,$timeOut,$sudo,$sudoUserName){
+	AddRalIntoLayout("work","Workflow","Custom");
+	
+	_doubleClick(_span($Workflow4));
+	_click(_link($ActionProperties));
+	_setSelected(_select($serverName), "Win_67");
+	_setValue(_radio($command), "true");
+	
+	if($sudo == "Y"){
+		_check(_checkbox($isSudo));
+		_setValue(_textbox($sudousrname), $sudoUserName);
+	}
+
+	_setValue(_textbox($executecommandPath), $tclToExecute);
+	_setValue(_textbox($commandAbsolutePath), $absolutePathTcl);
+	_setValue(_textbox($serverLocation), $logPath);
+	_setValue(_textbox($timeout), $timeOut);
+	
+	 _click(_button("close", _near(_heading4($Custom))));
+    _click(_span($SaveNow));
+	
+}
+
+
+
+
+/**
+ * Function is used to add the custom action for script execution
+ * 
+ * @param : $ralName, $compname, $workflowName, $cmdScriptPath
+ * @return: null
+ * @Author: Padmavathi
+ * 
+ */
+function Edit_CustomAction_ScriptDetails($ralName, $PRCompNmame, $WorkflowName, $cmdScriptPath){
+	NavigateToDrillWorkflowEditor($groupName,$workflowName);
+	_click(_div($CustomWorkflow));
+	_click(_paragraph("text_ellipsis"));
+	_click(_button($infoBtn));
+	_click(_link($ActionProperties));
+	_setSelected(_select($serverName), $PRCompNmame);
+	_wait(3000);
+	_click(_radio($script));
+	_setValue(_textbox($commandAbsolutePath), $cmdScriptPath);
+	_click(_button("close", _near(_heading4($Custom))));
+	_wait(2000);
+    _click(_link($SaveNow));
+	_click(_link($Next));
+	_click(_div($PublishWorkflow));
+	}
+	
+	
+/**
+ * Function is used to add the custom action for script execution with Sudo on Linux
+ * @param : $ralName, $compname, $workflowName, $sudo, $sudoUserName, $cmdScriptPath
+ * @return: null
+ * @Author: Padmavathi
+ * 
+ */
+function Edit_CustomAction_ScriptDetails_Sudo($ralName, $serverName, $WorkflowName, $sudo, $sudoUserName, $cmdScriptPath){
+	NavigateToDrillWorkflowEditor($groupName,$workflowName);
+	/*_click(_div($CustomWorkflow));
+	_click(_paragraph($textellipsis));
+	_click(_button($infoBtn));
+	_click(_link($ActionProperties));*/
+	_doubleClick(_div($CustomWorkflow));
+	_click(_link($ActionProperties));
+	var $compName = 0;
+	_setSelected(_select($serverName), $compName);
+	_click(_select($serverName));
+	_setSelected(_select($serverName), $serverName);
+	//_wait(2000);
+	
+	_wait(3000);
+	_click(_radio($script));
+		if($sudo == "Y"){
+	    _check(_checkbox($isSudo));
+		_setValue(_textbox($sudousrname), $sudoUserName);
+
+	}else{
+		_uncheck(_checkbox($isSudo));
+
+	}
+	_setValue(_textbox($commandAbsolutePath), $cmdScriptPath);
+	_click(_button("close", _near(_heading4($Custom))));
+	_wait(2000);
+    _click(_link($SaveNow));
+	_click(_link($Next));
+	_click(_div($PublishWorkflow));
+	}
+	
+
+
+/**
+ * Function is used to add the custom action for script execution with KV values on Linux
+ * @param : $WorkflowName, $cmdScriptPath,
+		    $customActionCompTypeKey, $customActionCompTypeValue, $customActionCompNameKey, $customActionCompNameValue
+ * @return: null
+ * @Author: Padmavathi
+ * 
+ */  
+
+function Edit_CustomAction_ScriptDetails_KV($WorkflowName, $cmdScriptPath,
+		$customActionCompTypeKey, $customActionCompTypeValue, $customActionCompNameKey, $customActionCompNameValue) {
+
+	_doubleClick(_div("Custom Workflow"));
+	_click(_link($ActionProperties));
+	var $compName = 0;
+	_setSelected(_select($serverName), $compName);
+	_click(_select($serverName));
+	_wait(3000);
+	_click(_radio($script));
+	_setValue(_textbox($commandAbsolutePath), $cmdScriptPath);
+	_wait(1000);
+	_click(_button("close", _near(_heading4($Custom))));
+	_wait(2000);
+	_click(_link($SaveNow));
+//	_click(_image($dragpng));
+
+	var $compTypeKey = _exists(_span("glyphicon glyphicon-trash pull-right col-sm-1 cursorPointer marTopMinus10", _near(_span("/CUSTOM_ACTION_COMPONENT_TYPE=.*/"))));
+    if($compTypeKey = "true"){
+     _click(_span("glyphicon glyphicon-trash pull-right col-sm-1 cursorPointer marTopMinus10", _near(_span("/CUSTOM_ACTION_COMPONENT_TYPE=.*/"))));
+    _log("CUSTOM_ACTION_COMPONENT_TYPE Key-Value deleted successfully");
+     _wait(1000);
+     _click(_image("drag.png"));
+   }
+else{
+_click(_image("drag.png"));
+}
+_click(_image("drag.png"));
+_wait(1000);
+var $compNameKey = _exists(_span("glyphicon glyphicon-trash pull-right col-sm-1 cursorPointer marTopMinus10", _near(_span("/CUSTOM_ACTION_COMPONENT_NAME=.*/"))));
+if($compNameKey = "true"){
+_click(_span("glyphicon glyphicon-trash pull-right col-sm-1 cursorPointer marTopMinus10", _near(_span("/CUSTOM_ACTION_COMPONENT_NAME=.*/"))));    
+_wait(1000);
+_log("CUSTOM_ACTION_COMPONENT_NAME Key-Value deleted successfully");
+_click(_image("drag.png"));
+}else{
+_click(_image("drag.png"));
+}
+_click(_image("drag.png"));
+	_setValue(_textbox($inputKey), $customActionCompTypeKey);
+	_assertEqual($customActionCompTypeKey, _getValue(_textbox($inputKey)));
+	_setValue(_textbox($inputValue), $customActionCompTypeValue);
+	_click(_link($AddkeyValue));
+	_wait(2000)
+	_setValue(_textbox($inputKey), $customActionCompNameKey);
+	_assertEqual($customActionCompNameKey, _getValue(_textbox($inputKey)));
+	_setValue(_textbox($inputValue), $customActionCompNameValue);
+	_click(_link($AddkeyValue));
+	_wait(2000)
+	_click(_link($SaveNow));
+	_click(_link($Next));
+	_click(_div($PublishWorkflow));
+}	
+	
+
+
+/**
+ * Function is used to add the custom action for script execution  on Linux
+ * 
+ * @param : $command,$cmdScriptPath, $PRCompIP, $PRCompUsername, $PRCompPwd
+ * @return: null
+ * @Author: Padmavathi
+ * 
+ */
+function Execute_CustomAction_Script(){
+	CreateBackendScript($command,$cmdScriptPath, $PRCompIP, $PRCompUsername, $PRCompPwd);
+   	createWorkFlow($groupName,$WorkflowName);
+   	navigateDrillListing($groupName);
+    $versionNo = _getText(_span(0, _rightOf(_link($WorkflowName))));
+    if("Version: 0" == $versionNo){				
+    	NavigateToDrillWorkflowEditor($groupName,$workflowName);
+		AddRalIntoLayout($ralString,$ralCategory,$ralName);
+	} else {
+		NavigateToDrillWorkflowEditor($groupName,$workflowName);
+}	
+    Edit_CustomAction_ScriptDetails($ralName, $PRCompName, $WorkflowName, $cmdScriptPath);
+	executeWorkflow($groupName,$WorkflowName);
+	Drills_Workflow_Execution_Status($WorkflowName,$ralName);
+	//ValidateTheWorkflowListingPage($WorkflowName);	
+	ValidateTheBackendServer($sshCommand, $PRCompIP, $PRCompUsername, $PRCompPwd);
+}	
+
+
+/**
+ * Function is used to add the custom action for script execution with Sudo on Linux
+ * 
+ * @param : nul
+ * @return: null
+ * @Author: Padmavathi
+ * 
+ */
+function Execute_CustomAction_Script_Sudo(){
+	createWorkFlow($groupName,$WorkflowName);
+	navigateDrillListing($groupName);
+    $versionNo = _getText(_span(0, _rightOf(_link($WorkflowName))));
+   if("Version: 0" == $versionNo){				
+	   NavigateToDrillWorkflowEditor($groupName,$workflowName);
+		AddRalIntoLayout($ralString,$ralCategory,$ralName);
+	} else {
+		NavigateToDrillWorkflowEditor($groupName,$workflowName);
+}	
+    Edit_CustomAction_ScriptDetails_Sudo($ralName, $serverName, $WorkflowName, $sudo, $sudoUserName, $cmdScriptPathsudo);    
+	executeWorkflow($groupName,$WorkflowName);
+     Drills_Workflow_Execution_Status($WorkflowName,$ralName);
+	ValidateTheWorkflowListingPage($WorkflowName);	
+	ValidateTheBackendServer($sshCommandSudo,$cust_lnxSerIP, $cust_lnxSerUserNm, $cust_SerPassWord);
+	
+}	
+
+
+/**
+ * Function is used to add the custom action for script execution with  on Linux
+ * 
+ * @param : null
+ * @return: null
+ * @Author: Padmavathi
+ * 
+ */
+
+function Execute_CustomAction_Script_KVValues(){
+CreateBackendScript($command,$cmdScriptPath, $DRCompIP, $DRCompUsername, $DRCompPwd);
+createWorkFlow($groupName,$WorkflowName);
+navigateDrillListing($groupName);
+$versionNo = _getText(_span(0, _rightOf(_link($WorkflowName))));
+	
+	if("Version: 0" == $versionNo){				
+		NavigateToDrillWorkflowEditor($groupName,$workflowName);
+		AddRalIntoLayout($ralString,$ralCategory,$ralName);
+	} else {
+		NavigateToDrillWorkflowEditor($groupName,$workflowName);
+	}	
+Edit_CustomAction_ScriptDetails_KV($WorkflowName, $cmdScriptPath, $customActionCompTypeKey, $customActionCompTypeDynamicValue, $customActionCompNameKey, $customActionCompNameDynamicValue);
+executeWorkflow($groupName,$WorkflowName);
+Drills_Workflow_Execution_Status($WorkflowName,$ralName);
+//ValidateTheWorkflowListingPage($WorkflowName);	
+ValidateTheBackendServer($sshCommand,$DRCompIP,$DRCompUsername, $DRCompPwd);
+
+}	
+
+
+
+/**
+ * Function is used to add the custom action for script execution  on Solaris
+ * 
+ * @param : null
+ * @return: null
+ * @Author: Padmavathi
+ * 
+ */
+function Execute_CustomAction_Script_Solaris(){
+	CreateBackendScript($solarisCommand,$solarisCmdScriptPath, $solarisCompIP, $solarisCompUserName, $solarisCompPwd);
+   	createWorkFlow($groupName,$WorkflowName);
+   	navigateDrillListing($groupName);
+    $versionNo = _getText(_span(0, _rightOf(_link($WorkflowName))));
+    if("Version: 0" == $versionNo){				
+    	NavigateToDrillWorkflowEditor($groupName,$workflowName);
+		AddRalIntoLayout($ralString,$ralCategory,$ralName);
+	} else {
+		NavigateToDrillWorkflowEditor($groupName,$workflowName);
+}	
+    Edit_CustomAction_ScriptDetails($ralName, $solarisCompName, $WorkflowName, $solarisCmdScriptPath);
+	executeWorkflow($groupName,$WorkflowName);
+	Drills_Workflow_Execution_Status($WorkflowName,$ralName);
+	//ValidateTheWorkflowListingPage($WorkflowName);	
+	ValidateTheBackendServer($sshCommandSolaris,$solarisCompIP, $solarisCompUserName, $solarisCompPwd)
+}	
+
+
+/**
+ * Function is used to add the custom action for script execution with  on Solaris
+ * 
+ * @param : null
+ * @return: null
+ * @Author: Padmavathi
+ * 
+ */
+
+function Execute_CustomAction_Script_KVValues_Solaris(){
+CreateBackendScript($solarisCommand,$solarisCmdScriptPath, $solarisCompIP, $solarisCompUserName, $solarisCompPwd);
+createWorkFlow($groupName,$WorkflowName);
+navigateDrillListing($groupName);
+$versionNo = _getText(_span(0, _rightOf(_link($WorkflowName))));
+	
+	if("Version: 0" == $versionNo){				
+		NavigateToDrillWorkflowEditor($groupName,$workflowName);
+		AddRalIntoLayout($ralString,$ralCategory,$ralName);
+	} else {
+		NavigateToDrillWorkflowEditor($groupName,$workflowName);
+	}	
+Edit_CustomAction_ScriptDetails_KV($WorkflowName, $solarisCmdScriptPath, $customActionCompTypeKeySolaris, $customActionCompTypeStaticValueSolaris, $customActionCompNameKeySolaris, $customActionCompNameStaticValueSolaris);
+executeWorkflow($groupName,$WorkflowName);
+Drills_Workflow_Execution_Status($WorkflowName,$ralName);
+//ValidateTheWorkflowListingPage($WorkflowName);	
+ValidateTheBackendServer($sshCommandSolaris,$solarisCompIP, $solarisCompUserName, $solarisCompPwd)
+}	
+
+
+/**
+ * Function is used to add the custom action for script execution  on AIX
+ * 
+ * @param : null
+ * @return: null
+ * @Author: Padmavathi
+ * 
+ */
+function Execute_CustomAction_Script_AIX(){
+    CreateBackendScript($AIXCommand,$AIXCmdScriptPath, $AIXCompIP, $AIXCompUserName, $AIXCompPwd);
+   	createWorkFlow($groupName,$WorkflowName);
+   	navigateDrillListing($groupName);
+    $versionNo = _getText(_span(0, _rightOf(_link($WorkflowName))));
+    if("Version: 0" == $versionNo){				
+    	NavigateToDrillWorkflowEditor($groupName,$workflowName);
+		AddRalIntoLayout($ralString,$ralCategory,$ralName);
+	} else {
+		NavigateToDrillWorkflowEditor($groupName,$workflowName);
+}	
+    Edit_CustomAction_ScriptDetails($ralName, $AIXCompName, $WorkflowName, $AIXCmdScriptPath);
+	executeWorkflow($groupName,$WorkflowName);
+	Drills_Workflow_Execution_Status($WorkflowName,$ralName)
+	//ValidateTheWorkflowListingPage($WorkflowName);	
+	ValidateTheBackendServer($sshCommandAIX, $AIXCompIP, $AIXCompUserName, $AIXCompPwd);
+}	
+
+
+/**
+ * Function is used to add the custom action for script execution with  on AIX
+ * 
+ * @param : null
+ * @return: null
+ * @Author: Padmavathi
+ * 
+ */
+
+function Execute_CustomAction_Script_KVValues_AIX(){
+CreateBackendScript($AIXCommand,$AIXCmdScriptPath, $AIXCompIP, $AIXCompUserName, $AIXCompPwd);
+createWorkFlow($groupName,$WorkflowName);
+navigateDrillListing($groupName);
+$versionNo = _getText(_span(0, _rightOf(_link($WorkflowName))));
+	
+	if("Version: 0" == $versionNo){				
+		NavigateToDrillWorkflowEditor($groupName,$workflowName);
+		AddRalIntoLayout($ralString,$ralCategory,$ralName);
+	} else {
+		NavigateToDrillWorkflowEditor($groupName,$workflowName);
+	}	
+Edit_CustomAction_ScriptDetails_KV($WorkflowName, $AIXCmdScriptPath, $customActionCompTypeKeyAIX, $customActionCompTypeStaticValueAIX, $customActionCompNameKeyAIX, $customActionCompNameStaticValueAIX);
+executeWorkflow($groupName,$WorkflowName);
+Drills_Workflow_Execution_Status($WorkflowName,$ralName);
+ValidateTheBackendServer($sshCommandAIX, $AIXCompIP, $AIXCompUserName, $AIXCompPwd);
+
+}	
+
+
+/**
+ * Function is used to add the custom action for script execution  on HPUX
+ * 
+ * @param : null
+ * @return: null
+ * @Author: Padmavathi
+ * 
+ */
+function Execute_CustomAction_Script_HPUX(){
+	CreateBackendScript($HPUXCommand,$HPUXCmdScriptPath, $HPUXCompIP, $HPUXCompUserName, $HPUXCompPwd);
+   	createWorkFlow($groupName,$WorkflowName);
+   	navigateDrillListing($groupName);
+    $versionNo = _getText(_span(0, _rightOf(_link($WorkflowName))));
+    if("Version: 0" == $versionNo){				
+    	NavigateToDrillWorkflowEditor($groupName,$workflowName);
+		AddRalIntoLayout($ralString,$ralCategory,$ralName);
+	} else {
+		NavigateToDrillWorkflowEditor($groupName,$workflowName);
+}	
+    Edit_CustomAction_ScriptDetails($ralName, $HPUXCompName, $WorkflowName, $HPUXCmdScriptPath);
+	executeWorkflow($groupName,$WorkflowName);
+	Drills_Workflow_Execution_Status($WorkflowName,$ralName);
+	//ValidateTheWorkflowListingPage($WorkflowName);	
+	ValidateTheBackendServer($sshCommandHPUX, $HPUXCompIP, $HPUXCompUserName, $HPUXCompPwd);
+}	
+
+
+/**
+ * Function is used to add the custom action for script execution with  on HPUX
+ * 
+ * @param : null
+ * @return: null
+ * @Author: Padmavathi
+ * 
+ */
+
+function Execute_CustomAction_Script_KVValues_HPUX(){
+CreateBackendScript($HPUXCommand,$HPUXCmdScriptPath, $HPUXCompIP, $HPUXCompUserName, $HPUXCompPwd);
+createWorkFlow($groupName,$WorkflowName);
+navigateDrillListing($groupName);
+$versionNo = _getText(_span(0, _rightOf(_link($WorkflowName))));
+	
+	if("Version: 0" == $versionNo){				
+		NavigateToDrillWorkflowEditor($groupName,$workflowName);
+		AddRalIntoLayout($ralString,$ralCategory,$ralName);
+	} else {
+		NavigateToDrillWorkflowEditor($groupName,$workflowName);
+	}	
+Edit_CustomAction_ScriptDetails_KV($WorkflowName, $HPUXCmdScriptPath, $customActionCompTypeKeyHPUX, $customActionCompTypeStaticValueHPUX, $customActionCompNameKeyHPUX, $customActionCompNameStaticValueHPUX);
+executeWorkflow($groupName,$WorkflowName);
+Drills_Workflow_Execution_Status($WorkflowName,$ralName);
+//ValidateTheWorkflowListingPage($WorkflowName);	
+ValidateTheBackendServer($sshCommandHPUX, $HPUXCompIP, $HPUXCompUserName, $HPUXCompPwd);
+}	
+
+
+/**
+ * Function is used to add the custom action for script execution  on Windows
+ * 
+ * @param : null
+ * @return: null
+ * @Author: Padmavathi
+ * 
+ */
+function Execute_CustomAction_Script_Windows(){
+	CreateBackendScript_Windows($WindowsCommand, $WindowsCompIP, $WindowsCompUserName, $WindowsCompPwd, "N", $WindowsCmdScriptPath);
+
+   	createWorkFlow($groupName,$WorkflowName);
+   	navigateDrillListing($groupName);
+    $versionNo = _getText(_span(0, _rightOf(_link($WorkflowName))));
+    if("Version: 0" == $versionNo){				
+    	NavigateToDrillWorkflowEditor($groupName,$workflowName);
+		AddRalIntoLayout($ralString,$ralCategory,$ralName);
+	} else {
+		NavigateToDrillWorkflowEditor($groupName,$workflowName);
+}	
+    Edit_CustomAction_ScriptDetails($ralName, $WindowsCompName, $WorkflowName, $WindowsCmdScriptPath);
+	executeWorkflow($groupName,$WorkflowName);
+	Drills_Workflow_Execution_Status($WorkflowName,$ralName);
+	//validateExecutionPage($WorkflowName);
+	//ValidateTheWorkflowListingPage($WorkflowName);
+	ValidateTheBackendServer_Windows($WindowsCompIP, $WindowsCompUserName, $WindowsCompPwd, $WindowsCmdScriptPath, "N");
+}
+
+
+/**
+ * Function is used to add the custom action for script execution with  on Windows
+ * 
+ * @param : null
+ * @return: null
+ * @Author: Padmavathi
+ * 
+ */
+
+function Execute_CustomAction_Script_KVValues_Windows(){
+	CreateBackendScript_Windows($WindowsCommand, $WindowsCompIP, $WindowsCompUserName, $WindowsCompPwd, "N", $WindowsCmdScriptPath);
+	createWorkFlow($groupName,$WorkflowName);
+	navigateDrillListing($groupName);
+	$versionNo = _getText(_span(0, _rightOf(_link($WorkflowName))));
+		
+		if("Version: 0" == $versionNo){				
+			NavigateToDrillWorkflowEditor($groupName,$workflowName);
+			AddRalIntoLayout($ralString,$ralCategory,$ralName);
+		} else {
+			NavigateToDrillWorkflowEditor($groupName,$workflowName);
+		}	
+	Edit_CustomAction_ScriptDetails_KV($WorkflowName, $WindowsCmdScriptPath, $customActionCompTypeKeyWindows, $customActionCompTypeDynamicValueWindows, $customActionCompNameKeyWindows, $customActionCompNameDynamicValueWindows);
+	executeWorkflow($groupName,$WorkflowName);
+	Drills_Workflow_Execution_Status($WorkflowName,$ralName);
+	//ValidateTheWorkflowListingPage($WorkflowName);	
+	ValidateTheBackendServer_Windows($WindowsCompIP, $WindowsCompUserName, $WindowsCompPwd, $WindowsCmdScriptPath, "N");
+	}
+
+
+/**
+ * Function is used to add the custom action for script execution with  on Windows
+ * 
+ * @param : null
+ * @return: null
+ * @Author: Padmavathi
+ * 
+ */
+
+
+function Group_Status_BasedONEvents($groupName){
+	_click(_link($Admin));
+	_click(_link($CurrentEvents));
+	_click(_link($AdvancedFilter));
+	_check(_checkbox($severity2));
+	_check(_checkbox($severity3));
+	_check(_checkbox($severity4));
+	_check(_checkbox($NEW));
+	_check(_checkbox($WIP));
+	_setSelected(_select($groups), [ $groupName ]);
+	_click(_button($Apply));
+	var $criticalEvents = _isVisible(_image($Critical))
+	 _log("Critical Events: ", $criticalEvents);
+    var $seriousEvents = _isVisible(_image($Serious))
+	 _log("Serious Events: ", $seriousEvents);
+    var $warningEvents = _isVisible(_image($Warning))
+	_log("Warning Events: ", $warningEvents);
+	
+    if($criticalEvents == true){
+		NavigateToRGDetailsPage($groupName);
+		_assertExists(_heading4("bold", _near(_italic($dotred))));
+		_log("Group is In InActive State");
+	}
+		else if($seriousEvents == true){
+			NavigateToRGDetailsPage($groupName);
+			_assertExists(_heading4("bold", _near(_italic($dotyellow))));
+			_log("Group is In InActive State");
+		}
+		else if($warningEvents == true){
+			NavigateToRGDetailsPage($groupName);
+			_assertExists(_heading4("bold", _near(_italic($dotyellow))));
+			_log("Group is In Degraded State");
+		}
+		else{
+			NavigateToRGDetailsPage($groupName);
+			_assertExists(_heading4("bold", _near(_italic($dotgreen))));
+			_log("Group is In Active State");
+		}
+}//End of Group Status Based on Events function.
+		
+
+
+function CreateBackendScript_Windows($command, $sshIP, $sshUserID, $sshPassword, $error, $cmdScriptPath){
+	var $sshCommand = "echo " + "echo " + $command + " >" + $cmdScriptPath;
+	$status = RemoteConnectionToWindows($sshIP, $sshUserID, $sshPassword, $sshCommand, $error);
+	}
+
+
+
+
+
+
+function ValidateTheBackendServer_Windows($sshIP, $sshUserID, $sshPassword, $cmdScriptPath, $error){
+	navigateDrillListing($groupName);
+	if(_exists(_image("Execute Workflow", _near(_link($WorkflowName))))){
+	_click(_image("Execute Workflow", _near(_link($WorkflowName))));
+	_click(_link($Execute));
+	_log($WorkflowName + "workflow execution started successfully");
+	_wait(3000);
+	//_click(_link($EXECUTING, _near(_link($workflowType))));
+	}else
+	{
+	_log($WorkflowName + "workflow execution got failed");
+	}
+
+	if(_exists(_link(1, _near(_link($WorkflowName))))){
+	_click(_link("EXECUTING"));
+	_wait(3000);
+	}
+	//_click(_link("/.*/", _rightOf(_div("/" + $WorkflowName +  "/")), _under(_div("Last Executed")))); 
+	var $sshCommand =  $cmdScriptPath ;
+	var $status = RemoteConnectionToWindows($sshIP, $sshUserID, $sshPassword, $sshCommand, $error);
+	     _log($status);
+	  _wait(5000);
+	  _click(_span("glyphicon icon-caret-right", _near(_cell($Custom))));
+	var $outputMessageGUI3 = _getText(_preformatted(0));
+	var $outputMessageGUI2 = $outputMessageGUI3.split($Output);
+	var $outputMessageGUI1 = $outputMessageGUI2[1];
+	var $outputMessageGUI = $outputMessageGUI1.replace(/,\r\n\t/g, '').trim();
+	_log($outputMessageGUI);
+	//$outputMessageGUI = $outputMessageGUI[1].replace(",");
+	     _log($outputMessageGUI);
+	status = $status.replace(/,\r\n\t/g, '').trim();
+	     var $status = $status.replace(/\,/g, " ").trim();
+	  _log($status);
+	  
+	  if($outputMessageGUI.indexOf($status) > -1){
+	    	 _log($Botharecomparedandequal);
+	    	// _assertExist()
+	     }
+	     else{
+	    	 _log($Botharecomaparedandnotequal);
+	     }
+	//_assertEqual($outputMessageGUI,$status);
+	}
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

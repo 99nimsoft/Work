@@ -1,0 +1,8 @@
+var  $l_Advance_Report = _readExcelFile($SAHI_HOME+ "\\conf\\Advanced_Report_Param\\AdvanceReport_Input.xls","AdvancedReport");  //To read the inputs from the drm_inputs excel file.
+var $username = $l_Advance_Report[3][2];
+var $password = $l_Advance_Report[4][2];
+var $Advrepcopylocation = $l_Advance_Report[5][2];
+var $reportdate = $l_Advance_Report[6][2];
+var $usernameAdv =$l_Advance_Report[7][2];
+var $passwordAdv =$l_Advance_Report[8][2];
+	

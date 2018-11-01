@@ -1,0 +1,43 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains APP PFR Solution specific
+ ** AuthorName : 
+ ** Created Date : 
+ ***********************************************************************************************/
+
+var $Excel1=_getExcel($SAHI_HOME + "\\Library\\FetchLog\\ObjectRepository\\FetchLog_ObjectRepository.xls","Param");
+
+var $Excel=$Excel1.getData();
+
+
+if($BrowserLang == "N"){
+	var $j = 2;
+}
+else if($BrowserLang == "Y-JA"){
+	var $j = 3;
+	}
+
+else if($BrowserLang == "Y-EN"){
+	var $j = 3;
+	}
+
+
+
+var $Admin=$Excel[2][$j];
+var $GotoUsers=$Excel[3][$j];
+var $CreateNewUser=$Excel[4][$j];
+var $Save=$Excel[5][$j];
+var $UserDetailsModifiedSuccessfully=$Excel[6][$j];
+var $Save=$Excel[7][$j];
+var $GotoLogs=$Excel[8][$j];
+var $FetchLogs=$Excel[9][$j];
+var $okbuttondisableLink=$Excel[10][$j];
+var $FetchLog=$Excel[11][$j];
+var $Advanced=$Excel[12][$j];
+var $Dateselector=$Excel[13][$j];
+var $Today=$Excel[14][$j];
+var $Dateselector1=$Excel[15][$j];
+var $Today1=$Excel[16][$j];
+var $FetchLog1=$Excel[17][$j];
+

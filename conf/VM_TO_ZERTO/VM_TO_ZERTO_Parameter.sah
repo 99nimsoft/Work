@@ -1,0 +1,144 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : Resiliency Orchestration 
+ ** Objective : This script contains all the test cases for  VM to Zerto solution-user test parameter file. 
+ ** AuthorName : Anita Gaded
+ ** Created Date : June 2018
+ ***********************************************************************************************/
+
+
+if($BrowserLang == "N"){
+	var $l_vmToZerto = _readExcelFile($SAHI_HOME+ "\\conf\\VM_TO_ZERTO\\VM_TO_ZERTO_Parameter.xls","VM_To_ZERTO_EN");
+}
+else if($BrowserLang == "Y-JA"){
+	var $l_vmToZerto = _readExcelFile($SAHI_HOME+ "\\conf\\VM_TO_ZERTO\\VM_TO_ZERTO_Parameter.xls","VM_To_ZERTO_JA");
+	}
+
+else if($BrowserLang == "Y-EN"){
+	var $l_vmToZerto = _readExcelFile($SAHI_HOME+ "\\conf\\VM_TO_ZERTO\\VM_TO_ZERTO_Parameter.xls","VM_To_ZERTO_EN");
+	}
+
+//This user Input required to Login the RO server
+var $username = $l_vmToZerto[3][2]; // RO server GUI user name 
+var $password = $l_vmToZerto[4][2]; // RO server GUI pwd
+/*
+if($g_isGDPRCompliancepswd =="yes" || $g_isGDPRCompliancepswd =="Yes" || $g_isGDPRCompliancepswd =="YES"){
+	
+	var $password = "Sanovi123456789$"; // RO GDPR server GUI pwd
+}
+else{
+	var $password = $l_vmToZerto[4][2]; // RO server GUI pwd
+}*/
+
+//This user Input required for  Site discovery
+var $locationPR = $l_vmToZerto[6][2]; 
+var $locationDR = $l_vmToZerto[7][2]; 
+var $siteInchargePR = $l_vmToZerto[6][5]; 
+var $siteInchargeDR = $l_vmToZerto[7][5];
+var $siteAddressPR = $l_vmToZerto[6][7]; 
+var $siteAddressDR = $l_vmToZerto[7][7];
+
+//This user Input required for Management Service discovery
+var $msTypeInputVcenter = $l_vmToZerto[9][2]; //VCENTER
+var $msTypeInputZerto = $l_vmToZerto[10][2]; //ZERTO
+var $vcenterMSPort = $l_vmToZerto[11][2]; //vcenter port
+var $zertoMSPort= $l_vmToZerto[12][2];    //zerto port 
+var $ispswdVault =  $l_vmToZerto[9][5];
+var $isvaultConfigRO =  $l_vmToZerto[9][7];
+var $vaultpswdVCPR =  $l_vmToZerto[10][5];
+var $vaultpswdVCDR =  $l_vmToZerto[10][7];
+
+var $vaultSafeNamePR =  $l_vmToZerto[11][5];
+var $vaultObjNamePR =  $l_vmToZerto[12][5];
+var $vaultSafeNameDR =  $l_vmToZerto[11][7];
+var $vaultObjNameDR =  $l_vmToZerto[12][7];
+
+var $vCenterServerIPPR = $l_vmToZerto[14][2]; //vCentre IP PR
+var $vcenterusernamePR= $l_vmToZerto[15][2]; //vCentre PR user name
+var $vcenterpasswordPR= $l_vmToZerto[16][2]; //vCentre PR password
+var $vcenterNamePR = $l_vmToZerto[17][2]; // PR vcenter Name
+
+var $vCenterServerIP_crud = $l_vmToZerto[14][4]; //vcenter IP Crud edit/delete test
+
+var $vCenterServerIPDR = $l_vmToZerto[18][2]; //vcenter IP DR
+var $vcenterusernameDR= $l_vmToZerto[19][2]; //vcenter DR user name
+var $vcenterpasswordDR= $l_vmToZerto[20][2]; //vCentre DR password
+var $vcenterNameDR = $l_vmToZerto[21][2]; // DR vcenter Name
+
+var $zertoMSIPPR = $l_vmToZerto[22][2]; //zerto IP PR
+var $zertoMSNamePR= $l_vmToZerto[23][2]; //zerto name
+var $zertoMSIPDR = $l_vmToZerto[24][2]; 
+var $zertoMSNameDR= $l_vmToZerto[25][2]; 
+
+///////////  Appstack -AG discovery /////////////////////////////
+
+var $vpgCount = $l_vmToZerto[19][5];
+var $noOfAGs =  $vpgCount;
+var $tierNum = $l_vmToZerto[20][5];
+////////////////////Tier Types Name ////////////////////////////////
+var $selTier1=$l_vmToZerto[21][5]; //application  //default
+var $selTier2=$l_vmToZerto[21][6];
+var $selTier3=$l_vmToZerto[21][7];
+var $selTier4=$l_vmToZerto[21][8];
+var $selTier =[$selTier1,$selTier2,$selTier3,$selTier4];
+/// appstack Name/////
+var $appstackName1 = $l_vmToZerto[22][5];
+var $appstackName2 = $l_vmToZerto[23][5];
+var $appstackName3 = $l_vmToZerto[24][5];
+var $appstackName4 = $l_vmToZerto[25][5];
+var $appstackName =[$appstackName1,$appstackName2,$appstackName3,$appstackName4];
+///  VPG names ///
+var $vpgName1 = $l_vmToZerto[22][7];
+var $vpgName2 = $l_vmToZerto[23][7];
+var $vpgName3 = $l_vmToZerto[24][7];
+var $vpgName4 = $l_vmToZerto[25][7];
+var $vpgName =[$vpgName1,$vpgName2,$vpgName3,$vpgName4];
+
+///VPG1
+var $vpg1_VM1_IP = $l_vmToZerto[22][11];
+var $vpg1_VM1_Name = $l_vmToZerto[22][12];
+var $vpg1_VM2_IP = $l_vmToZerto[22][14];
+var $vpg1_VM2_Name = $l_vmToZerto[22][15];
+var $vp1VMcnt = $l_vmToZerto[22][9];
+///VPG2
+var $vpg2_VM1_IP = $l_vmToZerto[23][11];
+var $vpg2_VM1_Name = $l_vmToZerto[23][12];
+var $vpg2_VM2_IP = $l_vmToZerto[23][14];
+var $vpg2_VM2_Name = $l_vmToZerto[23][15];
+var $vp2VMcnt = $l_vmToZerto[23][9];
+
+///VPG3
+var $vpg3_VM1_IP = $l_vmToZerto[24][11];
+var $vpg3_VM1_Name = $l_vmToZerto[24][12];
+var $vpg3_VM2_IP = $l_vmToZerto[24][14];
+var $vpg3_VM2_Name = $l_vmToZerto[24][15];
+var $vp3VMcnt = $l_vmToZerto[24][9];
+
+///VPG4
+var $vpg4_VM1_IP = $l_vmToZerto[25][11];
+var $vpg4_VM1_Name = $l_vmToZerto[25][12];
+var $vpg4_VM2_IP = $l_vmToZerto[25][14];
+var $vpg4_VM2_Name = $l_vmToZerto[25][15];
+var $vp4VMcnt = $l_vmToZerto[25][9];
+
+var $vpgVMcnt = [$vp1VMcnt,$vp2VMcnt,$vp3VMcnt,$vp4VMcnt];
+
+if($vpgName1==$vpgName1){
+	var $vpg1VMs =[$vpg1_VM1_IP,$vpg1_VM2_IP];
+	var $vpgVMsName =[$vpg1_VM1_Name,$vpg1_VM2_Name];
+}
+if($vpgName2==$vpgName2){
+	var $vpg2VMs =[$vpg2_VM1_IP,$vpg2_VM2_IP];
+	var $vpgVMsName =[$vpg2_VM1_Name,$vpg2_VM2_Name];
+}
+
+if($vpgName3==$vpgName3){
+	var $vpg3VMs =[$vpg3_VM1_IP,$vpg3_VM2_IP];
+	var $vpgVMsName =[$vpg3_VM1_Name,$vpg3_VM2_Name];
+}
+if($vpgName4==$vpgName4){
+	var $vpg4VMs =[$vpg4_VM1_IP,$vpg4_VM2_IP];
+	var $vpgVMsName =[$vpg4_VM1_Name,$vpg4_VM2_Name];
+}
+
+

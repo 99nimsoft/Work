@@ -1,0 +1,81 @@
+/**
+* Function is for Creating Protection Schemes in DB2_HP3PAR  solution for PR.
+*@param :  null
+*@return : null
+* Author: Debabrat
+*
+*/
+
+function Create_Sybase_HP3PAR_ProtectionSchemePR(){
+	//Create_Sybase_HP3PAR_ProtectionScheme($systemTypeProtection, $sernamePR,  $mgmtHost_HP3PAR_PR  ,$userPR,$dataBaseName,$userPR,$pwdPR);
+	Create_Sybase_HP3PAR_ProtectionScheme($systemTypeProtection, $sernamePR,  $mgmtHost_HP3PAR_PR  ,$userPR,$dataBaseName,$usernamedbPR,$passwordPR);
+
+   }//end of DB2_HP3PAR_ProtectionschemePR()
+   
+/**
+* Function is for Creating Protection Schemes in DB2_HP3PAR  solution for DR.
+*@param :  null
+*@return : null
+* Author: Debabrat
+*
+*/
+function Create_Sybase_HP3PAR_ProtectionSchemeDR(){
+	Create_Sybase_HP3PAR_ProtectionScheme($systemTypeProtection, $sernameDR,  $mgmtHost_HP3PAR_DR  ,$userDR,$dataBaseName,$usernamedbDR,$passwordDR);
+   }//end of DB2_HP3PAR_ProtectionschemeDR() 
+
+/**
+* Function is for Creating Protection Schemes in DB2_HP3PAR  solution.
+*@param :  $systemType, $sername,  $mgmtHostPFR
+*@return : null
+* Author: Debabrat
+*
+*/
+function Create_Sybase_HP3PAR_ProtectionScheme($systemTypeProtection, $sername,  $mgmtHost_HP3PAR,$user,$dbName,$dbuname,$dbpassword)
+  {
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($ProtectionSchemes));
+	if (_exists(_link($sername))) {
+		_assertExists("Protectionscheme already exists");
+	} else {
+	_setSelected(_select("systemType"), $systemTypeProtection);
+	_click(_button($Go));
+	
+	_setSelected(_select("mgmtHost_HP3PAR"), $mgmtHost_HP3PAR);
+	_setValue(_textbox("sername"), $sername);
+    if (_exists(_link($RegisterAgent))) 
+    {
+	_click(_link($RegisterAgent));
+	_wait(30000, _cell($CONNECTED));
+	} 
+	
+	var $status = _getCellText(_cell(1, _near(_cell($Status))));
+	if($status == $CONNECTED)
+	{
+	_assertExists("Agent is CONNECTED");
+	}
+	else
+	{
+	_fail("Agent is not CONNECTED");
+	}
+	_setValue(_textbox("OtherReplicatorInputElement_0"), $user);
+	_setValue(_textbox("OtherReplicatorInputElement_1"), $dbName);
+	_setValue(_textbox("OtherReplicatorInputElement_2"), $dbuname);
+	_setValue(_textbox("OtherReplicatorInputElement_3"), $dbpassword);
+	_click(_button($Save));
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($ProtectionSchemes));
+	if (_exists(_link($sername))) 
+	{
+	_assertExists("Protection Schemes created succesfully");
+	} 
+	else 
+	{
+		_assertEqual("Protection Scheme created",_lastAlert()); 
+	_fail("Protection Schemes not created succesfully.");
+	}
+}
+}
+
+

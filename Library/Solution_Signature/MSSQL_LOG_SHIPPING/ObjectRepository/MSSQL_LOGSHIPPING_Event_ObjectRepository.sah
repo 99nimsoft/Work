@@ -1,0 +1,40 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains APP PFR Solution specific
+ ** AuthorName : Anita Gaded
+ ** Created Date : Mar 2017
+ ***********************************************************************************************/
+
+var $l_appPfrEvent=_readExcelFile($SAHI_HOME + "\\Library\\Solution_Signature\\MSSQL_LOG_SHIPPING\\ObjectRepository\\MSSQL_LOGSHIPPING_Event_ObjectRepository.sah","Events");
+
+//APP PFR Event.sah web objects
+
+var $g_selLangComp = $l_appPfrEvent[1][2];
+if($BrowserLang != "Y"){
+	_setGlobal("Selected language is ","english");
+	var $colno = 2;
+}
+else{
+	_setGlobal("Selected language is ","japanese");
+	var $colno = 3;
+}
+var $obj_PFREvent10 = $l_appPfrEvent[4][$colno]; 
+var $obj_AgentPRdown = $l_appPfrEvent[5][$colno]; 
+var $obj_eventCritical = $l_appPfrEvent[6][$colno];
+var $obj_PFREvent11 = $l_appPfrEvent[7][$colno];
+var $obj_AgentDRdown = $l_appPfrEvent[8][$colno];
+var $obj_PFREvent12 = $l_appPfrEvent[9][$colno];
+var $obj_AgentPRup = $l_appPfrEvent[10][$colno];
+var $obj_eventInformation = $l_appPfrEvent[11][$colno];
+var $obj_PFREvent13 = $l_appPfrEvent[12][$colno];
+var $obj_AgentDRup = $l_appPfrEvent[13][$colno];
+var $obj_PFREvent005 = $l_appPfrEvent[14][$colno];
+var $obj_OSAgentPRdown = $l_appPfrEvent[15][$colno];
+var $obj_eventWarning = $l_appPfrEvent[16][$colno]; 
+var $obj_PFREvent006 = $l_appPfrEvent[17][$colno]; 
+var $obj_OSAgentDRdown = $l_appPfrEvent[18][$colno];
+var $obj_PFREven024 = $l_appPfrEvent[19][$colno];
+var $obj_OSAgentPRup = $l_appPfrEvent[20][$colno];
+var $obj_PFREven025 = $l_appPfrEvent[21][$colno];
+var $obj_OSAgentDRup = $l_appPfrEvent[22][$colno];

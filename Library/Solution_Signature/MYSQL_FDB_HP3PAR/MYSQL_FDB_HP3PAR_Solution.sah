@@ -1,0 +1,517 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are the part of  My SQL SR solution screen wise fetching and comparing data from Db and GUI. 
+ ** AuthorName : Omprakash V
+ ** Created Date : OCT 2016
+ ************************************************************************/
+
+/**
+* Function is for creating functional Group from MYSQL solution from solution details screen.
+*@param : $groupName, $groupDescription, $SolutionSignature, $primaryComponents, $remoteComponents, $primaryDatasets, $remoteDatasets, $primaryProtections, $remoteProtections
+*@return : null
+*@Author: Omprakash V
+*
+*/
+function MYSQL_FDB_HP3PAR_Create_FG() {
+	$groupCreation = Create_FG($groupName, $groupDescription, $SolutionSignature, $primaryComponents, $remoteComponents, $primaryDatasets, $remoteDatasets, $primaryProtections, $remoteProtections);
+	if ($groupCreation.get("flag") == 0) {
+		_log("Same group name already exists");
+	} else {
+		_setValue(_textbox("userName"), $replicationUserName);
+		_setValue(_password("password"), $replicationPassword);
+		
+		_click(_button("Submit")); 
+		//_click(_submit("Submit"));
+		_click(_link("License"));
+		_click(_checkbox("Recovery"));
+		_click(_checkbox("Test"));
+		_wait(1000, _button("licensebutton"));
+		_click(_button("licensebutton"));
+		_wait(1000, _link("RPO/RTO"));
+		_click(_link("RPO/RTO"));
+		_setValue(_textbox("desrpo1"), $desiredRpo);
+		_setValue(_textbox("rpoint1"), $rpoCompute);
+		_click(_button(" Save "));
+		_click(_button("/Finish/"));
+		_wait(10000, _link("Discovery"));
+		navigateToGroups();
+		if (_exists(_link($groupName))) {
+			_log("Group created succesfully");
+		} else {
+			_fail("Group not created succesfully.So that stopping execution.");
+		}
+	}
+} // End of Mysql_Create_FG()
+
+/**
+ * Function is for checking the Datalag Status and RepStatus in Replication Page after editing the RepInfo.TCL to Unknown .
+ * 
+ * @param :null
+ * @return : null
+ * @Author: Omprakash V
+ * 
+*/
+
+function Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_Remote_UNKNOWN(){
+	edit_replicationInfotcl_HP3PAR($drmServer, $drmUserName, $drmPassword,"rep_state","UNKNOWN",$EAMSROOT);
+	RepStatus_DataLag_MySQLFDBHP3PAR_UNKNOWN();
+}
+function RepStatus_DataLag_MySQLFDBHP3PAR_UNKNOWN(){	
+	Check_Replication_Status_Monitor();
+	validate_Replication_status("UNKNOWN");
+	Check_DataLag_Status_Monitor();
+	validate_Dtalag_status("N/A");
+	}
+
+
+
+/**
+ * Function is for checking the Datalag Status and RepStatus in Replication Page after editing the RepInfo.TCL to ACTIVE
+ * 
+ * @param :null
+ * @return : null
+ * @Author: Omprakash V
+ * 
+*/
+function Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_Remote_ACTIVE(){
+	edit_replicationInfotcl_HP3PAR($drmServer, $drmUserName, $drmPassword,"rep_state","ACTIVE",$EAMSROOT);
+	RepStatus_DataLag_MySQLFDBHP3PAR_ACTIVE();
+}
+function RepStatus_DataLag_MySQLFDBHP3PAR_ACTIVE(){	
+	Check_Replication_Status_Monitor();
+	validate_Replication_status("ACTIVE");
+	Check_DataLag_Status_Monitor();
+		validate_Dtalag_status("0 MB");
+}
+
+/**
+ * Function is for checking the Datalag Status and RepStatus in Replication Page after editing the RepInfo.TCL to INACTIVE
+ * 
+ * @param :null
+ * @return : null
+ * @Author: Omprakash V
+ * 
+*/
+function Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_Remote_INACTIVE(){
+	edit_replicationInfotcl_HP3PAR($drmServer, $drmUserName, $drmPassword,"rep_state","INACTIVE",$EAMSROOT);
+	RepStatus_DataLag_MySQLFDBHP3PAR_INACTIVE();
+}
+function RepStatus_DataLag_MySQLFDBHP3PAR_INACTIVE(){	
+	Check_Replication_Status_Monitor();
+	validate_Replication_status("INACTIVE");
+	Check_DataLag_Status_Monitor();
+		validate_Dtalag_status("0 MB");
+}
+
+/* * Function is for checking the Datalag Status after editing the RepInfo.TCL datalag greater than threshold.
+* 
+* @param :null
+* @return : null
+* @Author: Omprakash*/
+
+function Datalag_Threshold_Deviation(){
+	Check_DataLag_Status_Monitor();
+	_click(_button("Refresh Details"));
+	var $datalagStatus = _getText(_div(1, _near(_div("Data Lag"))));
+	log();
+	if ($datalagStatus==$datalag+ " MB") {
+	_log("Datalag status is"+ $datalag+" MB");
+	} else {
+     _log("Datalag status update got failed");
+	}
+}
+
+/**
+ * Function is for checking datalag status monitor
+ * 
+ * @param :null
+ * @return : null
+ * @Author: Omprakash V
+ * 
+*/
+function Check_DataLag_Status_Monitor(){
+	RefeshDetails_Replication();
+	var $datalagStatus = _getText(_div(1, _near(_div("Data Lag"))));
+	_assertExists("Datalag Status", $datalagStatus);
+	_log("Datalag Status is updated successfully");
+}
+/**
+ * Function is for checking replication status monitor
+ * 
+ * @param :null
+ * @return : null
+ * @Author: Omprakash V
+ * 
+*/
+function Check_Replication_Status_Monitor(){
+	RefeshDetails_Replication();
+     var $replicationStatus = _getText(_span(0, _rightOf(_span("Replication Status:"))));
+	_assertExists("Replication Status", $replicationStatus);
+	_log("Replication Status is updated successfully");
+}
+/**
+ * Function is for validating replication status 
+ * 
+ * @param :null
+ * @return : null
+ * @Author: Omprakash V
+ * 
+*/
+function validate_Replication_status($status){
+	var $replicationStatus = _getText(_span(0, _rightOf(_span("Replication Status:"))));
+	if ($replicationStatus==$status) {
+	_log("Replication status is "+$status);
+	} else {
+		_log("Replication status update got failed");
+	}
+}
+
+/**
+ * Function is for validating datalag status
+ * 
+ * @param :null
+ * @return : null
+ * @Author: Omprakash V
+ * 
+*/
+	function validate_Dtalag_status($status){
+	var $datalagStatus = _getText(_div(1, _near(_div("Data Lag"))));
+	if ($datalagStatus==$status) {
+	_log("Datalag status is "+$status);
+	} else {
+	_log("Datalag status update got failed");
+	}
+	}
+
+/*Function is for checking the protection schema Status when getstatus.tcl is edited as active in PR side in remote
+* 
+* @param :null
+* @return : null
+* @Author: Omprakash V
+* */
+
+
+function ProtectionStatus_GetSatatusTCL_RepState_Active_Remote_PR() {
+	edit_getStatusTcl_HP3PAR($drmServer, $drmUserName, $drmPassword,"rep_state","ACTIVE",$EAMSROOT);
+	$sername=$sernamePR;
+	check_ProtectionStatus_GetSatatusTCL_RepState($sername,"ACTIVE");
+}
+/*Function is for checking the protection schema Status when getstatus.tcl is edited as inactive in PR side in remote
+* 
+* @param :null
+* @return : null
+* @Author: Omprakash V
+* */
+function ProtectionStatus_GetSatatusTCL_RepState_INActive_Remote_PR(){
+	edit_getStatusTcl_HP3PAR($drmServer, $drmUserName, $drmPassword,"rep_state","INACTIVE",$EAMSROOT);
+	$sername=$sernamePR;
+	check_ProtectionStatus_GetSatatusTCL_RepState($sername,"INACTIVE");
+		
+}
+/*Function is for checking the protection schema Status when getstatus.tcl is edited as unknown in PR side in remote
+* 
+* @param :null
+* @return : null
+* @Author: Omprakash V
+* */
+function ProtectionStatus_GetSatatusTCL_RepState_Unknown_Remote_PR(){
+	edit_getStatusTcl_HP3PAR($drmServer, $drmUserName, $drmPassword,"rep_state","UNKNOWN",$EAMSROOT);
+	$sername=$sernamePR;
+	check_ProtectionStatus_GetSatatusTCL_RepState($sername,"UNKNOWN");
+		
+	}
+
+/*Function is for checking the protection schema Status when getstatus.tcl is edited as active in DR side in remote
+* 
+* @param :null
+* @return : null
+* @Author: Omprakash V
+* */
+function ProtectionStatus_GetSatatusTCL_RepState_Active_Remote_DR() {
+	$sername=$sernameDR;
+	check_ProtectionStatus_GetSatatusTCL_RepState($sername,"ACTIVE");
+}	
+/*Function is for checking the protection schema Status when getstatus.tcl is edited as inactive in DR side in remote
+* 
+* @param :null
+* @return : null
+* @Author: Omprakash V
+* */
+function ProtectionStatus_GetSatatusTCL_RepState_INActive_Remote_DR(){
+	$sername=$sernameDR;
+	check_ProtectionStatus_GetSatatusTCL_RepState($sername,"INACTIVE");
+	
+}
+/*Function is for checking the protection schema Status when getstatus.tcl is edited as unknown in DR side in remote
+* 
+* @param :null
+* @return : null
+* @Author: Omprakash V
+* */
+function ProtectionStatus_GetSatatusTCL_RepState_Unknown_Remote_DR(){
+	$sername=$sernameDR;
+	check_ProtectionStatus_GetSatatusTCL_RepState($sername,"UNKNOWN");
+	
+}
+
+/*Function is for checking the protection schema Status when getstatus.tcl is edited as active in DR side in local
+* 
+* @param :null
+* @return : null
+* @Author: Omprakash V
+* */
+
+function check_ProtectionStatus_GetSatatusTCL_RepState_Active($sername){
+	check_ProtectionStatus_GetSatatusTCL_RepState($sername,"ACTIVE");
+}
+/*Function is for checking the protection schema Status when getstatus.tcl is edited as inactive in DR side in local
+* 
+* @param :null
+* @return : null
+* @Author: Omprakash V
+* */
+function check_ProtectionStatus_GetSatatusTCL_RepState_INActive($sername){
+	check_ProtectionStatus_GetSatatusTCL_RepState($sername,"INACTIVE");
+	
+}
+/*Function is for checking the protection schema Status when getstatus.tcl is edited as unknown in DR side in local
+* 
+* @param :null
+* @return : null
+* @Author: Omprakash V
+* */
+function check_ProtectionStatus_GetSatatusTCL_RepState_Unknown($sername){
+	check_ProtectionStatus_GetSatatusTCL_RepState($sername,"UNKNOWN");
+}
+
+
+
+function check_ProtectionStatus_GetSatatusTCL_RepState($sername,$state){
+	var $i=0;
+	while($i < 10){
+		_wait(66000);
+		navigateToDiscovery();
+		_click(_link("Subsystems"));
+		_click(_link("Protection Schemes"));
+		var $status = _getText(_cell(3, _near(_cell($sername), _under(_tableHeader("Status")))));
+        if($status==$state){
+		_assertExists("Protection Scheme is "+ $state);
+		break;
+	    } else {
+	    	_log("Protection Scheme not updated");
+	    }
+        
+        $i++;
+	}
+	}
+
+
+/*Function is for checking the Replication status when start button is pressed
+
+* @param :null
+* @return : null
+* @Author: Omprakash V
+* */
+
+function Start_Replication_Button_ACTIVE(){
+	Start_Replication();
+	Check_Replication_Status_Monitor();
+	validate_Replication_status("ACTIVE");
+}
+
+/*Function is for checking the Replication status when stop replicationbutton is pressed
+
+* @param :null
+* @return : null
+* @Author: Omprakash V
+* */
+function Stop_Replication_Button_INACTIVE(){
+    Stop_Replication();
+	Check_Replication_Status_Monitor();
+	validate_Replication_status("INACTIVE");
+}
+/*Function is for MySQL FDB HP3PAR solution publish workflow for Remote agent
+* 
+* @param :null
+* @return : null
+* @Author: Omprakash V
+* */
+
+function Publish_BP_workflow($tclPath,$agentnode){	
+	 navigateToDiscovery();
+	 navigateToGroups();
+	 _click(_link($groupName));
+	 _click(_link("Group Configuration"));
+	 _click(_link("Business Processes"));	
+     _click(_image("Modify[11]"));
+	_click(_paragraph("text_ellipsis[2]"));
+	_click(_button("deleteBtn"));
+	_click(_button("OK[1]"));
+	_wait(1500);
+	_click(_span("Get Primary Status"));
+	_click(_button("deleteBtn"));
+	_click(_button("OK[1]"));
+	_wait(1500);
+	_click(_span("Workflow"));
+	_click(_button("deleteBtn"));
+	_click(_button("OK[1]"));
+	_wait(1500);
+	add_Custom_Workflow();
+	_wait(1000);
+	_setSelected(_select("serverName"),$agentnode);
+	_click(_select("serverName")); 
+	_click(_radio("drmintegration"));
+	_setValue(_textbox("commandAbsolutePath"), $tclPath);
+	_wait(2000);
+	_click(_button("close", _near(_heading4("Custom"))));
+	 publishWorkflow();
+	_wait(20000);
+}
+
+
+/**
+ *Function is for MySQL FDB HP3PAR solution publish workflow for Local agent DR
+ * @Author: Omprakash V
+ */
+
+function Publish_BP_workflow_DR($tclPath,$agentnode){	
+	 navigateToDiscovery();
+	 navigateToGroups();
+	 _click(_link($groupName));
+	 _click(_link("Group Configuration"));
+	 _click(_link("Business Processes"));	
+     _click(_image("Modify[11]"));
+	_click(_paragraph("text_ellipsis"));
+	_click(_span("icn_delete"));
+	_click(_button("OK[1]"));
+	_wait(1500);
+	add_Custom_Workflow();
+	_wait(1500);
+	_setSelected(_select("serverName"), $agentnode);
+	_click(_select("serverName")); 
+	_check(_radio("drmintegration"));
+	_setValue(_textbox("commandAbsolutePath"), $tclPath);
+	_wait(2000);
+	_click(_button("close", _near(_heading4("Custom"))));
+	 publishWorkflow();
+	_wait(20000);
+}
+
+
+
+/**
+ *Function is for adding custom workflow
+ * @Author: Omprakash V
+ */
+
+function add_Custom_Workflow(){
+   _click(_span("glyphIon"));
+   _click(_link("select2-choice"));
+   _setValue(_textbox(10), "Workflow");
+   _click(_span("Workflow"));
+   _click(_span("glyphicon icon-blue-plus plusIconRals", _near(_span("Custom"))));
+   _click(_span("glyphIon"));
+   _dragDrop(_image("notifications_green.png"), _image("notifications_yellow.png"));
+   _doubleClick(_div("Custom Workflow"));
+   _click(_link("Action Properties"));
+}
+
+/**
+ *Function is for verifying BP publication 
+ * @Author: Omprakash V
+ */
+
+function verify_Bp_Publication(){
+	 _wait(3000);
+	_click(_link("Save Now"));
+    _click(_link("Next"));
+    _click(_div("Publish Workflow"));
+    _wait(3000);
+    _click(_heading4("BP Workflows"));
+    _wait(6000);
+    var $isPublished = _getText(_strong(0, _near(_link("ReplicationInfoWorkflow"))));
+    _log($isPublished);
+    var $isPublishedStatus = _getText(_strong(1, _near(_link("ReplicationInfoWorkflow"))));
+   _log($isPublishedStatus);
+    if ($isPublishedStatus == "SUCCESS"){
+	_log("ReplicationInfoWorkflow published successfully");
+   }
+    else{
+	_log("ReplicationInfoWorkflow is not published successfully... please check logs");
+}
+}
+
+
+/* * Function is for checking the Datalag Status after editing the RepInfo.TCL datalag greater than threshold.
+* 
+* @param :null
+* @return : null
+* @Author: Omprakash V 
+* */
+
+function Datalag_Threshold_Deviation(){
+	Check_DataLag_Status_Monitor();
+	var $datalagStatus = _getText(_div(1, _near(_div("Data Lag"))));
+		if ($datalagStatus==$datalag+" MB" ) {
+		_log("Datalag status is "+ $datalag);
+		} else {
+         _log("Datalag status update got failed");
+		}
+	 
+}
+
+ 
+
+/**
+* Function is for Modification of MYSQL XML workflow for SO
+*@param :null
+*@return : null
+*@Author: Omprakash V
+*
+*/
+
+function SO_Modify_WorkflowXML_Mysql(){
+	Modify_WorkflowXML_Mysql($fileSO);
+}
+
+/**
+* Function is for Modification of MYSQL XML workflow for SB
+*@param :null
+*@return : null
+*@Author: Omprakash V
+*
+*/
+function SB_Modify_WorkflowXML_Mysql(){
+	Modify_WorkflowXML_Mysql($fileSB);
+}
+
+/**
+* Function is for Modification of MYSQL XML workflow for FO
+*@param :null
+*@return : null
+*@Author: Omprakash V
+*
+*/
+function FO_Modify_WorkflowXML_Mysql(){
+	Modify_WorkflowXML_Mysql($fileFO);
+}
+
+/**
+* Function is for Modification of MYSQL XML workflow
+*@param :$file
+*@return : null
+*@Author: Omprakash V
+*
+*/
+function Modify_WorkflowXML_Mysql($file){
+	
+	var $fileread= _userDataDir() + "\\MySQL\\" + $file;
+	var $xmlStr =_readFile($fileread); 
+	var $newXmlStr = $xmlStr.replace('<?xml version="1.0" encoding="UTF-8"?>',"");
+	var $xml = new XML($newXmlStr); 
+	var $waitTime = "120";
+	$xml..action.(@id=="1").timeToExecute=$waitTime;
+	_writeFile($xml.toString(),$fileread, true); 
+}
+

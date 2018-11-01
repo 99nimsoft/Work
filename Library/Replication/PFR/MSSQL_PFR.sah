@@ -1,0 +1,110 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains Creation of Protection Scheme for both remote and local agents. 
+ ** AuthorName : Govinda Mengji
+ ** Created Date : July 2013
+ ************************************************************************/
+
+
+/**
+* Function is for Creating Protection Schemes in MSSQL  solution for PR.
+*@param :  null
+*@return : null
+* Author: Govinda Mengji
+*
+*/
+
+function Create_Mssql_ProtectionschemePR() {
+   Create_Mssql_ProtectionScheme($systemTypeProtection, $sernamePR,  $mgmtHostPFRPR);
+   }//end of Mssql_ProtectionschemePR()
+   
+/**
+* Function is for Creating Protection Schemes in MSSQL  solution for DR.
+*@param :  null
+*@return : null
+* Author: Govinda Mengji
+*
+*/
+function Create_Mssql_ProtectionschemeDR(){
+   Create_Mssql_ProtectionScheme($systemTypeProtection, $sernameDR,  $mgmtHostPFRDR);
+   }//end of Mssql_ProtectionschemeDR() 
+
+/**
+* Function is for Creating Protection Schemes in MSSQL  solution.
+*@param :  $systemType, $sername,  $mgmtHostPFR
+*@return : null
+* Author: Govinda Mengji
+*
+*/
+function Create_Mssql_ProtectionScheme($systemTypeProtection, $sername,  $mgmtHostPFR)
+  {
+	navigateToDiscovery();
+	_click(_link($OR_MSSQL_Subsystems));
+	_click(_link($OR_MSSQL_ProtectionSchemes));
+	if (_exists(_link($sername))) {
+		_assertExists($OR_MSSQL_Protectionschemealreadyexists);
+	} 
+	else {
+	_setSelected(_select($OR_MSSQL_systemType), $systemTypeProtection);
+	_click(_button($OR_MSSQL_Go));
+	_setSelected(_select($OR_MSSQL_mgmtHost_PFR2), $mgmtHostPFR);
+	_setValue(_textbox($OR_MSSQL_sername), $sername);
+	
+	var $i=0;
+    while (true) 
+    {
+           if (_exists(_link($OR_MSSQL_RegisterAgent))) {
+                  _click(_link($OR_MSSQL_RegisterAgent));
+                  _wait(10000);
+           }
+           
+       	var $status = _getCellText(_cell(1, _near(_cell($OR_MSSQL_Status))));
+    	if($status == $OR_MSSQL_CONNECTED)
+    	{
+    	_assertExists($OR_MSSQL_AgentisCONNECTED);
+    	}
+    	
+    	if($status == $OR_MSSQL_CONNECTED) {
+    		
+    		
+            _log($OR_MSSQL_goahead);
+            break;
+            
+    		
+             	  } 
+                  else 
+                  {
+                	navigateToDiscovery();
+              		_click(_link($OR_MSSQL_Subsystems));
+              		_click(_link($OR_MSSQL_ProtectionSchemes));
+              		_setSelected(_select($OR_MSSQL_systemType), $systemTypeProtection);
+              		_click(_button($OR_MSSQL_Go));
+              		_setSelected(_select($OR_MSSQL_mgmtHost_PFR2), $mgmtHostPFR);
+              		_setValue(_textbox($OR_MSSQL_sername), $sername);
+                                  if($i == 10 ){
+                                         _fail();
+                                  }
+                  }
+    _wait(10000);
+    $i++;
+    }
+	
+	_clearLastAlert();
+	_wait(1000);
+	_click(_button($OR_MSSQL_Save));
+	_wait(5000);
+	navigateToDiscovery();
+	_click(_link($OR_MSSQL_Subsystems));
+	_click(_link($OR_MSSQL_ProtectionSchemes));
+	if (_exists(_link($sername))) 
+	{
+	_assertExists($OR_MSSQL_ProtectionSchemescreatedsuccesfully);
+	} 
+	else 
+	{
+	_assertEqual($OR_MSSQL_ProtectionSchemecreated,_lastAlert()); 
+	_fail($OR_MSSQL_ProtectionSchemesnotcreatedsuccesfully);
+	}
+ }
+}

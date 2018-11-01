@@ -1,0 +1,61 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are the part of DB2_HADR solution generating events.
+ ** AuthorName : Anantha Sakthi
+ ** Created Date : October 2013
+ ************************************************************************/
+
+
+/**
+* Function is for remote agent stop the DB2_HADR agent from back end for PR
+*@param : null
+*@return : null
+*@Author: Anantha Sakthi
+*
+*/
+
+function DB2_HADR_Local_PR_Agent_Stop_Event() {
+	var $server = Get_Local_Agent_Event($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "DB2Agent.sh stop ");
+
+	Event_Verification($server.get("Server Time"), $groupName, "BCSDB2LogEvent101", "Primary:DB2 Agent is Down ", "Critical");
+}// End of DB2_HADR_Local_PR_Mysq_Agent_Stop_Event
+
+
+/**
+* Function is for remote agent stop the DB2_HADR agent from back end for DR
+*@param : null
+*@return : null
+*@Author: Anantha Sakthi
+*
+*/
+function DB2_HADR_Local_DR_Agent_Stop_Event() {
+	var $server = Get_Local_Agent_Event($compIPDR, $remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "DB2Agent.sh stop ");
+
+	Event_Verification($server.get("Server Time"), $groupName, "BCSDB2LogEvent102", "DR:DB2 Agent is Down ", "Critical");
+}// End of Remote_PR_LinuxAgent_Stop
+
+/**
+* Function is for Local agent start the DB2_HADR agent from back end for PR.
+*@param : null
+*@return : null
+*@Author: Anantha Sakthi
+*
+*/
+
+function DB2_HADR_Local_PR_Agent_Start_Event() {
+	var $server = Get_Local_Agent_Event($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "DB2Agent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSDB2LogEvent104", "Primary:DB2 Agent is Up ", "Information");
+}// End of Remote_PR_DB2_HADR_Agent_Start_Event
+
+/**
+* Function is for Local agent start the DB2_HADR agent from back end for DR.
+*@param : null
+*@return : null
+*@Author: Anantha Sakthi
+*
+*/
+function DB2_HADR_Local_DR_Agent_Start_Event() {
+	var $server = Get_Local_Agent_Event($compIPDR, $remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "DB2Agent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSDB2LogEvent105", "DR:DB2 Agent is Up ", "Information");
+}// End of Remote_DR_DB2_HADR_Agent_Start_Event

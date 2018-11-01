@@ -1,0 +1,30 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains APP PFR Solution specific
+ ** AuthorName : Anita Gaded
+ ** Created Date : Mar 2017
+ ***********************************************************************************************/
+
+var $l_Db2HADREvent=_readExcelFile($SAHI_HOME + "\\Library\\Solution_Signature\\DB2_FDB_HP3PAR\\ObjectRepository\\DB2_FDB_HP3PAR_ObjectRepository.xls","Events");
+
+//APP PFR Event.sah web objects
+
+
+if($BrowserLang == "N"){
+	
+	var $colno = 2;
+}
+else if($BrowserLang == "Y-JA"){
+	
+	var $colno = 3;
+	}
+
+else if($BrowserLang == "Y-EN"){
+	
+		var $colno = 3;
+	}
+var $DataLagDev= $l_Db2HADREvent[4][$colno]; 
+var $RepUnknown= $l_Db2HADREvent[5][$colno]; 
+var $RepStop= $l_Db2HADREvent[6][$colno];
+

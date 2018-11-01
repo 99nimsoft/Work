@@ -1,0 +1,1336 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Sybaselication Name : DRM 
+ ** Objective : This script contains all the functions which are the part of  Sybase PFR solution screen wise fetching and comparing data from Db and GUI. 
+ ** @AuthorName : Govinda Mengji
+ ** Created Date : Nov 2013
+ ************************************************************************/
+
+/**
+ * Function is for Functional Group creation for Sybase_PFR solution.
+ * @param :$groupName,$groupDescription, $SolutionSignature, $primaryComponents,
+ *         $remoteComponents, $primaryDatasets, $remoteDatasets,
+ *         $primaryProtections, $remoteProtections
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+function Creation_Sybase_PFR_Group() {
+	$groupCreation = Create_FG($groupName, $groupDescription, $SolutionSignature, $primaryComponents, $remoteComponents, $primaryDatasets, $remoteDatasets, $primaryProtections, $remoteProtections);
+	if ($groupCreation.get("flag") == 0) {
+		_log("Same group name already exists");
+	} else {
+		
+		_wait(50000, _button("Submit"));
+		
+		_setValue(_textbox("PriDumPath"),$primaryDumPath);
+		_setValue(_textbox("DRDumPath"), $secondaryDumPath);
+		_setValue(_textbox("PriLogPath"),$primaryLogPath);
+		_setValue(_textbox("DrLogPath"), $secondaryLogPath);
+		_setValue(_textbox("ReplicationInterval"), 300);
+		_click(_button("Submit"));
+		//_click(_submit("Submit"));
+		
+		_click(_link("License"));
+		_click(_checkbox("Recovery"));
+		_click(_checkbox("Test"));
+		_click(_button("licensebutton"));		
+		
+		_click(_link("RPO/RTO"));
+		_setValue(_textbox("rpoint1"), "180");
+		_click(_button("apply"));
+		_click(_button("Finish"));
+        _wait(5000);
+        navigateToGroups();
+		if (_exists(_link($groupName))) {
+			_assertExists("Group created succesfully");
+		} else {
+			_fail("Group not created succesfully.So that stopping execution.");
+		}
+	}
+}// End Of Sybase_FG_PFR_Group_Creation
+
+/**
+ * Function is for Post Group Creation Discovery > Groups > Solution Details >
+ * Show Advanced Configuration Post SO.
+ * @param :null
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function Post_Group_Creation_Post_SO(){
+	
+	Post_Group_Creation_Details($groupName);
+}
+
+/**
+ * Function is for Post Group Creation Discovery > Groups > Solution Details >
+ * Show Advanced Configuration before SO.
+ * @param :null
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+function Post_Group_Creation(){
+	
+	Post_Group_Creation_Details($groupName);
+}
+
+/**
+ * Function is for Post Group Creation Discovery > Groups > Solution Details.
+ * @param :$groupName
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+function Post_Group_Creation_Details($groupName){
+	_click(_link("Admin"));
+	navigateToDiscovery();
+	_click(_link("Groups"));
+	_click(_heading4(10));
+	_click(_link($groupName));
+	_click(_link("Solution Details"));
+	
+	// /PR Side
+	var $primaryDevice= _getCellText(_textbox("PrimaryDevice0"));
+	_assertExists("Primary Device at GUI",$primaryDevice);
+    
+	
+	
+	_assertTrue($primaryLogPath == $primaryDevice, "Primary Device is Equal in GUI and db");
+	
+    
+    _wait(1000);
+    var $currentDisk=Disk_Space_utilization_Sybase($compIPPR, $remoteUserNameValPR, $remotePwdValPR);
+    var $currentDiskDB=$currentDisk.get("Disk Space");
+    _assertExists("Disk Space PR DB",$currentDiskDB);
+    
+    _wait(1000);
+	var $currentDiskPR1=_getCellText(_cell(1,_near(_cell("Current Disk Utilization:"))));
+	_assertExists("Current Disk Utilization from GUI", $currentDiskPR);
+	var $currentDiskPR2=$currentDiskPR1.split(" ");
+	var $currentDiskPR=($currentDiskPR2[0]+$currentDiskPR2[1]);
+		
+	_assertTrue($currentDiskPR<=$currentDiskDB, "Current Disk is Equal in GUI and db");
+	  
+	// /DR Side
+		
+	var $secondaryDevice= _getCellText(_textbox("SecondaryDevice1"));
+	_assertExists("Secondary Device at GUI",$secondaryDevice);
+	_assertTrue($secondaryLogPath == $secondaryDevice, "Secondary Device is Equal in GUI and db");	
+	_wait(1000);
+    var $currentDisk=Disk_Space_utilization_Sybase($compIPDR, $remoteUserNameValDR, $remotePwdValDR);
+    var $currentDiskDBDR=$currentDisk.get("Disk Space");
+    _assertExists("Disk Space DR DB",$currentDiskDBDR);
+    
+   
+    _wait(1000);
+	var $currentDiskDR1=_getCellText(_cell(1,_near(_cell("Current Disk Utilization:[1]"))));
+	var $currentDiskDR2=$currentDiskDR1.split(" ");
+	var $currentDiskDR=($currentDiskDR2[0]+$currentDiskDR2[1]);
+	
+	_assertExists("Current Disk Utilization from GUI", $currentDiskDR);
+	
+	_assertTrue($currentDiskDR<=$currentDiskDBDR, "Current Disk is Equal in GUI and db");
+	
+}
+
+/**
+* Function is for Verification of replication status in replication page after SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*@Modifier: Govinda Mengji
+*
+*/
+function Sybase_PFR_Replication_Post_SO() {
+	PFR_Replication_status($groupName,$compIPDR,$remoteUserNameValDR,$remotePwdValDR,"SO");
+}
+
+/**
+* Function is for Verification of replication status in replication page before SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*@Modifier: Govinda Mengji
+*
+*/
+function Sybase_PFR_Replication() {
+
+	PFR_Replication_status($groupName,$compIPPR,$remoteUserNameValPR,$remotePwdValPR,"NormalCopy");
+	}
+
+
+
+/**
+ * Function is for Verification of in replication page .
+ * @param :$groupName,$compIP,$remoteUserNameVal,$remotePwdVal,$WFType
+ * @return : null
+ * @Author: Govinda Mengji
+ */
+function Sybase_PFR_Replication_Status($groupName,$compIP,$remoteUserNameVal,$remotePwdVal,$WFType){
+	NavigateToRGDetailsPage($groupName);
+	_click(_link("Replication"));
+	
+    var $filesetNameGUI= _getText(_span(1,_near(_span("Protection:"))));
+    _log($filesetNameGUI);
+    //var $abc=$filesetNameGUI1.split("[");
+    //var $filesetNameGUI=$abc[0];
+    
+    $path = "/opt/PFR/panacesFileReplicator/filesets/" + $filesetNameGUI + "/" ; 
+    
+    Replication_Details($groupName,$WFType);
+     
+    _click(_span("glyphicon icon-caret-right"));
+    
+     // //Total Replicated Actual Size
+	var $sshCommand = "grep FILESET_TOTAL_REPLICATED_ACTUALSIZE= " + $path + $filesetNameGUI + ".rt";
+	var $totalreplication = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	var $totalreplicationsize=$totalreplication.split("=");
+    var $totalreplicationactualsize=($totalreplicationsize[1]);
+
+	var $TotalReplicationactualSizedb=($totalreplicationactualsize+" "+ "Bytes");
+	_assertExists("Total Replication Actual Size from db", $TotalReplicationactualSizedb);
+	
+	var $totalReplicatedActualSizeGUI=_getText(_span(0,_rightOf(_span("Total Replicated Actual Size"))));
+    _assertExists("Total Replicated Actual Size from GUI" ,  $totalReplicatedActualSizeGUI);
+
+	_assertEqual($TotalReplicationactualSizedb,$totalReplicatedActualSizeGUI, "Validate value from db and GUI Total Replicated Actual Size");
+  
+    // //FILESET_RECENT_FILES_REPLICATED
+	
+	var $sshCommand = "grep FILESET_RECENT_FILES_REPLICATED= " + $path+ $filesetNameGUI + ".rt";
+	var $lastReplicatedFile1= SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+ 	
+ 	
+ 	var $lastReplicatedFile2=$lastReplicatedFile1.split("=");
+    var $lastReplicatedFiledb=($lastReplicatedFile2[1]);
+ 	
+    
+	_assertExists("Last Replicated File from db", $lastReplicatedFiledb);
+	 
+	var $lastReplicatedFileGUI=_getCellText(_span(0,_rightOf(_span("Last Replicated File"))));
+    _assertExists("Last Replicated File from GUI" ,$lastReplicatedFileGUI);
+     
+	_assertEqual($lastReplicatedFiledb,$lastReplicatedFileGUI , "Valiadate value from db and GUI Last Replicated File");
+	 
+	// //
+	var $sshCommand = "grep FILESET_RECENT_FILES_REPLICATED_SIZE= " + $path+ $filesetNameGUI + ".rt";
+	var $lastReplicatedFilesize1 = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+ 	
+ 
+ 	var $lastReplicatedFilesize2=$lastReplicatedFilesize1.split("=");
+    var $lastReplicatedFilesize3=($lastReplicatedFilesize2[1]);
+ 	var  $lastReplicatedFilesizedb=($lastReplicatedFilesize3 +" "+ "Bytes");
+    
+	_assertExists("Last Replicated File size from  db", $lastReplicatedFilesizedb);
+	 
+	var $lastReplicatedFilesizeGUI=_getCellText(_span(0,_rightOf(_span("Last Replicated File size"))));
+    _assertExists("Last Replicated File size from GUI" ,$lastReplicatedFilesizeGUI);
+     
+	_assertEqual($lastReplicatedFilesizedb,$lastReplicatedFilesizeGUI , "Valiadate value from db and GUI Last Replicated File size");
+	 
+	 
+	
+	// /
+    var $sshCommand = "grep  REPLICATION_THRUPUT= " + $path+ $filesetNameGUI + ".rt";
+    var $throughput = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+ 	
+ 	
+ 	var $throughputdb0=$throughput.split("=");
+    var $throughputdb2=($throughputdb0[1]);
+ 
+ 	var  $throughputdb=($throughputdb2+" "+"Bytes/Sec");
+	 
+	_assertExists("Throughtput from db", $throughputdb);
+	 
+	var $throughputGUI= _getCellText(_span(0,_rightOf(_span("Throughput"))));
+    _assertExists("Throughtput from GUI", $throughputGUI);
+	 
+	_assertEqual($throughputdb,$throughputGUI, "Validate Throughput"); 
+	
+
+
+}
+
+// Replication Status for LOCAL and REMOTE
+
+
+
+
+
+
+/**
+ * Function is for Verification of the all RPO detail from RPO/RTO screen for
+ * Sybase PFR solution before SO
+ * @param :null
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ * 
+ */
+function Sybase_PFR_Rpo() {
+
+Sybase_PFR_Rpo_Status($groupName,$compIPPR,$database,$usernamedbPR,$passwordPR);
+
+}// End of Sybase_Rpo()
+
+/**
+ * Function is for Verification of the all RPO detail from RPO/RTO screen for
+ * Sybase PFR solution.
+ * @param :$groupName,$compIP,$database,$usernamedb,$password
+ * @return : $dbRecoveryPoint
+ * @Author: Govinda Mengji
+ * 
+ */
+function Sybase_PFR_Rpo_Status($groupName,$compIP,$database,$usernamedb,$password) {
+
+	navigateToRPO($groupName);
+	_click(_link("icon-right-arrow ex-col-arrow collapsed"));
+	
+	
+	// PR
+
+	var $lastTransactionIDGUI= _getText(_div(1, _near(_div("Last Transaction ID"))));
+	_assertExists($lastTransactionIDGUI ,"Last Transaction ID from GUI");
+	var $lastTransactionIDGUIPR = parseInt($lastTransactionIDGUI,16);
+	_log($lastTransactionIDGUIPR);
+
+
+    var $lastTransactionTimeGUI=_getCellText(_div(1, _near(_div("Last Transaction Time"))));
+	_assertExists($lastTransactionTimeGUI ,"Last Transaction Time from GUI");
+    var $date = $lastTransactionTimeGUI;
+    var $dateString = $date.toString();
+    var $lastTransactionTimeGUIPR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+    _assertExists("TimeStamp DR", $lastTransactionTimeGUIPR);
+
+	// DR
+	
+	var $lastTransactionIDGUIDR=_getCellText(_div(1, _near(_div("Last Transaction ID[1]"))));
+	_assertExists($lastTransactionIDGUIDR ,"Last Transaction ID from GUI");
+	var $lastTransactionIDDR = parseInt($lastTransactionIDGUIDR,16);
+	_log($lastTransactionIDDR);
+	
+	var $lastTransactionTimeGUI=_getCellText(_div(1, _near(_div("Last Transaction Time[1]"))));
+	_assertExists($lastTransactionTimeGUI ,"Last Transaction Time from GUI");
+	 var $date = $lastTransactionTimeGUI;
+    var $dateString = $date.toString();
+	var $lastTransactionTimeGUIDR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+	 _assertExists("TimeStamp DR", $lastTransactionTimeGUIDR);
+	
+	
+/*	// db Connection
+	 var $db = Get_Sybase_Connection_URL($compIP,$database,$usernamedb);
+	// var $time = currentTime();
+	 $db.update("CREATE TABLE [dbo].[Table_abc](" +
+	 			"[col1] [varchar](50) NULL," +
+	 			"[col2] [varchar](50) NULL," +
+	 			"[col3] [varchar](50) NULL," +
+	 			"[col4] [varchar](50) NULL," +
+	 			"[col5] [varchar](50) NULL" +
+	              ")"); 
+	 */
+	 
+	 $count = 0;
+		while($count<10){
+			_wait(30000);
+			$count++;
+			}
+			
+	 
+	
+	// PR
+
+	var $lastTransactionIDdb=_getText(_div(1, _near(_div("Last Transaction ID"))));
+	_assertExists($lastTransactionIDdb ,"Last Transaction ID from GUI");
+	var $lastTransactionIDdbPR = parseInt($lastTransactionIDdb,16);
+	_log($lastTransactionIDdbPR);
+
+
+    var $lastTransactionTimePRdb=_getCellText(_div(1, _near(_div("Last Transaction Time"))));
+	_assertExists($lastTransactionTimePRdb ,"Last Transaction Time from GUI");
+	 var $date = $lastTransactionTimePRdb;
+	 var $dateString = $date.toString();
+    var $lastTransactionTimedbPR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+   _assertExists("TimeStamp DR", $lastTransactionTimedbPR);
+		
+
+	// DR
+	
+	var $lastTransactionIDdbDR=_getCellText(_div(1, _near(_div("Last Transaction ID[1]"))));
+	_assertExists($lastTransactionIDdbDR ,"Last Transaction ID from GUI");
+	var $lastTransactionIDDRdb = parseInt($lastTransactionIDdbDR,16);
+	_log($lastTransactionIDDRdb);
+	
+	var $lastTransactionTimeDRdb=_getCellText(_div(1, _near(_div("Last Transaction Time[1]"))));
+	_assertExists($lastTransactionTimeDRdb ,"Last Transaction Time from GUI");
+	var $date = $lastTransactionTimeDRdb;
+	var $dateString = $date.toString();
+    var $lastTransactionTimedbDR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+   _assertExists("TimeStamp DR", $lastTransactionTimedbDR);
+	
+	
+	
+   
+    _assertTrue($lastTransactionIDGUIPR<=$lastTransactionIDdbPR ,"Comparing Last Transaction ID PR from GUI and db");
+    _assertTrue($lastTransactionTimeGUIPR<=$lastTransactionTimedbPR,"Comparing Last Transaction Time PR from GUI and db" );
+    _assertTrue($lastTransactionIDDR<=$lastTransactionIDDRdb, "Comparing Last Transaction ID DR from GUI and db");
+    _assertTrue($lastTransactionTimeGUIDR<=$lastTransactionTimedbDR, "Comparing Last Transaction Time DR from GUI and db" );
+	
+	// Calling Calulate_Rpo function to verify RPO calculation from gui
+	$dbRpo = Calulate_Rpo($lastTransactionTimePRdb,$lastTransactionTimeDRdb);
+    $recoveryPointinDB = $dbRpo.get("recoveryPointDB");
+    
+    $dbRecoveryPoint = new java.util.Properties();
+ 	$dbRecoveryPoint.put("RecoveryPointDB", $recoveryPointinDB);
+	return $dbRpo;
+	return $dbRecoveryPoint;
+	
+}// End Of Sybase PFR RPO
+
+/**
+ * Function is for Verification of the all RTO detail from RPO/RTO screen for
+ * Sybase PFR solution
+ * @param :null
+ * @return : $dbRto
+ * @Author: Govinda Mengji
+ * 
+ */
+
+/*function Sybase_PFR_Rto() {
+	navigateToRTO($groupName);
+	// verification of current RTO :
+
+	
+	var $step1 = (_getText(_svg_tspan(23, _near(_svg_tspan("Production Pre-check")))));
+	var $stp1=$step1.split(" ");
+	var $stepName1= parseInt($stp1[0]);
+
+	var $step2 = (_getText(_svg_tspan(24, _near(_svg_tspan("Custom action for Remote")))));
+	var $stp2=$step2.split(" ");
+	var $stepName2= parseInt($stp2[0]);
+
+	var $step3 = (_getText(_svg_tspan(25, _near(_svg_tspan("Custom Action 1")))));
+	var $stp3=$step3.split(" ");
+	var $stepName3= parseInt($stp3[0]);
+
+	var $step4 = (_getText(_svg_tspan(26, _near(_svg_tspan("Stop PFR Services")))));
+	var $stp4=$step4.split(" ");
+	var $stepName4= parseInt($stp4[0]);
+
+	var $step5 = (_getText(_svg_tspan(27, _near(_svg_tspan("Load the pending")))));
+	var $stp5=$step5.split(" ");
+	var $stepName5= parseInt($stp5[0]);
+
+	var $step6 = (_getText(_svg_tspan(28, _near(_svg_tspan("Recover the database on")))));
+	var $stp6=$step6.split(" ");
+	var $stepName6= parseInt($stp6[0]);
+	
+	var $step7 = (_getText(_svg_tspan(29, _near(_svg_tspan("Check database")))));
+	var $stp7=$step7.split(" ");
+	var $stepName7= parseInt($stp7[0]);
+	
+	var $step8 = (_getText(_svg_tspan(30, _near(_svg_tspan("Start the application on")))));
+	var $stp8=$step8.split(" ");
+	var $stepName8= parseInt($stp8[0]);
+	
+	var $expectedCompletionTime = Math.floor($stepName1 + $stepName2 + $stepName3 + $stepName4 + $stepName5 + $stepName6 + $stepName7 + $stepName8);
+	_assertExists("Expected completion time", $expectedCompletionTime);
+
+	// Calling function Calculate_Rto from Group_manager.sah
+	$dbRto = Calculate_Rto($expectedCompletionTime);
+	return $dbRto;
+
+} // End of Sybase_PFR RTO
+*/
+
+
+function Sybase_PFR_Rto() {
+	navigateToRTO($groupName);
+	// verification of current RTO :
+	
+		
+	//Custom action for Production Pre-check
+	_mouseOver(_svg_rect(15));
+    var $stepName1= RTO_Calculate();
+	
+	//Custom action for Remote Pre-check
+	_mouseOver(_svg_rect(17));
+    var $stepName2= RTO_Calculate();
+	
+	//Custom Action 1
+	_mouseOver(_svg_rect(17));
+    var $stepName3= RTO_Calculate();
+	
+	//Stop PFR Services
+	_mouseOver(_svg_rect(18));
+    var $stepName4= RTO_Calculate();
+	
+	//Load the pending
+	_mouseOver(_svg_rect(19));
+    var $stepName5= RTO_Calculate();
+	
+	//Recover the database on
+	_mouseOver(_svg_rect(20));
+    var $stepName6= RTO_Calculate();
+	
+	 //Check database
+     _mouseOver(_svg_rect(21));
+     var $stepName7= RTO_Calculate();
+	 	 	
+	 //Start the application on
+     _mouseOver(_svg_rect(22));
+	   var $stepName8= RTO_Calculate();
+	 
+	 var $expectedCompletionTime = Math.floor($stepName1 + $stepName2 + $stepName3 + $stepName4 + $stepName5 + $stepName6 + $stepName7 + $stepName8);
+	_assertExists("Expected completion time", $expectedCompletionTime);
+
+	// Calling function Calculate_Rto from Group_manager.sah
+	$dbRto = Calculate_Rto($expectedCompletionTime);
+	return $dbRto;
+
+}//End of Sybase_PFR RTO
+
+
+/**
+ * Function is for Verification of details in Manage-Manage DR Solution screen
+ * for Sybase_PFR solution Post SO
+ * @param :$groupName,"SO"
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ *//*
+
+function Sybase_PFR_Managedrsolution_PostSO() {
+	Sybase_PFR_Managedrsolution_Status($groupName,"SO");
+} // End of Sybase_PFR_Managedrsolution_PostSO()
+
+*//**
+ * Function is for Verification of details in Manage-Manage DR Solution screen
+ * for Sybase_PFR solution before SO
+ * @param :$groupName
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ *//*
+function Sybase_PFR_Managedrsolution() {
+	Sybase_PFR_Managedrsolution_Status($groupName);
+}// End of Sybase_PFR_Managedrsolution()
+
+
+*//**
+ * Function is for Verification of details in Manage-Manage DR Solution screen
+ * for Sybase_PFR solution.
+ * @param $groupName,$WFType
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ *//*
+function Sybase_PFR_Managedrsolution_Status($groupName,$WFType){
+	_click(_link("Manage"));
+	_click(_link("Groups List View"));
+	_click(_link($groupName));
+	_click(_link("Manage DR Solution"));
+
+	// calling Group_ManageGroupInformation to verify the PR and DR site status
+	Group_Managedrsolution($WFType);
+
+	navigateToDiscovery();
+	_click(_link("Groups"));
+	_click(_link("Subsystems"));
+	_click(_link("Protection Schemes"));
+	_wait(1000);
+	_click(_link($sernamePR, _near(_cell($systemTypeProtection))));
+	
+	var $filesetName=_getCellText(_cell(1,_near(_cell("Protection Scheme Fileset Name:"))));
+
+	// Getting value of Pair name from GUI
+	_click(_link("Manage"));
+	_click(_link("Groups List View"));
+	_click(_link($groupName));
+	_click(_link("Manage DR Solution"));
+ 
+	var $filesetNameGUI=_getCellText(_cell(1,_near(_cell("Fileset Name:"))));
+	
+	_assertEqual($filesetName,$filesetNameGUI, "Validating FilesetName");
+
+
+	var $protectionMechanism = _getCellText(_cell(1, _near(_cell("Protection Mechanism:"))));
+	_assertExists("Protection Mechanism is:", $protectionMechanism);
+	_assertEqual($systemTypeProtection, $protectionMechanism, "Validating Protection Mechanism in GUI");
+	
+	var $replicationStatusGui = _getText(_cell(1, _near(_cell("Replication Status:"))));
+	_assertExists("Replication Status:", $replicationStatusGui);
+	
+	
+ 
+}// end Of Sybase_PFR_Managedrsolution_Status()
+
+
+*/
+
+/**
+ * Function is for Validation of logs in Monitor > GroupSnapshot screen for
+ * SybasePFR solution before SO.
+ * @param :null
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+/*function Sybase_PFR_Groupsnapshot() {
+	
+	Sybase_PFR_Groupsnapshot_Status($groupName,$compIPPR,$database,$usernamedbPR,$passwordPR);
+}// End of Sybase_Groupsnapshot()
+
+*//**
+ * Function is for Validation of logs in Monitor > GroupSnapshot screen for
+ * SybasePFR solution.
+ * @param :$groupName,$compIP,$database,$usernamedb,$password,$WFType
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ * 
+ *//*
+
+function Sybase_PFR_Groupsnapshot_Status($groupName,$compIP,$database,$usernamedb,$password,$WFType) {
+	Popup_Handler();
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("Group Snapshot"));
+
+	// verifying Recovery Point
+	if ($WFType == "SO") {
+		if (_exists(_cell("Not supported in Switchover mode"))) {
+			_log("So done successfully");
+		} else {
+			_log("Gui not showing correct value");
+		}
+		// calling Mysql_RPO_Post_SO function
+		
+		Sybase_PFR_Rpo_Post_SO();
+
+	} else {
+		// calling Mysql_RPO function
+		 Sybase_PFR_Rpo();
+	}
+	
+	var $recoveryPointGui1 = _getText(_span(1, _near(_span("DR Data Consistent up to:"), _near(_cell("Continuity")))));
+	 var $date = $recoveryPointGui1;
+     var $dateString = $date.toString();
+     var $recoveryPointGui = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+	
+	_assertExists("Recovery Point DR Data Consistent up to:", $recoveryPointGui);
+ 	if($recoveryPointinDB == $recoveryPointGui){
+	_assertEqual($recoveryPointinDB, $recoveryPointGui, "Validating Recovery Point DR Data Consistent upto correct in GUI");
+ 	}
+ 	else {
+ 		_log("Validating Recovery Point DR Data Consistent is not  correct in GUI");
+ 	}
+	// Verfing Recovery time
+	if ($WFType == "SO") {
+		if (_exists(_cell("Not supported in Switchover mode"))) {
+			_log("Not supported in Switchover mode");
+		}
+	} else {
+		Popup_Handler();
+		_click(_link("Monitor"));
+		_click(_link($groupName));
+		_click(_link("Group Snapshot"));
+		var $recoveryTimeGui1 = (_getText(_cell(5, _near(_span("Est. time to recover:", _near((_cell("Recovery Time")))))))).split("Est. time to recover:");
+		var $recoveryTimeGui = $recoveryTimeGui1[1];
+		_assertExists("Recovery Time  Est. time to recover:", $recoveryTimeGui);
+		// calling function to calculate rto for Recovery Time
+		var $dbRto = Sybase_PFR_Rto($groupName);
+		Popup_Handler();
+		_click(_link("Monitor"));
+		_click(_link($groupName));
+		_click(_link("Group Snapshot"));
+		_assertEqual($dbRto.get("actualRtoDB"), $recoveryTimeGui, "Validating Recovery Time  Est. time to recover correct in GUI");
+	}
+	Popup_Handler();
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("Group Snapshot"));
+	var $continuityOperation = _getText(_cell(1, _near(_cell("Continuity Operation:"))));
+	_assertExists("Continuity Operation:", $continuityOperation);
+// /
+	
+	// PR
+	var $lastLogFileDumpedGUI = _getCellText(_cell(1,_near(_cell("Last Log File Dumped :"))));    
+	_assertExists("Last Log File Dumped from GUI" ,$lastLogFileDumpedGUI);
+	var $lastLogFileDumpedGUI2=$lastLogFileDumpedGUI.split("_");
+	var $LastLogFileDumpedGUI=($lastLogFileDumpedGUI2[3]);
+
+
+	var $lastLogFileDumpedatGUI = _getCellText(_cell(1,_near(_cell("Last Log File Dumped at :"))));    
+	_assertExists("Last Log File Dumped at from GUI" ,$lastLogFileDumpedatGUI);
+	var $date = $lastLogFileDumpedatGUI;
+	var $dateString = $date.toString();
+	var $lastLogFileDumpedatGUIPR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+
+
+	// DR
+	var $lastLogFileLoadedGUI = _getCellText(_cell(1,_near(_cell("Last Log File Loaded :"))));    
+	_assertExists("Last Log File Loaded from GUI" ,$lastLogFileLoadedGUI);
+	var $lastLogFileLoadedGUI2=$lastLogFileLoadedGUI.split("_");
+	var $LastLogFileLoadedGUI=($lastLogFileLoadedGUI2[3]);
+
+
+	var $lastLogFileLoadedatGUI = _getCellText(_cell(1,_near(_cell("Last Log File Loaded at :"))));    
+	_assertExists("Last Log File Loaded at from GUI" ,$lastLogFileLoadedatGUI);
+	var $date = $lastLogFileLoadedatGUI;
+	var $dateString = $date.toString();
+	var $lastLogFileLoadedatGUIDR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+
+	  
+	// db Connection
+	var $db = Get_Sybase_Connection_URL($compIP,$database,$usernamedb,$password);
+	var $time = currentTime();
+	$db.update("CREATE TABLE [dbo].[Table_"+$time+"](" +
+				"[col1] [varchar](50) NULL," +
+				"[col2] [varchar](50) NULL," +
+				"[col3] [varchar](50) NULL," +
+				"[col4] [varchar](50) NULL," +
+				"[col5] [varchar](50) NULL" +
+	             ")"); 
+		
+	$count = 0;
+	while($count<10){
+		_wait(30000);
+		$count++;
+		}
+		
+
+	// PR
+	var $lastLogFileDumped = _getCellText(_cell(1,_near(_cell("Last Log File Dumped :"))));    
+	_assertExists("Last Log File Dumped" ,$lastLogFileDumped);
+	var $lastLogFileDumped2=$lastLogFileDumped.split("_");
+	var $LastLogFileDumped=($lastLogFileDumped2[3]);
+
+
+	var $lastLogFileDumpedat = _getCellText(_cell(1,_near(_cell("Last Log File Dumped at :"))));    
+	_assertExists("Last Log File Dumped" ,$lastLogFileDumpedat);
+	var $date = $lastLogFileDumpedat;
+	var $dateString = $date.toString();
+	var $lastLogFileDumpedatPR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+
+
+	// DR
+	var $lastLogFileLoaded = _getCellText(_cell(1,_near(_cell("Last Log File Loaded :"))));    
+	_assertExists("Last Log File Loaded" ,$lastLogFileLoaded);
+	var $lastLogFileLoaded2=$lastLogFileLoaded.split("_");
+	var $LastLogFileLoaded=($lastLogFileLoaded2[3]);
+
+
+	var $lastLogFileLoadedat = _getCellText(_cell(1,_near(_cell("Last Log File Loaded at :"))));    
+	_assertExists("Last Log File Loaded" ,$lastLogFileLoadedat);
+	var $date = $lastLogFileLoadedat;
+	var $dateString = $date.toString();
+	var $lastLogFileLoadedatDR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+
+	    
+	_assertTrue($LastLogFileDumpedGUI<=$LastLogFileDumped, "Last Log File Dumped is Equal in GUI and db");             
+
+	_assertTrue($lastLogFileDumpedatGUIPR<=$lastLogFileDumpedatPR, "Last Log File Dumped at is Equal in GUI and db");
+
+	_assertTrue($LastLogFileLoadedGUI<=$LastLogFileLoaded, "Last Log File Loaded is Equal in GUI and db");
+
+	_assertTrue($lastLogFileLoadedatGUIDR<=$lastLogFileLoadedatDR, "Last Log File Loaded at is Equal in GUI and db");
+
+
+	
+	
+	
+}
+// End Of Sybase PFRGroupsnapshot()
+*/
+
+/**
+* Function is for verification of details in Manage-Group Information screen for APP_PFR solution Before SO
+*@param : null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+function Sybase_PFR_Continuity_Workflows_Post_SO() {
+	Sybase_Continuity_Workflows($groupName,$datasetNameDR,$compIPDR,$remoteUserNameValDR,$remotePwdValDR, "ReverseNormalCopy");
+}// End of APP_Groupinformation()
+
+
+/**
+* Function is for verification of details in Manage-Group Information screen for APP_PFR solution Before SO
+*@param : null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+function Sybase_PFR_Continuity_Workflows_Pre_SO() {
+	Sybase_Continuity_Workflows($groupName,$datasetNamePR,$compIPPR,$remoteUserNameValPR,$remotePwdValPR, "NormalCopy");
+}// End of Continuity_Workflows()
+
+
+/**
+ * Function is for verification of details in Manage-Continuity_Workflows screen
+ * for Sybase_PFR solution Before SO
+ * @param :$groupName,$compIP,$database,$usernamedb,$password,$WFType
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+function Sybase_Continuity_Workflows($groupName,$datasetName,$compIP,$remoteUserNameVal,$remotePwdVal,$WFType)
+{
+
+	NavigateToRGDetailsPage($groupName);
+	_click(_link("icon-right-arrow ex-col-arrow collapsed", _near(_link($WFType))));
+// calling Group_ManageGroupInformation to verify the PR and DR site status
+   
+
+// PR
+
+
+var $i=0;
+while($i<10){
+	  
+	var $lastLogFileDumpedGUI = _getText(_heading5("/Last Log File Dumped:.*/"));
+	_assertExists("Last Log File Dumped from GUI" ,$lastLogFileDumpedGUI);
+	var $lastLogFileDumpedGUI2=$lastLogFileDumpedGUI.split("_");
+	var $LastLogFileDumpedGUI=($lastLogFileDumpedGUI2[4]);
+if($lastLogFileDumpedGUI =="N/A") {
+	_wait(30000);
+}
+
+else
+	{
+	break;
+	_log("Go Ahead");
+	}
+$i++;
+}
+
+
+
+var $lastLogFileDumpedatGUI = _getText(_heading5("/Last Log File Dumped at:.*/"));   
+_assertExists("Last Log File Dumped at from GUI" ,$lastLogFileDumpedatGUI);
+var $date1=$lastLogFileDumpedatGUI.split("at:");
+var $date2=$date1[1];
+var $date = $date2;
+var $dateString = $date.toString();
+var $lastLogFileDumpedatGUIPR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+
+
+// DR
+var $lastLogFileLoadedGUI = _getText(_heading5("/Last Log File Loaded:.*/"));    
+_assertExists("Last Log File Loaded from GUI" ,$lastLogFileLoadedGUI);
+var $lastLogFileLoadedGUI2=$lastLogFileLoadedGUI.split("_");
+var $LastLogFileLoadedGUI=($lastLogFileLoadedGUI2[4]);
+
+
+var $lastLogFileLoadedatGUI = _getText(_heading5("/Last Log File Loaded at:.*/"));
+_assertExists("Last Log File Loaded at from GUI" ,$lastLogFileLoadedatGUI);
+var $date1 = $lastLogFileLoadedatGUI.split("at:");
+var $date2= $date1[1];
+var $date= $date2;
+var $dateString = $date.toString();
+var $lastLogFileLoadedatGUIDR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+
+  
+// db Connection
+var $db = Get_Sybase_Connection_URL($compIP,$database,$usernamedb,$password);
+var $time = currentTime();
+$db.update("CREATE TABLE [dbo].[Table_"+$time+"](" +
+			"[col1] [varchar](50) NULL," +
+			"[col2] [varchar](50) NULL," +
+			"[col3] [varchar](50) NULL," +
+			"[col4] [varchar](50) NULL," +
+			"[col5] [varchar](50) NULL" +
+             ")"); 
+	
+$count = 0;   
+while($count<10){
+	_wait(30000);
+	$count++;
+	}
+	
+// PR
+var $lastLogFileDumped = _getText(_heading5("/Last Log File Dumped:.*/"));   
+_assertExists("Last Log File Dumped" ,$lastLogFileDumped);
+var $lastLogFileDumped2=$lastLogFileDumped.split("_");
+var $LastLogFileDumped=($lastLogFileDumped2[4]);
+
+
+var $lastLogFileDumpedat = _getText(_heading5("/Last Log File Dumped at:.*/"));    
+_assertExists("Last Log File Dumped" ,$lastLogFileDumpedat);
+var $date1 = $lastLogFileDumpedat.split("at:");
+var $date2=$date1[1];
+var $date = $date2;
+var $dateString = $date.toString();
+var $lastLogFileDumpedatPR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+
+
+// DR
+var $lastLogFileLoaded = _getText(_heading5("/Last Log File Loaded:.*/"));    
+_assertExists("Last Log File Loaded" ,$lastLogFileLoaded);
+var $lastLogFileLoaded2=$lastLogFileLoaded.split("_");
+var $LastLogFileLoaded=($lastLogFileLoaded2[4]);
+
+
+var $lastLogFileLoadedat = _getText(_heading5("/Last Log File Loaded at:.*/"));   
+_assertExists("Last Log File Loaded" ,$lastLogFileLoadedat);
+var $date1 = $lastLogFileLoadedat.split("at:");
+var $date2=$date[1];
+var $date= $date2;
+
+var $dateString = $date.toString();
+var $lastLogFileLoadedatDR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+
+    
+_assertTrue($LastLogFileDumpedGUI<=$LastLogFileDumped, "Last Log File Dumped is Equal in GUI and db");             
+
+_assertTrue($lastLogFileDumpedatGUIPR<=$lastLogFileDumpedatPR, "Last Log File Dumped at is Equal in GUI and db");
+
+_assertTrue($LastLogFileLoadedGUI<=$LastLogFileLoaded, "Last Log File Loaded is Equal in GUI and db");
+
+_assertTrue($lastLogFileLoadedatGUIDR<=$lastLogFileLoadedatDR, "Last Log File Loaded at is Equal in GUI and db");
+
+
+}
+
+/**
+ * Function is to Start NormalFULLCopy for Sybase_PFR Solution
+ * @param :$groupName
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function Execute_NFC_sybase($groupName) {
+  NavigateToRGDetailsPage($groupName);
+	workflowExecution("NormalFullCopy");
+	_wait( 30000 );
+	if ( _exists( _link( "EXECUTING", _near(_link("NormalFullCopy"))))) {
+		_log( "NormalFullCopy workflow is inprogress" );
+	} else {
+		_log( "NormalFullCopy workflow Execution is not started successfully" );
+	}
+} 
+// End of executeNFC()
+
+/**
+ * Function is for Replication Details Sybase_PFR Solution
+ * @param :$groupName,$WFType
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+/*
+function Replication_Details($groupName,$WFType)
+{
+	 _click(_link("Monitor"));
+	 _click(_link($groupName));
+	 _click(_link("Replication"));
+	     
+	  var $protectionGUI = _getCellText(_cell(0,_rightOf(_cell("Protection:"))));
+     _assertExists("Protection from GUI" , $protectionGUI);
+		
+      var $replicationStatus=_getCellText(_cell(0,_rightOf(_cell("Replication Status:"))));
+	  _assertExists("Replication Status from GUI", $replicationStatus);
+		
+	  var $primaryRemoteServicesGUI1 = _getCellText(_cell(0,_rightOf(_cell("Primary - Remote Services:"))));
+	  _assertExists("Primary Remote Services from GUI", $primaryRemoteServicesGUI1);
+	  var $primaryRemoteServicesGUI2 = $primaryRemoteServicesGUI1.toString();
+	  var $primaryRemoteServicesGUI = $primaryRemoteServicesGUI2.split(" ");
+	  // _assertEqual($primaryRemoteServicesGUI[0],$sernamePR, "Remote
+		// Services are Equal");
+	  // _assertEqual($primaryRemoteServicesGUI[2],$sernameDR ,"Remote
+		// Services are Equal");
+	    
+	
+	
+	if ($WFType == "SO") {
+		_assertNotEqual($primaryRemoteServicesGUI[0], $sernamePR, "Current PR site not same as configured  .Site status incorrect");
+		_assertNotEqual($primaryRemoteServicesGUI[2], $sernameDR, "Current PR site not same as configured  .Site status incorrect");
+	} else {
+		_assertEqual($primaryRemoteServicesGUI[0], $sernamePR, "Comparing configured and current PR site");
+		_assertEqual($primaryRemoteServicesGUI[2], $sernameDR, "Comparing configured and current PR site");
+	}	
+}
+	*/
+/**
+ * Function is for waiting Input for NFC
+ * @param :$groupName
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+function Waitfor_TestWF_Completion_NFC_sybase($groupName, $workflowType) {
+	NavigateToRGDetailsPage($groupName);
+	_wait(10000);
+	$i=0;
+	$sec = 0;
+	while ($i < 4){
+		_click(_link("View all workflows"));
+		if(_exists(_link("EXECUTING", _near(_link($workflowType))))){
+			$sec=$sec+40;
+			_log("This workflow Executing for last " + $sec + " Secs");
+		} 
+		else if(_exists(_link("AWAITING INPUT", _near(_link($workflowType))))){
+			_click(_link("AWAITING INPUT", _near(_link($workflowType))));
+			_click(_button("Awaiting Input"));
+			
+			if(_exists(_paragraph("NormalFullCopy failed for the following reason : Remote dataset is active. Please shutdown")) || _exists(_paragraph("NormalFullCopy failed for the following reason : No ACTIVE remote datasets found"))) {
+				_click(_submit("Continue as success=CONTINUE_AS_SUCCESS userInputButton btn btn-primary btn-xs btn btn-info"));	
+				//_call(window.history.back());
+				}
+			
+		   if(_exists(_bold("Details of transfer"))){
+				  _click(_submit("OK=true userInputButton btn btn-primary btn-xs btn btn-info"));
+				 _call(window.history.back());
+				  Execute_Ssh_Command($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $copy,"Y",$remotePwdValDR);
+					
+			}
+			else  if (_exists(_submit("Continue=true userInputButton btn btn-primary btn-xs btn btn-info")) && _exists(_submit("Retry=RETRY userInputButton btn btn-primary btn-xs btn btn-info"))){
+					_click(_submit("Retry=RETRY userInputButton btn btn-primary btn-xs btn btn-info"));		
+					//_call(window.history.back());
+				}	
+            
+            
+			else if(_exists(_paragraph("PAN-TSLP-9000: Normal Fullcopy operation failed for the group "+ $groupName +""))){
+				_click(_submit("Retry=RETRY userInputButton btn btn-primary btn-xs btn btn-info"));
+				//_call(window.history.back());
+				}
+				
+		} 
+		
+		 else if(_exists(_strong("SUCCESS", _near(_link($workflowType))))){
+
+			_log($workflowType + " workflow executed succesfully");
+			break;
+		}
+	 _wait(30000);
+	 NavigateToRGDetailsPage($groupName);
+	 $i++;
+	}
+
+	//_click(_link("View all workflows"));
+
+	NavigateToRGDetailsPage($groupName);
+	_click(_link("View all workflows"));
+
+	if(_isVisible(_link("AWAITING INPUT", _near(_link($workflowType))))){
+		_click(_link("AWAITING INPUT", _near(_link($workflowType))));
+		_click(_button("Awaiting Input"));
+				_click(_submit("Quit=ABORT userInputButton btn btn-primary btn-xs btn btn-info"));
+		_wait(1000);
+		_fail($workflowType, "workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+	
+	
+}// End of BCO_Exceution_Status()
+
+
+
+
+
+
+/**
+ * Function is for Post Group Creation Discovery to find Disk Utilization
+ * @param :$compIPPR,$remoteUserNameValPR, $remotePwdValPR
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+function Disk_Space_utilization_Sybase($compIPPR, $remoteUserNameValPR, $remotePwdValPR){
+	
+	if($systemType == "Linux"){
+		var $sshCommand = "df -h /opt";
+		var $status = SecuredShellConnection($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommand);
+
+		var $actionStatus1 = $status.toString();
+		
+		_log($actionStatus1, "1111111");
+		
+		var $diskSpaceDB = $actionStatus1.split("  ");	
+
+		_log($diskSpaceDB[13] , "2222222");
+		_log($diskSpaceDB[12] , "222333332222");
+		_log($diskSpaceDB[14] , "244444222222");
+		_log($diskSpaceDB[11] , "111112222222");
+	    var $diskSpace=new java.util.Properties();
+	   
+	    
+	    
+		$diskSpace.put("Disk Space", $diskSpaceDB[11]);
+
+		return $diskSpace;
+
+	}
+	
+	else {
+	
+	var $sshCommand = "df -h|grep opt";
+	
+	var $status = SecuredShellConnection($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommand);
+
+	var $actionStatus1 = $status.toString();
+	
+	var $diskSpaceDB = $actionStatus1.split("  ");	
+	
+    var $diskSpace=new java.util.Properties();
+   
+	$diskSpace.put("Disk Space", $diskSpaceDB[8]);
+	
+	return $diskSpace;
+	}
+	
+}	// End Of Post Group Creation
+
+
+/**
+ * Function is for waiting Input for NC
+ * @param :$groupName
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function Waitfor_TestWF_Completion_NC_sybase($groupName) {
+	var $i = 0;
+	// Looping till SO execution Complete
+	while ($i < 20) {
+		_log($i);
+		_wait(10000);
+		Popup_Handler();
+		_click(_link("Monitor"));
+		_click(_link($groupName));
+		_click(_link("Group Snapshot"));
+		_click(_link("[Recent Status]"));
+		_click(_button("Awaiting Input"));
+		if(_exists(_paragraph("PAN-TSLP-9100: NormalCopy operation failed for the group "+ $groupName +""))){
+			
+			_call(window.history.back());
+		}
+		else if(_paragraph("PAN-TSLP-9100: NormalCopy operation failed for the group "+ $groupName +"")){
+			_click(_submit("Retry=RETRY userInputButton btn btn-primary btn-xs btn btn-info"));
+			_call(window.history.back());
+			break;
+		}
+		
+		}
+		$i = $i + 1;
+
+	}  // End of while loop
+  // End of Waitfor_TestWF_Completion()
+
+
+/**
+ * This function is used to Edit SO Workflow for Sybase Solution
+ * @param :null
+ * @return : null
+ * @Author : Govinda Mengji
+ */  
+
+function Edit_SO_Workflow(){
+	Edit_SOSB_Workflow($fileSO,$primaryLogPath,$database,$secondaryLogPath);
+}
+
+/**
+ * This function is used to Edit SB Workflow for Sybase Solution
+ * @param :null
+ * @return : null
+ * @Author : Govinda Mengji
+ */
+
+
+
+function Edit_SB_Workflow(){
+	Edit_SOSB_Workflow($fileSB,$primaryLogPath,$database,$secondaryLogPath);
+}
+/**
+ * This function is used to Edit SO/SB Workflow for Sybase Solution
+ * @param :$file,$primaryLogPath,$database,$secondaryLogPath
+ * @return : null
+ * @Author : Govinda Mengji
+ */
+function Edit_SOSB_Workflow($file,$primaryLogPath,$database,$secondaryLogPath)
+{
+	 _log("1111111111111");
+	  var $fileRead= _userDataDir() + "\\samples\\Sybase\\SybaseLogPFR\\" + $file;
+	  
+	  _log("000000000");
+	  
+	  var $xmlStr = _readFile($fileRead); 
+	  
+	  _log("222222222222000000000");
+	  
+	  var $newXmlStr = $xmlStr.replace('<?xml version="1.0" encoding="UTF-8"?>',"");
+	  
+	  _log("222222222222111111111");
+	  
+	  var $xml = new XML($newXmlStr); 
+	 
+	  _log("22222222222255555555555");
+	  
+	  $xml..userDef..entry.(@key=="load_path").(@value=$primaryLogPath);
+	 
+	  $xml..userDef..entry.(@key=="app_name").(@value=$database);
+	 
+	  $xml..userDef..entry.(@key=="dump_path").(@value=$secondaryLogPath);
+	    
+	  //var $primaryDum="/opt/sybase/fulldumpauto/"+"kondor.dat"; // Temp path need to change
+	  var $primaryDum=$fullDumppath +"kondor.dat"; // Temp path need to change
+	  //var $dumpPath= $fullDumppath;
+	  $xml..userDef..entry.(@key=="full_dump_file").(@value=$primaryDum);
+	  
+	  _log("33333333333");
+	  
+	  _writeFile($xml.toString(),$fileRead, true);
+	  
+	  var $fileReadSO = _userDataDir() + "\\samples\\Sybase\\SybaseLogPFR\\" + $file;
+	  var $xmlStr =_readFile($fileReadSO); 
+	  var $newXmlStr = $xmlStr.replace('<?xml version="1.0" encoding="UTF-8"?>',"");
+		
+	  var $anotherXmlStr = $newXmlStr.replace(/ws:pfrOperationAction/g,"pfrOperationAction");
+	  var $xml = new XML($anotherXmlStr); 
+	  
+	  _log("444444444");
+	  
+	  $xml..action.(@id=="9").privateProperties.pfrOperationAction.fileset.targetDirectory=$primaryLogPath;
+	  $xml..action.(@id=="9").privateProperties.pfrOperationAction.fileset.sourceDirectory=$secondaryLogPath;
+	  
+	  var $anotherXmlStr = $xml.toString().replace(/pfrOperationAction/g,"ws:pfrOperationAction");
+	  
+	  _writeFile($anotherXmlStr.toString(),$fileReadSO, true);  
+
+}
+
+/**
+* Function is for Switchback status verification from Tests List View .
+*@param : $groupName
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function SO_Execution_Status_Sybase_PFR($groupName) {
+	
+	Waitfor_TestWF_Completion_Sybase_PFR_SOSB($groupName, "Switchover");
+
+}// End of SB_Execution_Status
+
+
+/**
+* Function is for Switchback status verification from Tests List View .
+*@param : $groupName
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function SB_Execution_Status_Sybase_PFR($groupName) {
+	
+	Waitfor_TestWF_Completion_Sybase_PFR_SOSB($groupName, "Switchback");
+
+}
+
+/**
+* Function is for SO/SB status verification from Tests List View .
+*@param : $groupName
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function Waitfor_TestWF_Completion_Sybase_PFR_SOSB($groupName, $WFName) {
+	var $i = 0;
+	// Looping till SO execution Complete
+	while ($i < 60) {
+		_log($i);
+		navigateDrillListing();
+		
+		//_click(_link($WFName));
+
+		if(_exists(_link("/.*/", _rightOf(_div("/" + $WFName +  "/")), _under(_div("Execution Status"))))){ 
+			var $testStatus = _getText(_link("/.*/", _rightOf(_div("/" + $WFName +  "/")), _under(_div("Execution Status"))));
+			_log($testStatus);
+			_assertExists("Test Status :", $testStatus);	
+		} else {
+			var $testStatus = _getText(_span("/.*/", _rightOf(_div("/" + $WFName +  "/")), _under(_div("Execution Status")))); 			
+			_assertExists("Test Status :", $testStatus);
+		}
+		
+		if ($testStatus == "FAILED") {
+			_wait(1000);
+			_fail($WFName, "workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+		} 
+		else if ($testStatus == "AWAITING INPUT") {
+			_click(_link(1, _near(_link($WFName))));
+			_click(_button("Awaiting Input"));
+
+			if (_exists(_submit("OK=true userInputButton btn btn-primary btn-xs btn btn-info"))) {
+				_click(_submit("OK=true userInputButton btn btn-primary btn-xs btn btn-info"));
+				//_click(_link("Go back"));
+				_call(window.history.back());
+			} 
+			
+			else if(_exists(_paragraph("PAN-COSA-1011: Execution of TCL script loadLogsList.tcl failed."))){
+				
+			_call(window.history.back());
+			} 
+				
+			
+		} 
+		
+	  /* else if ($testStatus == "EXECUTING") {
+			_wait(10000);
+			_click(_link("Go back"));
+		}*/ 
+		else if ($testStatus == "SUCCESS") {
+			_assertExists($WFName, "workflow executed succesfully.");
+			
+			break;
+			
+		}
+		$i = $i + 1;
+		
+	}
+	
+	navigateDrillListing();
+	if(_exists(_link("/.*/", _rightOf(_div("/" + $WFName +  "/")), _under(_div("Execution Status"))))){ 
+		var $testStatus = _getText(_link("/.*/", _rightOf(_div("/" + $WFName +  "/")), _under(_div("Execution Status"))));
+		_log($testStatus);
+		_assertExists("Test Status :", $testStatus);	
+	} else {
+		var $testStatus = _getText(_span("/.*/", _rightOf(_div("/" + $WFName +  "/")), _under(_div("Execution Status")))); 			
+		_assertExists("Test Status :", $testStatus);
+	}   
+	
+	
+	
+	_assertExists("Test Status :", $testStatus);
+	if ($testStatus == "AWAITING INPUT") {
+		_fail("Failed because of waiting for user input");
+	}
+	/*_click(_link("Go back"));
+	if ($testStatus == "EXECUTING") {
+		_fail("Failed because of waiting for user input");
+	}// End of while loop
+    */
+	} // End of Waitfor_TestWF_Completion()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

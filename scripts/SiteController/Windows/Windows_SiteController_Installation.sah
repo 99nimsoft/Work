@@ -1,0 +1,61 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM
+ ** Objective : This script contains all the local agent test cases which are the part of  APP_PFR solution.
+ ** AuthorName : Gaurav
+ ** Created Date : 20Feb18
+************************************************************************/
+
+/*
+ * before running this script update version in latest revision @ IBM_RO_Automation_JY_7.2_SP3_JP_MERGE\conf\latest_rev
+ * check pr dr machines are working perfectly fine
+ * 
+ */
+
+_log("=================================Pre-Condition===================================","Custom1");
+
+
+_include("../../../Library/Common/Common_Function.sah");
+_include("../../../Library/Component/SiteController_Component.sah");
+_include("../../../conf/DRMInstallation_Parameter.sah");
+_include("../../../conf/WindowsSiteController_Parameter.sah");
+
+// *************************************************************************************************************************************************
+if($buildInfo=="7.3"){
+	installSiteControllerPRDR_Ver2();
+}
+else{
+	installSiteControllerPRDR();
+}
+
+
+//**********************************************************************************************************************************
+
+
+//**********************************************************************************************************************************
+
+//Login_001();
+// 
+//var $g_executeAPP_PFRAll = "Y";
+//
+//
+//_log("=================================Test========================================","Custom1");
+//
+//
+//if($g_executeAPP_PFRAll == "Y" || $g_siteAPP_PFR == "Y"){
+//
+//var $test0 = _testcase("Site_0003","Create New Site");
+//
+//$test0.start();
+//
+//       Site_0003();  
+//
+//$test0.end();
+//
+//} 
+//
+//_log("================================Post-Condition================================== ","Custom1");
+//
+//Logout_001(); 
+	
+

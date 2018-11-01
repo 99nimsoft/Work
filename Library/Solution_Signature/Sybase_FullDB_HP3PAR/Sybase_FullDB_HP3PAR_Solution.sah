@@ -1,0 +1,249 @@
+
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are the part of  Sybase PFR solution generating events.
+ ** AuthorName : Debabrat
+ ** Created Date : April 2013
+ ************************************************************************/
+
+
+/****
+ *Function is for remote agent stop the Sybase agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Debabrat
+ */
+  
+
+function Create_TCL_PR(){
+	add_HP3PAR_StartTcl($compIPPR, $remoteUserNameValPR, $remotePwdValPR,$pathofTClPR);
+	add_HP3PAR_StopTcl($compIPPR, $remoteUserNameValPR, $remotePwdValPR,$pathofTClPR);
+}
+
+function Create_TCL_DR(){
+	add_HP3PAR_StartTcl($compIPDR, $remoteUserNameValDR, $remotePwdValDR,$pathofTClDR);	
+	add_HP3PAR_StopTcl($compIPDR, $remoteUserNameValDR, $remotePwdValDR,$pathofTClDR);
+}
+
+
+function RepInfo_Tclfile_PR(){
+	add_HP3PAR_RepInfo_getStatusTcl($compIPPR, $remoteUserNameValPR, $remotePwdValPR,$pathofTClPR);
+}
+
+function RepInfo_Tclfile_DR(){
+	add_HP3PAR_RepInfo_getStatusTcl($compIPDR, $remoteUserNameValDR, $remotePwdValDR,$pathofTClDR);
+}
+
+function edit_Replication_Tcl_PR(){
+	edit_replicationInfotcl_HP3PAR($compIPPR, $remoteUserNameValPR, $remotePwdValPR,$stringToUpdate,$repstateUnknown,$pathofTClPR);
+}
+
+function edit_Replication_Tcl_DR(){
+	edit_replicationInfotcl_HP3PAR($compIPDR, $remoteUserNameValDR, $remotePwdValDR,$stringToUpdate,$repstateUnknown,$pathofTClDR);
+}
+
+
+function Sybase_Datalag_Updated_Inactive_PR(){
+	edit_replicationInfotcl_HP3PAR($compIPPR, $remoteUserNameValPR, $remotePwdValPR,$stringToUpdate,$repstateInactive,$pathofTClPR);
+	edit_replicationInfotcl_HP3PAR($compIPPR, $remoteUserNameValPR, $remotePwdValPR,"","3",$pathofTClPR);
+	Datalag_Threshold_Deviation();
+
+}
+
+function Sybase_Datalag_Updated_Inactive_DR(){
+	edit_replicationInfotcl_HP3PAR($compIPDR, $remoteUserNameValDR, $remotePwdValDR,$stringToUpdate,$repstateInactive,$pathofTClDR);
+	edit_replicationInfotcl_HP3PAR($compIPDR, $remoteUserNameValDR, $remotePwdValDR,"","3",$pathofTClDR);
+	Datalag_Threshold_Deviation();
+
+}
+function Verify_ProtectionSchema_Status_UnknownPR(){
+	edit_getStatusTcl_HP3PAR($compIPPR, $remoteUserNameValPR, $remotePwdValPR,$stringToUpdate,$repstateUnknown,$pathofTClPR);
+	Protection_Scheme_Status_GetStatusTCL( $sernamePR,$repstateUnknown);
+}
+
+function Verify_ProtectionSchema_Status_UnKnownDR(){
+	edit_getStatusTcl_HP3PAR($compIPDR, $remoteUserNameValDR, $remotePwdValDR,$stringToUpdate,$repstateUnknown,$pathofTClDR);
+	Protection_Scheme_Status_GetStatusTCL( $sernameDR,$repstateUnknown);
+}
+
+
+function Verify_ProtectionSchema_Status_InactivePR(){
+	edit_getStatusTcl_HP3PAR($compIPPR, $remoteUserNameValPR, $remotePwdValPR,$stringToUpdate,$repstateInactive,$pathofTClPR);
+	Protection_Scheme_Status_GetStatusTCL( $sernamePR,$repstateInactive);
+}
+        
+function Verify_ProtectionSchema_Status_InactiveDR(){
+	edit_getStatusTcl_HP3PAR($compIPDR, $remoteUserNameValDR, $remotePwdValDR,$stringToUpdate,$repstateInactive,$pathofTClDR);
+	Protection_Scheme_Status_GetStatusTCL( $sernameDR,$repstateInactive);
+}
+
+
+function Verify_ProtectionSchema_Status_ActivePR(){
+	edit_getStatusTcl_HP3PAR($compIPPR, $remoteUserNameValPR, $remotePwdValPR,$stringToUpdate,$repstateActive,$pathofTClPR);
+	Protection_Scheme_Status_GetStatusTCL( $sernamePR,$repstateActive);
+}
+
+
+function Verify_ProtectionSchema_Status_ActiveDR(){
+	edit_getStatusTcl_HP3PAR($compIPDR, $remoteUserNameValDR, $remotePwdValDR,$stringToUpdate,$repstateActive,$pathofTClDR);
+	Protection_Scheme_Status_GetStatusTCL( $sernameDR,$repstateActive);
+}
+
+function Event_Verification_InActive_State_PR(){
+	edit_getStatusTcl_HP3PAR($compIPPR, $remoteUserNameValPR, $remotePwdValPR,$stringToUpdate,$repstateInactive,$pathofTClPR);
+	Sybase_HP3PAR_InActive_State_Event_PR();
+}
+
+function Event_Verification_Unknown_State_PR(){
+	edit_getStatusTcl_HP3PAR($compIPPR, $remoteUserNameValPR, $remotePwdValPR,$stringToUpdate,$repstateUnknown,$pathofTClPR);
+	Sybase_HP3PAR_Unknown_State_Event_PR();
+}
+
+  
+function Event_Verification_InActive_State_DR(){
+	edit_getStatusTcl_HP3PAR($compIPDR, $remoteUserNameValDR, $remotePwdValDR,$stringToUpdate,$repstateInactive,$pathofTClDR);
+	Sybase_HP3PAR_InActive_State_Event_DR();
+}
+
+function Event_Verification_Unknown_State_DR(){
+	edit_getStatusTcl_HP3PAR($compIPDR, $remoteUserNameValDR, $remotePwdValDR,$stringToUpdate,$repstateUnknown,$pathofTClDR);
+	Sybase_HP3PAR_Unknown_State_Event_DR();
+}
+
+function Create_Sybase_HP3PAR_Group() {
+	
+	$groupCreation = Create_FG($groupName, $groupDescription, $SolutionSignature, $primaryComponents, $remoteComponents, $primaryDatasets, $remoteDatasets, $primaryProtections, $remoteProtections);
+	if ($groupCreation.get("flag") == 0) 
+	{
+		_assertExists("Same group name already exists");
+	} 
+	else 
+	{ 
+		_wait(20000);
+		_click(_checkbox("Recovery"));
+		_click(_checkbox("Test"));
+		_click(_button("Save[2]"));
+		_click(_button("Finish"));
+		navigateToGroups();
+		if (_exists(_link($groupName))) {
+			_assertExists("Group created succesfully");
+		} else {
+			_fail("Group not created succesfully.");
+		}	
+	}
+}
+
+
+
+function Datalag_RepStatus_RepInfoTCL_Unknown(){
+	_wait(5000);
+	Check_Replication_Status_Monitor();
+	var $replicationStatus = _getText(_span(0, _rightOf(_span("Replication Status:"))));
+		if ($replicationStatus=="UNKNOWN") {
+		_log("Replication status is UNKNOWN and updated successfully");
+		} else {
+			_log("Replication status update got failed");
+		}
+	var $datalagStatus = _getText(_div(1, _near(_div("Data Lag"))));
+		if ($datalagStatus=="N/A") {
+		_log("Datalag status is N/A and updated successfully");
+		} else {
+         _log("Datalag status update got failed");
+		}
+}
+
+
+function Check_Replication_Status_Monitor(){
+	RefeshDetails_Replication($groupName);
+	var $replicationStatus = _getText(_span(0, _rightOf(_span("Replication Status:"))));
+	_assertExists("Replication Status", $replicationStatus);
+	
+}
+
+
+function Datalag_Threshold_Deviation(){
+	Check_DataLag_Status_Monitor();
+	var $datalagStatus = _getText(_div(1, _near(_div("Data Lag"))));
+		if ($datalagStatus) {
+			_assertExists("Datalag status is" + $datalagStatus+" MB and updated successfully");
+		} else {
+			_assertExists("Datalag status update got failed");
+		}
+	 
+}
+
+
+function Check_DataLag_Status_Monitor(){
+	RefeshDetails_Replication($groupName);
+	var $datalagStatus = _getText(_div(1, _near(_div("Data Lag"))));
+	_assertExists("Datalag Status", $datalagStatus);
+	
+}
+
+
+
+function Start_Replication_Button_ACTIVE(){
+	Start_Replication();
+	var $replicationStatus = _getText(_span(0, _rightOf(_span("Replication Status:"))));
+	if ($replicationStatus==$ACTIVEHP3PAR) {
+	_log("Replication status is ACTIVE");
+	} else {
+		_log("Replication status update got failed");
+		}
+}
+	
+	function Stop_Replication_Button_INACTIVE(){
+		Stop_Replication();
+		var $replicationStatus = _getText(_span(0, _rightOf(_span("Replication Status:"))));
+		if ($replicationStatus==$INACTIVEHP3PAR) {
+		_log("Replication status is INACTIVE");
+		} else {
+			_log("Replication status update got failed");
+			}
+	}
+
+	
+	
+	function Protection_Scheme_Status_GetStatusTCL($sername,$state){
+		var $i=0;
+		while($i==0){
+			_wait(60000);
+			navigateToDiscovery();
+			_click(_link("Subsystems"));
+			_click(_link("Protection Schemes"));
+		
+		var $status = _getText(_cell(3, _near(_cell($sername), _under(_tableHeader("Status")))));
+		
+		if($status==$state){
+			_assertExists("Protection Scheme is "+$state);
+			break;
+		} else {
+			_log("Protection Scheme not updated");
+			$i=0;
+		}
+		
+	}
+}
+	
+	
+	
+	function Add_RepInfoTCL_BP_RepInfoWorkflw_Sybase_HP3PAR($compName,$TclPath) {
+		navigateToManageBP($groupName);
+		_click(_link("Edit Workflow"));
+		_doubleClick(_span("Workflow"));
+		_click(_link("Action Properties"));
+		_wait(2000);
+		_setSelected(_select("serverName"), $compName);
+		_click(_select("serverName"));
+		_wait(2000);
+		_check(_radio("drmintegration"));
+		_wait(2000);
+		_setValue(_textbox("commandAbsolutePath"), $TclPath+"/agents/"+"HP3PAR_RepInfo.tcl");
+		_wait(2000);
+		 _click(_button("close", _near(_heading4("Custom"))));
+		 publishWorkflow();
+		_wait(20000);
+		 
+	
+	}

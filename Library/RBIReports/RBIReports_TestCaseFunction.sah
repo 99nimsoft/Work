@@ -1,0 +1,314 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the common test cases functions which are the part of RBI Reports
+**  @AuthorName : Anita 
+ ** Created Date : FEB 2017
+ ************************************************************************/
+
+// Verify Banking report types
+
+function Verify_BankingReport_Types(){
+	navigateToReportPage();
+	var $objEle = $SelectReport_BCP;
+	var $selTypes = _getText(_cell($objEle));
+	 _assertExists($selTypes);
+	 verify_all_Conf_group_List();
+	 if($selTypes != null ){
+		 _log("Select Banking Report types and list of configured groups are displayed successful");
+	 }
+	 else{
+		 _fail("Select Banking Report types and/or configured groups not displayed");
+	 }
+}
+
+function Verify_IntegrityTestReport_Selected_Group($repType,$grp1){
+	
+	Select_BankReport_Group($repType,$grp1);
+	if(_exists(_cell($IntegrityCheckReport))){
+		var $str = _getText(_cell($IntegrityCheckReport));
+		_assertExists($str);
+		_assertExists(_getText(_div($Summary)));
+		var $exeSum = _getText(_div($executiveSummary));
+		_assertExists($exeSum);
+		if(_exists(_div($ApplicationDRIntegrityDetail))){
+			var $str = _getText(_div($ApplicationDRIntegrityDetail));
+			_assertExists($str);
+		}
+		if(_exists(_div($executiveSummaryConternt1))){
+			var $exeSum = _getText(_div($executiveSummaryConternt1));
+			_assertExists($exeSum);
+		}
+		else{
+			_log("One/more subsystems are INACTIVE please check logs");
+		}
+	}
+	else{
+		_fail("Banking Integrity Report generation unsuccessful");
+	}
+}
+
+
+// Select test report for selected group
+
+function Verify_BankingTestReport_Selected_Group($repType,$grp1){
+	
+	Select_BankReport_Group($repType,$grp1);
+	
+	if(_exists(_div($ExecutiveSummary))){
+		var $str = _getText(_div($ExecutiveSummary));
+		_assertExists($str);
+		var $exeSum = _getText(_div($executiveSummaryConternt));
+		_assertExists($exeSum);
+	}
+	else{
+		_fail("Banking Report generation unsuccessful");
+	}
+	if($repType==$BCP_Rep){
+		Verify_BCP_Test_Report_Details();
+	}
+	if($repType==$Major_Rep){
+		Verify_Failure_Test_Report_Details();
+	}
+	if($repType==$BCP_Ready){
+		Verify_Readiness_Report_Details();
+	}
+}
+
+// verify all available group list 
+//Should display the list of all configured groups for user
+function verify_all_Conf_group_List(){	
+	var $confgrpLst= _getText(_select("groupsRBIReports"));
+	_log("Should display the list of all configured groups for user");
+	_assertExists($confgrpLst);
+}
+// verify RBI BCP Test Report details RBI_Report_0008
+function Verify_BCP_Test_Report_Details(){
+	
+	if(_exists(_div($Introduction))){
+		var $str = _getText(_div($Introduction));
+		_assertExists($str);
+		_mouseOver(_link($Edit, _in(_div($ClickonEditlinktoupdateIntroductionEdit))));
+		_click(_link($Edit, _in(_div($ClickonEditlinktoupdateIntroductionEdit))));
+		_setValue(_textarea($drSetupTextEdit), $ReportIntroductiondetailsentry);
+		_click(_button($Save));
+		_assertEqual("\n\n\n\n\n\n\nSaved successfully\n", _lastAlert());
+		_wait(2000);
+		var $str1 =_getText(_div($drSetupDescContent));
+		_assertExists($str1);
+	}
+	if(_exists(_div($DRSetupandscopeofDrill))){
+		var $str = _getText(_div($DRSetupandscopeofDrill));
+		_assertExists($str);
+		var $exeSum = _getText(_div($ThebankhasaBCPandITDRpolicythatisgenerated));
+		_assertExists($exeSum);
+		_mouseOver(_link($Edit, _in(_div($ClickonEditlinktoupdateDRSetDescriptionEdit))));
+		_click(_link($Edit, _in(_div($ClickonEditlinktoupdateDRSetDescriptionEdit))));
+		_setValue(_textarea($drSetupScopeTextEdit), $DRsetupdetailsentry);
+		_click(_button($Save1));
+		_assertEqual("\n\n\n\n\n\n\nSaved successfully\n", _lastAlert());
+		_wait(2000);
+		var $str1 =_getText(_div($drSetupDescScopeContent));
+		_assertExists($str1);	
+	}
+	//var $driltested= _getText(_bold("The following critical applications were tested during this report."));
+	//_log($driltested);
+	if(_exists(_tableHeader($ScenarioTested))){
+		var $str1 = _getText(_cell(0, _near(_tableHeader($ApplicationRecoveryGroup))));
+		_assertExists($str1);
+		var $str2 = _getText(_cell(1, _near(_tableHeader($ScenarioTested))));
+		_assertExists($str2); //drill name
+		var $str3 = _getText(_cell(7, _near(_tableHeader($Statuscomments))));
+		_assertExists($str3); //status
+		var $str4 =_getText(_cell(9, _near(_tableHeader($ScenarioTested))));
+		_assertExists($str4); //drill name
+		var $str5 = _getText(_cell(15, _near(_tableHeader($Statuscomments))));
+		_assertExists($str5); //status
+		
+	}
+	if(_exists(_div($DRDrillDetails))){
+		var $str1 =_getText(_div($DRDrillDetails));
+		_assertExists($str1);
+		var $str1 =_getText(_div(1, _near(_div($DRSolutionSignature))));
+		_assertExists($str1);
+		var $str2 = _getText(_div(1, _near(_div($ComponentDetails))));
+		_assertExists($str2);
+		var $str3 =_getText(_div(2, _near(_div($ComponentDetails))));
+		_assertExists($str3);
+		var $str4 =_getText(_div(1, _near(_div($DatasetDetails))));
+		_assertExists($str4);
+		var $str5 =_getText(_div(2, _near(_div($DatasetDetails))));
+		_assertExists($str5);
+		var $str6 =_getText(_div(1, _near(_div($ReplicationDetail))));
+		_assertExists($str6);
+		var $str7 =_getText(_div(2, _near(_div($ReplicationDetail))));
+		_assertExists($str7);
+		var $str8 = _getText(_div($WorkflowExecutionReport));
+		_assertExists("SwitchOver ",$str8);
+		 var $soTest = _getText(_table($report1));
+		 _log($soTest);
+		 var $str9 = _getText(_div($WorkflowExecutionReport1));
+		 _assertExists("SwitchBack ",$str9);
+		 var $sbtest = _getText(_table($report2));
+		 _log($sbtest);
+	}
+	if(_exists(_div($Conclusion))){
+		var $str = _getText(_div($Conclusion));
+		_assertExists($str);
+		_mouseOver(_link($Edit, _in(_div($ClickonEditlinktoupdateConclusionEdit))));
+		_click(_link($Edit, _in(_div($ClickonEditlinktoupdateConclusionEdit))));
+		_setValue(_textarea($drSetupScopeTextEdit), $VerifiedtheBCPTESTReport);
+		_click(_button($Save2));
+		_assertEqual("\n\n\n\n\n\n\nSaved successfully\n", _lastAlert());
+		_wait(3000);
+		
+		var $str1 =_getText(_div($drSetupDescContentConclusion));
+		_assertExists($str1);	
+	}
+}
+
+// Verify the RBI Major Failures Reports details RBI_Report_0020
+
+function Verify_Failure_Test_Report_Details(){
+	if(_exists(_div($FailureDetailByApplication))){
+		var $str= _getText(_div($FailureDetailByApplication));
+		_assertExists($str);
+		var $exeSum = _getText(_div($groupHeadLine));
+		_assertExists($exeSum);
+	}
+}
+
+//Verify the Verify_Readiness_Report_Details details RBI_Report_0014
+
+function Verify_Readiness_Report_Details(){
+	if(_exists(_div($ApplicationDRReadinessDetail))){
+		var $str = _getText(_div($ApplicationDRReadinessDetail));
+		_assertExists($str);
+		var $exeSum = _getText(_div($groupHeadLine));
+		_assertExists($exeSum);
+	}
+}
+
+
+// verify New flag for RBI Major Failures Report Report RBI_Report_0024
+function Verify_NewFlag_FailureReport($repType,$grp2){
+
+	EditComment_CurrentEvent($grp2);
+	
+	var $webgrpele = "  "+$grp2;
+	navigateToReportPage();
+	verify_all_Conf_group_List();
+	_log("User should able to select the group from the list of select Group");
+	SelectBankingReportType($repType);	
+	_setSelected(_select($groupsRBIReports), [$webgrpele]);
+	_click(_button($View3));
+	_wait(3000);
+	if(_exists(_div($FailureDetailByApplication))){
+		var $str= _getText(_div($FailureDetailByApplication));
+		_assertExists($str);
+		var $eventdisp = _getText(_div($RemarkSeriousEventUpdatedRBIReport0024,_near(_div($reportContainer)))); 
+		_log($eventdisp);
+		if($eventdisp == $RemarkSeriousEventUpdatedRBIReport0024){
+			_log("configured event list with the comment successfully displayed in the current event screen");
+		}
+		else{
+			_log("configured event list with the comment has not displayed in the current event screen");
+			//_fail("failed RBI Major Failures Report Test RBI_Report_0024");
+		}
+	}
+}
+
+// Verify Export PDF/RTF format report
+
+function Verify_Export_BankingReport($fileType){
+	if($fileType == "PDF"){
+		if(_exists(_image($ExporttoPDF))){
+			_clearLastDownloadedFileName();
+			_wait(3000);
+			_click(_image($ExporttoPDF));
+			_wait(10000);
+			 var $expFileName = _lastDownloadedFileName();
+		      var $filepath= $SAHI_HOME +"Library\\RBIReports\\ReportFile\\";
+		      _saveDownloadedAs($filepath + _lastDownloadedFileName());
+		      _assertExists($Workflw_export_msg+$expFileName);
+		      return $expFileName;
+		}
+		else{
+			_fail("Export to PDF button not working");
+		}
+	}	
+	if($fileType == "RTF"){
+		if(_exists(_image($ExporttoRTF))){
+			_clearLastDownloadedFileName();
+			_wait(3000);
+			_click(_image($ExporttoRTF));
+			_wait(10000);
+			 var $expFileName = _lastDownloadedFileName();
+		     var $filepath= $SAHI_HOME +"Library\\RBIReports\\ReportFile\\";
+		     _saveDownloadedAs($filepath + _lastDownloadedFileName());
+		     _assertExists($Workflw_export_msg+$expFileName);
+		      
+		     var $readRTFRep = _readFile($SAHI_HOME+"Library\\RBIReports\\ReportFile\\" +$expFileName );
+		  	 _log($readRTFRep);
+		     return $expFileName;
+		}
+		else{
+			_fail("Export to PDF button not working");
+		}
+	}
+}
+
+// Add new RAL in Drill page
+
+function Import_NewRal_Drill($grp1,$workflowXMlFile){
+	var $fileWFRal = $SAHI_HOME +"Library\\RBIReports\\ReportFile\\" + $workflowXMlFile;
+	_log($fileWFRal);
+	Import_WF($grp1, $fileWFRal, $Drills, $IntegrityCheck);
+	_wait(3000);
+	_log("IntegrityCheck RAL published successfully");
+}
+// execute new ral in drill page
+function Execute_NewRal_Drill($grp1){
+	TriggerDRILLWorkflowExec($grp1,$IntegrityCheck);
+	Drill_Exec_Status($grp1, $IntegrityCheck);
+}
+
+function TriggerDRILLWorkflowExec($grp1,$ralName){
+	 navigateDrillworkflows($grp1,$ralName);
+	 _click(_image($ExecuteWorkflow, _near(_link($ralName))));	
+	 _click(_link($Execute));
+	 _wait(20000);	
+	_log($ralName +" Workflow Execution Triggered");
+}
+
+function Drill_Exec_Status($grp1,$ralName){
+	Waitfor_Drill_Completion($grp1, $ralName);
+}
+
+function Verify_NewRAL_ExecReport($repType,$grp1){
+	
+	Select_BankReport_Group($repType,$grp1);
+	
+	if(_exists(_div($FailureTypeOccurredAtCorrectedAt))){
+		_log("Listed Failure Type Occurred ");
+		if(_exists(_span($Systemisawaitinginput))){
+			var $str = _getText(_span($Systemisawaitinginput));
+			_assertExists($str);
+			_assertExists($NewRalActionRalsExecutionstatusupdatedinRBIFailuretestreports);
+		}		
+	}
+	else{
+		_log("New Ral/Action Ral's Execution status is not updated in RBI Failure test reports");
+		_log("Please check DRM server time and DRM GUI time both should sync ");
+	}
+}
+
+function Select_BankReport_Group($repType,$grp1){
+	var $webgrpele = "  "+$grp1;
+	navigateToReportPage();
+	_log("User should able to select the group from the list of select Group");
+	SelectBankingReportType($repType);	
+	_setSelected(_select($groupsRBIReports), [$webgrpele]);
+	_click(_button($View3));
+	_wait(3000);
+}

@@ -1,0 +1,120 @@
+/*************************************************************************
+ ** CompanyName : Sanovi an IBM company.
+ ** Application Name : SCC 
+ ** Objective : This script contains Backup Fail event.
+ ** AuthorName : Omprakash.V
+ ** Created Date : June 2013
+ ************************************************************************/
+function Verifying_Backup_Fail_Event()
+{
+	Remove_Folder();
+	Backup_Folder_creation($backupFailPath);
+	ConfigureBackup($backupFailPath);
+	Remove_Folder();
+	var $sshCommand = "touch /boot/backupFail";
+	var $failPath=SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand, "Y");
+	_log($failPath);
+	var $file2 = "";
+	if($failPath != null){        
+	var $failPath1 = $failPath.split(":");
+	$failPath2 = $failPath1.pop().trim();
+	 _log($failPath2);
+	}
+	if($failPath2==$Nofiledirectory)
+	{ 
+	_log("File not Exists");
+		}
+	else
+	{
+	 _log("File Exists");
+	 }	
+	_click(_button($BackupNow));
+	_assertEqual($PANSBKM, _lastAlert());
+    var $sshCommand = "date";
+	$date = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	if($BrowserLang == "N"){
+		var $serverTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse($date));
+	}
+	else if($BrowserLang == "Y-JA"){
+		var $serverTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("yyyy MMM dd EEE HH:mm:ss Z").parse($date));
+		}
+
+	else if($BrowserLang == "Y-EN"){
+		var $serverTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("yyyy MMM dd EEE HH:mm:ss Z").parse($date));
+		}
+	
+	
+	
+    _assertExists("Server Time", $serverTime);
+    Event_Verification_Backup($serverTime,"DM001", $SanoviDRMmetadatafailed, "Serious");	
+}
+
+function Event_Verification_Backup($serverTime, $EventMentioned, $Eventdes, $Image) {
+	_click(_link($Admin));	
+	_click(_link($CurrentEvents));	
+	_click(_link($AdvancedFilter));
+	_wait(3000);
+	_click(_checkbox("severity[3]"));
+	_check(_checkbox("severity", _near(_cell($Warning))));
+	_click(_checkbox($CLOSED));
+	_click(_checkbox($INFO));
+	_click(_checkbox("systemEvents"));
+	_click(_checkbox($WIP));
+	//_setSelected(_select("groups"), [ $groupName ]);
+	_click(_button($Apply)); 
+	_wait(3000);
+	var $i = 0;
+
+	var $flag = 0;
+	
+	while ($i < 30) {
+		_wait(10000);
+			_call(top.location.reload());
+		   if( _exists(_link($EventMentioned,_under(_link($EventName),700))) == true) {			  
+				
+				var $Time = _getText(_cell(3, _near(_link($EventMentioned))));
+				_assertExists("Time", $Time);
+				var $GuiTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($Time).getTime();
+				_assertExists("GuiTime", $GuiTime);
+				var $DbTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($serverTime).getTime();
+				_assertExists("DbTime", $DbTime);
+				var $timedifference = $GuiTime - $DbTime;
+				if ($timedifference < 0) {
+					_log("Event generate Successfully.");
+					_log($Image);
+				var $description = _getText(_cell(1, _near(_link($EventMentioned))));
+				_assertExists("description", $description);
+				var $event = $description.split("::");
+				var $eventno = $event[0].split(":");
+				var $actualEventdes = $eventno[1].trim();
+				_assertExists("Actual Event description", $actualEventdes);
+				/*	if ($eventname == "Primary" || $eventname == "DR") {
+					$eventname = $event[0] + ":" + $event[1];
+					_assertExists("eventname", $eventname);
+				}*/
+				_log($actualEventdes);
+				_log($Eventdes);
+				 $eventname = $actualEventdes.trim();
+				 $Eventdes = $Eventdes.trim();
+			
+				if ($actualEventdes == $Eventdes || $description.indexOf($Eventdes) >= 0) {
+						_log("event description correct.");
+						$flag = 1;						
+						break;
+					}
+				}				   
+		   } else {
+			   _log("Event not yet generated successfully.");
+		   }
+		   $i++;
+		   _log($i);
+	 }	
+	
+	
+	if ($flag == 1) {
+		_assertTrue(1 == 1, "event Generated succesfully");
+	} else {
+		_assertTrue(1 == 0, "event not Generated succesfully");
+	}
+}// end Of Event_Verification()
+

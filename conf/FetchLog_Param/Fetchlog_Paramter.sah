@@ -1,0 +1,35 @@
+
+
+if($BrowserLang == "N"){
+	$l_fetchlog = _readExcelFile($SAHI_HOME+"\\conf\\FetchLog_Param\\FetchlogInput.xls","Fetch");  //To read the inputs from the drm_inputs excel file.
+}
+else if($BrowserLang == "Y-JA"){
+	var  $l_fetchlog = _readExcelFile($SAHI_HOME+"\\conf\\FetchLog_Param\\FetchlogInput.xls","Fetch_JA"); 
+	}
+
+else if($BrowserLang == "Y-EN"){
+	var  $l_fetchlog = _readExcelFile($SAHI_HOME+"\\conf\\FetchLog_Param\\FetchlogInput.xls","Fetch_EN"); 
+	}
+
+
+
+
+	//The below parameter is used for Linux OS
+	var $SerIP = $l_fetchlog[3][3];
+	var $SerUserNm = $l_fetchlog[4][3];
+	var $SerPassWord =$l_fetchlog[5][3];
+	
+	var $supadmin=$l_fetchlog[3][6];
+	var $admin=$l_fetchlog[4][6];
+	var $operator=$l_fetchlog[5][6];
+	var $notification=$l_fetchlog[6][6];
+	var $password=$l_fetchlog[7][6];
+	var $logspath=$l_fetchlog[8][6];
+	var $errorvalue=$l_fetchlog[9][6];
+	
+	var $groupName = $l_fetchlog[21][3];
+	
+	var $username= $l_fetchlog[8][3];
+	var $password= $l_fetchlog[9][3];
+	
+	

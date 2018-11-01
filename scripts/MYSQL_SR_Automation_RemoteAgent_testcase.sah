@@ -1,0 +1,321 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the remote agent test cases which are the part of  My SQL SR solution. 
+ ** AuthorName : Automation Team
+ ** Created Date : Feb 2013
+ ************************************************************************/
+
+_log("=================================Pre-Condition===================================", "Custom1");
+
+//don't change this below line.
+_include("../Library/Solution_Signature/Include/MYSQL_SR_Include.sah");
+
+// mentioned the correct parameter file name which user are going to execute within the "" code.
+_include("../conf/DRMInstallation_Parameter.sah");
+//_include("../conf/DRMInstallation_Parameter_New.sah");
+_include("../conf/MYSQL_SR/MYSQL_SR_Remote_Agent_Parameter.sah");
+_include("../conf/MYSQL_SR/UserSelected_MySQL_SR_Testcase.sah");
+_include("../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+
+_include("../Library/Database/MYSQL/ObjectRepository/Mysql_ObjectRepository.sah");
+_include("../Library/Replication/MYSQLSR/ObjectRepository/MysqlSR_ObjectRepository.sah");
+
+// *************************************************************************************
+// Notes: below test cases for remote agent
+Get_latest_Build();
+WorkFlow_copy_001();
+
+SO_Modify_WorkflowXML_Mysql();
+SB_Modify_WorkflowXML_Mysql();
+FO_Modify_WorkflowXML_Mysql();
+
+
+//Verifying the mysql service if stopped it will start the Mysql service
+Verify_Mysql_service_PR();
+Verify_Mysql_service_DR();
+
+//precondition step  to verify DR mysql slave status
+
+VerifyDR_MySQL_SlaveStatus();
+
+Login_001();
+
+_log("=================================Test========================================", "Custom1");
+
+if ($g_executeMysqlSRAll == "Y" || $g_siteMysqlSR == "Y") {
+	var $test1 = _testcase("Site_0003", "Test description has to update");
+	$test1.start();
+	Site_0003();
+	$test1.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_agentNodeMysqlSR == "Y") {
+	var $test2 = _testcase("Object_Manager/ Common/ Components/ Component_04 ", "Create Agent Node");
+	$test2.start();
+	Agent_node_001();
+	$test2.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_componentRemoteMysqlSR == "Y") {
+	var $test3 = _testcase("Object_Manager/ Common/ Components/ Component_04 ", "Create New Component");
+	$test3.start();
+	MySQL_Component_Remote_Discovery_0018();
+	$test3.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_datasetMysqlSR == "Y") {
+	var $test4 = _testcase("Continuity_Manager/ Template/ MySQL_SR/ MySQL_0007", "Dataset Discovery");
+	$test4.start();
+	MySQL_Dataset_Discovery_0007();
+	$test4.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_datasetStatusMysqlSR == "Y") {
+	var $test5 = _testcase("Continuity_Manager/ Template/ MySQL_SR/ MySQL_0011", "Dataset Status");
+	$test5.start();
+	MySQL_Dataset_status_0011();
+	$test5.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_protectionSchemeMysqlSR == "Y") {
+	var $test6 = _testcase("Continuity_Manager/ Template/ MySQL_SR/ MySQL_0018", "Protection Scheme discovery");
+	$test6.start();
+	MySQL_Protectionscheme_Discovery_0018();
+	$test6.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_protectionSchemeStatusMysqlSR == "Y") {
+	var $test7 = _testcase("Continuity_Manager/ Template/ MySQL_SR/ MySQL_0021", "Protection Scheme status");
+	$test7.start();
+	MySQL_Protectionscheme_status_0021();
+	$test7.end();
+}
+
+
+if ($g_executeMysqlSRAll == "Y" || $g_groupCreationMysqlSR == "Y") {
+	var $test8 = _testcase("Continuity_Manager/Template/MySQL_SR/MYSQL_0022", "MySql Group Creation");
+	$test8.start();
+	Mysql_GroupCreation_0022();
+	$test8.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_moveToManageMysqlSR == "Y") {
+	var $test9 = _testcase("Continuity_Manager/Common/FG/Group/GroupCreation_0006", "Move group to manage");
+	$test9.start();
+	MySQL_Move_Group_Manage_0006();
+	$test9.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_changeContinuityStateMysqlSR == "Y") {
+	var $test10 = _testcase("Continuity_Manager/Common/FG/Manage/Change_Continuity_State_0001", "Change Continuity Status");
+	$test10.start();
+	MySQL_Change_Continuity_State_0001();
+	$test10.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_componentStatusMysqlSR == "Y") {
+	var $test11 = _testcase("Object_Manager/ Common/ Components/ Subsystem_Moinitoring_0001", "Verifying Component Status");
+	$test11.start();
+	MySQL_Component_Status_0001();
+	$test11.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_continuityStateMysqlSR == "Y") {
+	var $test12 = _testcase("Continuity_Manager/Common/FG/Monitor/MON_0002", "Checking Continuity Status");
+	$test12.start();
+	MySQL_Contiunity_Status_0002();
+	$test12.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_startNCMysqlSR == "Y") {
+	var $test15 = _testcase("Continuity_Manager/Common/FG/Manage/NormalCopy_0001", "Start NC");
+	$test15.start();
+	MySQL_Start_NormalCopy_0001();
+	$test15.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_importFOMysqlSR == "Y") {
+	var $test14 = _testcase("Continuity_Manager/ Template/ MySQL_SR/ MySQL_0057", "Import FO Workflow");
+	$test14.start();
+	MySQL_Import_FO_0057();
+	$test14.end();
+}
+
+
+if ($g_executeMysqlSRAll == "Y" || $g_monitorRelationshipMysqlSR == "Y") {
+	var $test16 = _testcase("Continuity_Manager/Common/FG/Monitor/Normal_Copy_0030", "Monitor relationship");
+	$test16.start();
+	MySQL_Monitor_Relationship_0030();
+	$test16.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_manageDRSolutionMysqlSR == "Y") {
+	var $test17 = _testcase("Continuity_Manager/ Template/ MySQL_SR/ MySQL_0029", "Continuity Workflows");
+	$test17.start();
+	MySQL_Continuity_Workflows_0001();
+	$test17.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_rpoNCMysqlSR == "Y") {
+	var $test21 = _testcase("Continuity_Manager/ Template/ MySQL_SR/ MySQL_0026 ", "RPO During NC");
+	$test21.start();
+	MySQL_NC_MySQL_RPO_0026();
+	$test21.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_rtoNCMysqlSR == "Y") {
+	var $test22 = _testcase("Continuity_Manager/ Template/ MySQL_SR/ MySQL_0027", "RTO During NC");
+	$test22.start();
+	MySQL_NC_MySQL_RTO_0027();
+	$test22.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_replicationNCMysqlSR == "Y") {
+	var $test20 = _testcase("Continuity_Manager/ Template/ MySQL_SR/ MySQL_0028", "Replication Screen During NC");
+	$test20.start();
+	MySQL_NC_MySQL_Replication_0028();
+	$test20.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_stopNCMysqlSR == "Y") {
+	var $test24 = _testcase(" Continuity_Manager/ Common/ FG/ Manage/ Graceful_Shutdown_0002", "Stop NC ");
+	$test24.start();
+	MySQL_Stop_NC_0002();
+	$test24.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_importSOSBMysqlSR == "Y") {
+	var $test23 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0007", "Import SO SB Workflow");
+	$test23.start();
+	MySQL_Import_SOSB_0007();
+	$test23.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_startSOMysqlSR == "Y") {
+	var $test25 = _testcase(" Continuity_Manager/ Common/ FG/ Tests/ SOSB_0011", "Start SO");
+	$test25.start();
+	MySQL_Start_SO_0011();
+	$test25.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_SOExecutionMysqlSR == "Y") {
+	var $test26 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0012", "SO Execution");
+	$test26.start();
+	MySQL_SO_Execution_0012();
+	$test26.end();
+}
+if ($g_executeMysqlSRAll == "Y" || $g_startRNCMysqlSR == "Y") {
+	var $test28 = _testcase("Start_RNC_0033", "Start RNC");
+	$test28.start();
+	MySQL_Start_RNC_0033();
+	$test28.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_groupInformationRNCMysqlSR == "Y") {
+	var $test29 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0022", "Continuity Workflows");
+	$test29.start();
+	//MySQL_Continuity_Workflows_SO_0002();
+
+	$test29.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_rpoRNCMysqlSR == "Y") {
+	var $test31 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0023", "RNC RPO");
+	$test31.start();
+	MySQL_RNC_Rpo_Monitor_0023();
+	$test31.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_replicationRNCMysqlSR == "Y") {
+	var $test32 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0024", "RNC Replicaition");
+	$test32.start();
+	MySQL_RNC_Replication_0024();
+	$test32.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_stopRNCMysqlSR == "Y") {
+	var $test33 = _testcase("Continuity_Manager/ Common/ FG/ Tests/ SOSB_0033", "Stop RNC");
+	$test33.start();
+	MySQL_Stop_RNC_0033();
+	$test33.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_startSBMysqlSR == "Y") {
+	var $test34 = _testcase("Continuity_Manager/ Common/ FG/ Tests/ SOSB_0034", "Start SB");
+	$test34.start();
+	MySQL_Start_SB_0034();
+	$test34.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_SBExecutionMysqlSR == "Y") {
+	var $test35 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0035", "SB Execution");
+	$test35.start();
+	MySQL_SB_Execution_0035();
+	$test35.end();
+}
+
+///////////////////DRYRUN REPORT SCRIPT/////////////////////////////////////
+
+if ($g_executeMysqlSRAll == "Y" || $g_MYSQL_SR_Dryrun_Report == "Y") {
+	var $test26 = _testcase("Continuity_Manager/Common/FG/DryRun_Report_Function", "verify Dry run reports");
+	$test26.start();
+	MYSQL_SR_Dryrun_Report_Testcase();
+    $test26.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_stopReplicationMysqlSR == "Y") {
+	var $test37 = _testcase(" Continuity_Manager/ Template/ MySQL_SR/ MySQL_0051", "Stop Replication");
+	$test37.start();
+	Mysql_Stop_replication_0051();
+	$test37.end();
+}
+
+if($g_executeMysqlSRAll == "Y" || $g_Validation_Manager_Execution == "Y"){
+	var $test50 = _testcase("APP_PFR/APP_PFR_Group_Health_Status_0101","Validation Manager Execution");
+	$test50.start();
+	Validation_Manager_Execution();
+	$test50.end();
+	}
+	
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+if ($g_executeMysqlSRAll == "Y" || $g_startFOMysqlSR == "Y") {
+	var $test39 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0001", "Start FO");
+	$test39.start();
+	MySQL_Start_FO_0001();
+	$test39.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_FOExecutionMysqlSR == "Y") {
+	var $test40 = _testcase("Continuity_Manager/ Template/ MySQL_SR/ MySQL_0058", "FO Execution");
+	$test40.start();
+	MySQL_FO_execution_0058();
+	$test40.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_continuityStatusFOMysqlSR == "Y") {
+	var $test41 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0007", "Continuity Status FO");
+	$test41.start();
+	MySQL_Continuity_Status_FO_0007();
+	$test41.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_rpoFOMysqlSR == "Y") {
+	var $test42 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0003", "RPO FO");
+	$test42.start();
+	MySQL_FO_RPO_0003();
+	$test42.end();
+}
+
+if ($g_executeMysqlSRAll == "Y" || $g_monitorManageFOMysqlSR == "Y") {
+	var $test43 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0006", "Monitor Manage FO");
+	$test43.start();
+	MySQL_FO_Monitor_Manage_0006();
+	$test43.end();
+}
+*/
+_log("================================Post-Condition================================== ", "Custom1");
+
+Logout_001();

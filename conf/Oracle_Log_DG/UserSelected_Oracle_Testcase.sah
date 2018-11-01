@@ -1,0 +1,169 @@
+
+var $l_userInputsDataOracleDG = _readExcelFile($SAHI_HOME + "\\conf\\Oracle_Log_DG\\OracleDG_Parameter.xls","User Seleeted Case");
+var $userDataLengthOracleDG  = $l_userInputsDataOracleDG.length-1;
+
+var $flag = 0;
+for($i = 3 ; $i <= $userDataLengthOracleDG ; $i++){
+	if($l_userInputsDataOracleDG[$i][4] == "Y"){	
+		$flag=$flag+1;	
+	}
+}
+
+//-----------Execution of Individual Testcase------------------------------
+
+var $g_siteOracleDg = $l_userInputsDataOracleDG[17][4];
+var $g_agentNodeOracleDg = $l_userInputsDataOracleDG[18][4];
+var $g_componentRemoteDiscoveryOracleDg = $l_userInputsDataOracleDG[19][4];
+var $g_componentLocalDiscoveryOracleDg= $l_userInputsDataOracleDG[20][4];
+var $g_datasetDiscoveryOracleDg = $l_userInputsDataOracleDG[21][4];;
+var $g_datasetAutoDiscoveryOracleDg = $l_userInputsDataOracleDG[22][4];
+var $g_protectionSchemeDiscoveryOracleDg = $l_userInputsDataOracleDG[23][4];;
+var $g_protectionSchemeDetailsOracleDg = $l_userInputsDataOracleDG[24][4];
+var $g_groupCreationOracleDg = $l_userInputsDataOracleDG[25][4];
+var $g_moveGroupToManageOracleDg = $l_userInputsDataOracleDG[26][4];
+
+var $g_changeContinuityStateOracleDg = $l_userInputsDataOracleDG[27][4];
+var $g_postGroupCreationOracleDg = $l_userInputsDataOracleDG[28][4];
+var $g_componentStatusOracleDg = $l_userInputsDataOracleDG[29][4];
+var $g_datasetStatusOracleDg = $l_userInputsDataOracleDG[30][4];
+var $g_protectionSchemeStatusOracleDg = $l_userInputsDataOracleDG[31][4];
+
+var $g_continuityManagenentOracleDg = $l_userInputsDataOracleDG[32][4];
+var $g_importNCOracleDg = $l_userInputsDataOracleDG[33][4];
+var $g_importFOOracleDg = $l_userInputsDataOracleDG[34][4];
+var $g_startNCOracleDg = $l_userInputsDataOracleDG[35][4];
+var $g_monitorRelationshipOracleDg = $l_userInputsDataOracleDG[36][4];
+
+var $g_manageDRSolutionOracleDg = $l_userInputsDataOracleDG[37][4];
+var $g_groupInformationOracleDg = $l_userInputsDataOracleDG[38][4];;
+var $g_groupSnapshotOracleDg = $l_userInputsDataOracleDG[39][4];;
+var $g_replicationNCOracleDg = $l_userInputsDataOracleDG[40][4];
+var $g_rpoNCOracleDg = $l_userInputsDataOracleDG[41][4];
+var $g_rtoNCOracleDg = $l_userInputsDataOracleDG[42][4];
+var $g_importSOSBOracleDg = $l_userInputsDataOracleDG[43][4];
+var $g_stopNCOracleDg = $l_userInputsDataOracleDG[44][4];
+var $g_startSOOracleDg = $l_userInputsDataOracleDG[45][4];
+var $g_SOExecutionOracleDg = $l_userInputsDataOracleDG[46][4];
+
+var $g_replicationSOOracleDg = $l_userInputsDataOracleDG[47][4];
+var $g_importRNCOracleDg = $l_userInputsDataOracleDG[48][4];
+var $g_startRNCOracleDg = $l_userInputsDataOracleDG[49][4];
+var $g_groupInformaitionRNCOracleDg = $l_userInputsDataOracleDG[50][4];
+var $g_groupSnapshotOracleDg = $l_userInputsDataOracleDG[51][4];
+var $g_rpoRNCOracleDg = $l_userInputsDataOracleDG[52][4];
+var $g_replicationRNCOracleDg = $l_userInputsDataOracleDG[53][4];
+var $g_stopRNCOracleDg = $l_userInputsDataOracleDG[54][4];
+var $g_startSBOracleDg = $l_userInputsDataOracleDG[55][4];
+var $g_SBExecutionOracleDg = $l_userInputsDataOracleDG[56][4];
+
+var $g_monitorManageSBOracleDg = $l_userInputsDataOracleDG[57][4];
+var $g_remoteStopOracleDgAgent = $l_userInputsDataOracleDG[58][4];
+var $g_remoteStartOracleDgAgent = $l_userInputsDataOracleDG[59][4];
+var $g_localStopOracleDgAgent = $l_userInputsDataOracleDG[60][4];
+var $g_localStartOracleDgAgent = $l_userInputsDataOracleDG[61][4];
+var $g_replicaionStopOracleDg = $l_userInputsDataOracleDG[62][4];
+var $g_replicaionStartOracleDg = $l_userInputsDataOracleDG[63][4];
+var $g_startFOOracleDg = $l_userInputsDataOracleDG[64][4];
+var $g_FOExecutionOracleDg = $l_userInputsDataOracleDG[65][4];
+var $g_continuityStatusFOOracleDg = $l_userInputsDataOracleDG[66][4];
+
+var $g_rpoFOOracleDg = $l_userInputsDataOracleDG[67][4];
+var $g_monitorManageFOOracleDg = $l_userInputsDataOracleDG[68][4];
+
+//---------------For Executing All the Testcases------------------------
+var $g_executeOracleDGAll = $l_userInputsDataOracleDG[4][4];
+var $g_groupCreationOracleDG = $l_userInputsDataOracleDG[8][4];
+var $g_postGroupCreationOracleDG = $l_userInputsDataOracleDG[9][4];
+var $g_executeNCOracleDG = $l_userInputsDataOracleDG[10][4];
+var $g_executeSOSBOracleDG = $l_userInputsDataOracleDG[11][4];
+var $g_eventExecutionOracleDG = $l_userInputsDataOracleDG[12][4];
+var $g_executeFOOracleDG = $l_userInputsDataOracleDG[13][4];
+
+//--------------For Group Creation--------------------------------------
+
+if ($g_groupCreationOracleDG == "Y"){
+
+var $g_siteOracleDg = "Y";
+var $g_agentNodeOracleDg = "Y";
+	if($agentType == "Remote"){
+		var $g_componentRemoteDiscoveryOracleDg = "Y";
+	}else{
+		var $g_componentLocalDiscoveryOracleDg= "Y";
+	}
+var $g_datasetDiscoveryOracleDg = "Y";
+var $g_datasetAutoDiscoveryOracleDg = "Y";
+var $g_protectionSchemeDiscoveryOracleDg = "Y";
+var $g_protectionSchemeDetailsOracleDg = "Y";
+var $g_groupCreationOracleDg = "Y";
+var $g_moveGroupToManageOracleDg= "Y";
+var $g_changeContinuityStateOracleDg= "Y";
+}
+//-------------Post Group Creation-------------------------------------------------
+
+if ($g_postGroupCreationOracleDG == "Y"){
+var $g_postGroupCreationOracleDg= "Y";
+var $g_componentStatusOracleDg= "Y";
+var $g_datasetStatusOracleDg= "Y";
+var $g_protectionSchemeStatusOracleDg= "Y";
+var $g_continuityStatusOracleDg="Y";
+var $g_continuityManagenentOracleDg= "Y";
+}
+//-----------Start NC ,Import FO WorkFlow and Verify Screens During NC---------------
+
+if ($g_executeNCOracleDG == "Y"){
+var $g_importNCOracleDg= "Y";
+var $g_importFOOracleDg= "Y";
+var $g_startNCOracleDg= "Y";
+var $g_monitorRelationshipOracleDg= "Y";
+var $g_manageDRSolutionOracleDg= "Y";
+var $g_groupInformationOracleDg= "Y";
+var $g_groupSnapshotOracleDg= "Y";
+var $g_replicationNCOracleDg= "Y";
+var $g_rpoNCOracleDg= "Y";
+var $g_rtoNCOracleDg= "Y";
+}
+//------------Import SO and SB Workflow,stop NC and start SO,RNC and SB------------------------
+
+if ($g_executeSOSBOracleDG == "Y"){
+var $g_importSOSBOracleDg= "Y";
+var $g_stopNCOracleDg= "Y";
+var $g_startSOOracleDg= "Y";
+var $g_SOExecutionOracleDg= "Y";
+var $g_replicationSOOracleDg= "Y";
+var $g_importRNCOracleDg= "Y";
+var $g_startRNCOracleDg= "Y";
+var $g_groupInformaitionRNCOracleDg= "Y";
+var $g_groupSnapshotOracleDg= "Y";
+var $g_rpoRNCOracleDg= "Y";
+var $g_replicationRNCOracleDg= "Y";
+var $g_stopRNCOracleDg= "Y";
+var $g_startSBOracleDg= "Y";
+var $g_SBExecutionOracleDg= "Y";
+var $g_monitorManageSBOracleDg= "Y";
+}
+//------------Event for Agent and Replication start and Stop-------------------------
+if ($g_eventExecutionOracleDG == "Y"){	
+	if($agentType == "Remote"){
+var $g_remoteStopOracleDgAgent= "Y";
+var $g_remoteStartOracleDgAgent= "Y";
+	}else {
+var $g_localStopOracleDgAgent= "Y";
+var $g_localStartOracleDgAgent= "Y";
+	}
+var $g_replicaionStopOracleDg= "Y";
+var $g_replicaionStartOracleDg= "Y";
+}
+//--------------FO Execution-----------------------------------------------
+if($g_executeFOOracleDG == "Y"){
+var $g_startFOOracleDg= "Y";
+var $g_FOExecutionOracleDg= "Y";
+var $g_continuityStatusFOOracleDg= "Y";
+var $g_rpoFOOracleDg= "Y";
+var $g_monitorManageFOOracleDg= "Y";
+}
+
+
+
+if($flag == 0){
+	$g_executeOracleDGAll = "Y";
+}

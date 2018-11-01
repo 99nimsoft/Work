@@ -1,0 +1,208 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are the part of  My SQL SR solution for generating events. 
+ ** AuthorName : Omprakash V
+ ** Created Date : oct 2016
+ ************************************************************************/
+
+/**
+* Function is for PR remote agent Event verification when repstate is unknown.
+*@param : null
+*@return : null
+*@Author: Omprakash V
+*
+*/
+function Events_GetStatustclTo_UNKNOWN_PR_Remote(){
+	edit_getStatusTcl_HP3PAR($drmServer, $drmUserName, $drmPassword,"rep_state","UNKNOWN",$EAMSROOT);
+	var $sshCommand = "date";
+	$date = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	var $serverTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse($date));
+    _assertExists("Server Time", $serverTime);
+	Event_Verification($serverTime, $groupName, "BCSMySQLFullDBHP3PAR005", "Primary:Replication Status Unknown.", "Serious");
+}
+
+/**
+* Function is for PR remote agent Event verification when repstate is Inactive.
+*@param : null
+*@return : null
+*@Author: Omprakash V
+*
+*/
+
+function Events_GetStatustclTo_INACTIVE_PR_Remote(){
+	edit_getStatusTcl_HP3PAR($drmServer, $drmUserName, $drmPassword,"rep_state","INACTIVE",$EAMSROOT);
+	var $sshCommand = "date";
+	$date = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	var $serverTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse($date));
+	_assertExists("Server Time", $serverTime);
+	Event_Verification($serverTime, $groupName, "BCSMySQLFullDBHP3PAR001", "Primary:Replication is OFF/Stopped.", "Serious");
+}
+
+/**
+* Function is for DR remote agent Event verification when repstate is unknown.
+*@param : null
+*@return : null
+*@Author: Omprakash V
+*
+*/
+function Events_GetStatustclTo_UNKNOWN_DR_Remote(){
+	edit_getStatusTcl_HP3PAR($drmServer, $drmUserName, $drmPassword,"rep_state","UNKNOWN",$EAMSROOT);
+	var $sshCommand = "date";
+	$date = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	var $serverTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse($date));
+	_assertExists("Server Time", $serverTime);
+	Event_Verification($serverTime, $groupName, "BCSMySQLFullDBHP3PAR006", "DR:Replication Status Unknown.", "Serious");
+}
+
+/**
+* Function is for DR remote agent Event verification when repstate is Inactive.
+*@param : null
+*@return : null
+*@Author: Omprakash V
+*
+*/
+
+function Events_GetStatustclTo_INACTIVE_DR_Remote(){
+	edit_getStatusTcl_HP3PAR($drmServer, $drmUserName, $drmPassword,"rep_state","INACTIVE",$EAMSROOT);
+	var $sshCommand = "date";
+	$date = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	var $serverTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse($date));
+	_assertExists("Server Time", $serverTime);
+	Event_Verification($serverTime, $groupName, "BCSMySQLFullDBHP3PAR002", "DR:Replication is OFF/Stopped.", "Serious");
+}
+
+/**
+* Function is for remote agent datalag Event verification.
+*@param : null
+*@return : null
+*@Author: Omprakash V
+*
+*/
+function DatalagEvents_refinfotclTo_INACTIVE_Remote(){
+	edit_replicationInfotcl_HP3PAR($drmServer, $drmUserName, $drmPassword,"rep_state","INACTIVE",$EAMSROOT);
+	edit_replicationInfotcl_HP3PAR($drmServer, $drmUserName, $drmPassword," ", $datalag ,$EAMSROOT);
+	
+		var $sshCommand = "date";
+		$date = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+		var $serverTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse($date));
+		_assertExists("Server Time", $serverTime);
+		navigateToReplication();
+		_click(_button("Refresh Details"));
+		_wait(30000);
+		Event_Verification($serverTime, $groupName, "BCSMGR_DATALAG1", "Data Lag Deviation", "Serious");
+	}
+
+/**
+* Function is for PR Local agent Event verification when repstate is unknown.
+*@param : null
+*@return : null
+*@Author: Omprakash V
+*
+*/
+
+function Events_GetStatustclTo_UNKNOWN_PR_Local(){
+	edit_getStatusTcl_HP3PAR($compIPPR, $remoteUserNameValPR, $remotePwdValPR,"rep_state","UNKNOWN",$localAgentPathtcleditPR);
+	
+	var $sshCommand = "date";
+	$date = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	var $serverTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse($date));
+	_assertExists("Server Time", $serverTime);
+	Event_Verification($serverTime, $groupName, "BCSMySQLFullDBHP3PAR005", "Primary:Replication Status Unknown.", "Serious");
+}
+
+/**
+* Function is for PR Local agent Event verification when repstate is inactive.
+*@param : null
+*@return : null
+*@Author: Omprakash V
+*
+*/
+function Events_GetStatustclTo_INACTIVE_PR_Local(){
+	edit_getStatusTcl_HP3PAR($compIPPR, $remoteUserNameValPR, $remotePwdValPR,"rep_state","INACTIVE",$localAgentPathtcleditPR);
+	
+	var $sshCommand = "date";
+	$date = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	var $serverTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse($date));
+	_assertExists("Server Time", $serverTime);
+	Event_Verification($serverTime, $groupName, "BCSMySQLFullDBHP3PAR001", "Primary:Replication is OFF/Stopped.", "Serious");
+}
+
+/**
+* Function is for DR Local agent Event verification when repstate is unknown.
+*@param : null
+*@return : null
+*@Author: Omprakash V
+*
+*/
+
+function Events_GetStatustclTo_UNKNOWN_DR_Local(){
+	edit_getStatusTcl_HP3PAR($compIPDR, $remoteUserNameValDR, $remotePwdValDR,"rep_state","UNKNOWN",$localAgentPathtcleditDR);
+	
+	var $sshCommand = "date";
+	$date = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	var $serverTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse($date));
+	_assertExists("Server Time", $serverTime);
+	Event_Verification($serverTime, $groupName, "BCSMySQLFullDBHP3PAR005", "Primary:Replication Status Unknown.", "Serious");
+}
+
+/**
+* Function is for DR Local agent Event verification when repstate is inactive.
+*@param : null
+*@return : null
+*@Author: Omprakash V
+*
+*/
+function Events_GetStatustclTo_INACTIVE_DR_Local(){
+	edit_getStatusTcl_HP3PAR($compIPDR, $remoteUserNameValDR, $remotePwdValDR,"rep_state","INACTIVE",$localAgentPathtcleditDR);
+	
+	var $sshCommand = "date";
+	$date = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	var $serverTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse($date));
+	_assertExists("Server Time", $serverTime);
+	Event_Verification($serverTime, $groupName, "BCSMySQLFullDBHP3PAR001", "Primary:Replication is OFF/Stopped.", "Serious");
+}
+
+/**
+* Function is for PR Local agent datalag Event verification.
+*@param : null
+*@return : null
+*@Author: Omprakash V
+*
+*/
+function DatalagEvents_refinfotclTo_INACTIVE_Local_PR(){
+	edit_replicationInfotcl_HP3PAR($compIPPR, $remoteUserNameValPR, $remotePwdValPR,"rep_state","INACTIVE",$localAgentPathtcleditPR);
+	edit_replicationInfotcl_HP3PAR($compIPPR, $remoteUserNameValPR, $remotePwdValPR," ",$datalag,$localAgentPathtcleditPR);
+	
+		var $sshCommand = "date";
+		$date = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+		var $serverTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse($date));
+		_assertExists("Server Time", $serverTime);
+		navigateToReplication();
+		_click(_button("Refresh Details"));
+		_wait(30000);
+		Event_Verification($serverTime, $groupName, "BCSMGR_DATALAG1", "Data Lag Deviation", "Serious");
+	}
+
+/**
+* Function is for DR Local agent datalag Event verification.
+*@param : null
+*@return : null
+*@Author: Omprakash V
+*
+*/
+function DatalagEvents_refinfotclTo_INACTIVE_Local_DR(){
+	edit_replicationInfotcl_HP3PAR($compIPDR, $remoteUserNameValDR, $remotePwdValDR,"rep_state","INACTIVE",$localAgentPathtcleditDR);
+	edit_replicationInfotcl_HP3PAR($compIPDR, $remoteUserNameValDR, $remotePwdValDR," ",$datalag,$localAgentPathtcleditDR);
+	
+		var $sshCommand = "date";
+		$date = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+		var $serverTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse($date));
+		_assertExists("Server Time", $serverTime);
+		navigateToReplication();
+		_click(_button("Refresh Details"));
+		_wait(30000);
+		Event_Verification($serverTime, $groupName, "BCSMGR_DATALAG1", "Data Lag Deviation", "Serious");
+	}
+
+

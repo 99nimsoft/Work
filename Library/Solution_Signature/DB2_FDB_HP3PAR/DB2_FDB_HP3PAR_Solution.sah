@@ -1,0 +1,512 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are the part of  DB2 HP3PAR solution screen wise fetching and comparing data from DB and GUI. 
+ **@AuthorName : Saiteja M
+ ** Created Date : September 2016
+ ************************************************************************/
+
+/**
+ * Function is for Group Creation of DB2_HADR.
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Saiteja M
+ * 
+ */
+function Create_DB2_HP3PAR_Group() {
+	
+	$groupCreation = Create_FG($groupName, $groupDescription, $SolutionSignature, $primaryComponents, $remoteComponents, $primaryDatasets, $remoteDatasets, $primaryProtections, $remoteProtections);
+	if ($groupCreation.get("flag") == 0) 
+	{
+		_assertExists("Same group name already exists");
+	} 
+	else 
+	{ 
+		_wait(20000);
+		_click(_checkbox("Recovery"));
+		_click(_checkbox("Test"));
+		_click(_button($Save2));
+		_click(_button($Finish));
+		navigateToGroups();
+		if (_exists(_link($groupName))) {
+			_assertExists("Group created succesfully");
+		} else {
+			_fail("Group not created succesfully.");
+		}	
+	}
+}
+
+
+
+/**
+ * Function is for verifying the Replication Status editing RepInfo.tcl file in PR
+ * 
+ * @param :null
+ * @return : null
+ * @Author: Saiteja M
+ * 
+ */
+function edit_replicationInfotcl_HP3PAR_PR_ACTIVE_RepInfo_rep() {
+	
+	edit_replicationInfotcl_HP3PAR($compIPPR, $remoteUserNameValPR, $remotePwdValPR,"rep_state",$ACTIVEHP3PAR,$TclPath_PR);
+	
+	
+}
+function edit_replicationInfotcl_HP3PAR_PR_INACTIVE_RepInfo_rep() {
+	
+	edit_replicationInfotcl_HP3PAR($compIPPR, $remoteUserNameValPR, $remotePwdValPR,"rep_state",$INACTIVEHP3PAR,$TclPath_PR);
+	
+	
+}
+function edit_replicationInfotcl_HP3PAR_PR_UNKNOWN_RepInfo_rep() {
+	
+	edit_replicationInfotcl_HP3PAR($compIPPR, $remoteUserNameValPR, $remotePwdValPR,"rep_state",$UNKNOWNHP3PAR,$TclPath_PR);
+	
+	
+}
+
+function edit_replicationInfotcl_HP3PAR_PR_INACTIVE_RepInfo_DL() {
+
+	edit_replicationInfotcl_HP3PAR($compIPPR, $remoteUserNameValPR, $remotePwdValPR,"",$dataLagPR,$TclPath_PR);
+}
+
+function edit_replicationInfotcl_HP3PAR_PR_RepInfo_DataLag() {
+
+	edit_replicationInfotcl_HP3PAR($compIPPR, $remoteUserNameValPR, $remotePwdValPR,"",$dataLagPR_DR,$TclPath_PR);
+}
+
+
+/**
+ * Function is for verifying the Replication Status editing RepInfo.tcl file in DR
+ * 
+ * @param :null
+ * @return : null
+ * @Author: Saiteja M
+ * 
+ */
+function edit_replicationInfotcl_HP3PAR_DR_ACTIVE_RepInfo_rep()  {
+	
+	edit_replicationInfotcl_HP3PAR($compIPDR, $remoteUserNameValDR, $remotePwdValDR,"rep_state",$ACTIVEHP3PAR,$TclPath_DR);
+}
+
+function edit_replicationInfotcl_HP3PAR_DR_INACTIVE_RepInfo_rep()  {
+	
+	edit_replicationInfotcl_HP3PAR($compIPDR, $remoteUserNameValDR, $remotePwdValDR,"rep_state",$INACTIVEHP3PAR,$TclPath_DR);
+}
+
+function edit_replicationInfotcl_HP3PAR_DR_UNKNOWN_RepInfo_rep()  {
+	
+	edit_replicationInfotcl_HP3PAR($compIPDR, $remoteUserNameValDR, $remotePwdValDR,"rep_state",$UNKNOWNHP3PAR,$TclPath_DR);
+}
+
+function edit_replicationInfotcl_HP3PAR_DR_INACTIVE_RepInfo_DL()  {
+	
+	edit_replicationInfotcl_HP3PAR($compIPDR, $remoteUserNameValDR, $remotePwdValDR,"",$dataLagDR,$TclPath_DR);
+}
+
+function edit_replicationInfotcl_HP3PAR_DR_RepInfo_DataLag()  {
+	
+	edit_replicationInfotcl_HP3PAR($compIPDR, $remoteUserNameValDR, $remotePwdValDR,"",$dataLagPR_DR,$TclPath_DR);
+}
+
+/**
+ * Function is for verifying the Replication Status editing getStatusTcl file in PR
+ * 
+ * @param :null
+ * @return : null
+ * @Author: Saiteja M
+ * 
+ */
+function edit_getStatusTcl_HP3PAR_PR_Active_GetStatus_rep() {
+	edit_getStatusTcl_HP3PAR($compIPPR, $remoteUserNameValPR, $remotePwdValPR,"rep_state",$ACTIVEHP3PAR,$TclPath_PR);
+	
+	
+}
+function edit_getStatusTcl_HP3PAR_PR_Inactive_GetStatus_rep() {
+	edit_getStatusTcl_HP3PAR($compIPPR, $remoteUserNameValPR, $remotePwdValPR,"rep_state",$INACTIVEHP3PAR,$TclPath_PR);
+	
+	
+}
+function edit_getStatusTcl_HP3PAR_PR_Unknown_GetStatus_rep() {
+	edit_getStatusTcl_HP3PAR($compIPPR, $remoteUserNameValPR, $remotePwdValPR,"rep_state",$UNKNOWNHP3PAR,$TclPath_PR);
+	
+	
+}
+
+/**
+ * Function is for verifying the Replication Status editing getStatusTcl file in DR
+ * 
+ * @param :null
+ * @return : null
+ * @Author: Saiteja M
+ * 
+ */
+function edit_getStatusTcl_HP3PAR_DR_Active_GetStatus_rep() {
+	edit_getStatusTcl_HP3PAR($compIPDR, $remoteUserNameValDR, $remotePwdValDR,"rep_state",$ACTIVEHP3PAR,$TclPath_DR);
+	
+	
+}
+function edit_getStatusTcl_HP3PAR_DR_Inactive_GetStatus_rep() {
+	edit_getStatusTcl_HP3PAR($compIPDR, $remoteUserNameValDR, $remotePwdValDR,"rep_state",$INACTIVEHP3PAR,$TclPath_DR);
+	
+	
+}
+function edit_getStatusTcl_HP3PAR_DR_Unknown_GetStatus_rep() {
+	edit_getStatusTcl_HP3PAR($compIPDR, $remoteUserNameValDR, $remotePwdValDR,"rep_state",$UNKNOWNHP3PAR,$TclPath_DR);
+	
+	
+}
+
+
+/**
+	 * Function is for Adding the RepInfo_tcl script in BP RepInfoworkflow (PR and DR)
+	 * 
+	 * @param :null
+	 * @return : null
+	 * @Author: Saiteja M
+	 * 
+ */
+
+
+	function Add_RepInfoTCL_BP_RepInfoWorkflw_DB2_HP3PAR_PR_DR($compName,$TclPath) {
+		navigateToManageBP($groupName);
+		_click(_link($EditWorkflow));
+		_doubleClick(_span($Workflow));
+		_click(_link($ActionProperties));
+		_wait(2000);
+		_setSelected(_select("serverName"), $compName);
+		_click(_select("serverName"));
+		_wait(2000);
+		_check(_radio("drmintegration"));
+		_wait(2000);
+		_setValue(_textbox("commandAbsolutePath"), $TclPath+"/agents/"+"HP3PAR_RepInfo.tcl");
+		_wait(2000);
+		 _click(_button("close", _near(_heading4($Custom))));
+		 publishWorkflow();
+		_wait(20000);
+		 
+	
+	}
+	
+	
+	
+/**
+	 * Function is for checking the Replication Status in Replication Page.
+	 * 
+	 * @param :null
+	 * @return : null
+	 * @Author: Saiteja M
+	 * 
+ */
+	function Check_Replication_Status_Monitor($groupName){
+		RefeshDetails_Replication($groupName);
+		var $replicationStatus = _getText(_span(0, _rightOf(_span($ReplicationStatus))));
+		_assertExists("Replication Status", $replicationStatus);
+		
+}
+
+/**
+	 * Function is for checking the Datalag Status in Replication Page.
+	 * 
+	 * @param :null
+	 * @return : null
+	 * @Author: Saiteja M
+	 * 
+ */
+	function Check_DataLag_Status_Monitor($groupName){
+		RefeshDetails_Replication($groupName);
+		var $datalagStatus = _getText(_div(1, _near(_div($DataLag))));
+		_assertExists("Datalag Status", $datalagStatus);
+		
+}
+
+/**
+	 * Function is for checking the Datalag Status and RepStatus in Replication Page after editing the RepInfo.TCL to Unknown .
+	 * 
+	 * @param :null
+	 * @return : null
+	 * @Author: Saiteja M
+	 * 
+ */
+	function Datalag_RepStatus_RepInfoTCL_Unknown(){
+		_wait(5000);
+		Check_Replication_Status_Monitor($groupName);
+		var $replicationStatus = _getText(_span(0, _rightOf(_span($ReplicationStatus))));
+			if ($replicationStatus==$UNKNOWNHP3PAR) {
+			_log("Replication status is UNKNOWN and updated successfully");
+			} else {
+				_log("Replication status update got failed");
+			}
+		var $datalagStatus = _getText(_div(1, _near(_div($DataLag))));
+			if ($datalagStatus=="N/A") {
+			_log("Datalag status is N/A and updated successfully");
+			} else {
+	         _log("Datalag status update got failed");
+			}
+	}
+	
+	
+/**
+	 * Function is for checking the Datalag and RepStatus in Replication Page after editing the RepInfo.TCL to Unknown(PR) .
+	 * 
+	 * @param :null
+	 * @return : null
+	 * @Author: Saiteja M
+	 * 
+ */
+	
+	function Datalag_RepStatus_RepInfoTCL_PR_Unknown(){
+		edit_replicationInfotcl_HP3PAR_PR_UNKNOWN_RepInfo_rep();
+		_wait(10000);
+ 		Datalag_RepStatus_RepInfoTCL_Unknown();
+	}
+	
+/**
+	 * Function is for checking the Datalag and RepStatus in Replication Page after editing the RepInfo.TCL to Unknown(PR) .
+	 * 
+	 * @param :null
+	 * @return : null
+	 * @Author: Saiteja M
+	 * 
+ */
+	
+	function Datalag_RepStatus_RepInfoTCL_DR_Unknown(){
+		edit_replicationInfotcl_HP3PAR_DR_UNKNOWN_RepInfo_rep();
+		_wait(10000);
+ 		Datalag_RepStatus_RepInfoTCL_Unknown();
+	}
+	
+/**
+	 * Function is for checking the Datalag Status after editing the RepInfo.TCL datalag (PR) and (DR)
+	 * 
+	 * @param :null
+	 * @return : null
+	 * @Author: Saiteja M
+	 * 
+ */
+	function Datalag_Threshold_Deviation_PR($groupName){
+		Check_DataLag_Status_Monitor($groupName);
+		var $datalagStatus = _getText(_div(1, _near(_div($DataLag))));
+		if ($datalagStatus==$dataLagPR_DR+" MB") {
+			_assertExists("Datalag status is" + $dataLagPR_DR+" MB and updated successfully");
+		} else {
+			_assertExists("Datalag status update got failed");
+		}
+		 
+	}
+	
+	function Datalag_Threshold_Deviation_DR($groupName){
+		Check_DataLag_Status_Monitor($groupName);
+		var $datalagStatus = _getText(_div(1, _near(_div($DataLag))));
+		if ($datalagStatus==$dataLagPR_DR+" MB") {
+			_assertExists("Datalag status is"+ $dataLagPR_DR+" MB and updated successfully");
+		} else {
+         _assertExists("Datalag status update got failed");
+		}
+		 
+	}
+
+/**
+	 * Function is for checking the Datalag Status and event verification after editing the RepInfo.TCL datalag greater than threshold. (PR) and (DR)
+	 * 
+	 * @param :null
+	 * @return : null
+	 * @Author: Saiteja M
+	 * 
+ */
+	function Datalag_Updated_Inactive_PR(){
+		edit_replicationInfotcl_HP3PAR_PR_INACTIVE_RepInfo_rep();
+		edit_replicationInfotcl_HP3PAR_PR_RepInfo_DataLag();
+		_wait(10000);
+    	Datalag_Threshold_Deviation_PR($groupName);
+    	
+    	
+	}
+	
+	function Datalag_Updated_Inactive_DR(){
+		edit_replicationInfotcl_HP3PAR_DR_INACTIVE_RepInfo_rep();
+		edit_replicationInfotcl_HP3PAR_DR_RepInfo_DataLag();
+		_wait(10000);
+    	Datalag_Threshold_Deviation_DR($groupName);
+    	
+	}
+
+	
+/**
+	 * Function is for checking the Protection Scheme Status in Subsystems Page after editing the getStatus.TCL
+	 * 
+	 * @param :null
+	 * @return : null
+	 * @Author: Saiteja M
+	 * 
+ */
+	
+	function Protection_Scheme_Status_GetStatusTCL($sername,$state){
+		var $i=0;
+		while($i < 10){
+			_wait(66000);
+			navigateToDiscovery();
+			_click(_link($Subsystems));
+			_click(_link($ProtectionSchemes));
+		
+		var $status = _getText(_cell(3, _near(_cell($sername), _under(_tableHeader($Status)))));
+		
+		if($status==$state){
+			_assertExists("Protection Scheme is "+$state);
+			break;
+		} else {
+			_log("Protection Scheme not updated");
+		}
+		$i++;
+	}
+}
+	
+
+/**
+ * Function is for checking replication status  by clicking start and stop replication buttons in GUI.
+ * 
+ * @param :null
+ * @return : null
+ * @Author: Saiteja M
+ * 
+*/ 
+		function Start_Replication_Button_ACTIVE(){
+		Start_Replication();
+		var $replicationStatus = _getText(_span(0, _rightOf(_span($ReplicationStatus))));
+		if ($replicationStatus==$ACTIVEHP3PAR) {
+		_log("Replication status is ACTIVE");
+		} else {
+			_log("Replication status update got failed");
+			}
+	}
+		
+		function Stop_Replication_Button_INACTIVE(){
+			Stop_Replication();
+			var $replicationStatus = _getText(_span(0, _rightOf(_span($ReplicationStatus))));
+			if ($replicationStatus==$INACTIVEHP3PAR) {
+			_log("Replication status is INACTIVE");
+			} else {
+				_log("Replication status update got failed");
+				}
+		}
+			
+
+/**
+ * Function is for checking Group Health Status in GUI.
+ * 
+ * @param :null
+ * @return : null
+ * @Author: Saiteja M
+ * 
+*/
+	/*	
+		function Group_Health_Status_INACTIVE(){
+			while($i<40){
+				_wait(40000);
+			Group_Status_Info($groupName,$grpStatus);
+			if($grpStatus=="Degraded - One or more subsystems of the DR solution are down"){
+				_log("Group status is changed to Degraded-Orange, when protection scheme is INACTIVE");
+			}	
+				else{
+					_log("Group status not yet changed");
+				}
+			$i++;
+			}
+			
+		}
+		
+		function Group_Health_Status_UNKNOWN(){
+			while($i<40){
+				_wait(40000);
+			Group_Status_Info($groupName,$grpStatus);
+			if($grpStatus=="Degraded - One or more subsystems of the DR solution are down"){
+				_log("Group status is changed to Degraded-Orange, when protection scheme is UNKNOWN");
+				
+			} else{
+					_log("Group status not yet changed");
+				}
+			$i++;
+			}
+			
+		}
+		
+		*/
+  function Group_Health_Status(){
+	  var $i=0;
+		while($i<30){
+			_wait(5000);
+		NavigateToRGDetailsPage($groupName);
+		if(_exists(_heading4("bold", _near(_italic("dot-orange"))))){
+	        $grpStatus ="Degraded";
+	        _log($groupName);
+	        _log("Group Health status is "+$grpStatus);
+	        break;
+	        }
+		  else { _log("Group health status failed to Degrade")
+		               }
+		$i++;
+		}
+		
+  }
+		
+  
+//The below function should be removed when the bug is fixed releated to Data RPO
+		
+/**
+ * Function is for Closing the DataRPO events. 
+ * 
+ * @param :null
+ * @return : null
+ * @Author: Saiteja M
+ * 
+*/
+		
+		function Navigate_Events(){
+			_click(_link($Admin));
+			_click(_link($CurrentEvents));
+			_click(_link($AdvancedFilter));
+			_check(_checkbox("severity[3]"));
+			_check(_checkbox("severity[4]"));
+			_check(_checkbox("severity[5]"));
+			_check(_checkbox("status[2]"));
+			_check(_checkbox("status[1]"));
+			_setSelected(_select("groups"), [$groupName]);
+			_click(_button($Apply));
+		}
+		
+	function Data_RPO_Events_Cancellation_BCSMGR_RPORTO3_HP3PAR() {
+		
+		_check(_checkbox("closeEvent", _near(_link("BCSMGR_RPORTO3"))));
+		_setSelected(_select("lifeCycleOperation"), $Closed);
+		_click(_image("lifeCycleOperationImage"));
+	}
+  
+	function Data_RPO_Events_Cancellation_BCSMGR_RPORTO6_HP3PAR() {
+		
+		_check(_checkbox("closeEvent", _near(_link("BCSMGR_RPORTO6"))));
+		_setSelected(_select("lifeCycleOperation"), $Closed);
+		_click(_image("lifeCycleOperationImage"));
+	}
+		
+	function Closing_DataRPO_Events_RPORTO3_RPORTO6(){
+		Navigate_Events();
+		if (_exists(_link("BCSMGR_RPORTO3"))){
+			Data_RPO_Events_Cancellation_BCSMGR_RPORTO3_HP3PAR();
+		}   
+		else {
+			_log("NO BCSMGR_RPORTO3  EVENTS ARE PRESENT") }
+		
+		if (_exists(_link("BCSMGR_RPORTO6"))) {
+			Data_RPO_Events_Cancellation_BCSMGR_RPORTO6_HP3PAR();
+		     }
+		else {
+			_log("NO BCSMGR_RPORTO6  EVENTS ARE PRESENT")}
+		
+	}
+	
+
+	
+	
+	

@@ -1,0 +1,532 @@
+function Sybase_PFR_Agent_Instllation_001(){
+	try {
+		Install_Local_Agent_SilentMode_OS_Authentication_PR();
+		Install_Local_Agent_SilentMode_OS_Authentication_DR();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0003(),Function: Create_Site_PR or Create_Site_DR ,execution got failed.kindly check the log for more details");
+		_fail("site not created succesfully.So that stopping execution.");
+	}
+}
+
+
+
+function Sybase_PFR_Component_Local_Discovery_0002() {
+	try {
+		Create_Local_ComponentPR();
+		Create_Local_ComponentDR();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Component_Local_Discovery_0002(),Function: Create_Local_ComponentPR or Create_Local_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("component not created succesfully.So that stopping execution.");
+	}
+}
+
+
+
+function Sybase_PFR_Dataset_Discovery_0007() {
+	try {
+		Create_Sybase_Dataset_PR();
+		Create_Sybase_Dataset_DR();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Sybase_PFR_Dataset_Discovery_0007(),Function: Create_Sybase_PFR_Dataset_PR or Create_Sybase_PFR_Dataset_DR ,execution got failed.kindly check the log for more details");
+		_fail("dataset not created succesfully.So that stopping execution.");
+	}
+
+}
+
+function Sybase_PFR_Auto_DatasetDiscovery0009() {
+	try {
+		Verify_Sybase_Dataset_Details_PR();
+		Verify_Sybase_Dataset_Details_DR();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Sybase_PFR_Auto_DatasetDiscovery0009(),Function: Verify_Dataset_Details_PR or Verify_Dataset_Details_DR,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Sybase_PFR_Dataset_status_0011() {
+	try {
+		Verify_Dataset_Status_PR_Sybase();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Sybase_PFR_Dataset_status_0011(),Function: Verify_Dataset_Status_PR ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		Verify_Dataset_Status_DR_Sybase();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Sybase_PFR_Dataset_status_0011(),Function: Verify_Dataset_Status_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Sybase_PFR_Protectionscheme_Discovery_0018() {
+	try {
+		Create_Sybase_PFR_ProtectionSchemePR();
+		Create_Sybase_PFR_ProtectionSchemeDR();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Sybase_PFR_Protectionscheme_Discovery_0018(),Function: Create_Sybase_PFR_ProtectionSchemePR or Create_Sybase_PFR_ProtectionSchemeDR ,execution got failed.kindly check the log for more details");
+		_fail("Protection Schemes not created succesfully.So that stopping execution.");
+	}
+}
+
+function Sybase_PFR_Protectionscheme_local_status_0021(){
+	try{
+		Verify_Protection_Status_PR_Sybase();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Sybase_PFR_Protectionscheme_status_0021(),Function: Verify_Protection_Scheme_Status_PR ,execution got failed.kindly check the log for more details");
+	}
+	try{
+		Verify_Protection_Status_DR_Sybase();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Sybase_PFR_Protectionscheme_status_0021(),Function: Verify_Protection_Scheme_Status_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+function Sybase_PFR_GroupCreation_0022() {
+	try {
+		Creation_Sybase_PFR_Group();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Sybase_PFR_GroupCreation_0022(),Function: Sybase_FG_DG_Group_Creation ,execution got failed.kindly check the log for more details");
+		_fail("Group not created succesfully.So that stopping execution.");
+	}
+
+}
+
+function Sybase_PFR_Move_Group_Manage_0006() {
+	try {
+		Move_To_Manage_Group($groupName);
+		_wait(100);
+		Change_ContinuityStatus_Group($groupName, "Normal Reset");
+		_wait(100);
+		Execute_NFC($groupName, "NormalFullCopy" ); 
+		_wait(100);
+		Waitfor_TestWF_Completion_NFC_sybase($groupName, "NormalFullCopy");
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Move_Group_Manage_0006(),Function: Move_To_Manage_Group ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+}
+
+
+function Sybase_PFR_Post_Group_Creation_0010() {
+	try {
+		Post_Group_Creation();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Post_Group_Creation_0010(),Function: Post_Group_Creation ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Sybase_PFR_Component_Status_0001() {
+	try {
+		
+		if($systemType == "Linux"){
+			Verify_Component_Status_PR("Local");
+			Verify_Component_Status_DR("Local");
+		}
+		else {
+		Verify_Component_Status_PR_Solaris();
+		Verify_Component_Status_DR_Solaris();
+		}
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Component_Status_0001(),Function: Verify_Component_Status_PR or Verify_Component_Status_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Sybase_PFR_Contiunity_Status_0002() {
+	try {
+		Verify_Continuitystatus_Before_NC();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Contiunity_Status_0002(),Function: Verify_Continuitystatus_Before_NC ,execution got failed.kindly check the log for more details");
+	}
+}
+function Sybase_PFR_Continuity_Management_0015() {
+	try {
+		Group_Managedrsolution();
+		
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Continuity_Management_0015(),Function: Group_Managedrsolution ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Sybase_PFR_Start_NormalCopy_0001() {
+	try {
+		Execute_NC($groupName,"NormalCopy"); // In Common > Group_Operation.sah
+		Verify_Continuitystatus_In_NC();// In Common > Group_Operation.sah
+		 $count = 0;
+			while($count<10){
+				_wait(30000);
+				$count++;	
+			}
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_NormalCopy_0001(),Function: Execute_NC or Verify_Continuitystatus_In_NC ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Sybase_PFR_Monitor_Relationship_0030() {
+	try {
+		Monitor_Relationship($groupName);
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Monitor_Relationship_0030(),Function: Monitor_Relationship ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Sybase_PFR_Manage_DRsolution_0029() {
+	try {
+		Sybase_PFR_Managedrsolution();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SybaseDg_Manage_DRsolution_0029(),Function: Sybase_PFR_Managedrsolution ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Sybase_PFR_GroupInformation_Manage_0007() {
+	try {
+		Sybase_PFR_Groupinformation();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: GroupInformation_Manage_0007(),Function: Sybase_PFR_Groupinformation ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Sybase_PFR_Groupsnapshot_Monitor_0001() {
+	try {
+		Sybase_PFR_Groupsnapshot();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		
+		_log("for test Case ID: Gruopsnapshot_Monitor_0001(),Function: Sybase_PFR_Gruopsnapshot ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Sybase_PFR_NC_Replication_0028() {
+	try {
+		Sybase_PFR_Replication();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: NC_Sybase_PFR_Replication_0028(),Function: Sybase_PFR_Replication ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Sybase_PFR_NC_RPO_0026() {
+	try {
+		Sybase_PFR_Rpo();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: NC_Sybase_PFR_RPO_0026(),Function: Sybase_PFR_Rpo ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+function Sybase_PFR_NC_RTO_0027() {
+	try {
+		Sybase_PFR_Rto();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: NC_Sybase_PFR_RPO_0026(),Function: Sybase_PFR_Rpo ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+function Sybase_PFR_Stop_NC_0002() {
+
+	try {
+		Stop_NC($groupName);
+	} catch (e) {
+		_log("for test Case ID: Stop_NC_0002(),Function: Stop_NC ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Sybase_Import_SO_For_Local0007() {
+	try {
+		Edit_SO_Workflow();//In Solution signature > MSSQL_Logshipping_Solution.sah
+		_wait(5000);
+		Import_WF_SO();// In Common > Group_Operation.sah
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Import_SO_For_Remote0007(),Function: Import_WF_SO ,execution got failed.kindly check the log for more details");
+		_fail("workflow not imported succesfully.So that stopping execution.");
+	}
+}
+
+
+
+function Sybase_PFR_Start_SO_0011() {
+	try {
+		Start_SO($groupName);
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_SO_0011(),Function: Start_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Sybase_PFR_SO_Execution_0012() {
+	try {
+		Verify_Continuitystatus_In_SO();
+		
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SO_Execution_0012(),Function: Verify_Continuitystatus_In_SO ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		SO_Execution_Status_Sybase_PFR($groupName);
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SO_Execution_0012(),Function: SO_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("SO workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+}
+
+function Sybase_PFR_SO_Replication_0013() {
+	try {
+		Verify_Continuity_Status($groupName, "DR Resync In Progress");
+		Sybase_PFR_Replication_Post_SO();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SO_Replication_0013(),Function: Verify_Continuitystatus_After_SO or Sybase_PFR_Replication_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Sybase_PFR_Start_RNC_0033() {
+	try {
+		Execute_Reverse_Normal_Copy($groupName);
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_RNC_0033(),Function: Execute_Reverse_Normal_Copy or Sybase_PFR_Managedrsolution_PostSO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Sybase_PFR_RNC_Execution_Status_0022() {
+	try {
+		RNC_Execution_Status($groupName);
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_RNC_0033(),Function: RNC_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("RNC workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+
+}
+
+
+function Sybase_PFR_Stop_RNC_0033() {
+	try {
+		Stop_Reverse_Normal_Copy($groupName);
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_RNC_0033(),Function: Stop_Reverse_Normal_Copy ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Sybase_PFR_Start_SB_0034() {
+	try {
+		Verify_Continuitystatus_Stop_RNC();
+		_wait(100);
+		Edit_SB_Workflow();
+		_wait(100);
+		Import_WF_SB();
+		_wait(100);
+		Start_SB($groupName);
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_SB_0034(),Function: Verify_Continuitystatus_Stop_RNC or Start_SB ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Sybase_PFR_SB_Execution_0035() {
+	try {
+		Verify_Continuitystatus_In_SB();
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SB_Execution_0035(),Function: Verify_Continuitystatus_In_SB ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		SB_Execution_Status_Sybase_PFR($groupName);
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SB_Execution_0035(),Function: SB_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("SB workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+}
+
+function Sybase_PFR_SB_Monitor_Manage_0038() {
+	try {
+		Verify_Continuity_Status($groupName, "DR Sync is Aborted");
+		
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SB_Monitor_Manage_0038(),Function: managedrsolution or Replication or Gruopsnapshot or Managegroupinformation or RPO or RTO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Sybase_PFR_Dryrun_Report_Testcase() {
+	try {
+		Dryrun_for_Diffrent_Workflows("NormalFullCopy");
+		Dryrun_for_Diffrent_Workflows("NormalCopy");
+		Dryrun_for_Diffrent_Workflows("Switchover");
+		Dryrun_for_Diffrent_Workflows("ReverseNormalCopy");
+		Dryrun_for_Diffrent_Workflows("Switchback");
+		Dryrun_for_Diffrent_Workflows("Failover");
+		Dryrun_for_Diffrent_Workflows("FallbackResync");
+		Dryrun_for_Diffrent_Workflows("Fallback");
+} catch ($e) {
+	_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Sybase_PFR_Dryrun_Report_Testcase(),Function: Sybase_PFR_Dryrun_Report,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Sybase_PFR_Start_FO_0001() {
+	try {
+		Start_FO($groupName);
+		Verify_Continuitystatus_In_FO();
+	} catch (e) {
+		_log("for test Case ID: Start_FO_0001(),Function: Stop_NC or Start_FO or Verify_Continuitystatus_In_FO  ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Sybase_PFR_FO_execution_0058() {
+	try {
+		FO_Execution_Status($groupName);
+	} catch (e) {
+		_log("for test Case ID: FO_execution_0058(),Function: FO_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("Fail over workflow execution faild.So that stopping execution.Kindly check the logs for further details");
+	}
+}
+
+function Sybase_PFR_FO_RPO_0003() {
+	try {
+		Calculate_RPO_Post_FO($groupName);
+	} catch (e) {
+		_log("for test Case ID: FO_RPO_0003(),Function: Calculate_RPO_Post_FO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Sybase_PFR_FO_Monitor_Manage_0006() {
+	try {
+		Gruopsnapshot_Post_FO($groupName);
+		Groupinformation_Post_FO($groupName);
+		Replication_Post_FO($groupName);
+	} catch (e) {
+		_log("for test Case ID: FO_Monitor_Manage_0006(),Function: Gruopsnapshot_Post_FO or Groupinformation_Post_FO or Replication_Post_FO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Sybase_PFR_Continuity_Status_FO_0007() {
+	try {
+		Verify_Continuitystatus_After_FO();
+	} catch (e) {
+		_log("for test Case ID: Continuity_Status_FO_0007(),Function: Verify_Continuitystatus_After_FO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+////////////////////Local Agent//////////////////////////////////////////////////
+
+
+function Sybase_PFR_Local_Stop_Sybase_PFR_Agent_0039() {
+	try {
+		Sybase_PFR_Local_PR_Sybase_Agent_Stop_Event();
+		Sybase_PFR_Local_DR_Sybase_Agent_Stop_Event();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Local_Stop_Sybase_PFR_Agent_0039(),Function: Sybase_PFR_Local_PR_Sybase_PFR_Agent_Stop_Event or Sybase_PFR_Local_DR_Sybase_PFR_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Sybase_PFR_Local_Start_Sybase_PFR_Agent_0038() {
+	try {
+		Sybase_PFR_Local_PR_Sybase_Agent_Start_Event();
+		Sybase_PFR_Local_DR_Sybase_Agent_Start_Event();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Local_Start_Sybase_PFR_Agent_0038(),Function: Sybase_PFR_Local_PR_Sybase_PFR_Agent_Start_Event or Sybase_PFR_Local_DR_Sybase_PFR_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+///
+function Sybase_PFR_Local_Stop_PFR_Agent_0051() {
+	try {
+		Sybase_PFR_Local_PR_PFR_Agent_Stop_Event();
+		Sybase_PFR_Local_DR_PFR_Agent_Stop_Event();
+		
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Sybase_PFR_Stop_replication_0051(),Function: Sybase_PFR_Stop_Replication_event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Sybase_PFR_Local_Start_PFR_Agent_0052() {
+	try {
+		Sybase_PFR_Local_PR_PFR_Agent_Start_Event();
+		Sybase_PFR_Local_DR_PFR_Agent_Start_Event();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Sybase_PFR_Start_replication_0052(),Function: Sybase_PFR_Start_Replication_event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+/////Sybase
+
+function Sybase_PFR_Local_Stop_Sybase_PFR_Agent_SO_InActive_0039() {
+	try {
+		Sybase_PFR_Local_PR_Sybase_Agent_Stop_Event_SO_InActive();
+		Sybase_PFR_Local_DR_Sybase_Agent_Stop_Event_SO_InActive();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Local_Stop_Sybase_PFR_Agent_0039(),Function: Sybase_PFR_Local_PR_Sybase_PFR_Agent_Stop_Event or Sybase_PFR_Local_DR_Sybase_PFR_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Sybase_PFR_Local_Start_Sybase_PFR_Agent_SO_InActive_0038() {
+	try {
+		Sybase_PFR_Local_PR_Sybase_Agent_Start_Event_SO_InActive();
+		Sybase_PFR_Local_DR_Sybase_Agent_Start_Event_SO_InActive();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Local_Start_Sybase_PFR_Agent_0038(),Function: Sybase_PFR_Local_PR_Sybase_PFR_Agent_Start_Event or Sybase_PFR_Local_DR_Sybase_PFR_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+//PFR
+function Sybase_PFR_Local_Stop_PFR_Agent_SO_InActive_0051() {
+	try {
+		Sybase_PFR_Local_PR_PFR_Agent_Stop_Event_SO_InActive();
+		Sybase_PFR_Local_DR_PFR_Agent_Stop_Event_SO_InActive();
+		
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Sybase_PFR_Stop_replication_0051(),Function: Sybase_PFR_Stop_Replication_event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Sybase_PFR_Local_Start_PFR_Agent_SO_InActive_0052() {
+	try {
+		Sybase_PFR_Local_PR_PFR_Agent_Start_Event_SO_InActive();
+		Sybase_PFR_Local_DR_PFR_Agent_Start_Event_SO_InActive();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Sybase_PFR_Start_replication_0052(),Function: Sybase_PFR_Start_Replication_event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+

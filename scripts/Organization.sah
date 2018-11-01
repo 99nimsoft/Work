@@ -1,0 +1,31 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : Organization
+ ** Objective : This script contains all the Organization creation Testcases
+ ** AuthorName : N .vinod
+ ** Created Date : March 2016
+
+************************************************************************/
+
+
+_log("=================================Pre-Condition===================================","Custom1");
+
+
+
+_include("../Library/Solution_Signature/Include/APP_PFR_Include.sah");
+
+_include("../conf/DRMInstallation_Parameter.sah");
+
+_include("../conf/Organization/Organization_Parameter_test.sah");
+
+/*_include("../conf/APP_PFR/UserSelected_APP_PFR_Testcase.sah");
+*/
+_include("../Library/Common/Common_Function.sah");
+
+_include("../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+
+
+Login_001();
+
+
+_log("=================================Test========================================","Custom1");

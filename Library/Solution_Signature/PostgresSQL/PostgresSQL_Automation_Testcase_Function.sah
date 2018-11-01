@@ -1,0 +1,516 @@
+
+function Agent_node_001() {
+	try {
+		Create_Agent_Node_Component();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Agent_node_001(),Function: Create_Agent_Node_Component(),execution got failed.kindly check the log for more details");
+		_fail("Agent Node component not created succesfully.So that stopping execution.");
+	}
+}
+
+
+function PostgresSR_Component_Local_Discovery_0002() {
+	try {
+		Create_Local_ComponentPR();
+		Create_Local_ComponentDR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Component_Local_Discovery_0002(),Function: Create_Local_ComponentPR or Create_Local_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("component not created succesfully.So that stopping execution.");
+	}
+}
+
+function PostgresSR_Component_Remote_Discovery_0003() {
+	try {
+		Create_Remote_ComponentPR();
+		Create_Remote_ComponentDR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Component_Remore_Discovery_0003(),Function: Create_Remote_ComponentPR or Create_Remote_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("component not created succesfully.So that stopping execution.");
+	}
+}
+
+function PostgresSR_Dataset_Discovery_0004() {
+	try {
+		Create_PostgresSR_DatasetPR();
+		Create_PostgresSR_DatasetDR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:PostgresSR_Dataset_Discovery_0004(),Function: Create_PostgresSR_DatasetPR or Create_PostgresSR_DatasetPR ,execution got failed.kindly check the log for more details");
+		_fail("dataset not created succesfully.So that stopping execution.");
+	}
+
+}
+
+function PostgresSR_Dataset_status_0005() {
+	try {
+		Get_Dataset_Status_Gui_PR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:PostgresSR_Dataset_status_0005(),Function: Get_Dataset_Status_Gui_PR ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		Get_Dataset_Status_Gui_DR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:PostgresSR_Dataset_status_0011(),Function: Get_Dataset_Status_Gui_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function PostgresSR_Protectionscheme_Discovery_0006() {
+	try {
+		Create_PostgresSR_ProtectionschemePR();
+		Create_PostgresSR_ProtectionschemeDR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: PostgresSR_Protectionscheme_Discovery_0006(),Function: Create_PostgresSR_ProtectionschemePR or Create_PostgresSR_ProtectionschemeDR ,execution got failed.kindly check the log for more details");
+		_fail("Protection Schemes not created succesfully.So that stopping execution.");
+	}
+}
+
+function PostgresSR_Protectionscheme_status_0007() {
+	try {
+		Get_Protectionscheme_Status_Gui_PR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: PostgresSR_Protectionscheme_status_0007(),Function: Get_Protectionscheme_Status_Gui_PR ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		Get_Protectionscheme_Status_Gui_DR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: PostgresSR_Protectionscheme_status_0007(),Function: Get_Protectionscheme_Status_Gui_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function PostgresSR_GroupCreation_0008() {
+	try {
+		PostgresSR_Create_FG();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: PostgresSR_GroupCreation_0008(),Function: PostgresSR_Create_FG ,execution got failed.kindly check the log for more details");
+		_fail("Group not created succesfully.So that stopping execution.");
+	}
+
+}
+
+function PostgresSR_Move_Group_Manage_0009() {
+	try {
+		Move_To_Manage_Group($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Move_Group_Manage_0009(),Function: Move_To_Manage_Group ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+
+}
+
+function PostgresSR_Change_Continuity_State_0010() {
+	try {
+		Change_ContinuityStatus_Group($groupName, "Normal Inactive");
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Change_Continuity_State_0010(),Function: Change_ContinuityStatus_Group ,execution got failed.kindly check the log for more details");
+		_fail("Current group state is not correct,so that stopping execution");
+	}
+}
+
+function PostgresSR_Component_Status_0011() {
+	try {
+		Verify_Component_Status_PR($agentType);
+		Verify_Component_Status_DR($agentType);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Component_Status_0011(),Function: Verify_Component_Status_PR or Verify_Component_Status_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function PostgresSR_Contiunity_Status_0012() {
+	try {
+		Verify_Continuity_Status($groupName, "DR Sync In Progress");
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Contiunity_Status_0012(),Function: Verify_Continuitystatus_Before_NC ,execution got failed.kindly check the log for more details");
+	}
+}
+function PostgresSR_Continuity_Management_0015() {
+	try {
+		Group_Managedrsolution();
+	} catch ($e) {
+		
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Continuity_Management_0015(),Function: Group_Managedrsolution ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+function PostgresSR_Start_NormalCopy_0013() {
+	try {
+		Execute_NC($groupName,"NormalCopy");// In Common > Group_Operation.sah
+		Verify_Continuitystatus_In_NC();// In Common > Group_Operation.sah
+		 $count = 0;
+			while($count<10){
+				_wait(30000);
+				$count++;	
+			}
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_NormalCopy_0013(),Function: Execute_NC or Verify_Continuitystatus_In_NC ,execution got failed.kindly check the log for more details");
+	}
+}
+function PostgresSR_Monitor_Relationship_0016() {
+	try {
+		Monitor_Relationship($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Monitor_Relationship_0016(),Function: Monitor_Relationship ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function PostgresSR_Manage_DRsolution_0029() {
+	try {
+		NC_Execution_Status($groupName);
+	} catch ($e) {
+		_log("for test Case ID: PostgresSR_Manage_DRsolution_0029(),Function: NC_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("NC workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+}
+
+function PostgresSR_Continuity_Work_Flow_NC_0015() {
+	try {
+		PostgresSR_Continuity_Work_Flow($groupName,"NormalCopy");
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: GroupInformation_Manage_0015(),Function: PostgresSR_Groupinformation ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function PostgresSR_GroupSnapshot_Monitor_0001() {
+	try {
+		PostgresSR_Groupsnapshot();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Groupsnapshot_Monitor_0001(),Function: PostgresSR_groupsnapshot ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function PostgresSR_NC_PostgresSR_Replication_0017() {
+	try {
+		//PostgresSR_Replication($compIP, $remoteUserNameVal, $remotePwdVal);
+		replication();
+	} catch ($e) {
+		_log("for test Case ID: NC_PostgresSR_Replication_0017(),Function: PostgresSR_Replication ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function PostgresSR_NC_PostgresSR_RPO_0018() {
+	try {
+		PostgresSR_Rpo();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: NC_PostgresSR_RPO_0018(),Function: PostgresSR_Rpo ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+function PostgresSR_Publish_FO_0014(){
+	
+	try {
+		publishBCO($groupName,"Failover");
+	} catch ($e) {
+		_log("for test Case ID: PostgresSR_Publish_FO_0014(),Function: PostgresSR_Rto ,Publish got failed.kindly check the log for more details");
+	}
+	
+}
+
+function PostgresSR_NC_PostgresSR_RTO_0019() {
+	try {
+		PostgresSR_Rto();
+	} catch ($e) {
+		_log("for test Case ID: NC_PostgresSR_RTO_0019(),Function: PostgresSR_Rto ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+function PostgresSR_Stop_NC_0020() {
+	try {
+		NC_Execution_Status($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_NC_0020(),Function: NC_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("NC workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+	try {
+		Stop_NC($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_NC_0020(),Function: Stop_NC ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function PostgresSR_Start_SO_0021() {
+	try {
+		Start_SO($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_SO_0021(),Function: Start_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function PostgresSR_SO_Execution_0022() {
+	try {
+		Verify_Continuitystatus_In_SO();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SO_Execution_0022(),Function: Verify_Continuitystatus_In_SO ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		SO_Execution_Status($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SO_Execution_0022(),Function: SO_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("SO workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+}
+
+
+
+function PostgresSR_Start_RNC_0023() {
+	try {
+		Execute_Reverse_Normal_Copy($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_RNC_0023(),Function: Execute_Reverse_Normal_Copy or PostgresSR_Managedrsolution_PostSO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function PostgresSR_RNC_Execution_0024() {
+	try {
+		RNC_Execution_Status($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_RNC_0024(),Function: RNC_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("RNC workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+	try {
+		//PostgresSR_GroupInformation_Post_SO();
+		PostgresSR_GroupInformation($groupName,"ReverseNormalCopy")
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: RNC_Groupinformation_Monitor_0024(),Function: PostgresSR_Groupinformation_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function PostgresSR_RNC_Continuity_Work_Flow_0025() {
+	try {
+		PostgresSR_Continuity_Work_Flow($groupName,"ReverseNormalCopy");
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: RNC_Continuity_Work_Flow_0025(),Function: PostgresSR_Continuity_Work_Flow ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function PostgresSR_RNC_Rpo_Monitor_0026() {
+	try {
+		PostgresSR_Rpo_Post_SO();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: RNC_Rpo_Monitor_0026(),Function: PostgresSR_Rpo_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+function PostgresSR_Stop_RNC_0027() {
+	try {
+		RNC_Execution_Status($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_RNC_0027(),Function: RNC_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("RNC workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+	try {
+		Stop_Reverse_Normal_Copy($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_RNC_0027(),Function: Stop_Reverse_Normal_Copy ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function PostgresSR_Start_SB_0028() {
+	try {
+		Verify_Continuity_Status($groupName, "DR Resync In Progress");
+		Start_SB($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_SB_0028(),Function: Verify_Continuitystatus_Stop_RNC or Start_SB ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function PostgresSR_SB_Execution_0029() {
+	try {
+		Verify_Continuitystatus_In_SB();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SB_Execution_0029(),Function: Verify_Continuitystatus_In_SB ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		SB_Execution_Status($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SB_Execution_0029(),Function: SB_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("SB workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+}
+
+function PostgresSR_SB_Monitor_Manage_0030() {
+	try {
+		
+		Verify_Continuity_Status($groupName, "DR Sync In Progress");
+
+		//PostgresSR_Groupsnapshot();
+		//Group_Managegroupinformation($groupName, $WFType);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SB_Monitor_Manage_0030(),Function: managedrsolution or Replication or Groupsnapshot or Managegroupinformation or RPO or RTO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function PostgresSR_Dryrun_Report_Testcase() {
+	try {
+		Dryrun_for_Diffrent_Workflows("NormalFullCopy");
+		Dryrun_for_Diffrent_Workflows("NormalCopy");
+		Dryrun_for_Diffrent_Workflows("Switchover");
+		Dryrun_for_Diffrent_Workflows("ReverseNormalCopy");
+		Dryrun_for_Diffrent_Workflows("Switchback");
+		Dryrun_for_Diffrent_Workflows("Failover");
+		Dryrun_for_Diffrent_Workflows("FallbackResync");
+		Dryrun_for_Diffrent_Workflows("Fallback");
+} catch ($e) {
+	_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: PostgresSR_Dryrun_Report_Testcase(),Function: PostgresSR_Dryrun_Report,execution got failed.kindly check the log for more details");
+	}
+}
+
+function PostgresSR_Remote_Stop_linux_Agent_0031() {
+	try {
+		PostgresSR_Remote_PR_Linux_Agent_Stop_Event();
+		PostgresSR_Remote_DR_Linux_Agent_Stop_Event();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Stop_linux_Agent_0031(),Function: PostgresSR_Remote_PR_Linux_Agent_Stop_Event or PostgresSR_Remote_DR_Linux_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+function PostgresSR_Remote_Start_linux_Agent_0032() {
+	try {
+		PostgresSR_Remote_PR_Linux_Agent_Start_Event();
+		PostgresSR_Remote_DR_Linux_Agent_Start_Event();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Stop_linux_Agent_0031(),Function: PostgresSR_Remote_PR_Linux_Agent_Stop_Event or PostgresSR_Remote_DR_Linux_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function PostgresSR_Local_Stop_Linux_Agent_0031() {
+	try {
+		PostgresSR_Local_PR_Linux_Agent_Stop_Event();
+		PostgresSR_Local_DR_Linux_Agent_Stop_Event();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Local_Stop_PostgresSR_Agent_0039(),Function: PostgresSR_Local_PR_PostgresSR_Agent_Stop_Event or PostgresSR_Local_DR_PostgresSR_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function PostgresSR_Local_Start_Linux_Agent_0032(){
+	try{
+		PostgresSR_Local_PR_Linux_Agent_Start_Event();
+		PostgresSR_Local_DR_Linux_Agent_Start_Event();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: PostgresSR_Local_PR_Linux_Agent_Start_Event(),Function: PostgresSR_Local_DR_Linux_Agent_Start_Event or PostgresSR_Local_DR_PostgresSR_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+function PostgresSR_Local_Stop_PostgresSR_Agent_0033() {
+	try {
+		PostgresSR_Local_PR_Postgres_Agent_Stop_Event();
+		PostgresSR_Local_DR_Postgres_Agent_Stop_Event();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Local_Stop_PostgresSR_Agent_0039(),Function: PostgresSR_Local_PR_PostgresSR_Agent_Stop_Event or PostgresSR_Local_DR_PostgresSR_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+function PostgresSR_Local_Start_PostgresSR_Agent_0034() {
+	try {
+		PostgresSR_Local_PR_Postgres_Agent_Start_Event();
+		PostgresSR_Local_DR_Postgres_Agent_Start_Event();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Local_Start_PostgresSR_Agent_0038(),Function: PostgresSR_Local_PR_PostgresSR_Agent_Start_Event or PostgresSR_Local_DR_PostgresSR_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+function PostgresSR_Start_FO_0001() {
+	try {
+		Stop_NC($groupName);
+		Start_FO($groupName);
+		Verify_Continuitystatus_In_FO();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_FO_0001(),Function: Stop_NC or Start_FO or Verify_Continuitystatus_In_FO  ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function PostgresSR_FO_execution_0058() {
+	try {
+		FO_Execution_Status($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: FO_execution_0058(),Function: FO_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("Fail over workflow execution faild.So that stopping execution.Kindly check the logs for further details");
+	}
+}
+
+function PostgresSR_FO_RPO_0003() {
+	try {
+		Calculate_RPO_Post_FO($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: FO_RPO_0003(),Function: Calculate_RPO_Post_FO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function PostgresSR_FO_Monitor_Manage_0006() {
+	try {
+		Groupsnapshot_Post_FO($groupName);
+		Groupinformation_Post_FO($groupName);
+		Replication_Post_FO($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: FO_Monitor_Manage_0006(),Function: Groupsnapshot_Post_FO or Groupinformation_Post_FO or Replication_Post_FO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function PostgresSR_Continuity_Status_FO_0007() {
+	try {
+		Verify_Continuitystatus_After_FO();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Continuity_Status_FO_0007(),Function: Verify_Continuitystatus_After_FO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+
+

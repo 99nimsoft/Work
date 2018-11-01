@@ -1,0 +1,55 @@
+/*************************************************************************
+ ** CompanyName : Sanovi an IBM company.
+ ** Application Name : SCC
+ ** Objective : This script contains backup manager script.
+ ** AuthorName : Omprakash.v
+ ** Created Date : Jan 2017
+ ************************************************************************/
+
+
+_log("=================================Pre-Condition===================================", "Custom1");
+_include("../Library/Common/CommonRepository/CommonDRM_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/CommonGUINavigation_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/GroupOperation_ObjRepository.sah");
+_include("../Library/Backup_Manager/ObjectRepository/Backup_Manager_ObjectRepository.sah");
+_include("../Library/Solution_Signature/Include/BackupManager_Include.sah");
+_include("../conf/DRMInstallation_Parameter.sah");
+_include("../conf/Backup_Manager/BackupManager_Parameter.sah");
+_include("../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+
+
+Login_001();
+
+_log("=================================Test========================================", "Backup Manager");
+
+if ($g_BackupManager_executeAll == "Y" || $g_Backup_Folder_creation == "Y") {
+    var $test1 = _testcase("Backup_Folder_creation_0001", "Creating backup folder");
+    $test1.start();
+    Backup_Folder_creation_0001();
+    $test1.end();
+}
+
+if ($g_BackupManager_executeAll == "Y" || $g_Configure_Backup == "Y") {
+    var $test1 = _testcase("Configure_Backup_0002", "Configuring Backup Manager");
+    $test1.start();
+    Configure_Backup_0002();
+    $test1.end();
+}
+
+if ($g_BackupManager_executeAll == "Y" || $g_Verify_Backup == "Y") {
+    var $test1 = _testcase("Verify_Backup_0003", "Verifying the Backup from GUI with Backend");
+    $test1.start();
+    Verify_Backup_0003();
+    $test1.end();
+}
+
+if ($g_BackupManager_executeAll == "Y" || $g_Verify_Backup_Event == "Y") {
+    var $test1 = _testcase("Verify_Backup_Event_0004", "Verifying the Backup Fail Event");
+    $test1.start();
+    Verify_Backup_Event_0004();
+    $test1.end();
+}
+
+_log("================================Post-Condition================================== ", "Custom1");
+
+Logout_001();

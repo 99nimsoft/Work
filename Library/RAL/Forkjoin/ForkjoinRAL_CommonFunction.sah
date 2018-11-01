@@ -1,0 +1,404 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the common functions which are the part of Forkjoin RAL( Recovery automation library). 
+ **@AuthorName : Anita 
+ ** Created Date : Nov 2016
+ ************************************************************************/
+
+/**
+ * Function is used to create Group creation and common functions to verify forkjoin scenarios
+ * @param :
+ * @return : null
+ * @Author:Anita
+ * 
+ */
+
+// for remote OracleDG_group creation
+
+function preCondition_ODGGroupCreation(){
+	//Site_0003();
+	//Agent_node_001();
+	OracleDG_Component_Remote_Discovery_0001();
+	OracleDG_Dataset_Discovery_0002();
+	OracleDG_Auto_DatasetDiscovery0003();
+	OracleDG_Protectionscheme_Discovery_0004();
+	OracleDG_DataGuard_Configured_information0005();
+	OracleDG_GroupCreation_0006();
+	OracleDG_Move_Group_Manage_0007();
+	OracleDG_Change_Continuity_State_0008();
+	Add_RAL_OracleDG_NC();
+}
+
+// for remote APP_PFR_group creation
+
+function preCondition_AppPFRGroupCreation(){
+	//Site_0003();
+	//
+	//Agent_node_001();
+	APP_PFR_Component_Remote_Discovery_0018();
+	APP_PFR_Dataset_Discovery_0007();
+	APP_PFR_Auto_DatasetDiscovery0009();
+	
+	APP_PFR_Protectionscheme_Discovery_0018();
+	APP_PFR_GroupCreation_0022();
+	
+	APP_PFR_Move_Group_Manage_0006();	
+	Stop_Replication_Before_NFC($groupName);
+	APP_PFR_Start_NFC_0006();
+	
+	var $flag = Verify_APP_PFR_EXEC_STATUS($groupName,"NormalFullCopy","UserInputQuit");
+	if($flag == true){
+		APP_PFR_Start_NormalCopy_0001();
+		_wait(60000);
+		APP_PFR_Stop_NC_0002();
+	}
+	else{
+		_log("NormalFullCopy failed hence cannot proceed for NormalCopy");
+	}
+}
+
+//Stop_Replication_Before_NFC
+function Stop_Replication_Before_NFC($groupName){
+	navigateToGroups();
+	_click(_link($groupName));
+	_click(_image($ManageGroup));
+	_click(_link($Replication));
+	_wait(3000);
+	_click(_button($RefreshDetails));
+	_wait(5000);
+	
+	if(_exists(_button($StartReplication))){
+		_click(_button($StartReplication));
+		_click(_link($Start));
+		_wait(5000);
+		_click(_button($RefreshDetails));
+		_wait(5000);
+		_click(_button($StopReplication));
+		_click(_link($Stop));
+		_wait(5000);
+		_log("Replication Stopped successfully before NFC");
+	}
+	else{
+		if(_exists(_button($StopReplication))){
+			_click(_button($StopReplication));
+			_click(_link($Stop));
+			_wait(5000);
+			_log("Replication Stopped successfully before NFC");
+		}
+	}
+}
+
+// Verify_APP_PFR_NFC_STATUS() if awaiting input raise/ABORTED NFC return false else return true
+function Verify_APP_PFR_EXEC_STATUS($groupName,$wftype,$userInput){
+	navigateBCOworkflows($groupName);
+	var $i = 0;
+	while ($i < 20) {
+		var $execStatus = _getText(_strong(1, _near(_link($wftype))));
+		_log("Current Execustion Status is  "+$execStatus);
+		if($execStatus ==$obj_ABORTED){
+			break;
+		}	
+		if ($execStatus == $obj_SUCCESS) {
+			break;
+		} 
+		if ($execStatus == $obj_AWAITINGINPUT) {
+			_click(_strong(1, _near(_link($wftype))));
+			_wait(3000);
+			_click(_button($AwaitingInput));
+			_wait(3000);
+			if($userInput=="UserInputQuit"){
+				_click(_submit($QuitABORTuserInputButtonbtnbtnprimarybtnxsbtnbtninfo));
+				_setValue(_textarea("reasonname"), "Aborting Execution");
+				_click(_button($Ok));
+				_wait(5000);
+				_log($wftype+" is not executed successfully please check logs");
+				break;
+			}			
+		} 
+		_wait(5000);
+		$i++;
+	 }
+	var $nfcstatus = verify_NFC_Status($groupName);
+	return $nfcstatus;
+}
+//wait Till Save Now button exists
+
+function waitTillSaveNowBtnExists(){
+	var $i =0;
+	while($i<30){
+		_wait(5000);
+		if(_exists(_link($SaveNow))){			
+			break;
+		}
+		$i++;
+	}
+}
+
+//wait till Navigate publish page
+
+function waitTillPublishpage(){
+	var $i =0;
+	while($i<30){
+		_wait(5000);
+		if(_exists(_heading4($KeyValueList))){
+			break;
+		}
+		$i++;
+	}
+}
+
+// verify WF Publish button enabled then click clickPublishButton
+
+function clickPublishButton(){
+	if(_exists(_div($PublishWorkflow))){
+		_click(_div($PublishWorkflow));
+		_log("Workflow Imported/Saved successfully");
+	}
+	else{
+		_fail("Workflow is not Imported/Saved properly..hence failing ..please check log");
+	}
+}
+
+// wait till published success
+
+function waitTillBCOWFpage(){
+	var $i =0;
+	while($i<30){
+		_wait(5000);
+		if(_exists(_heading4($BCOWorkflows))){
+			break;
+		}
+		if(_exists(_heading4($BPWorkflows))){
+			break;
+		}
+		$i++;
+	}
+}
+//check if already workflow exists then delete the workflow before creating workflow
+
+function isAlreadyExistsWorkflow($groupName,$linkType,$ralName){
+	navigateGroupConfig($groupName);
+	_click(_link($linkType));
+	_wait(5000);
+	if (_exists(_link($ralName))){
+		_log("Deleting the RAL if already exists");
+		_click(_image($DeleteWorkflow, _near(_link($ralName))));
+		_assertEqual($DeleteBPWorkflowAlert+$ralName, _lastConfirm());
+		_wait(1000);
+		_log("successfully deleted the workflow");
+	}
+}
+
+//create new workflow ral  for workflow type
+
+function createNewBPWorkflow($groupName,$ralName,$workflowType){
+	navigateBPworkflows($groupName);
+	_click(_link($CreateNew));
+	_setValue(_textbox("name"), $ralName);
+	_setSelected(_select("type"), $workflowType);
+	_wait(3000);
+	_click(_button($CreateNew));
+	_wait(5000);
+}
+
+
+//navigate to navigateBPworkflows 
+function navigateBPworkflows($groupName){
+	navigateToGroups();
+	_click(_link($groupName));
+	_click(_image($ManageGroup));
+	_click(_link($Viewallworkflows));
+	_wait(10000);
+	_click(_heading4($BPWorkflows));
+	_wait(3000);
+}
+
+//navigate to navigate BCO workflows 
+function navigateBCOworkflows($groupName){
+	navigateToGroups();
+	_click(_link($groupName));
+	_click(_image($ManageGroup));
+	_click(_link($Viewallworkflows));
+	_wait(10000);
+}
+
+//navigateGroupConfig
+function navigateGroupConfig($groupName){
+	navigateToGroups();
+	_click(_link($groupName));
+	_click(_link($GroupConfiguration));
+}
+
+//trigger Workflow execution
+
+function TriggerWorkflowExec($groupName,$ralName){
+	navigateBPworkflows($groupName);
+	 _click(_image($obj_ExecuteWorkflow, _near(_link($ralName))));	
+	 _click(_link($Execute));
+	 _wait(5000);	
+	_log("ForkjoinRAL Execution Triggered");
+}
+
+//fun check if awaiting input verify button functionality while running the ral - button CONTINUE_AS_SUCCESS
+
+function click_CONTINUE_AS_SUCCESS($ralName){
+	if (_exists(_submit($ContAsSuccess))) {
+		_click(_submit($ContAsSuccess));
+		/*_setValue(_textarea("reasonname"), "ContinueAsSuccess");
+		_click(_button($Ok));*/
+		_wait(5000);
+		_assertExists($ralName, "Expected result Awaiting Input found Success/Failure pattern");
+		_log("Hence clicking on CONTINUE_AS_SUCCESS ");
+	}
+	else{
+		_log("failed to click on userInput button CONTINUE_AS_SUCCESS");
+	}
+
+}
+//fun check if awaiting input verify button functionality while running the ral - button CONTINUE_AS_Failure
+
+function click_CONTINUE_AS_Failure($ralName){
+	if (_exists(_submit($ConAsFailure))) {
+		_click(_submit($ConAsFailure));
+		/*_setValue(_textarea("reasonname"), "ContinueAsFailure Execution");
+		_click(_button($Ok));*/
+		 _wait(5000);
+		_assertExists($ralName, "Expected result Awaiting Input not found Success/Failure pattern");
+		_log("Hence clicking on Continue as failure ");
+	}
+	else{
+		_log("failed to click on userInput button CONTINUE_AS_Failure");
+	}
+}
+
+//fun check if awaiting input verify button functionality while running the ral - button Quit
+function click_QuitABORT($ralName){
+	_log("Expected result Awaiting Input not found in Success/Failure pattern");
+	if (_exists(_submit($obj_QuitUserIPbtn))) {
+		_click(_submit($obj_QuitUserIPbtn));
+		/*_setValue(_textarea("reasonname"), "Aborting Execution");
+		_click(_button($Ok));*/
+		_wait(5000);
+		_assertExists($ralName, "Expected result Awaiting Input and verifying ABORT function");
+		_log("Hence clicking on Quit=ABORT");
+		$ralName = $ralName+"[1]";
+		var $exeStatus = _getText(_span($executionCurrentStatus, _near(_span($ralName))));
+		_log("current execution status is: "+$exeStatus);
+	}
+	else{
+		_log("Quit=ABORT userInputButton not found");
+	}
+}
+
+//fun Abort the workflow functionality while executing ral 
+
+function click_ABORT_WF_Exec($ralName){
+	
+	navigateBPworkflows($groupName);
+	var $testStatus = _getText(_strong(1, _near(_link($ralName))));
+	_log($testStatus);
+	if($testStatus == $obj_EXECUTING){
+		_click(_link(1, _near(_link($ralName))));
+		_log("RAL with recursive enabled so execution inprogress");
+	    $ralName = $ralName+"[1]";
+		var $exeStatus = _getText(_span($executionCurrentStatus, _near(_span($ralName))));
+		_log("current execution status is: "+$exeStatus);
+		if($exeStatus==$obj_EXECUTING){
+			_click(_link($Abort));
+			_setValue(_textarea("textReason"), "abort");
+			_click(_button($ReasonToabort));
+			_wait(3000);
+		}
+	}
+}
+
+//Add rals inside Action Group
+function AddRal_Inside_ActionGrp($actRalName,$siteType,$servrname){
+	_mouseOver(_paragraph($DefaultActionGroup));
+	_doubleClick(_paragraph($DefaultActionGroup));
+	 _wait(3000);
+	 _setValue(_textbox("name"), $actRalName);
+	 _click(_span($Edit1));
+	 _wait(5000);
+	 _click(_span("glyphIon"));
+	 _click(_span("select2-chosen"), $Workflow);
+ 	 _setValue(_textbox(17), $Workflow);
+ 	 _click(_div($Workflow));
+ 	 _wait(3000);
+ 	 _click(_span("glyphicon icon-blue-plus plusIconRals[1]")); //grp healthcheck ral
+	 _wait(3000);
+	 _click(_span("glyphicon icon-blue-plus plusIconRals[5]")); // custom ral
+	 _wait(3000);
+	 _click(_span("glyphIon"));
+	 _dragDrop( _image("notifications_green.png[7]"), _image("notifications_yellow.png[6]"));
+	 _wait(5000);
+	 _dragDrop( _image("notifications_green.png[8]"), _image("notifications_yellow.png[7]"));
+	 _wait(5000);
+	 if(_exists(_span($GroupSiteHealthCheck))){
+		_doubleClick(_span($GroupSiteHealthCheck));
+		 _wait(3000);
+		 _log("Set the runtime settings");
+		 _setValue(_textbox("etc"), "20");
+		 _wait(2000);
+		 _log("Set the Action Properties");
+		 if(_exists(_link($ActionProperties))){
+			_click(_link($ActionProperties));
+			_wait(3000);
+		 }
+		 _setSelected(_select("site"), $siteType);
+		 _click(_div("myModal"));		
+		 _click(_link($SaveNow));
+		 _wait(3000);
+		 _click(_submit($Close)); 
+		 _wait(3000);
+	 }
+}
+
+// function after testcase execution completed delete the exported Workflow file
+
+function Delete_Exported_WF_AfterExecute($exptFilePath){
+	 var $WFfilepath= $SAHI_HOME +"Library\\RAL\\Forkjoin\\ForkjoinWF\\";
+	 var $timeInterval = "\n\n";
+	 _writeFile("cd "+$WFfilepath+$timeInterval+"del "+$exptFilePath, $WFfilepath+"\\delWF.bat",true); // over writes content in file 
+	 _wait(3000);
+	 _execute($WFfilepath+"\\delWF.bat",true);
+	 _wait(3000);
+	 _log($exptFilePath+" has deleted succcessfully");
+}
+
+// function for Report check for the group
+
+function Navigate_Report_Page($groupName,$selectReportType,$detailView){
+	navigateToGroups();
+	_click(_link($obj_admin));
+	_click(_link($Reports));
+	_wait(3000);
+	_click(_link($groupName, _near(_tableHeader($GroupName))));
+	_wait(3000);
+	_setSelected(_select("chartType"), $selectReportType);
+	_wait(3000);
+	_click(_image($Date));
+	_click(_div($Today));
+	_click(_image($Dateselector));
+	_click(_div($Today1));
+	_click(_button($ViewGraph));
+	_wait(2000);
+	if(_exists(_link($detailView))){
+		_click(_link($detailView));
+	}	
+	_wait(5000);
+}
+
+// verify NFC status return true if success
+
+function verify_NFC_Status($groupName){
+	navigateBCOworkflows($groupName);
+	var $execStatus = _getText(_strong(1, _near(_link("NormalFullCopy"))));
+	if($execStatus==$obj_SUCCESS){
+		return true;
+	}
+	else{
+		return false;
+	}
+}

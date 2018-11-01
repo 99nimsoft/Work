@@ -1,0 +1,139 @@
+
+function createUsers_0001(){
+	try {
+		CreateUser($supadmin);
+		CreateUser($admin);
+		CreateUser($operator);
+		CreateUser($notification);
+		} catch ($e) { 
+		  _log($e.toString(),"SystemLog");
+		_log("for test Case ID: Creation  of  different users,execution got failed.kindly check the log for more details");
+		_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+}
+
+function Assign_Group_User_0002(){
+	try {
+		//Assign_Group_User($username,$groupName);
+		Assign_Group_User($admin,$groupName);
+		Assign_Group_User($operator,$groupName);
+		Assign_Group_User($notification,$groupName);
+		} catch ($e) { 
+		  _log($e.toString(),"SystemLog");
+		_log("for test Case ID: Assigning Groups to different Users,execution got failed.kindly check the log for more details");
+		_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+}
+
+function Login_Different_User_0003(){
+
+	try {
+		login($admin, $password);
+		Sys_Log();
+		} catch ($e) { 
+		  _log($e.toString(),"SystemLog");
+		_log("for test Case ID: Change_ContinuityStatus_Group Function: Change_ContinuityStatus_Group_SO(),execution got failed.kindly check the log for more details");
+		_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+		
+		try {
+			login($operator, $password);
+			Sys_Log_Opr();
+			} catch ($e) { 
+			  _log($e.toString(),"SystemLog");
+			_log("for test Case ID: Change_ContinuityStatus_Group Function: Change_ContinuityStatus_Group_SO(),execution got failed.kindly check the log for more details");
+			_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+			/*try {
+				login($notification, $password);
+				} catch ($e) { 
+				  _log($e.toString(),"Custom1");
+				_log("for test Case ID: Change_ContinuityStatus_Group Function: Change_ContinuityStatus_Group_SO(),execution got failed.kindly check the log for more details");
+				_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+				}*/
+				
+				
+			/*	try {
+					login($username, $password);
+					} catch ($e) { 
+					  _log($e.toString(),"Custom1");
+					_log("for test Case ID: Change_ContinuityStatus_Group Function: Change_ContinuityStatus_Group_SO(),execution got failed.kindly check the log for more details");
+					_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+					}
+			*/
+	
+}
+
+function SystemLog_CLI_Mode_0005(){
+	try {
+		//Fetch_Log_AdvanceTab($groupName);
+		//SystemCaputrelog($groupName,$logspath);
+		} catch ($e) { 
+		  _log($e.toString(),"SystemLog");
+		_log("for test Case ID: SystemLog  through CLIMode,execution got failed.kindly check the log for more details");
+		_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+}
+
+/**
+* Function is for verify SystemCapture log CLI and windows mode
+*@param :  $logspath,$groupName
+*@return : null
+* Author: Sahu
+* @modified: Anita
+*/
+
+function SystemLog_Windows_Mode_0006(){
+	try {
+		SystemCaputre_Log_Windows($groupName,$logspath);
+		Verify_SystemCapture_GroupDetails($groupName,$logspath,$compPR,$compDR,$dataPR,$dataDR,$protPR,$protDR,$solSign);
+		} catch ($e) { 
+		  _log($e.toString(),"SystemLog");
+		_log("for test Case ID: SystemLog  through CLIMode,execution got failed.kindly check the log for more details");
+		_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+}
+
+
+
+
+function Verify_Details_BCO_0007(){
+				try {
+					 Verify_BCO_Details($groupName,$logspath,$bcoNC,$descNC,$bcoNFC,$descNFC,
+								$bcoFO,$descFO,$bcoFB,$descFB,$bcoFBRSync,$descFBRSync,$bcoRNC,$descRNC);					
+		} catch ($e) { 
+		  _log($e.toString(),"SystemLog");
+		_log("for test Case ID: SystemLog  through CLIMode,execution got failed.kindly check the log for more details");
+		_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+	
+}
+
+
+function Verify_Details_Test_0008(){
+	try {
+		Verify_Test_Details($groupName,$logspath,$TestNmSO,$TestDescSO,$TestExecSO,
+		        $TestNmSB,$TestDescSB,$TestExecSB,$TestNmFO,$TestDescFO,$TestExecFO,
+		        $TestNmRDCC,$TestDescRDCC,$TestExecRDCC,$TestNmStAppPr,$TestDescStAppPr,$TestExecStAppPr);				
+} catch ($e) { 
+_log($e.toString(),"SystemLog");
+_log("for test Case ID: SystemLog  through CLIMode,execution got failed.kindly check the log for more details");
+_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+}
+
+}
+
+
+function Verify_Other_Details_Test_0009(){
+	try {
+		Verify_Test_Other_Details($groupName,$logspath,$TestNmStopAppPr,$TestDescStopAppPr,$TestExecStopAppPr,
+			      $TestNmStAppDr,$TestDescStAppDr,$TestExecStAppDr,$TestNmStopAppDr,$TestDescStopAppDr,$TestExecStopAppDr,
+			      $TestNmRlPr,$TestDescRlPr,$TestExecRlPr,$TestNmRlDr,$TestDescRlDr,$TestExecRlDr,$TestNmIntChk,$TestDescIntChk,$TestExecIntChk);
+} catch ($e) { 
+_log($e.toString(),"SystemLog");
+_log("for test Case ID: SystemLog  through CLIMode,execution got failed.kindly check the log for more details");
+_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+}
+
+}

@@ -1,0 +1,54 @@
+
+/****************************** MSSQL_PFR ******************************/
+
+var $Excel1=_getExcel($SAHI_HOME + "\\Library\\Database\\Sybase\\ObjectRepository\\Sybase_ObjectRepository.xls","Sybase");
+
+
+var $Excel=$Excel1.getData();
+
+if($BrowserLang == "N"){
+
+	var $j = 2;
+}
+else if($BrowserLang == "Y-JA"){
+	
+	var $j = 3;
+	}
+
+else if($BrowserLang == "Y-EN"){
+		
+		var $j = 3;
+	}
+
+var $Subsystems=$Excel[2][$j];
+var $Datasets=$Excel[3][$j];
+var $systemType=$Excel[4][$j];
+var $Go=$Excel[5][$j];
+var $dependentComponentName=$Excel[6][$j];
+var $datasetName=$Excel[7][$j];
+var $RegisterAgent=$Excel[8][$j];
+var $RegisterAgents=$Excel[9][$j];
+var $CONNECTED=$Excel[10][$j];
+var $addNewServer=$Excel[11][$j];
+var $Servername=$Excel[12][$j];
+var $username=$Excel[13][$j];
+var $password=$Excel[14][$j];
+var $port=$Excel[15][$j];
+var $complevel=$Excel[16][$j];
+var $ipaddress=$Excel[17][$j];
+var $home=$Excel[18][$j];
+var $databaseName=$Excel[19][$j];
+var $TestCredentials1=$Excel[20][$j];
+var $Success=$Excel[21][$j];
+var $dataDeviceName=$Excel[22][$j];
+var $allotedDataDeviceSize=$Excel[23][$j];
+var $Add=$Excel[24][$j];
+var $logDeviceName=$Excel[25][$j];
+var $allotedLogDeviceSize=$Excel[26][$j];
+var $Add1=$Excel[27][$j];
+var $Save=$Excel[28][$j];
+var $ServerName=$Excel[29][$j];
+var $DatabaseName=$Excel[30][$j];
+var $ServerName=$Excel[31][$j];
+var $DatabaseName=$Excel[32][$j];
+var $DatasetStatusdb=$Excel[33][$j];

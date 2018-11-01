@@ -1,0 +1,40 @@
+/**
+* Function is Configure_Backup_0001 function file.
+*@param :null
+*@Author: Omprakash.v
+*
+*/
+
+function Backup_Folder_creation_0001(){
+	try {
+		Backup_Folder_creation($backupPath);
+		} catch ($e) { 
+		_log("for test Case ID: Creation  of  Backup folder,execution got failed.kindly check the log for more details");
+		}
+}
+
+function Configure_Backup_0002(){
+	try {
+		ConfigureBackup($backupPath);
+		Backup_Now();
+		} catch ($e) {
+			
+		_log("for test Case ID: Configure backup,execution got failed.kindly check the log for more details");
+		}
+}
+
+function Verify_Backup_0003(){
+	try {
+		Verify_Backup($backupPath);
+		} catch ($e) { 
+		_log("for test Case ID: Verify Backup,execution got failed.kindly check the log for more details");
+		}
+}
+
+function Verify_Backup_Event_0004(){
+	try {
+		Verifying_Backup_Fail_Event();
+		} catch ($e) { 
+		_log("for test Case ID: Verifying the Backup Fail Event,execution got failed.kindly check the log for more details");
+		}
+}

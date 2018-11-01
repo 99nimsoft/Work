@@ -1,0 +1,259 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the remote agent test cases which are the part of  CDRM feature. 
+ ** AuthorName : Karimulla Shakhadari
+ ** Created Date : Aug 2014
+ ************************************************************************/
+
+//don't change the below line.
+
+_include("../Library/ADC_Profile/ADCProfile.sah");
+_include("../Library/Common/Common_Function.sah");
+_include("../Library/Common/CDRMCommon/CDRM_Common_Function.sah");
+_include("../conf/DRMInstallation_Parameter.sah");
+_include("../conf/ADCProfile/ADCProfile_Parameter.sah");
+_include("../Library/Solution_Signature/Include/Common_Automation_testcase_Function.sah");
+
+// *************************************************************************************************************************************************
+// Notes: below test cases for Remote agent
+
+Login_001();
+
+_continueOnError();
+
+// verify_ADC_Profile_Table();
+/* this will Verify ADC profile tab */
+var $test0 = _testcase("ADC_0001","Verify ADC Profile Tab");
+
+$test0.start(); 
+
+verify_ADC_Profile_Tab();       
+
+$test0.end();
+
+
+
+/*This function will check columns visible in ADC profile page
+ * 
+ * */
+var $test1 = _testcase("ADC_0002","Verify Columns in ADC Profile page");
+
+$test1.start(); 
+
+verify_Columns_Of_ADC_Profile_Page();       
+
+$test1.end();
+
+
+/*This function will verify system created profiles
+ * 
+ * */
+var $test2 = _testcase("ADC_0003","Verify ADC Profile Without any record");
+
+$test2.start(); 
+
+verify_ADC_Profile_Witout_Any_Record($ADCprofile,$ADCprofile1);
+
+$test2.end();
+
+
+/*This function will check click functionality ADD ADC profile 
+ * 
+ * */
+var $test3 = _testcase("ADC_0004","Verify ADD ADC Profile link");
+
+$test3.start(); 
+
+verify_ADD_ADC_Profile_Link();
+
+$test3.end();
+
+
+
+/*This function will Add ADC profile 
+ * 
+ * */
+var $test4 = _testcase("ADC_0005","Adding ADC Profile ");
+
+$test4.start(); 
+
+verify_ADD_ADC_Profile($profileName, $profiledesc, $profileAllocType,
+		$profileAllocPercent, $profileRpo, $profileNetwork, $profileStorage);
+
+$test4.end();
+
+/*This function will verify ADC profile in DB
+ * 
+ * */
+var $test5 = _testcase("ADC_0006","Verify ADC Profile details in DB");
+
+$test5.start(); 
+
+verify_ADC_Profile_InDB($profileName, $profiledesc, $profileAllocTypeInDb1,
+  $profileAllocPercent, $profileRpo,$profileNetwork,$profileStorage);
+
+$test5.end();
+ 
+
+ /*This function will check Allocation Type available in Dropdown list 
+  * 
+  * */
+var $test6 = _testcase("ADC_0007","Verify Allocation Type drop-down options");
+
+$test6.start(); 
+
+verify_Drop_Allocation_Type_down_List_Options();
+
+$test6.end();
+
+// verify_Drop_Solution_Name_down_List_Options();
+
+/*This function will Check Edit icon availability for ADC profile  
+ * */
+var $test7 = _testcase("ADC_0008","Verify Edit option");
+
+$test7.start(); 
+
+verify_AvailabilityOfEdit();
+
+$test7.end();
+
+
+/*This function will Check Delete icon availability for ADC profile  
+ * */
+var $test8 = _testcase("ADC_0009","Availability of Delete option");
+
+$test8.start(); 
+
+verify_AvailabilityOfDeleteIcon();
+
+$test8.end();
+
+
+
+/*This function will Check Fields in Edit ADC profile page 
+ * */
+var $test9 = _testcase("ADC_0010","Verify fields in Edit ADC Profile");
+
+$test9.start(); 
+
+verify_Fields_In_EditADC_Profile($profileName);
+
+$test9.end();
+
+
+/*This function will Check name is not editable in Edit page 
+ * */
+var $test10 = _testcase("ADC_0011","Verify Name field is editable or not in edit ADC Profile");
+
+$test10.start(); 
+
+verify_Name_In_EditADC_Profile($profileName);
+
+$test10.end();
+
+
+
+/*This function will Check Functionality of GoBack button
+ * */
+var $test11 = _testcase("ADC_0012","Check GoBack button in edit ADC");
+
+$test11.start(); 
+
+verify_GoBack_Button_In_EditADC_Profile($profileName);
+
+$test11.end();
+
+
+/*This function will Check navigation of Edit button of ADC profile
+ * */
+var $test12 = _testcase("ADC_0013","Check navigation by clicking on Edit button");
+
+$test12.start(); 
+
+verify_Navigation_OnClick_EditADC_Profile($profileName);
+_continueOnError();
+
+$test12.end();
+
+/*This function will Check functionality of Edit ADC profile 
+ * */
+var $test13 = _testcase("ADC_0014","verify Editing ADC Profile");
+
+$test13.start(); 
+
+verify_Editing_ADC_Profile($profileName, $changeDesc, $profileAllocType1,
+		$changeAllocPercent, $changeRpo, $changeProfileNetwork, $changeStorage);
+_continueOnError();
+
+$test13.end();
+
+
+
+/*This function will Check Fields of Edited ADC profile in Db
+ * */
+var $test14 = _testcase("ADC_0015","verify Edited ADC Profile details in DB");
+
+$test14.start(); 
+
+verify_EditData_ADC_Profile_In_Db($profileName, $changeDesc, $profileAllocTypeInDb2,
+		$changeAllocPercent, $changeRpo, $changeProfileNetwork, $changeStorage);
+$test14.end();
+
+
+
+/*This function will Check adding ADC profile with Existing ADC profile name
+ * */
+var $test15 = _testcase("ADC_0016","Creating ADC Profile wit Existing ADC Profile Name");
+
+$test15.start(); 
+
+verify_ADD_ADC_ProfileWithExistingADC($profileName, $profiledesc2,
+		$profileAllocType1, $profileAllocPercent, $profileRpo, $profileNetwork,
+		$profileStorage);
+$test15.end();
+
+
+/*This function will check 'ADC Profile Details' link to view ADC Profile details 
+ * */
+var $test16 = _testcase("ADC_0017","Verify ADC Profile Details link availability");
+
+$test16.start(); 
+
+verify_View_ADC_ProfileLinkAvailability($profileName);
+$test16.end();
+
+
+
+/*This function will Check details of ADC profile
+ * */
+var $test17 = _testcase("ADC_0018","Viewing ADC Profile Details ");
+
+$test17.start(); 
+
+verify_View_ADC_Profile($profileName);
+$test17.end();
+
+
+
+/*This function will verify delete functionality
+ * */
+var $test18 = _testcase("ADC_0019","deleting ADC Profile");
+
+$test18.start(); 
+
+delete_ADC_Profile($profileName);
+$test18.end();
+
+
+/*This function will verify ADC profile in DB after deleting it
+ * */
+var $test19 = _testcase("ADC_0020","Verifying deleted ADC Profile details from DB");
+
+$test19.start(); 
+
+verify_Db_after_delete_ADC_Profile($profileName); 
+$test19.end();
+
+logout();

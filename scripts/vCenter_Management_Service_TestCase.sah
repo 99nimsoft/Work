@@ -1,0 +1,97 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the remote agent test cases which are the part of CDRM feature. 
+ ** AuthorName : Karimulla Shakhadari
+ ** Created Date : Aug 2014
+ ************************************************************************/
+
+//don't change the below line.
+_include("../Library/Management_Service/vCenter/VMWare_Monitoring.sah");
+_include("../Library/Common/Common_Function.sah");
+_include("../Library/Common/CDRMCommon/CDRM_Common_Function.sah");
+_include("../conf/DRMInstallation_Parameter.sah");
+_include("../conf/vCenter/Vcenter_Parameters.sah");
+_include("../Library/Solution_Signature/Include/Common_Automation_testcase_Function.sah");
+
+// *************************************************************************************************************************************************
+
+
+Login_001();
+_continueOnError();
+
+checkMgmtServiceTab();
+checkMgmtServiceNavigation();
+checkAddCloudLink();
+checkMgmtList() ;
+checkAddcloudLink();
+checkAvailabilityOffields();
+checkMgmtTypeAvailability() ;
+checkavailablefields();
+checkPort();
+//with valid data
+verifyTestCredentialsValidData($vCenterServer,$userName1,$password1);
+verifyTestCredentialsWithInvalidData($InvalidVCenterServer,$userName1,$password1);
+verifyTestCredentialsButtonWithoutServerDetails($userName1,$password1);
+verifyTestCredentialsButtonWithoutPassword($vCenterServer,$userName1);
+//a)
+//VerifyFieldInvalidIPAddress("1.2.11");
+VerifyPingButtonWithoutIp();
+VerifyPingWithValidIp($vCenterServer) ;
+VerifyPingWithInValidIp($InvalidVCenterServer);
+
+//save and status check
+verifySaveVcenterWithValidData($msSite, $msType, $msName,
+		$vCenterServer2, $userName3, $password3);
+//34.Check the availability of VCENTER A/C details in Database after Creating a VCENTER A/C
+vcenterAccountDetailsInDB($msName);
+statusOfVcenterMgmtServiceInvalid_details(
+		$msSite, $msType, $vcsName1, $InvalidVCenterServer, $wrongUserName,
+		$wrongPassword);
+
+
+
+statusOfVcenterMgmtServiceInvalidUser($msSite,
+	$msType, $vcsName2, $vCenterServer, $wrongUserName, $password1);
+
+
+
+statusOfVcenterMgmtServiceInvalidPassword($msSite,
+		$msType, $vcsName3, $vCenterServer, $userName1, $wrongPassword);
+
+
+
+statusOfVcenterMgmtServiceInvalidServer($msSite,
+		$msType, $vcsName4, $InvalidVCenterServer2, $userName1, $password1);
+
+
+vcenterAgentPresenceInAgentList($msName);
+
+
+vcenterAgentStatusInAgentList($msName);
+//vcenterAgentTypeInAgentList($msName);
+vcenterAgentStatusAfterStopingAgent($msName);
+vcenterAgentStatusAfterStartingAgent($msName);
+
+
+vcenterDetails( $msSite, $msType, $msName,
+		$vCenterServer, $userName3, $password3);
+vcenterEventAfterInavalidatingServer($InvalidVCenterServer,$msName);	
+
+
+navigationAfterclickingEdit($msName);
+
+editVcsName($changeVcenterServer, $msName,$changeUserName,$changePassword);
+//41.Check the database after editing the VCENTER A/C details
+checkVcsNameInDBAfterEdit($changeVcenterServer, $NewVcsName,$changeUserName,$changePassword);
+
+accountCreationWithExistingServer($msSite, $msType, $vcsName5,
+		$vCenterServer, $userName3, $password3);
+
+accountCreationWithExistingName( $msSite,
+		$msType, $msName, $vCenterServer3, $userName1, $password1);
+
+deleteVcenter($msName);
+//38.Check the Deleted VCENTER Management Service details  in Database
+deletedVcenterDetailsInDb($msName);
+logout();

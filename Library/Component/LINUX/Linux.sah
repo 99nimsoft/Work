@@ -1,0 +1,91 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains Creation of Component(LINUX) for both remote and local agents. 
+ ** AuthorName : Swati Chowdhary
+ ** Created Date : Feb 2013
+ ************************************************************************/
+
+
+/**
+* Function is for Remote Component creation at PR.
+*@param :  null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function Create_Remote_ComponentPR($storageCheck) {
+	Create_Remote_Component($systemType, $compNamePR, $compIPPR, $compsitePR, $remoteUserNameValPR, $remotePwdValPR);
+	if($storageCheck == "Y"){
+		Create_Remote_Component($systemType, $compNamestoragePR, $compIPstoragePR, $compsitePR, $remoteUserNameValstoragePR, $remotePwdValstoragePR);
+	}
+}// End of RemoteComponentPR()
+
+/**
+* Function is for Remote Component creation at DR  .
+*@param :  null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+function Create_Remote_ComponentDR($storageCheck) {
+	Create_Remote_Component($systemType, $compNameDR, $compIPDR, $compsiteDR, $remoteUserNameValDR, $remotePwdValDR);
+	if($storageCheck == "Y"){
+		Create_Remote_Component($systemType, $compNamestorageDR, $compIPstorageDR, $compsiteDR, $remoteUserNameValstorageDR, $remotePwdValstorageDR);
+	}
+}// end of RemoteComponentDR()
+
+/**
+* Function is for Local Component creation at DR  .
+*@param :  null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+/**
+* Function is for NetApp SnapMirror Component creation at PR  .
+*@param :  null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+function Create_NetApp_ComponentPR() {
+	Create_Remote_Component($netAppFilerSystemType,$NetAppcompNamePR, $NetAppcompIPPR,  $compsitePR, $NetAppUserNameValPR, $NetAppPwdValPR);
+
+}// End of RemoteComponentPR()
+
+/**
+* Function is for NetApp SnapMirror Component creation at DR  .
+*@param :  null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+function Create_NetApp_ComponentDR() {		
+	Create_Remote_Component($netAppFilerSystemType, $NetAppcompNameDR, $NetAppcompIPDR,  $compsiteDR, $NetAppUserNameValDR, $NetAppPwdValDR);
+
+}// End of RemoteComponentDR()
+
+function Create_Local_ComponentPR($storageCheck) {
+	Create_Local_Component($systemType, $compNamePR, $compIPPR, $compsitePR);
+	if($storageCheck == "Y"){
+		Create_Local_Component($systemType, $compNamestoragePR, $compIPstoragePR, $compsitePR);
+	}
+}// End of LocalComponentPR()
+
+/**
+* Function is for Local Component creation at DR  .
+*@param :  null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+function Create_Local_ComponentDR($storageCheck) {
+	Create_Local_Component($systemType, $compNameDR, $compIPDR, $compsiteDR);
+	if($storageCheck == "Y"){
+		Create_Local_Component($systemType, $compNamestorageDR, $compIPstorageDR, $compsiteDR);
+	}
+}// End of LocalComponentDR()
+

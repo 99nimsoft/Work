@@ -1,0 +1,464 @@
+
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are the part of  Oracle Archive Log Netapp  solution generating events.
+ ** AuthorName : Anita 
+ ** Created Date : JAN 2017
+ ************************************************************************/
+
+
+/****
+ *Function is for remote agent stop the oracle agent from back end for PR
+ *@param :  BCSOracleLogEvent001,Oracle agent on primary server is down
+ *@return : null
+ *@Author :Anita
+ */
+
+function OracleArchLogNetApp_Remote_PR_Oracle_Agent_Stop_Event() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "OracleAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent001", "Oracle agent on primary server is down", "WARNING");
+}// End of Remote_PR_oracle_Agent_Stop_Event()
+
+/**
+ *Function is for remote agent stop the oracle agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+function OracleArchLogNetApp_Remote_DR_Oracle_Agent_Stop_Event() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "OracleAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent002", "Oracle agent on DR server is down", "WARNING");
+}// Remote_DR_oracle_Agent_Stop_Event
+
+/**
+ *Function is for remote agent start the oracle agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+function OracleArchLogNetApp_Remote_PR_Oracle_Agent_Start_Event() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "OracleAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent048", "Oracle agent on primary server is up", "INFO");
+}// End of Remote_PR_oracle_Agent_Start_Event
+
+/**
+ *Function is for remote agent start the oracle agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+function OracleArchLogNetApp_Remote_DR_Oracle_Agent_Start_Event() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "OracleAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent049", "Oracle agent on DR server is up", "INFO");
+}// End of Remote_DR_oracle_Agent_Start_Event
+
+////PFR////////////////////////////////////////////////////////////////////////////////
+
+
+
+/**
+ *Function is for remote agent stop the PFR agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+
+function OracleArchLogNetApp_Remote_PR_NetApp_Agent_Stop_Event() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "NetAppAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent021", "Protection agent on primary server is down", "WARNING");
+}// End of Remote_PR_oracle_Agent_Stop_Event()
+
+/**
+ *Function is for remote agent stop the PFR agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+function OracleArchLogNetApp_Remote_DR_NetApp_Agent_Stop_Event() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "NetAppAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent022", "Protection agent on DR server is down", "WARNING");
+}// Remote_DR_oracle_Agent_Stop_Event
+
+/**
+ *Function is for remote agent start the oracle agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+function OracleArchLogNetApp_Remote_PR_NetApp_Agent_Start_Event() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "NetAppAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent023", "Protection agent on primary server is up", "INFO");
+}// End of Remote_PR_oracle_Agent_Start_Event
+
+/**
+ *Function is for remote agent start the PFR agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+function OracleArchLogNetApp_Remote_DR_NetApp_Agent_Start_Event() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "NetAppAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent024", "Protection agent on the DR server is up", "INFO");
+}// End of Remote_DR_oracle_Agent_Start_Event
+
+///////////////SOActive/////////////////////////////////////////////////////////
+
+/**
+ *Function is for remote agent stop the oracle agent from back end for PR (Current DR)
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+
+function OracleArchLogNetApp_Remote_PR_Oracle_Agent_Stop_Event_SO_InActive() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "OracleAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent002", "Oracle agent on DR server is down.", "Critical");
+}// End of Remote_PR_oracle_Agent_Stop_Event()
+
+/**
+ *Function is for remote agent stop the oracle agent from back end for DR (Current PR)
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+function OracleArchLogNetApp_Remote_DR_Oracle_Agent_Stop_Event_SO_InActive() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "OracleAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent001", "Oracle agent on primary server is down", "Critical");
+	
+}// Remote_DR_oracle_Agent_Stop_Event
+
+/**
+ *Function is for remote agent start the oracle agent from back end for PR (Current DR)
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+function OracleArchLogNetApp_Remote_PR_Oracle_Agent_Start_Event_SO_InActive() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "OracleAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent008", "Database is ACTIVE and is under Sanovi DRM management on DR server", "Information");
+}// End of Remote_PR_oracle_Agent_Start_Event
+
+/**
+ *Function is for remote agent start the oracle agent from back end for DR (Current PR)
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+function OracleArchLogNetApp_Remote_DR_Oracle_Agent_Start_Event_SO_InActive() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "OracleAgent.sh start ");
+	//$EventSecMentioned = "BCSOracleLogEvent007";
+	//Event_Verification($server.get("Server Time"), $groupName, "LoginSuccessOnPrimaryServer", "Login Success on Primary Server ", "Information");
+	//$EventSecMentioned = "LoginSuccessOnPrimaryServer";	
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent007", "Database is ACTIVE and is under Sanovi DRM management on primary server", "Information");
+}
+// End of Remote_DR_oracle_Agent_Start_Event
+
+////PFR////////////////////////////////////////////////////////////////////////////////
+
+
+
+/**
+ *Function is for remote agent stop the PFR agent from back end for PR (Current DR)
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+
+function OracleArchLogNetApp_Remote_PR_PFR_Agent_Stop_Event_SO_InActive() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "PFRAgent.sh stop ");
+	 
+    Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent022", "Protection agent on DR server is down.", "Critical");
+
+
+}// End of Remote_PR_oracle_Agent_Stop_Event()
+
+/**
+ *Function is for remote agent stop the oracle agent from back end for DR (Current PR)
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+function OracleArchLogNetApp_Remote_DR_PFR_Agent_Stop_Event_SO_InActive() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "PFRAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent021", "Protection agent on primary server is down.", "Critical");
+	
+}// Remote_DR_oracle_Agent_Stop_Event
+
+/**
+ *Function is for remote agent start the PFR agent from back end for PR (Current DR)
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+function OracleArchLogNetApp_Remote_PR_PFR_Agent_Start_Event_SO_InActive() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "PFRAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent024", "Protection agent on the DR server is up.", "Information");
+}// End of Remote_PR_oracle_Agent_Start_Event
+
+/**
+ *Function is for remote agent start the PFR agent from back end for DR (Current PR)
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+function OracleArchLogNetApp_Remote_DR_PFR_Agent_Start_Event_SO_InActive() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "PFRAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent023", "Protection agent on primary server is up.", "Information");
+	
+}// End of Remote_DR_oracle_Agent_Start_Event
+
+/////Local
+
+
+/**
+ *Function is for Local agent stop the oracle agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+
+function OracleArchLogNetApp_Local_PR_Oracle_Agent_Stop_Event() {
+	var $server = Get_Local_Agent_Event($compIPPR,$remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "OracleAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent001", "Oracle agent on primary server is down", "Critical");
+}// End of Local_PR_oracle_Agent_Stop_Event()
+
+/**
+ *Function is for Local agent stop the oracle agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+function OracleArchLogNetApp_Local_DR_Oracle_Agent_Stop_Event() {
+	var $server = Get_Local_Agent_Event($compIPDR,$remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "OracleAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent002", "Oracle agent on DR server is down.", "Critical");
+}// Local_DR_oracle_Agent_Stop_Event
+
+/**
+ *Function is for Local agent start the oracle agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+function OracleArchLogNetApp_Local_PR_Oracle_Agent_Start_Event() {
+	var $server = Get_Local_Agent_Event($compIPPR,$remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "OracleAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent007", "Database is ACTIVE and is under Sanovi DRM management on primary server", "Information");
+}// End of Local_PR_oracle_Agent_Start_Event
+
+/**
+ *Function is for Local agent start the oracle agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+function OracleArchLogNetApp_Local_DR_Oracle_Agent_Start_Event() {
+	var $server = Get_Local_Agent_Event($compIPDR,$remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "OracleAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent008", "Database is ACTIVE and is under Sanovi DRM management on DR server", "Information");
+}// End of Local_DR_oracle_Agent_Start_Event
+
+//////////Local SOActive
+
+
+/**
+ *Function is for Local agent stop the oracle agent from back end for PR (Current DR)
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+
+function OracleArchLogNetApp_Local_PR_Oracle_Agent_Stop_Event_SO_InActive() {
+	var $server = Get_Local_Agent_Event($compIPPR,$remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "OracleAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent002", "Oracle agent on DR server is down.", "Critical");
+}// End of Local_PR_oracle_Agent_Stop_Event()
+
+/**
+ *Function is for Local agent stop the oracle agent from back end for DR (Current PR)
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+function OracleArchLogNetApp_Local_DR_Oracle_Agent_Stop_Event_SO_InActive() {
+	var $server = Get_Local_Agent_Event($compIPDR,$remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "OracleAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent001", "Oracle agent on primary server is down", "Critical");
+	
+}// Local_DR_oracle_Agent_Stop_Event
+
+/**
+ *Function is for Local agent start the oracle agent from back end for PR (Current DR)
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+function OracleArchLogNetApp_Local_PR_Oracle_Agent_Start_Event_SO_InActive() {
+	var $server = Get_Local_Agent_Event($compIPPR,$remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "OracleAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent008", "Database is ACTIVE and is under Sanovi DRM management on DR server", "Information");
+}// End of Local_PR_oracle_Agent_Start_Event
+
+/**
+ *Function is for Local agent start the oracle agent from back end for DR (Current PR)
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+function OracleArchLogNetApp_Local_DR_Oracle_Agent_Start_Event_SO_InActive() {
+	var $server = Get_Local_Agent_Event($compIPDR,$remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "OracleAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent007", "Database is ACTIVE and is under Sanovi DRM management on primary server", "Information");
+	
+}// End of Local_DR_oracle_Agent_Start_Event
+
+
+////PFR Local
+
+////PFR////////////////////////////////////////////////////////////////////////////////
+
+
+
+/**
+ *Function is for Local agent stop the PFR agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+
+function OracleArchLogNetApp_Local_PR_PFR_Agent_Stop_Event() {
+	var $server = Get_Local_Agent_Event($compIPPR,$remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "PFRAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent021", "Protection agent on primary server is down.", "Critical");
+}// End of Local_PR_oracle_Agent_Stop_Event()
+
+/**
+ *Function is for Local agent stop the oracle agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+function OracleArchLogNetApp_Local_DR_PFR_Agent_Stop_Event() {
+	var $server = Get_Local_Agent_Event($compIPDR,$remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "PFRAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent022", "Protection agent on DR server is down.", "Critical");
+}// Local_DR_oracle_Agent_Stop_Event
+
+/**
+ *Function is for Local agent start the oracle agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+function OracleArchLogNetApp_Local_PR_PFR_Agent_Start_Event() {
+	var $server = Get_Local_Agent_Event($compIPPR,$remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "PFRAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent023", "Protection agent on primary server is up.", "Information");
+}// End of Local_PR_oracle_Agent_Start_Event
+
+/**
+ *Function is for Local agent start the oracle agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+function OracleArchLogNetApp_Local_DR_PFR_Agent_Start_Event() {
+	var $server = Get_Local_Agent_Event($compIPDR,$remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "PFRAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent024", "Protection agent on the DR server is up.", "Information");
+}// End of Remote_DR_oracle_Agent_Start_Event
+
+
+///PFR SOInActive
+
+
+/**
+ *Function is for Local agent stop the PFR agent from back end for PR (Current DR)
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+
+function OracleArchLogNetApp_Local_PR_PFR_Agent_Stop_Event_SO_InActive() {
+	var $server = Get_Local_Agent_Event($compIPPR,$remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "PFRAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent022", "Protection agent on DR server is down.", "Critical");
+}// End of Remote_PR_oracle_Agent_Stop_Event()
+
+/**
+ *Function is for Local agent stop the oracle agent from back end for DR (Current PR)
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+function OracleArchLogNetApp_Local_DR_PFR_Agent_Stop_Event_SO_InActive() {
+	var $server = Get_Local_Agent_Event($compIPDR,$remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "PFRAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent021", "Protection agent on primary server is down.", "Critical");
+	
+}// Local_DR_oracle_Agent_Stop_Event
+
+/**
+ *Function is for Local agent start the PFR agent from back end for PR (Current DR)
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+function OracleArchLogNetApp_Local_PR_PFR_Agent_Start_Event_SO_InActive() {
+	var $server = Get_Local_Agent_Event($compIPPR,$remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "PFRAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent024", "Protection agent on the DR server is up.", "Information");
+}// End of Remote_PR_oracle_Agent_Start_Event
+
+/**
+ *Function is for Local agent start the PFR agent from back end for DR (Current PR)
+ *@param :  null
+ *@return : null
+ *@Author :Anita
+ */
+function OracleArchLogNetApp_Local_DR_PFR_Agent_Start_Event_SO_InActive() {
+	var $server = Get_Local_Agent_Event($compIPDR,$remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "PFRAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent023", "Protection agent on primary server is up.", "Information");
+	
+}// End of Local_DR_oracle_Agent_Start_Event
+
+/////Linux OS Agents
+
+
+/**
+* Function is for remote agent stop the linux agent from back end for PR.
+*@param : null
+*@return : null
+*@Author: Anita
+*
+*/
+function OracleArchLogNetApp_Remote_PR_Linux_Agent_Stop_Event() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "LinuxOSAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSFullDBEvent001", "OS agent is down on primary server.", "Critical");
+}// End of Remote_PR_LinuxAgent_Stop
+
+/**
+* Function is for remote agent stop the linux agent from back end for DR.
+*@param : null
+*@return : null
+*@Author: Anita
+*
+*/
+function OracleArchLogNetApp_Remote_DR_Linux_Agent_Stop_Event() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "LinuxOSAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSFullDBEvent002", "OS agent is down on DR server.", "Critical");
+}// End of Remote_DR_LinuxAgent_Stop
+
+/**
+* Function is for remote agent start the linux agent from back end for PR.
+*@param : null
+*@return : null
+*@Author: Anita
+*
+*/
+
+function OracleArchLogNetApp_Remote_PR_Linux_Agent_Start_Event() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "LinuxOSAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSFullDBEvent004", "OS agent is up on primary server.", "Information");
+}// End of Remote_PR_LinuxAgent_Start
+
+/**
+* Function is for remote agent start the linux agent from back end for DR.
+*@param : null
+*@return : null
+*@Author: Anita
+*
+*/
+function OracleArchLogNetApp_Remote_DR_Linux_Agent_Start_Event() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "LinuxOSAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSFullDBEvent005", "OS agent is up on DR server.", "Information");
+}// End of Remote_DR_LinuxAgent_Start
+
+

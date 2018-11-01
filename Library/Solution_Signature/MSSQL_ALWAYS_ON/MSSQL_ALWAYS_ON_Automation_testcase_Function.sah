@@ -1,0 +1,951 @@
+
+function Uninstalling_WindowsAgent_PR2_DR2() {
+	try {
+		Uninstalling_ForWindowsAgent_PR2_DR2();
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("Local agent Uninstallation in PR2 and DR2 got failed, kindly check log for more details");
+	}
+}
+
+function EditPropertyFile_For_LocalAgentInstallation_WindowsMachine_PR2_DR2() {
+	try {
+		EditPropertyFile_For_LocalAgentInstallation_WindowsMachine_PR2();
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("Editing property file in PR2 got failed, kindly check log for more details");
+	}
+	
+	try {
+		if($scenario==1){
+		EditPropertyFile_For_LocalAgentInstallation_WindowsMachine_DR2();
+		}
+		else{
+			_log("Since user input is given for 2:1, not editing property file of DR2");
+		}
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("Editing property file in PR2 got failed, kindly check log for more details");
+	}
+}
+ 
+function Copy_WindowsBinaries_To_RemoteMachine_PR2_DR2() {
+	try {
+		Copy_Sfr_PR2();
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("Copy Sfr in PR2 got failed, kindly check log for more details");
+	}
+	try{
+		if($scenario==1){
+			Copy_Sfr_DR2();
+		}
+		else{
+			_log("Since user input is given for 2:1, not copying SFR to DR2");
+		}
+	}
+	catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("Copy Sfr in DR2 got failed, kindly check log for more details");
+	}
+}
+
+function Installing_Local_Agents_PR2_DR2() {
+	try {
+		Installing_Local_Agents_PR2();
+		
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("Local agent installation in PR2 got failed, kindly check log for more details");
+	}
+	
+	try {
+		if($scenario==1){
+		Installing_Local_Agents_DR2();
+		} else{
+			_log("Since user input is given for 2:1, not installing local agents to DR2");
+		}
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("Local agent installation in PR2 and DR2 got failed, kindly check log for more details");
+	}
+}
+
+function MSSQL_ALWAYS_ON_Component_Local_Discovery_0001() {
+	if($scenario==1){
+	try {
+		_log("2:2");
+		Create_Local_ComponentPR();// In component > Windows > Windows.sah
+		Create_Local_ComponentDR();// In component > Windows > Windows.sah
+		Create_MssqlAlwaysOn_LocalComponent_2PR();
+		Create_MssqlAlwaysOn_LocalComponent_2DR();
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Component_Local_Discovery_0002(),Function: Create_Local_ComponentPR or Create_Local_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("component not created succesfully.So that stopping execution.");
+	}
+} else{
+	try {
+		_log("2:1");
+	Create_Local_ComponentPR();// In component > Windows > Windows.sah
+	Create_MssqlAlwaysOn_LocalComponent_2PR();
+	Create_Local_ComponentDR();// In component > Windows > Windows.sah
+	}  catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Component_Local_Discovery_0002(),Function: Create_Local_ComponentPR or Create_Local_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("component not created succesfully.So that stopping execution.");
+}
+  } 
+	}
+
+function MSSQL_ALWAYS_ON_Component_Remote_Discovery_0001() {
+	if($scenario==1)
+	{
+	try {
+	_log("2:2");
+	Create_Remote_ComponentPR();// In component > Windows > Windows.sah
+	Create_Remote_ComponentDR();// In component > Windows > Windows.sah
+	Create_Remote_Component2PR();// In component > Windows > Windows.sah
+	Create_Remote_Component2DR();// In component > Windows > Windows.sah
+	} catch ($e) {
+		_assertTrue(false);
+	_log($e.toString(),"Custom1");
+	_log("for test Case ID:Component_Local_Discovery_0002(),Function: Create_Local_ComponentPR or Create_Local_ComponentDR ,execution got failed.kindly check the log for more details");
+	_fail("component not created succesfully.So that stopping execution.");
+	     }
+	     }
+	else
+	{
+	    try {
+	    _log("2:1");
+	Create_Remote_ComponentPR();// In component > Windows > Windows.sah
+	Create_Remote_ComponentDR();// In component > Windows > Windows.sah
+	Create_Remote_Component2PR();// In component > Windows > Windows.sah
+	} catch ($e) {
+		_assertTrue(false);
+	_log($e.toString(),"Custom1");
+	_log("for test Case ID:Component_Local_Discovery_0002(),Function: Create_Local_ComponentPR or Create_Local_ComponentDR ,execution got failed.kindly check the log for more details");
+	_fail("component not created succesfully.So that stopping execution.");
+	}
+	}
+}
+
+function MSSQL_ALWAYS_ON_Dataset_Discovery_0002() {
+	if($scenario==1){
+	try {
+		
+		_log("2:2");
+		Create_Mssql_DatasetPR();// In Database > MSSQL.sah
+		Create_MssqlAlwaysOn_Dataset_2PR();
+		Create_Mssql_DatasetDR();// In Database > MSSQL.sah
+		Create_MssqlAlwaysOn_Dataset_2DR();
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:MSSQL_ALWAYS_ON_Dataset_Discovery_0002(),Function: Create_MSSQL_Dataset_PR or Create_MSSQL_Dataset_DR ,execution got failed.kindly check the log for more details");
+		_fail("dataset not created succesfully.So that stopping execution.");
+	}
+	}
+	else {
+		try {
+			
+			_log("2:1");
+			Create_Mssql_DatasetPR();// In Database > MSSQL.sah
+			Create_MssqlAlwaysOn_Dataset_2PR();
+			Create_Mssql_DatasetDR();// In Database > MSSQL.sah
+		} catch ($e) {
+			_assertTrue(false);
+			_log($e.toString(),"Custom1");
+			_log("for test Case ID:MSSQL_ALWAYS_ON_Dataset_Discovery_0002(),Function: Create_MSSQL_Dataset_PR or Create_MSSQL_Dataset_DR ,execution got failed.kindly check the log for more details");
+			_fail("dataset not created succesfully.So that stopping execution.");
+		}
+	}
+}
+
+function MSSQL_ALWAYS_ON_Auto_DatasetDiscovery0003() {
+	try {
+		Verify_Mssql_Dataset_Details_PR();// In Database > MSSQL.sah
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:MSSQL_ALWAYS_ON_Auto_DatasetDiscovery0003(),Function: Verify_Dataset_Details_PR or Verify_Dataset_Details_DR,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+function MSSQL_ALWAYS_ON_GroupCreation_0004(){
+	try {
+	Create_MSSQL_ALWAYS_ON_Group($groupName,$groupDescription,$SolutionSignature,$primaryComponents,$primaryComponents2,$remoteComponents,$remoteComponents2,$primaryDatasets,$primaryDatasets2,$remoteDatasets,$remoteDatasets2); //In Solution signature > MSSQL_ALWAYS_ON_Solution.sah
+	} catch ($e) {
+		_assertTrue(false);
+	_log($e.toString(),"Custom1");
+	_log("for test Case ID: MSSQL_GroupCreation_0004(),Function: MSSQL_ALWAYS_ON_FG_DG_Group_Creation ,execution got failed.kindly check the log for more details");
+	_fail("Group not created succesfully.So that stopping execution.");
+	}
+
+	}
+
+
+function MSSQL_ALWAYS_ON_Move_Group_Manage_0005() {
+	try {
+		Move_To_Manage_Group($groupName); // In Common > Group_Operation.sah
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Move_Group_Manage_0005(),Function: Move_To_Manage_Group ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+
+}
+
+function MSSQL_ALWAYS_ON_Change_Continuity_State_0006() {
+	try {
+		Change_ContinuityStatus_Group($groupName, $NormalInactive); // In Common > Group_Operation.sah
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Change_Continuity_State_0006(),Function: Change_ContinuityStatus_Group ,execution got failed.kindly check the log for more details");
+		_fail("Current group state is not correct,so that stopping execution");
+	}
+}
+
+
+function MSSQL_ALWAYS_ON_Contiunity_Status_0008() {
+	try {
+		Verify_Continuity_Status($groupName, "DR Sync In Progress");
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Contiunity_Status_0008(),Function: Verify_Continuitystatus_Before_NC ,execution got failed.kindly check the log for more details");
+	}
+}
+function MSSQL_MIRR_Continuity_Management_0015() {
+	try {
+		Group_Managedrsolution();// In Common > Group_Operation.sah
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Continuity_Management_0015(),Function: Group_Managedrsolution ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+function MSSQL_ALWAYS_ON_Start_NormalCopy_0009() {
+	try {
+		
+		Import_WF_FO();
+		Execute_NC( $groupName,"NormalCopy" );
+		Verify_Continuitystatus_In_NC();// In Common > Group_Operation.sah
+		
+		$count = 0;
+		while($count<5){
+			_wait(30000);
+		$count++;	
+		}
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_NormalCopy_0009(),Function: Execute_NC or Verify_Continuitystatus_In_NC ,execution got failed.kindly check the log for more details");
+	}
+	
+}
+
+function MSSQL_ALWAYS_ON_Continuity_Work_Flow_RNC_0021() {
+	try {
+		 //In Solution signature > MSSQL_Logshipping_Solution.sah
+		
+		MSSQL_ALWAYS_ON_Continuity($groupName,"ReverseNormalCopy");
+
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MSSQL_ALWAYS_ON_Continuity_Work_Flow_0021(),Function: Mssql_ContiniutyWorkFlow,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+function MSSQL_ALWAYS_ON_Replication_Flow_NC_0012() {
+	try {
+		MSSQL_ALWAYS_ON_GroupSnapshot();//In Solution signature > MSSQL_Logshipping_Solution.sah
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MSSQL_ALWAYS_ON_GroupSnapshot_Monitor_0012(),Function: Mssql_GroupSanpshot ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_ALWAYS_ON_NC_RPO_0013() {
+	try {
+		//publishBCO( $groupName, "Failover" );
+		MSSQL_ALWAYS_ON_RPO();//In Solution signature > MSSQL_Logshipping_Solution.sah
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: NC_MSSQL_ALWAYS_ON_RPO_0013(),Function: MSSQL_Rpo ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_ALWAYS_ON_NC_RTO_0014() {
+	try {
+		MSSQL_ALWAYS_ON_RTO();//In Solution signature > MSSQL_Logshipping_Solution.sah
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: NC_MSSQL_ALWAYS_ON_RTO_0014(),Function: MSSQL_Rto ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+function MSSQL_ALWAYS_ON_Stop_NC_0015() {
+	try {
+		NC_Execution_Status($groupName);// In Common > Group_Operation.sah
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_NC_0015(),Function: NC_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("NC workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+	try {
+		Stop_NC($groupName);// In Common > Group_Operation.sah
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_NC_0002(),Function: Stop_NC ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_ALWAYS_ON_Start_SO_0016() {
+	try {
+		Import_WF_SO();
+		Start_SO($groupName);// In Common > Group_Operation.sah
+		_wait(20000);
+		
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_SO_0016(),Function: Start_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_ALWAYS_ON_SO_Execution_0017() {
+	try {
+		//Verify_Continuity_Status($groupName, "");
+		Verify_Continuitystatus_In_SO();// In Common > Group_Operation.sah
+		Select_instance("Switchover");
+		_wait(10000);
+		_check(_radio("selectReplica",_near(_cell($instanceDR1))));
+		_wait(5000);
+		_click(_button("OK"));
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SO_Execution_0017(),Function: Verify_Continuitystatus_In_SO ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		if($agentType=="Remote"){
+			SO_Execution_Status($groupName, "Switchover" );// In Common > Group_Operation.sah
+			}
+			else 
+				{
+				Mirroring_SO_Execution_Status($groupName, "Switchover");
+				}// In Common > Group_Operation.sah
+		
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SO_Execution_0012(),Function: ALWAYS_ON_SO_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("SO workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+}
+
+function MSSQL_ALWAYS_ON_SO_Continuity_Status_0018(){
+	try {
+		Verify_Continuity_Status($groupName, "DR Resync In Progress");
+		//Verify_Continuitystatus_After_SO();// In Common > Group_Operation.sah
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SO_Replication_0018(),Function: Verify_Continuitystatus_After_SO or MSSQL_Replication_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_ALWAYS_ON_Start_RNC_0019() {
+	try {
+		Execute_Reverse_Normal_Copy($groupName);//In Common > Group_Operation.sah
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_RNC_0019(),Function: Execute_Reverse_Normal_Copy or MSSQL_Managedrsolution_PostSO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_ALWAYS_ON_RNC_Execution_0020() {
+	try {
+		RNC_Execution_Status($groupName);//In Common > Group_Operation.sah
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: RNC_Execution_0020(),Function: RNC_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("RNC workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+	
+}
+
+function MSSQL_ALWAYS_ON_Replication_Flow_RNC_0022() {
+	try {
+		MSSQL_ALWAYS_ON_GroupSnapshot_Post_SO();//In Solution signature > MSSQL_Logshipping_Solution.sah
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MSSQL_ALWAYS_ON_Replication_Flow_RNC_0022(),Function: MSSQL_Groupsnapshot_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_ALWAYS_ON_RNC_RPO_Monitor_0023() {
+	try {
+		MSSQL_ALWAYS_ON_RPO_Post_SO();//In Solution signature > MSSQL_Logshipping_Solution.sah
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MSSQL_ALWAYS_ON_RNC_Rpo_Monitor_0023(),Function: MSSQL_Rpo_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_ALWAYS_ON_Stop_RNC_0024() {
+	try {
+		RNC_Execution_Status($groupName);//In Common > Group_Operation.sah
+	} catch ($e) {
+		_assertTrue(false);
+		_log("for test Case ID: Stop_RNC_0024(),Function: RNC_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("RNC workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+	try {
+		//Stop_Reverse_Normal_Copy($groupName);//In Common > Group_Operation.sah
+		Stop_Reverse_Normal_Copy($groupName)
+	} catch ($e) {
+		_assertTrue(false);
+		_log("for test Case ID: Stop_RNC_0024(),Function: Stop_Reverse_Normal_Copy ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_ALWAYS_ON_Start_SB_0029() {
+	try {
+		Import_WF_SB();
+		Start_SB($groupName);
+		_wait(20000);
+	} catch ($e) {
+		_assertTrue(false);
+		_log("for test Case ID: Start_SB_0029(),Function: Verify_Continuitystatus_Stop_RNC or Start_SB ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_ALWAYS_ON_SB_Execution_0030() {
+	try {
+		Verify_Continuitystatus_In_SB();
+		Select_instance("Switchback");
+		_wait(10000);
+		_check(_radio("selectReplica",_near(_cell($instancePR))));
+		_wait(5000);
+		_click(_button("OK"));
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SO_Execution_0017(),Function: Verify_Continuitystatus_In_SO ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		if($agentType=="Remote"){
+			SO_Execution_Status($groupName, "Switchover" );// In Common > Group_Operation.sah
+			}
+			else 
+				{
+				Mirroring_SO_Execution_Status($groupName, "Switchover");
+				}// In Common > Group_Operation.sah
+		
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SO_Execution_0012(),Function: ALWAYS_ON_SO_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("SO workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+}
+
+function MSSQL_ALWAYS_ON_Dryrun_Report_Testcase() {
+	try {
+		Dryrun_for_Diffrent_Workflows("NormalFullCopy");
+		Dryrun_for_Diffrent_Workflows("NormalCopy");
+		Dryrun_for_Diffrent_Workflows("Switchover");
+		Dryrun_for_Diffrent_Workflows("ReverseNormalCopy");
+		Dryrun_for_Diffrent_Workflows("Switchback");
+		Dryrun_for_Diffrent_Workflows("Failover");
+		Dryrun_for_Diffrent_Workflows("FallbackResync");
+		Dryrun_for_Diffrent_Workflows("Fallback");
+} catch ($e) {
+	_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MSSQL_ALWAYS_ON_Dryrun_Report_Testcase(),Function: MSSQL_ALWAYS_ON_Dryrun_Report,execution got failed.kindly check the log for more details");
+	}
+}
+
+////////////////////////////////////////////EVENTS////////////////////////////////
+
+////////////////REMOTE/////////////////
+
+function MSSQL_ALWAYS_ON_Remote_Stop_MSSQL_Agent_SO_InActive_0025() {
+	if($scenario==1){
+	try {
+		_log("2:2");
+		MSSQL_ALWAYS_ON_Remote_PR_MSSQL_Agent_Stop_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Remote_PR2_MSSQL_Agent_Stop_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Remote_DR_MSSQL_Agent_Stop_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Remote_DR2_MSSQL_Agent_Stop_Event_SO_InActive();
+	} catch ($e) {
+		_assertTrue(false);
+		_log("for test Case ID: Remote_Stop_MSSQL_Agent_0025(),Function: MSSQL_Remote_PRDR_2:2_MSSQL_Agent_Stop_Event_SO_InActive  ,execution got failed.kindly check the log for more details");
+	}
+}
+	else
+	{
+try {
+	_log("2:1");
+	MSSQL_ALWAYS_ON_Remote_PR_MSSQL_Agent_Stop_Event_SO_InActive();
+	MSSQL_ALWAYS_ON_Remote_PR2_MSSQL_Agent_Stop_Event_SO_InActive();
+	MSSQL_ALWAYS_ON_Remote_DR_MSSQL_Agent_Stop_Event_SO_InActive();
+} catch ($e) {
+	_assertTrue(false);
+	_log("for test Case ID: Remote_Stop_MSSQL_Agent_0025(),Function: MSSQL_Remote_PRDR_2:1_MSSQL_Agent_Stop_Event_SO_InActive ,execution got failed.kindly check the log for more details");
+}
+}
+}
+
+function MSSQL_ALWAYS_ON_Remote_Start_MSSQL_Agent_SO_InActive_0026() {
+	if($scenario==1){
+	try {
+		_log("2:2");
+		MSSQL_ALWAYS_ON_Remote_PR_MSSQL_Agent_Start_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Remote_PR2_MSSQL_Agent_Start_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Remote_DR_MSSQL_Agent_Start_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Remote_DR2_MSSQL_Agent_Start_Event_SO_InActive();
+	} catch ($e) {
+		_assertTrue(false);
+		_log("for test Case ID: Remote_Start_MSSQL_Agent_0026(),Function: MSSQL_Remote_PRDR_2:2_MSSQL_Agent_Start_Event_SO_InActive  ,execution got failed.kindly check the log for more details");
+	}
+}
+	else
+		{
+	try {
+		_log("2:1");
+		MSSQL_ALWAYS_ON_Remote_PR_MSSQL_Agent_Start_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Remote_PR2_MSSQL_Agent_Start_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Remote_DR_MSSQL_Agent_Start_Event_SO_InActive();
+	} catch ($e) {
+		_assertTrue(false);
+		_log("for test Case ID: Remote_Start_MSSQL_Agent_0026(),Function: MSSQL_Remote_PRDR_2:1_MSSQL_Agent_Start_Event_SO_InActive  ,execution got failed.kindly check the log for more details");
+	}
+}
+}
+
+/////////////////LOCAL/////////////////
+
+function MSSQL_ALWAYS_ON_Local_Stop_MSSQL_OS_Agent_SO_InActive_005() {
+	if($scenario==1){
+	try {
+		_log("2:2");
+		MSSQL_ALWAYS_ON_Local_PR_MSSQL_Agent_Stop_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Local_DR_MSSQL_Agent_Stop_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Local_PR2_MSSQL_Agent_Stop_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Local_DR2_MSSQL_Agent_Stop_Event_SO_InActive();
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Local_Stop_MSSQL_Agent_0039(),Function: MSSQL_Local_PRDR_2:2_MSSQL_Agent_Stop_Event_SO_InActive  ,execution got failed.kindly check the log for more details");
+	}
+}
+	else
+            {
+		try {
+			_log("2:1");
+			MSSQL_ALWAYS_ON_Local_PR_MSSQL_Agent_Stop_Event_SO_InActive();
+			MSSQL_ALWAYS_ON_Local_DR_MSSQL_Agent_Stop_Event_SO_InActive();
+			MSSQL_ALWAYS_ON_Local_PR2_MSSQL_Agent_Stop_Event_SO_InActive();
+		} catch ($e) {
+			_assertTrue(false);
+			_log($e.toString(),"Custom1");
+			_log("for test Case ID: Local_Stop_MSSQL_Agent_0039(),Function: MSSQL_Local_PRDR_2:1_MSSQL_Agent_Stop_Event_SO_InActive ,execution got failed.kindly check the log for more details");
+		}
+	}
+}
+
+function MSSQL_ALWAYS_ON_Local_Start_MSSQL_OS_Agent_SO_InActive_0024() {
+	if($scenario==1){
+	try {
+		_log("2:2");
+		MSSQL_ALWAYS_ON_Local_PR_MSSQL_Agent_Start_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Local_DR_MSSQL_Agent_Start_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Local_PR2_MSSQL_Agent_Start_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Local_DR2_MSSQL_Agent_Start_Event_SO_InActive();
+	} catch ($e) {
+		_assertTrue(false);
+		_log("for test Case ID: Local_Start_MSSQL_Agent_0038(),Function: MSSQL_Local_PRDR_2:2_MSSQL_Agent_Start_Event_SO_InActive ,execution got failed.kindly check the log for more details");
+	}
+}
+	else
+		{
+	try {
+		_log("2:1");
+		MSSQL_ALWAYS_ON_Local_PR_MSSQL_Agent_Start_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Local_DR_MSSQL_Agent_Start_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Local_PR2_MSSQL_Agent_Start_Event_SO_InActive();
+	} catch ($e) {
+		_assertTrue(false);
+		_log("for test Case ID: Local_Start_MSSQL_Agent_0038(),Function: MSSQL_Local_PRDR_2:1_MSSQL_Agent_Start_Event_SO_InActive  ,execution got failed.kindly check the log for more details");
+	}
+}
+}
+
+/////////////////REMOTE///////////////////
+
+function MSSQL_ALWAYS_ON_Remote_Stop_Windows_OS_Agent_SO_InActive_0027() {
+	if($scenario==1){
+	try {
+		_log("2:2");
+		MSSQL_ALWAYS_ON_Remote_PR_Windows_OS_Agent_Stop_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Remote_PR2_Windows_OS_Agent_Stop_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Remote_DR_Windows_OS_Agent_Stop_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Remote_DR2_Windows_OS_Agent_Stop_Event_SO_InActive();
+	} catch ($e) {
+		_assertTrue(false);
+		_log("for test Case ID: Remote_Stop_MSSQL_Agent_0027(),Function: MSSQL_Remote_PRDR_2:2_MSSQL_Agent_Stop_Event_SO_InActive ,execution got failed.kindly check the log for more details");
+	}
+}
+	else
+		{
+try {
+	_log("2:1");
+	MSSQL_ALWAYS_ON_Remote_PR_Windows_OS_Agent_Stop_Event_SO_InActive();
+	MSSQL_ALWAYS_ON_Remote_PR2_Windows_OS_Agent_Stop_Event_SO_InActive();
+	MSSQL_ALWAYS_ON_Remote_DR_Windows_OS_Agent_Stop_Event_SO_InActive();
+} catch ($e) {
+	_assertTrue(false);
+	_log("for test Case ID: Remote_Stop_MSSQL_Agent_0027(),Function: MSSQL_Remote_PRDR_2:1_MSSQL_Agent_Stop_Event_SO_InActive ,execution got failed.kindly check the log for more details");
+}
+}
+}
+
+function MSSQL_ALWAYS_ON_Remote_Start_Windows_OS_Agent_SO_InActive_0028() {
+	if($scenario==1){
+	try {
+		_log("2:2");
+		MSSQL_ALWAYS_ON_Remote_PR_Windows_OS_Agent_Start_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Remote_PR2_Windows_OS_Agent_Start_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Remote_DR_Windows_OS_Agent_Start_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Remote_DR2_Windows_OS_Agent_Start_Event_SO_InActive();
+	} catch ($e) {
+		_assertTrue(false);
+		_log("for test Case ID: Remote_Start_MSSQL_Agent_0028(),Function: MSSQL_Remote_PRDR_2:2_MSSQL_Agent_Start_Event_SO_InActive  ,execution got failed.kindly check the log for more details");
+	}
+}
+	else
+		{
+	try {
+		_log("2:1");
+		MSSQL_ALWAYS_ON_Remote_PR_Windows_OS_Agent_Start_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Remote_PR2_Windows_OS_Agent_Start_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Remote_DR_Windows_OS_Agent_Start_Event_SO_InActive();
+	} catch ($e) {
+		_assertTrue(false);
+		_log("for test Case ID: Remote_Start_MSSQL_Agent_0028(),Function: MSSQL_Remote_PRDR_2:1_MSSQL_Agent_Start_Event_SO_InActive  ,execution got failed.kindly check the log for more details");
+	}
+}
+}
+
+///////////////////LOCAl///////////////
+
+function MSSQL_ALWAYS_ON_Local_Stop_Windows_OS_Agent_SO_InActive_005() {
+	if($scenario==1){
+	try {
+		_log("2:2");
+		MSSQL_ALWAYS_ON_Local_PR_Windows_Agent_Stop_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Local_DR_Windows_Agent_Stop_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Local_PR2_Windows_Agent_Stop_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Local_DR2_Windows_Agent_Stop_Event_SO_InActive();
+} catch ($e) {
+	_assertTrue(false);
+		_log("for test Case ID: Local_Stop_MSSQL_Agent_0039(),Function: MSSQL_Local_PRDR_2:2_MSSQL_Agent_Stop_Event_SO_InActive  ,execution got failed.kindly check the log for more details");
+	}
+}
+	else
+		{
+	try {
+		_log("2:1");
+		MSSQL_ALWAYS_ON_Local_PR_Windows_Agent_Stop_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Local_DR_Windows_Agent_Stop_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Local_PR2_Windows_Agent_Stop_Event_SO_InActive();
+	} catch ($e) {
+		_assertTrue(false);
+		_log("for test Case ID: Local_Stop_MSSQL_Agent_0039(),Function: MSSQL_Local_PRDR_2:1_MSSQL_Agent_Stop_Event_SO_InActive  ,execution got failed.kindly check the log for more details");
+	}
+}
+}
+
+function MSSQL_ALWAYS_ON_Local_Start_Windows_OS_Agent_SO_InActive_0024() {
+	if($scenario==1){
+	try {
+		_log("2:2");
+		MSSQL_ALWAYS_ON_Local_PR_Windows_Agent_Start_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Local_DR_Windows_Agent_Start_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Local_PR2_Windows_Agent_Start_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Local_DR2_Windows_Agent_Start_Event_SO_InActive();
+	} catch ($e) {
+		_assertTrue(false);
+		_log("for test Case ID: Local_Start_MSSQL_Agent_0038(),Function: MSSQL_Local_PRDR_2:2_MSSQL_Agent_Start_Event_SO_InActive  ,execution got failed.kindly check the log for more details");
+	}
+}
+	else
+		{
+	try {
+		_log("2:1");
+		MSSQL_ALWAYS_ON_Local_PR_Windows_Agent_Start_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Local_DR_Windows_Agent_Start_Event_SO_InActive();
+		MSSQL_ALWAYS_ON_Local_PR2_Windows_Agent_Start_Event_SO_InActive();
+	} catch ($e) {
+		_assertTrue(false);
+		_log("for test Case ID: Local_Start_MSSQL_Agent_0038(),Function: MSSQL_Local_PRDR_2:1_MSSQL_Agent_Start_Event_SO_InActive ,execution got failed.kindly check the log for more details");
+	}
+}
+}
+
+///////////////REMOTE////////////////////
+
+function MSSQL_ALWAYS_ON_Remote_Stop_MSSQL_Agent_0039() {
+	if($scenario==1){
+	try {
+		_log("2:2");
+		MSSQL_ALWAYS_ON_Remote_PR_MSSQL_Agent_Stop_Event();
+		MSSQL_ALWAYS_ON_Remote_PR2_MSSQL_Agent_Stop_Event();
+		MSSQL_ALWAYS_ON_Remote_DR_MSSQL_Agent_Stop_Event();
+		MSSQL_ALWAYS_ON_Remote_DR2_MSSQL_Agent_Stop_Event();
+	} catch ($e) {
+		_assertTrue(false);
+		_log("for test Case ID: Remote_Stop_MSSQL_Agent_0039(),Function: MSSQL_ALWAYS_ON_Remote_PRDR_2:2_MSSQL_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+	else
+		{
+	try {
+		_log("2:1");
+		MSSQL_ALWAYS_ON_Remote_PR_MSSQL_Agent_Stop_Event();
+		MSSQL_ALWAYS_ON_Remote_PR2_MSSQL_Agent_Stop_Event();
+		MSSQL_ALWAYS_ON_Remote_DR_MSSQL_Agent_Stop_Event();
+	} catch ($e) {
+		_assertTrue(false);
+		_log("for test Case ID: Remote_Stop_MSSQL_Agent_0039(),Function: MSSQL_ALWAYS_ON_Remote_PRDR_2:1_MSSQL_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+}
+
+function MSSQL_ALWAYS_ON_Remote_Start_MSSQL_Agent_0038() {
+	if($scenario==1){
+	try {
+		_log("2:2");
+		MSSQL_ALWAYS_ON_Remote_PR_MSSQL_Agent_Start_Event();
+		MSSQL_ALWAYS_ON_Remote_PR2_MSSQL_Agent_Start_Event();
+		MSSQL_ALWAYS_ON_Remote_DR_MSSQL_Agent_Start_Event();
+		MSSQL_ALWAYS_ON_Remote_DR2_MSSQL_Agent_Start_Event();
+	} catch ($e) {
+		_assertTrue(false);
+		_log("for test Case ID: Remote_Start_MSSQL_Agent_0038(),Function: MSSQL_Remote_PRDR_2:2_MSSQL_Agent_Start_Event  ,execution got failed.kindly check the log for more details");
+	}
+}
+	else
+	{
+	try {
+		_log("2:1");
+		MSSQL_ALWAYS_ON_Remote_PR_MSSQL_Agent_Start_Event();
+		MSSQL_ALWAYS_ON_Remote_PR2_MSSQL_Agent_Start_Event();
+		MSSQL_ALWAYS_ON_Remote_DR_MSSQL_Agent_Start_Event();
+	} catch ($e) {
+		_assertTrue(false);
+		_log("for test Case ID: Remote_Start_MSSQL_Agent_0038(),Function: MSSQL_Remote_PRDR_2:1_MSSQL_Agent_Start_Event  ,execution got failed.kindly check the log for more details");
+	}
+}
+}
+
+/////////////////LOCAL/////////////////
+
+function MSSQL_ALWAYS_ON_Local_Stop_MSSQL_Agent_0039() {
+	if($scenario==1){
+	try {
+		_log("2:2");
+		MSSQL_ALWAYS_ON_Local_PR_MSSQL_Agent_Stop_Event();
+		MSSQL_ALWAYS_ON_Local_DR_MSSQL_Agent_Stop_Event();
+		MSSQL_ALWAYS_ON_Local_PR2_MSSQL_Agent_Stop_Event();
+		MSSQL_ALWAYS_ON_Local_DR2_MSSQL_Agent_Stop_Event();
+	} catch ($e) {
+		_assertTrue(false);
+		_log("for test Case ID: Local_Stop_MSSQL_Agent_0039(),Function: MSSQL_Local_PRDR_2:2_MSSQL_Agent_Stop_Event  ,execution got failed.kindly check the log for more details");
+	}
+}
+	else
+		{
+		try {
+			_log("2:1");
+		MSSQL_ALWAYS_ON_Local_PR_MSSQL_Agent_Stop_Event();
+		MSSQL_ALWAYS_ON_Local_DR_MSSQL_Agent_Stop_Event();
+		MSSQL_ALWAYS_ON_Local_PR2_MSSQL_Agent_Stop_Event();
+	} catch ($e) {
+		_assertTrue(false);
+		_log("for test Case ID: Local_Stop_MSSQL_Agent_0039(),Function: MSSQL_Local_PRDR_2:1_MSSQL_Agent_Stop_Event  ,execution got failed.kindly check the log for more details");
+	}
+}
+}
+
+function MSSQL_ALWAYS_ON_Local_Start_MSSQL_Agent_0038() {
+	if($scenario==1){
+	try {
+		_log("2:2");
+		MSSQL_ALWAYS_ON_Local_PR_MSSQL_Agent_Start_Event();
+		MSSQL_ALWAYS_ON_Local_DR_MSSQL_Agent_Start_Event();
+		MSSQL_ALWAYS_ON_Local_PR2_MSSQL_Agent_Start_Event();
+		MSSQL_ALWAYS_ON_Local_DR2_MSSQL_Agent_Start_Event();
+	} catch ($e) {
+		_assertTrue(false);
+		_log("for test Case ID: Local_Start_MSSQL_Agent_0038(),Function: MSSQL_Local_PRDR_2:2_MSSQL_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+	else
+		{
+	try {
+		_log("2:1");
+		MSSQL_ALWAYS_ON_Local_PR_MSSQL_Agent_Start_Event();
+		MSSQL_ALWAYS_ON_Local_DR_MSSQL_Agent_Start_Event();
+		MSSQL_ALWAYS_ON_Local_PR2_MSSQL_Agent_Start_Event();
+	} catch ($e) {
+		_assertTrue(false);
+		_log("for test Case ID: Local_Start_MSSQL_Agent_0038(),Function: MSSQL_Local_PRDR_2:1_MSSQL_Agent_Start_Event  ,execution got failed.kindly check the log for more details");
+	}
+}
+}
+	
+//////////////////////////////REMOTE/////////////////////////////////////////////////////////
+
+function MSSQL_ALWAYS_ON_Remote_Stop_Windows_OS_Agent_0046() {
+	if($scenario==1){
+	try {
+		_log("2:2");
+		MSSQL_ALWAYS_ON_Remote_PR_Windows_OS_Agent_Stop_Event();
+		MSSQL_ALWAYS_ON_Remote_PR2_Windows_OS_Agent_Stop_Event();
+		MSSQL_ALWAYS_ON_Remote_DR_Windows_OS_Agent_Stop_Event();
+		MSSQL_ALWAYS_ON_Remote_DR2_Windows_OS_Agent_Stop_Event();
+	} catch ($e) {
+		_assertTrue(false);
+		_log("for test Case ID: Remote_Stop_MSSQL_Agent_0039(),Function: MSSQL_ALWAYS_ON_Remote_PRDR_2:2_MSSQL_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+	else
+		{
+	try {
+		_log("2:1");
+		MSSQL_ALWAYS_ON_Remote_PR_Windows_OS_Agent_Stop_Event();
+		MSSQL_ALWAYS_ON_Remote_PR2_Windows_OS_Agent_Stop_Event();
+		MSSQL_ALWAYS_ON_Remote_DR_Windows_OS_Agent_Stop_Event();
+	} catch ($e) {
+		_assertTrue(false);
+		_log("for test Case ID: Remote_Stop_MSSQL_Agent_0039(),Function: MSSQL_ALWAYS_ON_Remote_PRDR_2:1_MSSQL_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+}
+
+function MSSQL_ALWAYS_ON_Remote_Start_Windows_OS_Agent_0045() {
+	if($scenario==1){
+	try {
+		_log("2:2");
+		MSSQL_ALWAYS_ON_Remote_PR_Windows_OS_Agent_Start_Event();
+		MSSQL_ALWAYS_ON_Remote_PR2_Windows_OS_Agent_Start_Event();
+		MSSQL_ALWAYS_ON_Remote_DR_Windows_OS_Agent_Start_Event();
+		MSSQL_ALWAYS_ON_Remote_DR2_Windows_OS_Agent_Start_Event();
+	} catch ($e) {
+		_assertTrue(false);
+		_log("for test Case ID: Remote_Start_MSSQL_Agent_0038(),Function: MSSQL_Remote_PRDR_2:2_MSSQL_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+	else
+		{
+	try {
+		_log("2:1");
+		MSSQL_ALWAYS_ON_Remote_PR_Windows_OS_Agent_Start_Event();
+		MSSQL_ALWAYS_ON_Remote_PR2_Windows_OS_Agent_Start_Event();
+		MSSQL_ALWAYS_ON_Remote_DR_Windows_OS_Agent_Start_Event();
+	} catch ($e) {
+		_assertTrue(false);
+		_log("for test Case ID: Remote_Start_MSSQL_Agent_0038(),Function: MSSQL_Remote_PRDR_2:1_MSSQL_Agent_Start_Event  ,execution got failed.kindly check the log for more details");
+	}
+}
+}
+	
+//////////////////LOCAL//////////////////
+
+function MSSQL_ALWAYS_ON_Local_Stop_Windows_OS_Agent_0039() {
+	if($scenario==1){
+	try {
+		_log("2:2");
+		MSSQL_ALWAYS_ON_Local_PR_Windows_Agent_Stop_Event();
+		MSSQL_ALWAYS_ON_Local_DR_Windows_Agent_Stop_Event();
+		MSSQL_ALWAYS_ON_Local_PR2_Windows_Agent_Stop_Event();
+		MSSQL_ALWAYS_ON_Local_DR2_Windows_Agent_Stop_Event();
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Local_Stop_MSSQL_Agent_0039(),Function: MSSQL_Local_PRDR_2:2_MSSQL_Agent_Stop_Event  ,execution got failed.kindly check the log for more details");
+	}
+}
+	else
+		{
+	try {
+		_log("2:1");
+		MSSQL_ALWAYS_ON_Local_PR_Windows_Agent_Stop_Event();
+		MSSQL_ALWAYS_ON_Local_DR_Windows_Agent_Stop_Event();
+		MSSQL_ALWAYS_ON_Local_PR2_Windows_Agent_Stop_Event();
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Local_Stop_MSSQL_Agent_0039(),Function: MSSQL_Local_PRDR_2:1_MSSQL_Agent_Stop_Event  ,execution got failed.kindly check the log for more details");
+	}
+}
+}
+
+function MSSQL_ALWAYS_ON_Local_Start_Windows_OS_Agent_0038() {
+	if($scenario==1){
+	try {
+		_log("2:2");
+		MSSQL_ALWAYS_ON_Local_PR_Windows_Agent_Start_Event();
+		MSSQL_ALWAYS_ON_Local_DR_Windows_Agent_Start_Event();
+		MSSQL_ALWAYS_ON_Local_PR2_Windows_Agent_Start_Event();
+		MSSQL_ALWAYS_ON_Local_DR2_Windows_Agent_Start_Event();
+	} catch ($e) {
+		_assertTrue(false);
+		_log("for test Case ID: Local_Start_MSSQL_Agent_0038(),Function: MSSQL_Local_PRDR_2:2_MSSQL_Agent_Start_Event  ,execution got failed.kindly check the log for more details");
+	}
+}
+	else
+		{
+	try {
+		_log("2:1");
+		MSSQL_ALWAYS_ON_Local_PR_Windows_Agent_Start_Event();
+		MSSQL_ALWAYS_ON_Local_DR_Windows_Agent_Start_Event();
+		MSSQL_ALWAYS_ON_Local_PR2_Windows_Agent_Start_Event();
+	} catch ($e) {
+		_assertTrue(false);
+		_log("for test Case ID: Local_Start_MSSQL_Agent_0038(),Function: MSSQL_Local_PRDR_2:1_MSSQL_Agent_Start_Event  ,execution got failed.kindly check the log for more details");
+	}
+}
+}
+

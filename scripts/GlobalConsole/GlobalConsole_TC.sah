@@ -1,0 +1,337 @@
+/*******************************************************************************
+ * * CompanyName : Sanovi Technologies Ltd. * Application Name : Global Console *
+ * Objective : * AuthorName : Gaurav * Created Date : June 2018
+ ******************************************************************************/
+
+/*
+ * -- Update panaces installation path in DRMInputsheet.xlsx before execution
+ * -- If script fails even in retry and manually passing restart ro servers and sahi then run script
+ * -- Open Configure Sahipro( the place from where we add browser path when we first time install sahi),click on force_inject.txt and add line .*PanacesGUI.*, since when running scripts for a long time sahi misses injection on some webpages.
+ * -- increase the capacity of the browser in <Sahipro/userdata/config/browser_types.xml file to 10 
+ */
+
+_include("../../Library/Solution_Signature/Include/Common_Automation_testcase_Function.sah");
+_include("../../Library/Common/Common_Function.sah");
+_include("../../conf/DRMInstallation_Parameter.sah");
+_include("../../Library/Common/CommonRepository/CommonDRM_ObjRepository.sah");
+_include("../../Library/Common/CommonRepository/CommonGUINavigation_ObjRepository.sah");
+_include("../../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+_include("../../Library/BugRegression/ObjectRepository/BugRegression_ObjectRepository.sah");
+_include("../../Library/AdminFeature/Admin_Page_Usability/Admin_Page_Usability_Common_Functions.sah");
+
+_include("../../Library/GlobalConsole/GC_Functions.sah");
+_include("../../Library/GlobalConsole/GC_TC_Functions.sah");
+_include("../../conf/GlobalConsole/GlobalConsole_OverridingParameters.sah");
+
+
+Login_001();
+/*
+_log(
+		"=================== Test Cases Under JY7.2SP2 -> Dashboards -> Global Console =================",
+		"Custom1");
+
+// ---------------------- Test Case # 1 START ----------------------//
+
+var $test1 = _testcase("JY_7.2_SP2/Dashboards/GlobalConsole/GC_0001",
+		"Check the availability of \"Go to Global Console\" link in Admin page");
+
+$test1.start();
+
+navigateToGlobalConsole();
+
+$test1.end();
+
+// ----------------------- Test Case # 1 END -----------------------//
+
+// ---------------------- Test Case # 2 START ----------------------//
+
+var $test2 = _testcase("JY_7.2_SP2/Dashboards/GlobalConsole/GC_0002",
+		"Configuring IBM RO Instances");
+
+$test2.start();
+
+configureROInstances($SAHI_HOME + "conf/GlobalConsole/GlobalConsole.xls",
+		"Installation");
+
+$test2.end();
+
+// ----------------------- Test Case # 2 END -----------------------//
+
+// ---------------------- Test Case # 3 START ----------------------//
+
+var $test3 = _testcase("JY_7.2_SP2/Dashboards/GlobalConsole/GC_0003",
+		"Check the availability of global console property file in each RO server");
+
+$test3.start();
+
+GC_TC03();
+
+$test3.end();
+
+// ----------------------- Test Case # 3 END -----------------------//
+
+// ---------------------- Test Case # 4 START ----------------------//
+
+var $test4 = _testcase("JY_7.2_SP2/Dashboards/GlobalConsole/GC_0004",
+		"RO details in Remote_RestClient.properties file after GC coniguration");
+
+$test4.start();
+
+GC_TC04();
+
+$test4.end();
+
+// ----------------------- Test Case # 4 END -----------------------//
+
+// ---------------------- Test Case # 5 START ----------------------//
+
+var $test5 = _testcase("JY_7.2_SP2/Dashboards/GlobalConsole/GC_0005",
+		"Deletion of remote RO from Global console");
+
+$test5.start();
+
+GC_TC05();
+
+$test5.end();
+
+// ----------------------- Test Case # 5 END -----------------------//
+
+// ---------------------- Test Case # 6 START ----------------------//
+
+var $test6 = _testcase(
+		"JY_7.2_SP2/Dashboards/GlobalConsole/GC_0006",
+		"Post GC configuration, aggregation of AG details on both DR Manager and Operational manager dashboards");
+
+$test6.start();
+
+GC_TC06();
+
+$test6.end();
+
+// ----------------------- Test Case # 6 END -----------------------//
+
+// ---------------------- Test Case # 9 START ----------------------//
+
+var $test9 = _testcase(
+		"JY_7.2_SP2/Dashboards/GlobalConsole/GC_0009",
+		"Check the availability of 'Management Server availbility' in both DR manager and Operational manager dashboards");
+
+$test9.start();
+
+navigateToGCAndVerify();
+
+$test9.end();
+
+// ----------------------- Test Case # 9 END -----------------------//
+
+// ---------------------- Test Case # 10 START ----------------------//
+
+var $test10 = _testcase(
+		"JY_7.2_SP2/Dashboards/GlobalConsole/GC_0010",
+		"Post GC configuration, adding and deletion of RO instance should impact the Dashboard");
+
+$test10.start();
+
+GC_TC10();
+
+$test10.end();
+
+// ----------------------- Test Case # 10 END -----------------------//
+
+// ---------------------- Test Case # 11 START ----------------------//
+
+var $test11 = _testcase(
+		"JY_7.2_SP2/Dashboards/GlobalConsole/GC_0011",
+		"Post GC config,Dashboard loading details when user is not created in any one of mapped Remote RO");
+
+$test11.start();
+
+GC_TC11();
+
+$test11.end();
+
+// ----------------------- Test Case # 11 END -----------------------//
+
+// ---------------------- Test Case # 12 START ----------------------//
+
+var $test12 = _testcase("JY_7.2_SP2/Dashboards/GlobalConsole/GC_0012",
+		"Post GC config, Default dashboard values when no groups assigned to the user");
+
+$test12.start();
+
+GC_TC12();
+
+$test12.end();
+
+// ----------------------- Test Case # 12 END -----------------------//
+*/
+// ---------------------- Test Case # 13 START ----------------------//
+
+var $test13 = _testcase(
+		"JY_7.2_SP2/Dashboards/GlobalConsole/GC_0013",
+		"Post GC config, default behavior of dashboards when no AGs are created in all host RO/remote ROs");
+
+$test13.start();
+
+GC_TC13();
+
+$test13.end();
+
+// ----------------------- Test Case # 13 END -----------------------//
+/*
+// ---------------------- Test Case # 14 START ----------------------//
+
+var $test14 = _testcase(
+		"JY_7.2_SP2/Dashboards/GlobalConsole/GC_0014",
+		"Post GC config, Server snapshot widget details in host RO when no backup is configured in both host RO/remote Ros");
+
+$test14.start();
+
+GC_TC14();   
+
+$test14.end();
+
+// ----------------------- Test Case # 14 END -----------------------//
+
+// ---------------------- Test Case # 15 START ----------------------//
+
+var $test15 = _testcase(
+		"JY_7.2_SP2/Dashboards/GlobalConsole/GC_0015",
+		"Server up time details in Server snapshot widget details in host RO when no backup is configured in both host/remote Ros");
+
+$test15.start();
+
+GC_TC15();
+
+$test15.end();
+
+// ----------------------- Test Case # 15 END -----------------------//
+
+// ---------------------- Test Case # 16 START ----------------------//
+
+var $test16 = _testcase("JY_7.2_SP2/Dashboards/GlobalConsole/GC_0016",
+		"Management server details in Application details widget");
+
+$test16.start();
+
+GC_TC16();
+
+$test16.end();
+
+// ----------------------- Test Case # 16 END -----------------------//
+
+// ---------------------- Test Case # 17 START ----------------------//
+
+// As per discussion doing it for host RO , considering change will reflect only
+// for users createde and logged in in HOST RO Server
+
+var $test17 = _testcase(
+		"JY_7.2_SP2/Dashboards/GlobalConsole/GC_0017",
+		"Current logged-in users and user role aggregation count should should be shown in DR operational db in server snsapshot widget");
+
+$test17.start();
+
+GC_TC17();
+
+$test17.end();
+
+// ----------------------- Test Case # 17 END -----------------------//
+
+// ---------------------- Test Case # 18 START ----------------------//
+
+var $test18 = _testcase(
+		"JY_7.2_SP2/Dashboards/GlobalConsole/GC_0018",
+		"Create same user in different RO's with different role and check the both dashboards");
+
+$test18.start();
+
+GC_TC18();
+
+$test18.end();
+
+// ----------------------- Test Case # 18 END -----------------------//      
+			
+// ---------------------- Test Case # 19 START ----------------------//
+
+var $test19 = _testcase("JY_7.2_SP2/Dashboards/GlobalConsole/GC_0019",
+		"Local/Remote AG moved to maintainace should not be shown in search");
+
+$test19.start();
+
+GC_TC19();
+
+$test19.end();
+
+// ----------------------- Test Case # 19 END -----------------------//
+
+// ---------------------- Test Case # 20 START ----------------------//
+
+var $test20 = _testcase("JY_7.2_SP2/Dashboards/GlobalConsole/GC_0020",
+		"Configiure GC with invalid RO server Ip and check both dashboards");
+
+$test20.start();
+
+GC_TC20();
+
+$test20.end();
+
+// ----------------------- Test Case # 20 END -----------------------//
+*/
+// ---------------------- Test Case # 21 START ----------------------//
+
+var $test21 = _testcase("JY_7.2_SP2/Dashboards/GlobalConsole/GC_0021",
+		"All participating RO to be configured with HTTPS");
+
+$test21.start();
+
+GC_TC21();
+
+$test21.end();
+
+// ----------------------- Test Case # 21 END -----------------------//
+
+// ---------------------- Test Case # 22 START ----------------------//
+
+var $test22 = _testcase("JY_7.2_SP2/Dashboards/GlobalConsole/GC_0022",
+		"Some participating RO to be configured with HTTP and some with HTTPS");
+
+$test22.start();
+
+GC_TC22();
+
+$test22.end();
+
+// ----------------------- Test Case # 22 END -----------------------//
+
+// ---------------------- Test Case # 23 START ----------------------//
+
+var $test23 = _testcase("JY_7.2_SP2/Dashboards/GlobalConsole/GC_0023",
+		"Some participating RO to be configured with HTTP and some with HTTPS");
+
+$test23.start();
+
+GC_TC23();
+
+$test23.end();
+
+// ----------------------- Test Case # 23 END -----------------------//
+
+// ---------------------- Test Case # 24 START ----------------------//
+
+var $test24 = _testcase("JY_7.2_SP2/Dashboards/GlobalConsole/GC_0024",
+		"Browser auto refersh for both Manager/Operational dashboards");
+
+$test24.start();
+
+GC_TC24();
+
+$test24.end();
+
+// ----------------------- Test Case # 24 END -----------------------//
+
+_log(
+		"================================Post-Condition================================== ",
+		"Custom1");
+
+Logout_001();
+

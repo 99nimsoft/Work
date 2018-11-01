@@ -1,0 +1,87 @@
+/*************************************************************************
+ ** Application Name : Resiliency Orchestration 
+ ** Objective : This script contains all the test cases for  VM to Zerto solution. 
+ ** AuthorName : Anita Gaded
+ ** Created Date : June 2018
+ ************************************************************************/
+
+_log("=================================Pre-Condition===================================","Custom1");
+
+_include("../Library/Solution_Signature/Include/VM_TO_ZERTO_Include.sah");
+_include("../conf/DRMInstallation_Parameter.sah");
+_include("../Library/Common/CommonRepository/CommonDRM_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/CommonGUINavigation_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/GroupOperation_ObjRepository.sah");
+_include("../Library/Solution_Signature/VM_TO_ZERTO/ObjectRepository/VM_TO_ZERTO_ObjectRepository.sah");
+_include("../conf/VM_TO_ZERTO/VM_TO_ZERTO_Parameter.sah");
+_include("../Library/Solution_Signature/VM_TO_ZERTO/VM_TO_ZERTO_Automation_testcases_Function.sah");
+_include("../Library/Solution_Signature/VM_TO_ZERTO/VM_Zerto_CommonFunctions.sah");
+_include("../Library/Solution_Signature/VM_TO_ZERTO/VM_TO_ZERTO_Solution.sah");
+
+_log("=================================Test========================================", "Custom1");
+
+
+Login_001();
+
+var $test1 = _testcase("TC_01","Site Discovery");
+	$test1.start(); 
+	Create_Site_PR();
+	Create_Site_DR();
+	$test1.end();
+
+
+var $test2 = _testcase("TC_02", "Discovery Management Services for Vcenter -Create Edit and Delete Test");
+    $test2.start();
+    ManagementService_Vcenter_EDIT_DELETE();
+    $test2.end();
+
+  
+var $test3 = _testcase("TC_03", "Discovery Management Services for Vcenter");
+    $test3.start();
+    ManagementServiceDiscovery_Vcenter();
+    $test3.end();
+   
+var $test4 = _testcase("TC_04", "Discovery Management Services for Zerto -Create Edit and Delete Test");
+    $test4.start();
+    ManagementService_Zerto_EDIT_DELETE();
+    $test4.end();
+    
+var $test5 = _testcase("TC_05", "Discovery Management Services for Zerto");
+    $test5.start();
+    ManagementServiceDiscovery_Zerto();
+    $test5.end();   
+
+
+var $test6 = _testcase("TC_06", "Discovery of Appstack for VM to Zerto solution");
+	$test6.start();
+	DiscoveryAppstack_VM2ZertoSoln(); //Delete AG , Delete Appsatck, Create Appstack, Create AG
+	$test6.end(); 
+
+var $test7 = _testcase("TC_7", "Verify AG /RG Group");
+	$test7.start();
+	VerifyAGRG_VM2ZertoGroup(); // Verify AG , Verify RG
+	$test7.end(); 
+
+var $test8 = _testcase("TC_8", "Post Group creation - Verify Subsystem Status");
+	$test8.start();
+	SubsystemStatus_PostGroupCreation(); 
+	$test8.end();
+
+
+var $test9 = _testcase("TC_9", "Post Group creation - AG/RG Group Status");
+	$test9.start();
+	GroupStatus_PostGroupCreation(); 
+	$test9.end();
+
+var $test9 = _testcase("TC_10", "RG Group Verify Replication Status, dataRPO");
+	$test9.start();
+	RG_ReplicationPageValidation(); 
+	$test9.end();
+
+	
+	
+	
+	
+	
+	
+	

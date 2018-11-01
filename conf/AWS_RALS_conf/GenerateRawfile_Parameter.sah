@@ -1,0 +1,26 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the Remote Agents parameters for Postgres SR 
+ ** AuthorName : Govinda Mengji
+ ** Created Date : Oct 2013
+ ***********************************************************************************************/
+
+var $l_GenerateRawfile=_readExcelFile($SAHI_HOME + "\\conf\\AWS_RALS_conf\\VM_AWS_Parameter.xls","GenerateRawfileRAL");
+
+var $username =$l_GenerateRawfile[3][2];
+var $password = $l_GenerateRawfile[4][2];
+
+
+
+// This user Input required to create the Component for Local or remote
+
+
+var $COMPONENT_NAME = $l_GenerateRawfile[7][2];
+var $DATA_PATH_LOCATION = $l_GenerateRawfile[8][2];
+var $OFFSET_FILE_PATH=$l_GenerateRawfile[9][2]; 
+var $RAW_FILE_SIZE = $l_GenerateRawfile[10][2];
+var $RAW_FILE_PATH =$l_GenerateRawfile[11][2]; 
+var $groupName=$l_GenerateRawfile[14][2];
+
+

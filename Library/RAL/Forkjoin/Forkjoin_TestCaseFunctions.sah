@@ -1,0 +1,346 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the test cases functions which are the part of Forkjoin RAL( Recovery automation library). 
+ **@AuthorName : Anita 
+ ** Created Date : Nov 2016
+ ************************************************************************/
+
+/**
+ * Function is used to add the forkjoin workflow RAL1 with success pattern found. 
+ * @param :$groupName,$ralName1, $workflowXMlFile1 
+ * @return : null
+ * @Author:Anita
+ * 
+ */
+function Forkjoin_RAL1_Execute_001(){
+	try {
+		Import_Forkjoin_RAL($groupName,$ralName1,$workflowXMlFile1);		
+		Execute_Forkjoin_RAL($groupName,$ralName1,"NA");		
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_fail("Forkjoin_RAL1_Execute_001 failed.So that stopping execution.");
+	}
+}
+
+/**
+ * Function is used to add the forkjoin workflow RAL2 with recursive actions Verify stopping state when success pattern not found. 
+ * @param :$groupName,$ralName1,$workflowXMlFile2    
+ * @return : null
+ * @Author:Anita
+ * 
+ */
+function Forkjoin_RAL2_Execute_002(){
+	try {
+		Import_Forkjoin_RAL($groupName,$ralName2,$workflowXMlFile2);
+		_log("Verify Execution Status should get ABORTED for if all ral arise AWAITING INPUT");
+		Execute_Forkjoin_RAL($groupName,$ralName2,"UserInputQuit");
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_fail("Forkjoin_RAL2_Execute_002 failed.So that stopping execution.");
+	}
+}
+
+/**
+ * Function is used to add the forkjoin workflow RAL3 with Failure pattern not found. 
+ * @param :$groupName,$ralName3,$workflowXMlFile3  
+ * @return : null
+ * @Author:Anita
+ * 
+ */
+function Forkjoin_RAL3_Execute_003(){
+	try {
+		Import_Forkjoin_RAL($groupName,$ralName3,$workflowXMlFile3);
+		Execute_Forkjoin_RAL($groupName,$ralName3,"NA");
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_fail("Forkjoin_RAL3_Execute_003 failed.So that stopping execution.");
+	}
+}
+
+/**
+ * Function is used to add the forkjoin workflow RAL4 with Failure pattern found and Verify stopping state. 
+ * @param :$groupName,$ralName4 ,$workflowXMlFile5
+ * @return : null
+ * @Author:Anita
+ * 
+ */
+function Forkjoin_RAL4_Execute_004(){
+	try {
+		Import_Forkjoin_RAL($groupName,$ralName4,$workflowXMlFile4);
+		_log("Verify Execution Status should ABORTED for if all ral arise AWAITING INPUT");
+		Execute_Forkjoin_RAL($groupName,$ralName4,"UserInputQuit");
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_fail("Forkjoin_RAL4_Execute_004 failed.So that stopping execution.");
+	}
+}
+
+/**
+ * Function is used to Verify STOPPING state when AwaitingInput occurs and Quit the Forkjoin RAL with different user
+ * @param :$groupName,$ralName4 ,$workflowXMlFile4
+ * @return : null
+ * @Author:Anita
+ * 
+ */
+function Forkjoin_RAL4_Execute_UserAB(){
+	try {
+		Create_Forkjoin_RAL_UserA($groupName,$ralName4,$workflowXMlFile4,$username);
+		Execute_Forkjoin_RAL_UserA($groupName,$ralName4,"CreateUserB");
+		LoginAsUserB($usernameB,$password,$groupName);
+		_log("Verify Execution Status should ABORTED for AWAITING INPUT providing UserInputQuit");
+		Execute_Forkjoin_RAL_UserB($groupName,$ralName4,"UserInputQuit");
+		LoginAsUserA($username,$password);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_fail("Forkjoin_RAL4_Execute_UserAB failed.So that stopping execution.");
+	}
+}
+
+/**
+ * Function is used to add the forkjoin workflow RAL5  and verify Execution Status for Continue User Input when Awaiting Input occurs 
+ * @param :$groupName,$ralName5 , $workflowXMlFile5
+ * @return : null
+ * @Author:Anita
+ * 
+ */
+function Forkjoin_RAL5_Execute_006(){
+	try {
+		Import_Forkjoin_RAL($groupName,$ralName5,$workflowXMlFile5);
+		_log(" Verify Execution Status should SUCCESS for AWAITING INPUT providing UserInputContinueAsSuccess");
+		Execute_Forkjoin_RAL($groupName,$ralName5,"UserInputContinueAsSuccess");
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_fail("Forkjoin_RAL5_Execute_006 failed.So that stopping execution.");
+	}
+}
+
+/**
+ * Function is used to Verify in the workflow editor page it should restrict the User on inserting action group between Forkjoin with proper message
+ * @param :$groupName
+ * @return : null
+ * @Author:Anita
+ * 
+ */
+function Forkjoin_RAL_Execute_007(){
+	try {
+		_log("Verify display error msg - Only regular node can be a part of fork group");
+		Create_ActionGroup_Forkjoin($groupName,"AddActionGrpRal");
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_fail("Forkjoin_RAL_Execute_007 failed.So that stopping execution.");
+	}
+}
+
+/**
+ * Function is used to Verify forkjoin with TEAction action properties
+ * Option1 -Start execution of the selected Test and continue to execute this workflow -default radio button
+ * Option2 -Start execution of the selected Test and wait for it to complete before continuing execution of this workflow
+ * @param :$groupName,$ralName6,$workflowXMlFile6,$workflowXMlFile2
+ * @return : null
+ * @Author:Anita
+ * 
+ */
+function Forkjoin_RAL6_Execute_008(){
+	try {
+		_log("Verify Option1 - Start execution of the selected Test and continue to execute this workflow ");
+		Import_Forkjoin_RAL($groupName,$ralName6,$workflowXMlFile6);
+		Add_TEactionRAL($groupName,$workflowXMlFile1,$IntegrityCheck);
+		Edit_Forkjoin_RAL($groupName,$ralName6,$TEAction,$IntegrityCheck,"Option1","testName"); 
+		Execute_ForkjoinNested_RAL($groupName,$ralName6,"NA");
+		_log("Verify Option2 - Start execution of the selected Test and wait for it to complete before continuing execution of this workflow");
+		Add_TEactionRAL($groupName,$workflowXMlFile2,"IntegrityCheck");
+		Edit_Forkjoin_RAL($groupName,$ralName6,$TEAction,$IntegrityCheck,"Option2","testName"); 
+		Execute_ForkjoinNested_RAL($groupName,$ralName6,"UserInputQuit");
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_fail("Forkjoin_RAL6_Execute_008 failed.So that stopping execution.");
+	}
+}
+
+/**
+ * Function is used to Verify forkjoin with BPI action action properties
+ * Option1 -Start execution of the selected Test and continue to execute this workflow -default radio button
+ * Option2 -Start execution of the selected Test and wait for it to complete before continuing execution of this workflow
+ * @param :$groupName,$ralName7,$workflowXMlFile7,$workflowXMlFile2
+ * @return : null
+ * @Author:Anita
+ * 
+ */
+function Forkjoin_RAL7_Execute_009(){
+	try {
+		_log("Verify Option2 - Start execution of the selected Test and wait for it to complete before continuing execution of this workflow");		
+		Import_Forkjoin_RAL($groupName,$ralName7,$workflowXMlFile7);
+		Import_Forkjoin_RAL($groupName,$BPIRal,$workflowXMlFile2);
+		Edit_Forkjoin_RAL($groupName,$ralName7,$BPIAction,$BPIRal,"Option2","businnessProcessName");
+		_log("Verify Execution Status should ABORTED for AWAITING INPUT providing UserInputQuit");	
+		Execute_ForkjoinNested_RAL($groupName,$ralName7,"UserInputQuit");
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_fail("Forkjoin_RAL7_Execute_009 failed.So that stopping execution.");
+	}
+}
+
+/**
+ * Function is used to Verify forkjoin with BCO RAl trigger - NC start/ NC stop successfully 
+ * @param :$groupName,$ralName8,$workflowXMlFile8
+ * @return : null
+ * @Author:Anita
+ * Forkjoin_RAL8_Execute_010
+ */
+function Forkjoin_RAL8_Execute_010(){
+	try {
+			var $nfcStatus = verify_NFC_Status($groupName); // make disable for ODG_remote group
+			if($nfcStatus==true){
+				Import_Forkjoin_RAL($groupName,$ralName8,$workflowXMlFile8);
+				_log("Edit Forkjoin bco ral for Start NormalCopy");
+				Edit_Forkjoin_RAL($groupName,$ralName8,$TriggerBCO,$InitiateNormalCopy,"na","selectTheTrigger");
+				Execute_Forkjoin_RAL($groupName,$ralName8,"UserInputQuit");
+				Verify_BCO_Ral_Exec_Status($groupName,"UserInputQuit");
+				_log("Edit Forkjoin bco ral for stop NormalCopy");
+				Edit_Forkjoin_RAL($groupName,$ralName8,$TriggerBCO,$StopNormalCopy,"na","selectTheTrigger");
+				Execute_Forkjoin_RAL($groupName,$ralName8,"NA");
+				Verify_BCO_Ral_Exec_Status($groupName,"UserInputQuit");
+			}
+			else{
+				_log("DUE to NormalFullCopy failed hence cannot proceed for BCO ral with NormalCopy");
+			}
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_fail("Forkjoin_RAL8_Execute_010 failed.So that stopping execution.");
+	}
+}
+
+/**
+ * Function is used to Verify forkjoin with BCO RAL Execution reports
+ * @param :$groupName,$ralName8
+ * @return : null
+ * @Author:Anita
+ * 
+ */
+function Forkjoin_RAL_Execute_011(){
+	try {
+		var $nfcStatus = verify_NFC_Status($groupName); // make disable for ODG_remote group
+		if($nfcStatus==true){
+			_log("Precondition: Test Forkjoin_RAL8_Execute_010() should executed priorly");
+			Verify_BCO_Ral_Exec_report($groupName,$ralName8,"NormalCopy");
+		}
+		else{
+			_log("DUE to NormalFullCopy failed hence cannot get for BCO ral with NormalCopy execution report");
+		}		
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_fail("Forkjoin_RAL_Execute_011 failed.So that stopping execution.");
+	}
+}
+
+/**
+ * Function is used to Verify Multiple Rals between forkjoin with vertically 
+ * @param :$groupName,$ralName9,$workflowXMlFile9
+ * @return : null
+ * @Author:Anita
+ * 
+ */
+function Forkjoin_RAL9_Execute_012(){
+	try {
+		Import_Forkjoin_RAL($groupName,$ralName9,$workflowXMlFile9);
+		_log("Verify Execution Status should SUCCESS for if all rals executed successfully");
+		_log("Verify Execution Status should ABORTED for if any one ral get Awaiting Input");
+		Execute_Forkjoin_RAL($groupName,$ralName9,"UserInputQuit");	
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_fail("Forkjoin_RAL9_Execute_012 failed.So that stopping execution.");
+	}
+}
+
+/**
+ * Function is used to Verify Multiple forkjoin rals with horizontally 
+ * @param :$groupName,$ralName10,$workflowXMlFile10
+ * @return : null
+ * @Author:Anita
+ * 
+ */
+function Forkjoin_RAL10_Execute_013(){
+	try {
+		Import_Forkjoin_RAL($groupName,$ralName10,$workflowXMlFile10);
+		_log("Verify Execution Status should SUCCESS for if all rals executed successfully");
+		_log("Verify Execution Status should ABORTED for if any one ral get Awaiting Input");
+		Execute_Forkjoin_RAL($groupName,$ralName10,"UserInputQuit");	
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_fail("Forkjoin_RAL10_Execute_013 failed due to bug No 36098 .So that stopping execution.");
+	}
+}
+
+/**
+ * Function is used to Verify Forkjoin workflow import/edit/Publish and export the Workflow
+ * Create new workflow from exported RAL and execute
+ * @param :$groupName,$ralName11,$workflowXMlFile11
+ * @return : null
+ * @Author:Anita
+ * 
+ */
+function Forkjoin_RAL11_Execute_016(){
+	try {
+		Import_Forkjoin_RAL($groupName,$ralName11,$workflowXMlFile11);
+		Edit_RAL_Publish($groupName,$ralName11);
+		var $exptFilePath = Forkjoin_Export_RAL($groupName,$ralName11);
+		CreateNewRAL_Import_ExportedWF_Publish($groupName,$ImportWFPublish,$exptFilePath);
+		Execute_Forkjoin_RAL($groupName,$ImportWFPublish,"UserInputQuit");
+		Delete_Exported_WF_AfterExecute($exptFilePath);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_fail("Forkjoin_RAL11_Execute_016 failed.So that stopping execution.");
+	}
+}
+
+/**
+ * Function is used to Verify Create Action Group Ral and Edit run-time settings/Action properties Save publish and execute
+ * @param :$groupName,$ralName12,$workflowXMlFile12
+ * @return : null
+ * @Author:Anita
+ * 
+ */
+function ActionGroup_RAL12_Execute_014(){
+	try {
+		Create_ActionGroup_RAL($groupName,$ralName12,$workflowXMlFile12);
+		Execute_ActionGroup_RAL($groupName,$ralName12,"UserInputQuit");	
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_fail("ActionGroup_RAL12_Execute_014 failed.So that stopping execution.");
+	}
+}
+
+/**
+ * Function is used to Create Forkjoin with Action Group Ral Publish and Execute
+ * @param :$groupName,$ralName,$workflowXMlFile11
+ * @return : null
+ * @Author:Anita
+ * 
+ */
+function ForkjoinActionGroup_RAL_Execute_015(){
+	try {
+		Create_ForkjoinActionGroup_RAL($groupName,$ForkjoinActionGrpWF,$workflowXMlFile11);
+		Execute_ActionGroup_RAL($groupName,$ForkjoinActionGrpWF,"UserInputQuit");
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_fail("ForkjoinActionGroup_RAL_Execute_015 failed.So that stopping execution.");
+	}
+}
+
+/**
+ * Function is used to Verify Forkjoin and Action Rals workflow Execution Report
+ * @param :$groupName
+ * @return : null
+ * @Author:Anita
+ * 
+ */
+
+function Forkjoin_Verify_Report_017(){
+	try {
+		  Verify_Execution_Report($groupName,$WorkflowExecution,$WorkflowExecutionAnalysis);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_fail("Forkjoin_Verify_Report_017 failed.So that stopping execution.");
+	}
+}

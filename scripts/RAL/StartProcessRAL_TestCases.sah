@@ -1,0 +1,131 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the Start Process RAL test cases. 
+ ** AuthorName : Srinivas Pulamarasetti
+ ** Created Date : Nov 2014
+ ************************************************************************/
+
+
+_log("=================================Pre-Condition===================================", "Custom1");
+
+_include("../../Library/Solution_Signature/Include/APP_PFR_Include.sah");
+_include("../../Library/Common/Common_Function.sah");
+_include("../../conf/DRMInstallation_Parameter.sah");
+//_include("../../conf/DRMInstallation_Parameter_New.sah");
+_include("../../conf/RAL/StartProcess/StartProcessRalParameter.sah");
+_include("../../Library/Component/Component_Common.sah");
+_include("../../Library/Solution_Signature/Include/Common_Automation_testcase_Function.sah");
+_include("../../Library/RAL/RAL_CommonFunction.sah");
+_include("../../Library/RAL/StartProcess/StartProcess_RAL.sah");
+_include("../../Library/RAL/StartProcess/StartProcess_TestCaseFunctions.sah");
+_include("../../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+
+
+Login_001();
+
+preConditionForRAL_GroupCreation();
+//LocalAgentComponentCreation();
+
+
+_log("=================================Test========================================", "Custom1");
+
+
+
+
+var $test1 = _testcase("StartProcess_001", "verify the command execution with Remote component(Dynamic/Static) in Start Process Ral");
+$test1.start();
+StartProcessRAL_RemCompWith_Command_001();
+$test1.end();
+
+var $test2 = _testcase("StartProcess_002", "verify the command execution with Local component(Static) in Start Process Ral");
+$test2.start();
+StartProcessRAL_LocalCompWith_Command_002();
+$test2.end();
+
+var $test3 = _testcase("StartProcess_003", "verify the Script(New/Existing scripts) execution with Remote component(Dynamic/Static) in Start Process Ral");
+$test3.start();
+StartProcessRAL_RemCompWith_script_003();
+$test3.end();
+
+
+var $test4 = _testcase("StartProcess_004", "verify the new Script(New/Existing scripts) execution with Local component(Static) in Start Process Ral ");
+$test4.start();
+StartProcessRAL_LocalCompWith_script_004();
+$test4.end();
+
+
+var $test5 = _testcase("StartProcess_005", "verify the command execution with single quote for component(Dynamic/Local) in Start Process Ral ");
+$test5.start();
+StartProcessRAL_CommandWithSingleQuote_005();
+$test5.end();
+
+var $test6 = _testcase("StartProcess_006", "verify the command execution with double quote for component(Dynamic/Local) in Start Process Ral ");
+$test6.start();
+StartProcessRAL_CommandWithDoubleQuote_006();
+$test6.end();
+
+var $test7 = _testcase("StartProcess_007", "verify the command execution with pipe for component(Dynamic/Local) in Start Process Ral ");
+$test7.start();
+StartProcessRAL_CommandWithPipe_007();
+$test7.end();
+
+var $test8 = _testcase("StartProcess_008", "verify the script with single quote for component(Dynamic/Local) in Start Process Ral ");
+$test8.start();
+StartProcessRAL_ScriptWithSingleQuote_008();
+$test8.end();
+
+var $test9 = _testcase("StartProcess_009", "verify the script with double quote for component(Dynamic/Local) in Start Process Ral ");
+$test9.start();
+StartProcessRAL_ScriptWithDoubleQuote_009();
+$test9.end();
+
+var $test10 = _testcase("StartProcess_010", "verify the script with pipe for component(Dynamic/Local) in Start Process Ral  ");
+$test10.start();
+StartProcessRAL_ScriptWithPipe_010();
+$test10.end();
+
+var $test11 = _testcase("StartProcess_001", "verify the success&failure patterns with values with Remote component(Dynamic/Static) in Start Process Ral");
+$test11.start();
+StartProcessRAL_RemCompWith_Command_Linux_successFailurePatternScenario_011();
+$test11.end();
+
+var $test12 = _testcase("StartProcess_001", "verify the success&failure patterns with values with Remote component(Dynamic/Static) in Start Process Ral");
+$test12.start();
+StartProcessRAL_RemCompWith_Command_Linux_successFailurePatternScenario_012();
+$test12.end();
+
+
+var $test13 = _testcase("StartProcess_001", "verify the success&failure patterns with values with Remote component(Dynamic/Static) in Start Process Ral");
+$test13.start();
+StartProcessRAL_RemCompWith_Command_Linux_successFailurePatternScenario_013();
+$test13.end();
+
+var $test14 = _testcase("StartProcess_001", "verify the success&failure patterns with values with Remote component(Dynamic/Static) in Start Process Ral");
+$test14.start();
+StartProcessRAL_RemCompWith_Command_Linux_successFailurePatternScenario_014();
+$test14.end();
+
+var $test15 = _testcase("StartProcess_001", "verify the success&failure patterns with values with Remote component(Dynamic/Static) in Start Process Ral");
+$test15.start();
+StartProcessRAL_RemCompWith_Command_Linux_successFailurePatternScenario_015();
+$test15.end();
+
+var $test16 = _testcase("StartProcess_001", "verify the success&failure patterns with values with Remote component(Dynamic/Static) in Start Process Ral");
+$test16.start();
+StartProcessRAL_RemCompWith_Command_Linux_successFailurePatternScenario_016();
+$test16.end();
+
+var $test17 = _testcase("StartProcess_001", "verify the success&failure patterns with values with Remote component(Dynamic/Static) in Start Process Ral");
+$test17.start();
+StartProcessRAL_RemCompWith_Command_Linux_successFailurePatternScenario_017();
+$test17.end();
+
+var $test18 = _testcase("StartProcess_001", "verify the success&failure patterns with values with Remote component(Dynamic/Static) in Start Process Ral");
+$test18.start();
+StartProcessRAL_RemCompWith_Command_Linux_successFailurePatternScenario_018();
+$test18.end();
+
+_log("================================Post-Condition================================== ", "Custom1");
+
+Logout_001();

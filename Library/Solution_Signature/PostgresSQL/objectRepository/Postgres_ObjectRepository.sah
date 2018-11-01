@@ -1,0 +1,77 @@
+var $Excel1=_getExcel($SAHI_HOME + "\\Library\\Solution_Signature\\PostgresSQL\\ObjectRepository\\POSTGRES_ObjectRepository.xls","Param");
+
+var $Excel=$Excel1.getData();
+
+var $g_selLang = $l_drmLogin[1][2];
+if($BrowserLang == "N"){
+
+	var $j = 2;
+}
+else if($BrowserLang == "Y-JA"){
+	
+	var $j = 3;
+	}
+
+else if($BrowserLang == "Y-EN"){
+		
+		var $j = 3;
+	}
+////////////////////Solution\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+var $ProtctionSchemes=$Excel[2][$j];
+var $ProtctionSchemesExists=$Excel[3][$j];
+var $GO=$Excel[4][$j];
+var $Save=$Excel[5][$j];
+var $ProtctionSchemesCreated=$Excel[6][$j];
+var $ProtctionSchemesNotCreated=$Excel[7][$j];
+var $flag=$Excel[8][$j];
+var $Submit=$Excel[9][$j];
+var $License=$Excel[10][$j];
+var $Recovery=$Excel[11][$j];
+var $Test=$Excel[12][$j];
+var $licensebutton=$Excel[13][$j];
+var $RPORTO=$Excel[14][$j];
+var $Save=$Excel[15][$j];
+var $Finish=$Excel[16][$j];
+var $Groupcreatedsuccesfully=$Excel[17][$j];
+var $postgres=$Excel[18][$j];
+var $CurrentTransactionLocation=$Excel[19][$j];
+var $output=$Excel[20][$j];
+var $TransactionTime=$Excel[21][$j];
+var $TransactionTime1=$Excel[22][$j];
+var $recoveryPointDB=$Excel[23][$j];
+var $Protection=$Excel[24][$j];
+var $ReplicationStatus=$Excel[25][$j];
+var $PrimaryRemoteServices=$Excel[26][$j];
+var $output=$Excel[27][$j];
+var $streaming=$Excel[28][$j];
+var $Monitor=$Excel[29][$j];
+var $GroupSnapshot=$Excel[30][$j];
+var $NotsupportedinSwitchovermode=$Excel[31][$j];
+var $DRDataConsistentupto=$Excel[32][$j];
+var $NotsupportedinSwitchovermode=$Excel[33][$j];
+var $Monitor=$Excel[34][$j];
+var $GroupSnapshot=$Excel[35][$j];
+var $CurrentTransLogFile=$Excel[36][$j];
+var $CurrentTransLogLocation=$Excel[37][$j];
+var $output=$Excel[38][$j];
+var $Monitor=$Excel[39][$j];
+var $GroupSnapshot=$Excel[40][$j];
+var $LastReplayLogFile=$Excel[41][$j];
+var $LastReplayLogLocation=$Excel[42][$j];
+var $CurrentTransLogFile1=$Excel[43][$j];
+var $CurrentTransLogFile2=$Excel[44][$j];
+var $CurrentTransLogLocation1=$Excel[45][$j];
+var $CurrentTransLogLocation2=$Excel[46][$j];
+var $GroupsListView=$Excel[47][$j];
+var $GroupInformation=$Excel[48][$j];
+var $LastReplayLogFile1=$Excel[49][$j];
+var $LastReplayLogFile2=$Excel[50][$j];
+var $LastReplayLogLocation=$Excel[51][$j];
+var $Datasets=$Excel[52][$j];
+var $CONNECTED=$Excel[53][$j];
+var $RegisterAgent=$Excel[54][$j];
+var $TestCredentials1=$Excel[55][$j];
+var $Success=$Excel[56][$j];
+var $Discover=$Excel[57][$j];
+

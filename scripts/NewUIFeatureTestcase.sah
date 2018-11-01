@@ -1,0 +1,56 @@
+
+_include("../Library/Solution_Signature/Include/Solution_function_Includes.sah");
+_include("../conf/DRMInstallation_Parameter.sah");
+_include("../conf/NewUIFeatures/NewUIFeaturesParameter.sah");
+_include("../Library/Solution_Signature/Include/NewUIFeatureInclude.sah");
+
+Login_002();
+
+_log("=================================Test========================================","Custom2");
+
+
+
+
+
+if($g_executeAll == "Y" || $g_smart_copy == "Y"){
+	var $test1 = _testcase("Site_0004","Create New Site");
+	$test1.start(); 
+	   Smart_Copy();
+	$test1.end();
+	}
+
+if($g_executeAll == "Y" || $g_singlestep == "Y"){
+	var $test2 = _testcase("Site_0004","Create New Site");
+	$test2.start(); 
+	     SingleStep();
+	$test2.end();
+	}
+
+if($g_executeAll == "Y" || $g_export_import == "Y"){
+	var $test3 = _testcase("Site_0004","Create New Site");
+	$test3.start(); 
+		Export_Import();
+	$test3.end();
+	}
+
+if($g_executeAll == "Y" || $g_approver_chk == "Y"){
+	var $test4 = _testcase("Site_0004","Create New Site");
+	$test4.start(); 
+		Approver_Chk();
+	$test4.end();
+	}
+if($g_executeAll == "Y" || $g_continue_success_failure == "Y"){
+	var $test5 = _testcase("Site_0004","Create New Site");
+	$test5.start(); 
+	Continue_Success_Failure();
+	$test5.end();
+	}
+if($g_executeAll == "Y" || $g_rollback == "Y"){
+	var $test6 = _testcase("Site_0004","Create New Site");
+	$test6.start(); 
+		Rollback();
+	$test6.end();
+	}
+
+
+Logout_002();

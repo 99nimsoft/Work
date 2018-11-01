@@ -1,0 +1,92 @@
+function CreateManagementService_002() {
+	try {
+		CreateManagementService($locationPR,$msType,$vcentreNamePR,$mserviceipPR,$ManagementserviceUNPR,$ManagementservicePWDPR); //Vcentre PR, AWS DR
+		CreateManagementService($locationDR,$msType,$vcentreNameDR,$mserviceipDR,$ManagementserviceUNDR,$ManagementservicePWDDR);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:CreateManagementService_002(),Function: login ,execution got failed.kindly check the log for more details");
+		_fail("Create Management Service failed.So that stopping execution.");
+	}
+}
+
+function APP_PFR_Component_Remote_Discovery_0018() {
+	try {
+		Create_Remote_ComponentPR();
+		Create_Remote_ComponentDR();
+		if($withExtendedDR=="yes") {
+		//Create_Remote_Component_Dummy_CR($system_TypeLinux,$dummyComponentNameCR,$dummyComponentIPCR,$locationCR);
+		}
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Component_Remote_Discovery_0018(),Function: Create_Remote_ComponentPR or Create_Remote_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("component not created succesfully.So that stopping execution.");
+	}
+}
+
+function ApplicationDiscovery_VM() {
+	try {
+		ApplicationDiscovery($locationPR,$appStackName,$vcentreNamePR,$mserviceipPR,$vmIP,$tierNum,$VMsNum);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:ApplicationDiscovery_VM(),Function: login ,execution got failed.kindly check the log for more details");
+		_fail("ApplicationDiscoveryOnAWS failed.So that stopping execution.");
+	}
+}
+
+function ApplicationDiscovery_VM_Extended_DR() {
+	try {
+		Fetching_Multiple_Vms();
+		
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:ApplicationDiscovery_VM(),Function: login ,execution got failed.kindly check the log for more details");
+		_fail("ApplicationDiscoveryOnAWS failed.So that stopping execution.");
+	}
+}
+
+
+function Create_Netapp_Protection_Schema() {
+	try {
+		Create_NetApp_Snapmirror_Protectionscheme($volumeNamePR,$compNamePR,$sernamePR);
+		Create_NetApp_Snapmirror_Protectionscheme($volumeNameDR,$compNameDR,$sernameDR);
+		if($withExtendedDR=="yes") {
+		//Create_Oracle_ProtectionScheme_Dummy_CR($ProtectionType,$serNameDummyPR,$compNamePR);
+		//Create_Oracle_ProtectionScheme_Dummy_CR($ProtectionType,$serNameCR,$dummyComponentNameCR);
+		}
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Create_Netapp_Protection_Schema(),Function: login ,execution got failed.kindly check the log for more details");
+		_fail("Create_Netapp_Protection_Schema failed.So that stopping execution.");
+	}
+}
+
+function create_AG_Extended_DR() {
+	try {
+		create_AG_With_Extended_DR($AGgroupName1,$locationCR,$serNameCR,$serNameDummyPR);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:ApplicationDiscovery_VM(),Function: login ,execution got failed.kindly check the log for more details");
+		_fail("ApplicationDiscoveryOnAWS failed.So that stopping execution.");
+	}
+}
+
+
+function CG_Mapping_Multiple_AG() {
+	try {
+		CG_Mapping($DatastoreNamefromexcel);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:CG_Mapping_Multiple_AG(),Function: login ,execution got failed.kindly check the log for more details");
+		_fail("ApplicationDiscoveryOnAWS failed.So that stopping execution.");
+	}
+}
+
+function Create_Site_CR() {
+	try {
+		Create_site($locationCR, $incharge, $addressCR);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:ApplicationDiscovery_VM(),Function: login ,execution got failed.kindly check the log for more details");
+		_fail("ApplicationDiscoveryOnAWS failed.So that stopping execution.");
+	}
+}

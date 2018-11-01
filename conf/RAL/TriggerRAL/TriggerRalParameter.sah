@@ -1,0 +1,296 @@
+
+if($BrowserLang == "N"){
+	var  $l_TriggerRal = _readExcelFile("../../../conf/RAL/TriggerRAL/TriggerRalInput.xls","Trigger");
+}
+else if($BrowserLang == "Y-JA"){
+	var  $l_TriggerRal = _readExcelFile("../../../conf/RAL/TriggerRAL/TriggerRalInput.xls","Trigger_JA");
+	}
+
+else if($BrowserLang == "Y-EN"){
+	var  $l_TriggerRal = _readExcelFile("../../../conf/RAL/TriggerRAL/TriggerRalInput.xls","Trigger_EN");
+	}
+
+
+
+
+	//The below parameter is used for Linux OS
+	var $lnxSerIP = $l_TriggerRal[3][3];
+	var $lnxSerUserNm = $l_TriggerRal[4][3];
+	var $lnxSerPassWord = $l_TriggerRal[5][3];
+	
+	var $groupName = $l_TriggerRal[21][3];
+	var $lnxDirPath = $l_TriggerRal[7][3];
+	var $username= $l_TriggerRal[8][3];
+	var $password= $l_TriggerRal[9][3];
+	
+	var $WorkflowName = $l_TriggerRal[3][6];
+	var $lnxStCompNm=$l_TriggerRal[5][6];
+	var $lnxDynCompNm=$l_TriggerRal[6][6];
+	
+	
+	var $lnxCustNmKV=$l_TriggerRal[7][6];
+	var $lnxCustKVal=$l_TriggerRal[8][6];
+
+	var $lnxCustDynKVal=$l_TriggerRal[9][6];
+
+
+	var $lnxCusTypNm=$l_TriggerRal[10][6];
+	var $lnxCusTypStVal=$l_TriggerRal[11][6];
+	var $lnxCusTypDynKVal=$l_TriggerRal[12][6];
+    
+	var $lnxSite = "SCC_Site";
+	var $os_lnx = "Linux";
+	var $lnxCompNm = $os_lnx + "_" +$lnxSerIP; 
+    
+     var $osType_Linux= $l_TriggerRal[22][3];
+	var $lnxCmd=$l_TriggerRal[6][3];
+     var $compName1=0;
+	
+
+var $ralString = "work";
+var $ralCategory = "Workflow";
+var $ralName = "TriggerBCO";
+var $WorkflowName1="Wf1";
+var $WorkflowName2="Wf2";
+var $WorkflowName3="Wf3";
+
+var $WorkflowNameTwo="dr1";
+var $ralNameIE="TEAction";
+
+
+ //This  code is  used for  Linux
+//This user Input required to create the Site
+if($BrowserLang == "N"){
+	var $locationPR = "PR"; // PR Site Location
+	var $incharge = "drmadmin"; // Site Incharge
+	var $addressPR = "Mumbai"; // PR site Address
+	var $locationDR = "DR"; // DR Site Location
+	var $addressDR = "Bangalore";// DR site Address
+}
+else {
+	var $locationPR = "一次"; // PR Site Location
+    var $incharge = "drmadmin"; // Site Incharge
+    var $addressPR = "ムンバイ"; // PR site Address
+    var $locationDR = "リモート"; // DR Site Location
+    var $addressDR = "バンガロール";// DR site Address
+	}
+
+
+//This user Input required to create the Component for Local or remote
+var $agentType = "Remote"; // This if for agent type always enter as e.g. Local or Remote.Note Here first letter is upper case and remaining lower case.
+var $compIPPR = $l_TriggerRal[12][3]; // PR Componenet ID
+var $compIPDR = $l_TriggerRal[13][3]; // DR Componenet ID
+var $remoteUserNameValPR =$l_TriggerRal[14][3]; // PR Machine user name. this information required for both local and remote
+var $remotePwdValPR = $l_TriggerRal[15][3]; // PR Machine Pwd name. this information required for both local and remote
+var $remoteUserNameValDR = $l_TriggerRal[16][3];// DR Machine user name. this information required for both local and remote
+var $remotePwdValDR = $l_TriggerRal[17][3];// PR Machine Pwd name. this information required for both local and remote
+var $compNamePR = $l_TriggerRal[18][3]; // PR Componenet Name
+var $compNameDR = $l_TriggerRal[19][3]; // DR Componenet Name
+
+
+
+//This user Input required to create the dataset
+var $systemTypeDataset = "Application SubSystem";
+var $datasetNamePR =$l_TriggerRal[14][6]; // PR dataset name
+var $datasetNameDR = $l_TriggerRal[15][6]; // DR dataset name
+var $fileNameTextPathPR = $l_TriggerRal[16][6];
+var $fileNameTextPathDR = $l_TriggerRal[17][6];
+
+
+//This user Input required to create the protection Scheme
+var $sernamePR = $l_TriggerRal[19][6]; // PR Protection Scheme name
+var $sernameDR = $l_TriggerRal[20][6]; // DR Protection Scheme name
+var $mgmtHostPFRPR = $compNamePR + " (" + $compIPPR + ")"; 
+var $mgmtHostPFRDR = $compNameDR + " (" + $compIPDR + ")";
+
+//This user Input required to create the Group
+var $groupName = $l_TriggerRal[21][3];// Group name
+var $systemType= $l_TriggerRal[23][3];
+
+if($BrowserLang == "N"){
+var $groupDescription = "APP PFR"; // Group description
+}
+else{
+var $groupDescription = "応用"; // Group description
+}
+
+// *********************************************************************************************************************************************
+// Important Note : Please don't modify/edit any below variable or its value.
+// If you made any changes of variable and its value, script will not execute.
+// *********************************************************************************************************************************************
+
+var $primaryPanacesServer = $drmServer; // this is Primary DRM server
+var $panacesAgentNodeAddressPR = $compIPPR;
+var $panacesAgentNodeAddressDR = $compIPDR;
+var $compsitePR = $locationPR;
+var $compsiteDR = $locationDR;
+var $primaryComponents = $compNamePR;
+var $remoteComponents = $compNameDR;
+var $primaryDatasets = $datasetNamePR;
+var $remoteDatasets = $datasetNameDR;
+var $primaryProtections = $sernamePR;
+var $remoteProtections = $sernameDR;
+var $mgmtHostDGPR =$compNamePR+' ('+$compIPPR+')';
+var $mgmtHostDGDR = $compNameDR+' ('+$compIPDR+')';
+var $dependentComponentNamePR = $compNamePR;
+var $dependentComponentNameDR = $compNameDR;
+var $incharge = "drmadmin";
+var $desiredRpo = "300";
+var $rpoCompute = "300";
+var $systemTypeProtection = "PFR"; // Protection Scheme type
+if($BrowserLang == "N"){
+	var $SolutionSignature = "Application SubSystem with PFR";// Solution type
+}
+else{
+	var $SolutionSignature= "PFR付きApplication Subsystem";
+}
+var $systemTypeDataset = "Application SubSystem"; // database subsystem
+var $datasetType = "Application SubSystem";// database Type
+var $drmDbUserName = "automation"; // DRM server database user id
+var $drmDbPassword = "sanovi";// DRM server database password
+var $APP_PFRAgentChk = "1";
+//var $localAgentPathPR =  $RemoteAgentPathPR;
+//var $localAgentPathDR = $RemoteAgentPathDR;
+
+
+
+
+//This  code  is  used  for Solaries
+
+
+
+
+//This user Input required to Login the DRM server
+/*var $username = $l_Sybase_PFR[3][2]; // DRM server GUI user name e.g. "swati"
+var $password = $l_Sybase_PFR[4][2]; // DRM server GUI pwd
+
+
+//This user Input required to install the local agents
+var $localAgentPathPR = $l_Sybase_PFR[28][2]; // this is the Path where user has install the agent on PR 
+var $localAgentPathDR = $l_Sybase_PFR[29][2]; // this is the Path where user has install the agent on DR 
+
+var $RemoteAgentPathPR = $l_Sybase_PFR[28][5];
+var $RemoteAgentPathDR = $l_Sybase_PFR[29][5];
+
+//Remote Agent Installation
+var $agentBuildPR =$l_Sybase_PFR[28][2];
+var $agentBuildDR=$l_Sybase_PFR[29][2];
+var $PfrStart="1";
+var $PfrServicePath=$l_Sybase_PFR[33][5];*/
+
+/*
+//This user Input required to create the Site
+var $locationPR = "PR"; // PR Site Location
+var $incharge = "drmadmin"; // Site Incharge
+var $addressPR = "Mumbai"; // PR site Address
+var $locationDR = "DR"; // DR Site Location
+var $addressDR = "Bangalore";// DR site Address
+
+//This user Input required to create the Component for Local or remote
+//var $agentType = "Local"; // This if for agent type always enter as e.g. Local or Remote.Note Here first letter is upper case and remaining lower case.
+var $agentType = "Remote"; // This if for agent type always enter as e.g. Local or Remote.Note Here first letter is upper case and remaining lower case.
+var $compIPPR = $l_TriggerRal[27][3]; // PR Componenet ID
+var $compIPDR = $l_TriggerRal[28][3]; // DR Componenet ID
+var $remoteUserNameValPR = $l_TriggerRal[29][3]; // PR Machine user name. this information required for both local and remote
+var $remotePwdValPR = $l_TriggerRal[30][3]; // PR Machine Pwd name. this information required for both local and remote
+var $remoteUserNameValDR = $l_TriggerRal[31][3];// DR Machine user name. this information required for both local and remote
+var $remotePwdValDR = $l_TriggerRal[32][3];// PR Machine Pwd name. this information required for both local and remote
+var $compNamePR = $l_TriggerRal[33][3]; // PR Componenet Name
+var $compNameDR = $l_TriggerRal[34][3]; // DR Componenet Name
+
+
+//This user Input required to create the dataset
+var $systemTypeDataset = "Sybase";
+var $datasetNamePR = $l_TriggerRal[27][6]; // PR dataset name
+var $datasetNameDR = $l_TriggerRal[28][6]; // DR dataset name
+var $serverNamePR = $l_TriggerRal[29][6];
+var $serverNameDR = $l_TriggerRal[30][6];
+var $usernamedbPR=$l_TriggerRal[31][6];
+var $usernamedbDR=$l_TriggerRal[32][6];
+var	$passwordPR=$l_TriggerRal[33][6];
+var	$passwordDR=$l_TriggerRal[34][6];
+var	$portPR=$l_TriggerRal[35][6];
+var	$portDR=$l_TriggerRal[36][6];
+var $complevelPR=$l_TriggerRal[37][6];
+var $complevelDR=$l_TriggerRal[38][6];
+var $pathPR=$l_TriggerRal[39][6];
+var $pathDR=$l_TriggerRal[40][6];
+var $database=$l_TriggerRal[41][6];
+var $dataDevNamePR=$l_TriggerRal[42][6];
+var $dataDevNameDR=$l_TriggerRal[43][6];
+var $dataDevSizePR=$l_TriggerRal[44][6];
+var $dataDevSizeDR=$l_TriggerRal[45][6];
+var $logDevNamePR=$l_TriggerRal[46][6];
+var $logDevNameDR=$l_TriggerRal[47][6];
+var $logDevSizePR=$l_TriggerRal[48][6];
+var $logDevSizeDR=$l_TriggerRal[49][6];
+var $hostname="hostname";
+	
+
+//This user Input required to create the protection Scheme
+var $sernamePR = $l_TriggerRal[37][3]; // PR Protection Scheme name
+var $sernameDR = $l_TriggerRal[38][3]; // DR Protection Scheme name
+var $mgmtHostPFRPR = $compNamePR + " (" + $compIPPR + ")"; 
+var $mgmtHostPFRDR = $compNameDR + " (" + $compIPDR + ")"; 
+
+//This user Input required to create the Group
+var $groupName = $l_TriggerRal[41][3]; // Group name
+var $groupDescription = "Sybase PFR"; // Group description
+var $primaryDumPath=$l_TriggerRal[42][3];
+var $secondaryDumPath=$l_TriggerRal[43][3];
+var $primaryLogPath=$l_TriggerRal[44][3];
+var $secondaryLogPath=$l_TriggerRal[45][3];
+var $osType = $l_TriggerRal[46][3];
+var $systemType = $l_TriggerRal[47][3];
+
+
+//var $copy= "scp -r "+$primaryDumPath+"Sybase_PR_FULL_0_1386312869470.trn sybase@"+$compIPDR+":"+$secondaryDumPath;
+
+var $copy= "scp -r "+$primaryDumPath+"* root@"+$compIPDR+":"+$secondaryDumPath;
+
+// *********************************************************************************************************************************************
+// Important Note : Please don't modify/edit any below variable or its value.
+// If you made any changes of variable and its value, script will not execute.
+// *********************************************************************************************************************************************
+
+var $primaryPanacesServer = $drmServer; // this is Primary DRM server
+var $panacesAgentNodeAddressPR = $compIPPR;
+var $panacesAgentNodeAddressDR = $compIPDR;
+var $compsitePR = $locationPR;
+var $compsiteDR = $locationDR;
+var $primaryComponents = $compNamePR;
+var $remoteComponents = $compNameDR;
+var $primaryDatasets = $datasetNamePR;
+var $remoteDatasets = $datasetNameDR;
+var $primaryProtections = $sernamePR;
+var $remoteProtections = $sernameDR;
+var $mgmtHostDGPR =$compNamePR+' ('+$compIPPR+')';
+var $mgmtHostDGDR = $compNameDR+' ('+$compIPDR+')';
+var $dependentComponentNamePR = $compNamePR;
+var $dependentComponentNameDR = $compNameDR;
+
+var $userPR=$usernamedbPR;
+var $userDR=$usernamedbDR;
+var $WFPath = "samples\\Sybase\\SybaseLogPFR";
+var $fileSO="BCS-SybaseLogPFR-SO.xml";
+var $fileSB="BCS-SybaseLogPFR-SB.xml";
+var $incharge = "drmadmin";
+var $desiredRpo = "300";
+var $rpoCompute = "300";
+var $systemTypeProtection = "PFR"; // Protection Scheme type
+var $SolutionSignature = "Sybase Logs with PFR"; // Solution type
+var $systemTypeDataset = "Sybase"; // database subsystem
+var $datasetType = "Sybase";// database Type
+var $systemType = "Solaris";
+
+var $drmDbUserName = "automation"; // DRM server database user id
+var $drmDbPassword = "sanovi";// DRM server database password
+var $sybaseAgentChk="1";
+var $sybase_PFRAgentChk = "1";
+var $pfrAgentChk = "1";
+
+//This user Input required to update oracle Local Agent PanacesAgentsInstaller.properties
+//var $agentBuildPR = "/opt/";
+//var $agentBuildDR = "/opt/";
+//var $userinputresultjarsybasePR=$l_Sybase_PFR[32][2];
+//var $userinputresultjarsybaseDR=$l_Sybase_PFR[33][3];*/

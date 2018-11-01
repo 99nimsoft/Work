@@ -1,0 +1,3 @@
+DB2_HADR_Automation_LocalAgent_testcase.sah http://172.168.20.22:8080/PanacesGUI
+Oracle_DG_Automation_LocalAgent_testcase.sah http://172.168.20.22:8080/PanacesGUI
+APP_PFR_Automation_LocalAgent_TestCases.sah http://172.168.20.22:8080/PanacesGUI

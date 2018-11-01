@@ -1,0 +1,98 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains APP PFR Solution specific
+ ** AuthorName : 
+ ** Created Date : 
+ ***********************************************************************************************/
+
+var $Excel1=_getExcel($SAHI_HOME + "\\Library\\Solution_Signature\\DB2_HADR\\ObjectRepository\\DB2HADR_ObjectRepository.xls","Param");
+
+var $Excel=$Excel1.getData();
+
+if($BrowserLang == "N"){
+	
+	var $j = 2;
+}
+else if($BrowserLang == "Y-JA"){
+	
+	var $j = 3;
+	}
+
+else if($BrowserLang == "Y-EN"){
+		
+		var $j = 3;
+	}
+////////////////////Solution\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+var $Submit=$Excel[2][$j];
+var $License=$Excel[3][$j];
+var $Finish=$Excel[4][$j];
+var $DB2TakeoverDB2=$Excel[5][$j];
+var $ActionProperties=$Excel[6][$j];
+var $CurrentLog=$Excel[7][$j];
+var $Log=$Excel[8][$j];
+var $CurrentLogTimestamp=$Excel[9][$j];
+var $Timestamp=$Excel[10][$j];
+var $LastLogApplied=$Excel[11][$j];
+var $Applied=$Excel[12][$j];
+var $LogAppliedTimestamp=$Excel[13][$j];
+var $Timestamp=$Excel[14][$j];
+var $Manage=$Excel[15][$j];
+var $GroupsListView=$Excel[16][$j];
+var $GroupInformation=$Excel[17][$j];
+var $Monitor=$Excel[18][$j];
+var $GroupSnapshot=$Excel[19][$j];
+var $NotsupportedinSwitchovermode=$Excel[20][$j];
+var $DRDataConsistentupto=$Excel[21][$j];
+var $Monitor=$Excel[22][$j];
+var $GroupSnapshot=$Excel[23][$j];
+var $Monitor=$Excel[24][$j];
+var $GroupSnapshot=$Excel[25][$j];
+var $actualRtoDB=$Excel[26][$j];
+var $NormalInactive=$Excel[27][$j];
+var $GroupSnapshot=$Excel[28][$j];
+var $ContinuityOperation=$Excel[29][$j];
+var $Replication=$Excel[30][$j];
+var $CustomactionforProductionPrecheck=$Excel[31][$j];
+var $CustomactionforRemotePrecheck=$Excel[32][$j];
+var $CustomactionforFailOver=$Excel[33][$j];
+var $DB2Takeover=$Excel[34][$j];
+var $Subsystems=$Excel[35][$j];
+var $Datasets=$Excel[36][$j];
+var $Go=$Excel[37][$j];
+var $RegisterAgent=$Excel[38][$j];
+var $RegisterAgent=$Excel[39][$j];
+var $RegisterAgents=$Excel[40][$j];
+var $Subsystems=$Excel[41][$j];
+var $Datasets=$Excel[42][$j];
+var $systemType=$Excel[43][$j];
+var $Go=$Excel[44][$j];
+var $CONNECTED=$Excel[45][$j];
+var $TestCredentials=$Excel[46][$j];
+var $Success=$Excel[47][$j];
+var $Discover=$Excel[48][$j];
+var $Save=$Excel[49][$j];
+var $Subsystems=$Excel[50][$j];
+var $Datasets=$Excel[51][$j];
+var $Datafiles=$Excel[52][$j];
+var $Redologs=$Excel[53][$j];
+var $Controlfiles=$Excel[54][$j];
+var $ArchiveLogsLocation=$Excel[55][$j];
+var $Subsystems=$Excel[56][$j];
+var $Datasets=$Excel[57][$j];
+var $DatabaseConnectionEstablished=$Excel[58][$j];
+var $DatabaseConnectionEstablished=$Excel[59][$j];
+var $DatasetStatusDB=$Excel[60][$j];
+var $Subsystems=$Excel[61][$j];
+var $ProtectionSchemes=$Excel[62][$j];
+var $Protectionschemealreadyexists=$Excel[63][$j];
+var $systemType=$Excel[64][$j];
+var $Go=$Excel[65][$j];
+var $RegisterAgent=$Excel[66][$j];
+var $RegisterAgent=$Excel[67][$j];
+var $CONNECTED_PS=$Excel[68][$j];
+var $Status=$Excel[69][$j];
+var $Save=$Excel[70][$j];
+var $Subsystems=$Excel[71][$j];
+var $ProtectionSchemes=$Excel[72][$j];

@@ -1,0 +1,108 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the Common DRM GUI Navigation web object parameters
+ ** AuthorName : Anita Gaded
+ ** Created Date : FEB 2017
+ ***********************************************************************************************/
+
+var $l_guiNavigation=_readExcelFile($SAHI_HOME + "\\Library\\Common\\CommonRepository\\CommonDRM_ObjRepository.xls","GUINavigation");
+
+//This user Input required to Select language
+var $g_selLang = $l_guiNavigation[1][2];
+var $g_selLang = $l_drmLogin[1][2];
+if($BrowserLang == "N"){
+	_setGlobal("Selected language is ","english");
+	var $colno = 2;
+}
+else if($BrowserLang == "Y-JA"){
+	_setGlobal("Selected language is ","japanese");
+	var $colno = 3;
+	}
+
+else if($BrowserLang == "Y-EN"){
+		_setGlobal("Selected language is ","japanese");
+		var $colno = 3;
+	}
+
+var $obj_admin = $l_guiNavigation[4][$colno]; 
+var $obj_monitor = $l_guiNavigation[5][$colno]; 
+var $obj_recoverygroups = $l_guiNavigation[6][$colno];
+var $obj_viewall = $l_guiNavigation[7][$colno];
+
+var $obj_viewallworkflows = $l_guiNavigation[8][$colno];
+var $obj_replication = $l_guiNavigation[9][$colno];
+var $obj_bpworkflows = $l_guiNavigation[10][$colno];
+
+var $obj_summary = $l_guiNavigation[11][$colno];
+var $obj_refreshdetails = $l_guiNavigation[12][$colno];
+
+var $obj_drill = $l_guiNavigation[13][$colno];
+var $obj_executeworkflow = $l_guiNavigation[14][$colno];
+var $obj_execute = $l_guiNavigation[15][$colno];
+
+var $obj_Groups_link= $l_guiNavigation[16][$colno];
+var $obj_rpo = $l_guiNavigation[17][$colno];
+var $obj_rto = $l_guiNavigation[18][$colno];
+
+var $obj_close = $l_guiNavigation[19][$colno];
+var $obj_savenow = $l_guiNavigation[20][$colno];
+
+var $obj_editworkflow = $l_guiNavigation[21][$colno];
+var $obj_discover = $l_guiNavigation[22][$colno];
+
+var $obj_mgmtservice = $l_guiNavigation[23][$colno];
+var $obj_addmgmtservice = $l_guiNavigation[24][$colno];
+
+var $obj_GuiNav_Next = $l_guiNavigation[25][$colno];
+var $obj_GuiNav_PublishWF = $l_guiNavigation[26][$colno];
+
+var $obj_GuiNav_Manage = $l_guiNavigation[27][$colno];
+var $obj_GuiNav_BPWorkflows = $l_guiNavigation[28][$colno];
+var $obj_GuiNav_Reports = $l_guiNavigation[29][$colno];
+var $obj_GuiNav_GotoBackup = $l_guiNavigation[30][$colno];
+var $obj_GuiNav_Validation = $l_guiNavigation[31][$colno];
+var $obj_GoToUser = $l_guiNavigation[32][$colno];
+var $obj_CreateNewUser = $l_guiNavigation[33][$colno];
+var $obj_EventsListView = $l_guiNavigation[34][$colno];
+var $obj_AgDrills = $l_guiNavigation[35][$colno];
+var $obj_RGDrills = $l_guiNavigation[36][$colno];
+var $obj_Drill_Listing = $l_guiNavigation[37][$colno];
+var $Active = $l_guiNavigation[38][$colno];
+var $obj_DiscGrpsViewAll = $l_guiNavigation[39][$colno];
+var $BusinessProcess = $l_guiNavigation[40][$colno];
+var $obj_WorkFlowEx = $l_guiNavigation[41][$colno];
+var $obj_GotoAgent= $l_guiNavigation[42][$colno];
+var $obj_admin_slash=$l_guiNavigation[43][$colno];
+var $obj_sitectl=$l_guiNavigation[44][$colno];
+var $obj_viewall_slash=$l_guiNavigation[45][$colno];
+var  $obj_filemod_aletr=$l_guiNavigation[46][$colno];
+var $obj_yes=$l_guiNavigation[47][$colno];
+var $obj_gotologs=$l_guiNavigation[48][$colno];
+var  $obj_gotonotfct=$l_guiNavigation[49][$colno];
+var $obj_notification=$l_guiNavigation[50][$colno];
+var  $obj_agents=$l_guiNavigation[51][$colno];
+var  $obj_resyorclog=$l_guiNavigation[52][$colno];
+var  $obj_bckmgr=$l_guiNavigation[53][$colno];
+var  $obj_help=$l_guiNavigation[54][$colno];
+var  $obj_abtresyorc=$l_guiNavigation[55][$colno];
+var  $obj_hlpabt=$l_guiNavigation[56][$colno];
+var  $obj_onlinehlp=$l_guiNavigation[57][$colno];
+var  $obj_veronlinehelp=$l_guiNavigation[58][$colno];
+var  $obj_qckstr=$l_guiNavigation[59][$colno];
+var $obj_onhlpqckstart=$l_guiNavigation[60][$colno];
+var $obj_debuglevel=$l_guiNavigation[61][$colno];
+var  $obj_one=$l_guiNavigation[62][$colno];
+var  $obj_two=$l_guiNavigation[63][$colno];
+var $Subsystems=$l_guiNavigation[64][$colno];
+var $ProtectionSchemes=$l_guiNavigation[65][$colno];
+var $Protectionschemealreadyexists=$l_guiNavigation[66][$colno];
+var $Go=$l_guiNavigation[67][$colno];
+var $RegisterAgent=$l_guiNavigation[68][$colno];
+var $CONNECTED=$l_guiNavigation[69][$colno];
+var $Status=$l_guiNavigation[70][$colno];
+var $AgentisCONNECTED=$l_guiNavigation[71][$colno];
+var $Save=$l_guiNavigation[72][$colno];
+var $ACTIVEHP3PAR=$l_guiNavigation[73][$colno];
+var $INACTIVEHP3PAR=$l_guiNavigation[74][$colno];
+var $UNKNOWNHP3PAR=$l_guiNavigation[75][$colno];

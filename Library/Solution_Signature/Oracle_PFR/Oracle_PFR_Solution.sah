@@ -1,0 +1,1218 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are the part of  Oracle PFR solution screen wise fetching and comparing data from Db and GUI. 
+ ** @AuthorName : Govinda Mengji
+ ** Created Date : April 2013
+ ************************************************************************/
+
+/**
+* Function is for Functional Group creation for Oracle_PFR solution.
+*@param :  $groupName, $groupDescription, $SolutionSignature, $primaryComponents, $remoteComponents,
+*          $primaryDatasets, $remoteDatasets, $primaryProtections, $remoteProtections
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function Oracle_FG_PFR_Group_Creation() {
+	$groupCreation = Create_FG($groupName, $groupDescription, $SolutionSignature, $primaryComponents, $remoteComponents, $primaryDatasets, $remoteDatasets, $primaryProtections, $remoteProtections);
+	if ($groupCreation.get($flag) == 0) {
+		_log($Samegroupnamealreadyexists);
+	} else {
+		_wait(900000, _button($Submit));
+		_click(_button($Submit)); 
+		_click(_link($License));
+		_click(_checkbox($Recovery));
+		_click(_checkbox($Test));
+		_wait(1000);
+		_click(_button("licensebutton"));
+		_wait(1000);
+		_click(_link($RPORTO));
+		_setValue(_textbox("desrpo1"), $desiredRpo);
+		_setValue(_textbox("rpoint1"), $rpoCompute);
+		_click(_button($Save));
+		_click(_button($Finish));
+		_wait(5000);
+		navigateToGroups();
+		if (_exists(_link($groupName))) {
+			_assertExists("Group created succesfully");
+			navigateToGroups();
+			_click(_link($groupName));
+			_click(_link($GroupConfiguration));
+			_click(_link($RPORTO));
+			_setValue(_textbox("rpoint1"), "100");
+			_setValue(_textbox("dataRpoint1"), "100");
+			_click(_link($Groups));
+		} else {
+			_fail($GroupnotcreatedsuccesfullySothatstoppingexecution);
+		}
+	}
+}// End Of Oracle_FG_PFR_Group_Creation
+
+/**
+* Function is for Post Group Creation Discovery > Groups > Solution Details > Show Advanced Configuration Post SO.
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function Post_Group_Creation_Post_SO(){
+	var $archivePathPR = get_archive_path_PR($ArchiveLogsLocationPR);
+	var $archivePathDR = get_archive_path_DR($ArchiveLogsLocationDR);
+	Post_Group_Creation_Details($groupName,$archivePathDR,$compIPDR, $remoteUserNameValDR, $remotePwdValDR,$archivePathPR,$compIPPR, $remoteUserNameValPR, $remotePwdValPR);
+}
+
+/**
+* Function is for Post Group Creation Discovery > Groups > Solution Details > Show Advanced Configuration before SO.
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+
+function Post_Group_Creation(){
+	var $archivePathPR = get_archive_path_PR($ArchiveLogsLocationPR);
+	var $archivePathDR = get_archive_path_DR($ArchiveLogsLocationDR);
+	Post_Group_Creation_Details($groupName,$archivePathPR,$compIPPR, $remoteUserNameValPR, $remotePwdValPR,$archivePathDR,$compIPDR, $remoteUserNameValDR, $remotePwdValDR);
+}
+
+/**
+* Function is for Post Group Creation Discovery > Groups > Solution Details > Show Advanced Configuration.
+*@param : $groupName,$archivePathPR,$compIPPR, $remoteUserNameValPR, $remotePwdValPR,$archivePathDR,$compIPDR, $remoteUserNameValDR, $remotePwdValDR
+*@return : null
+*@Author: Govinda 
+*
+*/
+function Post_Group_Creation_Details($groupName,$archivePathPR,$compIPPR, $remoteUserNameValPR, $remotePwdValPR,$archivePathDR,$compIPDR, $remoteUserNameValDR, $remotePwdValDR){
+	navigateToGroups();
+	_click(_link($groupName));
+	_click(_link($SolutionDetails));
+	_click(_link($ShowAdvancedConfiguration));
+	
+	var $archivePathPRGui=_getCellText(_textbox($PrimaryDevice0));
+	_assertExists("Archive Path PR GUI:",$archivePathPRGui);
+	_assertEqual($archivePathPR,$archivePathPRGui,"Comparing Archive path of PR from DB and GUI");
+	
+	// Disk Space
+	var $diskSpacePRGui= _getCellText(_cell(1, _near(_strong($CurrentDiskUtilization))));
+	_assertExists("Disk Space in PR GUI",$diskSpacePRGui);
+	
+	var $diskSpace=Disk_Space_utilization($compIPPR, $remoteUserNameValPR, $remotePwdValPR);
+	var $diskSpaceDB=$diskSpace.get($DiskSpace);
+	_assertExists("Disk Space PR DB",$diskSpaceDB);
+	
+	// Secondary
+	var $archivePathDRGui= _getCellText(_textbox($SecondaryDevice1));
+	_assertExists("Archive Path DR GUI:",$archivePathDRGui);
+	_assertEqual($archivePathDR,$archivePathDRGui,"Comparing Archive path of DR from DB and GUI");
+	
+	// Disk Space
+	var $diskSpaceDRGui= _getCellText(_cell(1, _near(_strong($CurrentDiskUtilization1))));
+	_assertExists("Disk Space in DR GUI",$diskSpaceDRGui);
+	
+	var $diskSpace=Disk_Space_utilization($compIPDR, $remoteUserNameValDR, $remotePwdValDR);
+	var $diskSpaceDB=$diskSpace.get($DiskSpace);
+	_assertExists("Disk Space DR DB",$diskSpaceDB);
+	// _assertEqual($diskSpace.get("Disk Space"),$diskSpaceDRGui,"Disk Space is not correct in GUI and Db");
+	
+	// Threshold
+
+	var $thresholdPRGui= _getCellText(_textbox($PrimarySize0));
+	_assertExists("Threshhold at GUI",$thresholdPRGui);
+	
+	var $thresholdDRGui=_getCellText(_textbox($SecondarySize1));
+	_assertExists("Threshhold at GUI",$thresholdDRGui);
+		
+}
+/**
+* Function is for Post Group Creation Discovery to find Disk Utilization
+*@param : $compIPPR, $remoteUserNameValPR, $remotePwdValPR
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function Disk_Space_utilization($compIP, $remoteUserNameVal, $remotePwdVal){
+	
+	var $archivePathPRGui=_getCellText(_textbox($PrimaryDevice0));
+	_assertExists("Archive Path PR GUI:",$archivePathPRGui);
+	
+	var $path=$archivePathPRGui.split("/");
+    var $Pathr=$path[1];
+	
+	var $sshCommand = 'df -h|grep'+" "+ $Pathr ;
+	var $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	 $diskSpaceDB = $status.split(" ");	
+	var $diskSpace=new java.util.Properties();
+	$diskSpace.put("Disk Space", $diskSpaceDB[19]);
+	
+	return $diskSpace;
+}	// End Of Post Group Creation
+
+
+/**
+* Function is for Verification of replication status in replication page after SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*@Modifier: Padmavathi
+*
+*/
+function Oracle_PFR_Replication_Post_SO() {
+	PFR_Replication_status($groupName,$compIPDR,$remoteUserNameValDR,$remotePwdValDR,"SO");
+	/*Oracle_PFR_Replication_Status($userDR, $pwdDR, $internalLogon, $oracleListenerIPDR, $dbSidSelect, $compIPDR, $remoteUserNameValDR, $remotePwdValDR, $userPR, $pwdPR, $internalLogon, $oracleListenerIPPR, $dbSidSelect,
+			$compIPPR, $remoteUserNameValPR, $remotePwdValPR);*/
+}
+
+/**
+* Function is for Verification of replication status in replication page before SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*@Modifier: Padmavathi
+*
+*/
+function Oracle_PFR_Replication() {
+	PFR_Replication_status($groupName,$compIPPR,$remoteUserNameValPR,$remotePwdValPR,"NormalCopy");
+	/*Oracle_PFR_Replication_Status($userPR, $pwdPR, $internalLogon, $oracleListenerIPPR, $dbSidSelect, $compIPPR, $remoteUserNameValPR, $remotePwdValPR, $userDR, $pwdDR, $internalLogon, $oracleListenerIPDR, $dbSidSelect,
+			$compIPDR, $remoteUserNameValDR, $remotePwdValDR);*/
+	}
+
+
+/**
+* Function is for Verification of replication status in replication page .
+*@param : $userPR, $pwdPR, $internalLogon, $oracleListenerIPPR, $dbSidSelect, $compIP,
+*         $remoteUserNameVal, $remotePwdVal, $userDR, $pwdDR, $internalLogon, $oracleListenerIPDR, 
+*         $dbSidSelect,$compIP, $remoteUserNameVal, $remotePwdVal
+*@return : null
+*@Author: Govinda Mengji
+*/
+function Oracle_PFR_Replication_Status($userPR, $pwdPR, $internalLogon, $oracleListenerIPPR, $dbSidSelect, $compIP, $remoteUserNameVal, $remotePwdVal, $userDR, $pwdDR, $internalLogon, $oracleListenerIPDR, $dbSidSelect,
+		$compIP, $remoteUserNameVal, $remotePwdVal) {
+	/*_click(_link($Manage));
+	_click(_link($GroupsListView));
+	_click(_link($groupName));
+	_click(_link($ManageDRSolution));
+	var $replicationStatus = _getCellText(_cell(1, _near(_cell($ReplicationStatus))));
+	_assertExists("Replication Status", $replicationStatus);
+	var $i = 0;
+	while ($i < 10) {
+		_log($i);
+		if ($replicationStatus == "Synchronized") {
+			break;
+		} else {
+			_wait(30000);
+			Popup_Handler();
+			_click(_link("Manage"));
+			_click(_link($GroupsListView));
+			_click(_link($groupName));
+			_click(_link($ManageDRSolution));
+			var $replicationStatus = _getCellText(_cell(1, _near(_cell($ReplicationStatus))));
+			_assertExists("Replication Status", $replicationStatus);
+		}
+		$i = $i + 1;
+	} // while ended
+	if ($replicationStatus != "Synchronized") {
+		_assertExists($Replicationstatusisnotvalidafter20minspleasecheckthelogs);
+	}
+	
+	// Getting value of Pair name from GUI
+	_click(_link($Monitor));
+	_click(_link($groupName));
+	_click(_link($Replication));
+
+	var $protectionGUI=_getCellText(_cell(1,_near(_cell($Protection))));
+	_assertExists("Protection", $protectionGUI);
+	
+	var $replicationStatusGUI=_getCellText(_cell(1,_near(_cell($ReplicationStatus))));
+	_assertExists("Protection", $replicationStatusGUI);
+	
+	var $primaryRemoteServicesGUI=_getCellText(_cell(1,_near(_cell($PrimaryRemoteServices))));
+	_assertExists("Protection", $primaryRemoteServicesGUI);*/
+	
+		
+}
+// Replication Status for LOCAL and REMOTE
+
+/**
+* Function is for get of replication status in replication page for Local agents
+*@param : $compIP, $remoteUserNameVal, $remotePwdVal
+*@return : $replStatus
+*@Author: Govinda Mengji
+*
+*/
+
+function Get_Oracle_PFR_Local_Agent_status($compIP, $remoteUserNameVal, $remotePwdVal) {
+	var $sshCommand = '../.' + $localAgentPath + "DataGuardAgent.sh status";
+	var $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+
+	var $action = $status.get("output");
+	var $actionStatus1 = $action.toString();
+	var $actionStatus = $actionStatus1.split(",");
+	_assertExists("actionStatus is:", $actionStatus[1]);
+	if ($actionStatus[1] == "DataGuardAgent is running.") {
+		var $replicationStatus = "ACTIVE";
+	} else if ($actionStatus == " There is no DataGuardAgent running") {
+		$replicationStatus = "UNKNOWN";
+	} else {
+		$replicationStatus = "INACTIVE";
+	}
+	_assertExists("Replication Status DB:", $replicationStatus);
+	_wait(1000);
+	var $replStatus = new java.util.Properties();
+	$replStatus.put("replicationStatus", $replicationStatus);
+	return $replStatus;
+}
+
+/**
+* Function is for get of replication status in replication page for Remote agents
+*@param : $compIP
+*@return : $replStatus
+*@Author: Govinda Mengji
+*
+*/
+function Get_Oracle_PFR_Remote_Agent_status($compIP) {
+	var $sshCommand = '../.' + $EAMSROOT + 'bin/' + "DataGuardAgent.sh status" + " " + $compIP + ' LINUXSERVER';
+	var $status = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	var $action = $status.get("output");
+	var $actionStatus = $action.toString();
+	var $actionTime = $actionStatus.split("[");
+	var $year = currentYear();
+	var $actionStatus1 = $actionTime[0].split($year);
+	var $actionStatus = $actionStatus1.pop();
+	_assertExists("actionStatus",$actionStatus);
+	if ($actionStatus == " DataGuardAgent running") {
+		var $replicationStatus = "ACTIVE";
+	} else if ($actionStatus == " There is no DataGuardAgent running") {
+		$replicationStatus = "UNKNOWN";
+	} else {
+		$replicationStatus = "INACTIVE";
+	}
+	_assertExists("Replication Status DB:", $replicationStatus);
+	_wait(1000);
+	var $replStatus = new java.util.Properties();
+	$replStatus.put("replicationStatus", $replicationStatus);
+	return $replStatus;
+}
+
+/**
+* Function is for get Role of PR and DR in Replication Screen
+*@param : $user, $pwd, $internalLogon, $oracleListenerIP, $dbSidSelect
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function Oracle_Replication_Role($user, $pwd, $internalLogon, $oracleListenerIP, $dbSidSelect) {
+	// PR CONNECTION
+	var $props = Get_User_Properties_for_OracleDb_Connection($userPR, $pwdPR, $internalLogon);
+	var $conn = Get_Oracle_Db_Connection_URL($oracleListenerIPPR, $dbSidSelect);
+	var $db = _getDB("oracle.jdbc.driver.OracleDriver", $conn, $props);
+
+	// Primary Role from DB
+	var $rolePRDB = $db.select("select DATABASE_ROLE from v$database");
+	_assertExists("Sync Status DB", $rolePRDB);
+
+	// Primary Role from GUI
+	var $rolePRGui = _getCellText(_cell(0, _under(_cell("Role", _under(_cell("Primary[1]"))))));
+	_assertExists("Sync Status GUI", $rolePRGui);
+
+	// Validating DB and GUI for Role PR
+	_assertEqual($rolePRDB, $rolePRGui, "Comparing Role from DB and GUI");
+
+	// DR CONNECTION
+	var $props = Get_User_Properties_for_OracleDb_Connection($userDR, $pwdDR, $internalLogon);
+	var $conn = Get_Oracle_Db_Connection_URL($oracleListenerIPDR, $dbSidSelect);
+	var $db = _getDB("oracle.jdbc.driver.OracleDriver", $conn, $props);
+
+	// Stand By Role from DB
+	var $roleDRDB = $db.select("select DATABASE_ROLE from v$database");
+	_assertExists("Sync Status DB", $roleDRDB);
+
+	// Stand By Role from GUI
+	var $roleDRGui = _getCellText(_cell(0, _under(_cell("Role", _under(_cell("Standby"))))));
+	_assertExists("Sync Status GUI", $roleDRGui);
+
+	// Validating DB and GUI for Role DR
+	_assertEqual($roleDRDB, $roleDRGui, "Comparing Role from DB and GUI");
+
+}// End Of Replication Screen
+
+/**
+* Function is for Verification of the all RPO detail from RPO/RTO screen for oracle PFR solution Post SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*@Modifier: Padmavathi
+*
+*/
+function Oracle_PFR_Rpo_Post_SO() {
+
+	Oracle_PFR_Rpo_Status($userDR, $pwdDR, $internalLogon, $oracleListenerIPDR, $dbSidSelect);
+	
+} // End of Oracle_Rpo_Post_SO()
+
+/**
+* Function is for Verification of the all RPO detail from RPO/RTO screen for oracle PFR solution before SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*@Modifier: Padmavathi
+*
+*/
+function Oracle_PFR_Rpo() {
+
+	Oracle_PFR_Rpo_Status($userPR, $pwdPR, $internalLogon, $oracleListenerIPPR, $dbSidSelect);
+
+}// End of Oracle_Rpo()
+
+/**
+* Function is for Verification of the all RPO detail from RPO/RTO screen for oracle PFR solution.
+*@param : $userPR, $pwdPR, $internalLogon, $oracleListenerIPPR, $dbSidSelect,$userDR, $pwdDR, $internalLogon, $oracleListenerIPDR, $dbSidSelect,
+*@return : $dbRecoveryPoint
+*@Author: Govinda Mengji
+*@Modifier: Padmavathi
+*
+*/
+function Oracle_PFR_Rpo_Status($user, $pwd, $internalLogon, $oracleListenerIP, $dbSidSelect) {
+	     navigateToRPO($groupName);
+	
+	// Transaction ID PR
+	var $transactionIDPRGui = _getText(_div(1, _near(_div($TransactionID))));
+	_assertExists("Transaction ID from GUI PR", $transactionIDPRGui);
+
+	// Transaction Time PR
+	var $transactionTimePRGui1 = _getText(_div(1,
+			_near(_div($TransactionTime))));
+	_assertExists("Transaction Time from GUI PR", $transactionTimePRGui1);
+
+	// Transaction ID DR
+	var $transactionIDDRGui = _getText(_div(1, _near(_div($TransactionID1))));
+	_assertExists("Transaction ID from GUI DR", $transactionIDDRGui);
+
+	// Transaction Time DR
+	var $transactionTimeDRGui = _getText(_div(1,
+			_near(_div($TransactionTime1))));
+	_assertExists("Transaction time from GUI DR", $transactionTimeDRGui);
+
+	// CONNECTION PR
+
+	// calling function to connect the PR machine from back end
+
+	var $props = Get_User_Properties_for_OracleDb_Connection($user, $pwd,
+			$internalLogon);
+	var $conn = Get_Oracle_Db_Connection_URL($oracleListenerIP, $dbSidSelect);
+	var $db = _getDB("oracle.jdbc.driver.OracleDriver", $conn, $props);
+	
+   // var $altetr = $db.update("alter system switch logfile");
+    
+	
+
+	var $tableCreationDBPR = $db
+			.update("CREATE TABLE RPOrpo (PersonID int,LastName varchar(255),FirstName varchar(255),Address varchar(255),City varchar(255))");
+
+	var $TimeStampdbPR = $db
+			.select("select to_char(completion_time,'DD Mon, YYYY HH24:MI:SS') MY_DATE, (blocks * block_size)  as ctime  from v$archived_log where sequence#=(select max(sequence#) from v$archived_log al, v$instance i, v$database d where al.thread# = i.thread#  and al.resetlogs_change# = d.resetlogs_change# and al.resetlogs_time = d.resetlogs_time)  and thread# = (select thread# from v$instance) order by thread#");
+	_assertExists("TimeStamp", $TimeStampdbPR);
+
+	var $date = $TimeStampdbPR;
+	var $dateString = $date.toString();
+	var $timeStampdb = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss")
+			.parse($dateString).getTime();
+	_assertExists("Time Stamp db", $timeStampdb);
+
+	$count = 0;
+	while ($count < 10) {
+		_wait(30000);
+		$count++;
+	}
+
+	// Transaction ID PR
+	var $transactionIDPR = _getText(_div(1, _near(_div($TransactionID))));
+	_assertExists("Transaction ID from GUI PR", $transactionIDPR);
+
+	// Transaction Time PR
+	var $transactionTimePR = _getText(_div(1, _near(_div($TransactionTime))));
+	_assertExists("Transaction Time from GUI PR", $transactionTimePR);
+
+	var $transactionTimepr = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($transactionTimePR).getTime();
+	_assertExists("Time Stamp db", $transactionTimepr);
+
+	// Transaction ID DR
+	var $transactionIDDR = _getText(_div(1, _near(_div($TransactionID1))));
+	_assertExists("Transaction ID from GUI DR", $transactionIDDR);
+
+	// Transaction Time DR
+	var $transactionTimeDR = _getText(_div(1,_near(_div($TransactionTime1))));
+	_assertExists("Transaction time from GUI DR", $transactionTimeDR);
+
+	var $transactionTimedr = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($transactionTimeDR).getTime();
+	_assertExists("Time Stamp db", $transactionTimedr);
+
+	_assertTrue($transactionIDPRGui <= $transactionIDPR,"TransactionID PR Equal in GUI and db");
+
+	_assertTrue( $timeStampdb  <= $transactionTimepr  , "TimeStamp PR is Equal in db and GUI");
+
+	_assertTrue($transactionIDDRGui <= $transactionIDDR,"TransactionID DR Equal in GUI and db");
+
+	// _assertTrue($timeStampdb<=$transactionTimedr,"TimeStamp DR is Equal in
+	// GUI and db");
+
+	var $droptable = $db.update("drop table RPOrpo");
+	// Calling Calulate_Rpo function to verify RPO calculation from gui
+	$dbRpo = Calulate_Rpo($transactionTimePR, $transactionTimeDR);
+	$recoveryPointinDB = $dbRpo.get("recoveryPointDB");
+
+	return $dbRpo;
+	return $recoveryPointinDB;
+	
+	}// End Of Oracle PFR RPO
+
+/**
+* Function is for Verification of the all RTO detail from RPO/RTO screen for oracle PFR solution
+*@param : null
+*@return : $dbRto
+*@Author: Govinda Mengji
+*@Modifier: Govinda Mengji
+*
+*/
+
+function Oracle_PFR_Rto() {
+	
+	   navigateToRTO($groupName);
+	
+	   //Custom action for Remote
+	   _mouseOver(_svg_rect(14));
+	   var $stepName1= RTO_Calculate();
+       
+	   //Chk DR Stdby
+	   _mouseOver(_svg_rect(15));
+		var $stepName2= RTO_Calculate();
+		
+		//Stop Repl
+		_mouseOver(_svg_rect(16));
+		var $stepName3= RTO_Calculate();
+		
+		//Apply Logs
+		_mouseOver(_svg_rect(17));
+		var $stepName4= RTO_Calculate();
+		
+		//Activate DR
+		_mouseOver(_svg_rect(18));
+		var $stepName5= RTO_Calculate();
+		
+		//Shutdown DR
+		_mouseOver(_svg_rect(19));
+		var $stepName6= RTO_Calculate();
+		
+		//Start DR
+		_mouseOver(_svg_rect(20));
+		var $stepName7= RTO_Calculate();
+	
+	
+
+var $expectedCompletionTime = Math.floor($stepName1 + $stepName2 + $stepName3 + $stepName4 + $stepName5 + $stepName6 + $stepName7);
+	_assertExists("Expected completion time", $expectedCompletionTime);
+	// Calling function Calculate_Rto from Group_manager.sah
+		$dbRto = Calculate_Rto($expectedCompletionTime);
+		return $dbRto;
+
+	} // End of APP_PFR RTO
+	
+	
+/**
+* Function is to Get archive path from PR
+*@param :null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function get_archive_path_PR(){
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($Datasets));
+	_wait(5000);
+	_click(_link($datasetNamePR, _near(_cell($datasetType))));
+	$archiveLogsLocationPR = _getCellText(_cell(1, _near(_cell($ArchiveLogsLocation))));
+	_assertExists("Archive Logs Location PR:", $archiveLogsLocationPR);
+	//_setGlobal($ArchiveLogsLocationPR, $archiveLogsLocationPR);
+	return $archiveLogsLocationPR;
+}
+
+
+/**
+* Function is to Get archive path from DR
+*@param :null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function get_archive_path_DR(){
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($Datasets));
+	_wait(5000);
+	_click(_link($datasetNameDR, _near(_cell($datasetType))));
+	$archiveLogsLocationDR = _getCellText(_cell(1, _near(_cell($ArchiveLogsLocation))));
+	_assertExists("Archive Logs Location DR:", $archiveLogsLocationDR);
+	//_setGlobal($ArchiveLogsLocationDR, $archiveLogsLocationDR);
+	return $archiveLogsLocationDR;
+}
+
+
+
+/**
+* Function is for Installation of Local agent in silent Mode at PR.
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function Oracle_PFR_Install_Local_Agent_SilentMode_PR() {
+	if($OS_Authentication == "Y"){
+		Install_Local_Agent_SilentMode_OS_Authentication($agentBuildPR, $compIPPR, $remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR);
+	}else{
+	Install_Local_Agent_SilentMode($agentBuildPR, $compIPPR, $remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR);
+	}	
+}
+
+/**
+* Function is for Installation of Local agent in silent Mode at DR.
+*@param :null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function Oracle_PFR_Install_Local_Agent_SilentMode_DR() {
+	if($OS_Authentication == "Y"){
+		Install_Local_Agent_SilentMode_OS_Authentication($agentBuildDR, $compIPDR, $remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR);
+	}else{
+	Install_Local_Agent_SilentMode($agentBuildDR, $compIPDR, $remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR);
+
+	}
+}
+
+/**
+* Function is for Import_NFC_Workflow_Oracle
+*@param :null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function Import_NFC_Workflow_Oracle() {
+	var $fileSwitchOver = $l_Sahi_UserData +"\\"+ $WFPath + "\\"+ $filePFRral;
+	_log($fileSwitchOver);
+	Import_WF($groupName, $fileSwitchOver, "Continuity...", "NormalFullCopy");
+} // End of Import_NFC_Workflow_Oracle()
+
+
+/**
+* Function is for Edit IntegrityCheck Workflow
+*@param :null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function Edit_NFC_Workflow()
+{
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($Datasets));
+	_click(_link($datasetNamePR));
+	 var $archivepathPR = _getCellText(_cell(1, _near(_cell($ArchiveLogsLocation))));
+	navigateToDiscovery();
+		_click(_link($Subsystems));
+		_click(_link($Datasets));
+		_click(_link($datasetNameDR));
+	var $archivepathDR = _getCellText(_cell(1, _near(_cell($ArchiveLogsLocation))));
+	 var $fileread= _userDataDir() +"\\Oracle\\OracleArLogPFR\\BCS-OracleArLogPFR-SetupPFRReplication.xml";
+	 _assertEqual("BCS-OracleArLogPFR-SetupPFRReplication","BCS-OracleArLogPFR-SetupPFRReplication");
+	  var $xmlStr =_readFile($fileread); 
+	  var $newXmlStr = $xmlStr.replace('<?xml version="1.0" encoding="UTF-8"?>',"");
+	  var $anotherXmlStr = $newXmlStr.replace(/ws:pfrOperationAction/g,"pfrOperationAction");
+	  var $xml = new XML($anotherXmlStr); 
+	  var $operation="create_fs";
+       $xml..action.(@id=="2").privateProperties.pfrOperationAction.(@operation=$operation);
+		// var $serviceName=$sernamePR;
+		// $xml..action.(@id=="2").privateProperties.pfrOperationAction.(@serviceName="PFR_PR_192");
+		var $sourceHost=$compIPPR;
+		$xml..action.(@id=="2").privateProperties.pfrOperationAction.fileset.sourceHost=$sourceHost;
+		var $targetHost=$compIPDR;
+		$xml..action.(@id=="2").privateProperties.pfrOperationAction.fileset.targetHost=$targetHost;
+		var $replicationInterval="300";
+		$xml..action.(@id=="2").privateProperties.pfrOperationAction.fileset.replicationInterval=$replicationInterval;
+		var $replicationState="ENABLED";
+		$xml..action.(@id=="2").privateProperties.pfrOperationAction.fileset.replicationState=$replicationState;
+		var $targetDirectory=$archivepathDR;
+		$xml..action.(@id=="2").privateProperties.pfrOperationAction.fileset.targetDirectory=$targetDirectory;
+		var $sourceDirectory=$archivepathPR;
+		$xml..action.(@id=="2").privateProperties.pfrOperationAction.fileset.sourceDirectory=$sourceDirectory;
+   	    var $anotherXmlStr = $xml.toString().replace(/pfrOperationAction/g,"ws:pfrOperationAction");
+	    _writeFile($anotherXmlStr.toString(),$fileread, true); 
+	
+	}
+
+/**
+*This function is used to start Integrity check Work Flow
+*@param :  null
+*@return : null
+*@Author : Govinda Mengji
+*/
+function  Start_IntegrityCheck() {
+      _click(_link($Test));
+      _click(_link($TestListView));
+      _click(_link($groupName));
+      _click(_link($StartTest5));
+      _click(_button($workflowrun));
+     _wait(20000, _cell($IntegrityCheckoperationcompletedSUCCESSFULLY));
+     _assertExists("IntegrityCheck operation completed SUCCESSFULLY");
+}
+
+/**
+*This function is used to Edit SO/SB Workflow
+*@param :  null
+*@return : null
+*@Author : Govinda Mengji
+*/
+
+function Edit_SO_Workflow(){
+	Edit_SOSB_Workflow($datasetNamePR,$fileSO);
+}
+
+function Edit_SB_Workflow(){
+	Edit_SOSB_Workflow($datasetNamePR,$fileSB);
+}
+
+function Edit_SOSB_Workflow($datasetName,$file)
+{
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($Datasets));
+	_click(_link($datasetName));
+	
+	// Control Files
+	var $controlFileGui1 = _getCellText(_cell(1, _near(_cell($Controlfiles))));
+	var $controlFileGui = $controlFileGui1.replace(/ /g, ",");
+	//_assertExists("Control files GUI", $controlFileGui);
+    var $control=$controlFileGui.toString();
+    var $controlGUI=$control.split(",");
+    var $controlGUI1=$controlGUI[0];
+    var $controlGUI2=$controlGUI[1];
+    var $controlGUI3=$controlGUI[2];
+    
+    var $redofilesGui1 = _getCellText(_cell(1, _near(_cell($Redologs))));
+	var $redofilesGui = $redofilesGui1.replace(/ /g, ",");
+	//_assertExists("Redo files GUI", $redofilesGui);
+	var $redo=$redofilesGui.toString();
+	var $redoGUI=$redo.split(",");
+	
+	var $redoGUI1=$redoGUI[0];
+	var $redo0=$redoGUI1.split("redo01.log");
+	var $redo1=$redo0[0];
+	
+	var $redoGUI2=$redoGUI[1];
+	var $redo2=$redoGUI2.split("redo02.log");
+	var $redo3=$redo2[0];
+	
+	var $redoGUI3=$redoGUI[2];
+	var $redo4=$redoGUI1.split("redo03.log");
+	var $redo5=$redo4[0];
+	  
+	
+	  var $fileRead= _userDataDir() + "\\Oracle\\OracleArLogPFR\\" + $file;
+	  var $xmlStr =_readFile($fileRead); 
+	  var $newXmlStr = $xmlStr.replace('<?xml version="1.0" encoding="UTF-8"?>',"");
+
+	  var $xml = new XML($newXmlStr); 
+	  
+	  //var $controlGUI1=$Control1;
+	  $xml..userDef..entry.(@key=="PANORA_CONTROL_FILE1").(@value=$controlGUI1);
+	  //var $controlGUI2=$Control2;
+	  $xml..userDef..entry.(@key=="PANORA_CONTROL_FILE2").(@value=$controlGUI2);
+	  //var $controlGUI3=$Control3;
+	  $xml..userDef..entry.(@key=="PANORA_CONTROL_FILE3").(@value=$controlGUI3);
+	    
+	  _writeFile($xml.toString(),$fileRead, true);
+	  
+	  
+	  var $fileReadSO = _userDataDir() +"\\Oracle\\OracleArLogPFR\\" + $file;
+	  var $xmlStr =_readFile($fileReadSO); 
+	  var $newXmlStr = $xmlStr.replace('<?xml version="1.0" encoding="UTF-8"?>',"");
+		
+	  var $anotherXmlStr = $newXmlStr.replace(/ws:pfrOperationAction/g,"pfrOperationAction");
+	  var $xml = new XML($anotherXmlStr); 
+	  
+	  $xml..action.(@id=="15").privateProperties.pfrOperationAction.fileset.targetDirectory="/tmp/";
+	  $xml..action.(@id=="15").privateProperties.pfrOperationAction.fileset.sourceDirectory="/tmp/backupctl.trace";
+	  
+	  $xml..action.(@id=="19").privateProperties.pfrOperationAction.fileset.targetDirectory[0]=$redo1;
+	  $xml..action.(@id=="19").privateProperties.pfrOperationAction.fileset.targetDirectory[1]=$redo3;
+	  $xml..action.(@id=="19").privateProperties.pfrOperationAction.fileset.targetDirectory[2]=$redo1;
+	  
+	  $xml..action.(@id=="19").privateProperties.pfrOperationAction.fileset.sourceDirectory[0]=$redoGUI1;
+	  $xml..action.(@id=="19").privateProperties.pfrOperationAction.fileset.sourceDirectory[1]=$redoGUI2;
+	  $xml..action.(@id=="19").privateProperties.pfrOperationAction.fileset.sourceDirectory[2]=$redoGUI3;
+	  
+	  $xml..action.(@id=="30").privateProperties.pfrOperationAction.fileset.targetDirectory="/tmp/";
+	  $xml..action.(@id=="30").privateProperties.pfrOperationAction.fileset.sourceDirectory="/tmp/stdby.ctl";
+	  
+	  var $anotherXmlStr = $xml.toString().replace(/pfrOperationAction/g,"ws:pfrOperationAction");
+	  
+	  _writeFile($anotherXmlStr.toString(),$fileReadSO, true);  
+}
+
+
+/**
+*This function Create fileset
+*@param :  null
+*@return : null
+*@Author : Govinda Mengji
+*/
+
+
+function create_fileset()
+{	
+		
+	_navigateTo('http://' + $drmServer + ':8080/PFRGUI');
+	_setValue(_textbox($username), "sfradmin");
+	_setValue(_password($password), "sfradmin");
+	_click(_button($Login));
+	_setValue(_textbox($server), $compIPPR);
+	_click(_button($addserver));
+	_click(_link($compIPPR));
+	_click(_link($Add));
+  _setValue(_textbox($fsName), $filesetName);
+	_setValue(_textbox($sourceIP), $compIPPR);
+   _setValue(_textbox($targetIP), $compIPDR);
+	_setValue(_textbox($repinterval), "300");
+	_setValue(_textbox($sourcePath), $localAgentPathPR);
+	_setValue(_textbox($targetPath), $localAgentPathDR);
+	_click(_button($Add));
+	_click(_checkbox($cb));
+	_click(_button($AddFileset));
+	_wait(1000);
+	_click(_link($filesetName));
+   if(_exists(_link($Enable))){
+	_click(_link($Enable));
+	_click(_link($Logout));
+   }
+	
+}
+
+/**
+*This function Fetching fileset Name
+*@param :  null
+*@return : null
+*@Author : Govinda Mengji
+*/
+
+function filesetName(){
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($ProtectionSchemes));
+	_click(_link($sernamePR));
+	$filesetName=_getText(_cell(1, _near(_cell($ProtectionSchemeFilesetName))));
+	_log("filesetName",$filesetName);
+	return $filesetName;
+	
+	
+}
+
+function Add_RAL_NC()
+{
+	_click(_link($Test));
+	_click(_link($TestListView));
+	_click(_link($groupName));
+	_click(_link("NormalCopy"));
+	_click(_div($clearfix));
+	_click(_link($EditWorkflow));
+	_click(_span($Add));
+	_wait(1000);
+	_click(_link($MySQL));
+	_setValue(_textbox(10), "oracle");
+	_click(_span($Oracle));
+	_click(_span($glyphiconiconblueplusplusIconRals10));
+	_dragDrop(_image($notificationsgreenpng3), _image("notifications_yellow.png[3]"));
+	_click(_paragraph($textellipsis3));
+	_click(_button($infoBtn));
+	_click(_link($ActionProperties));
+	_setSelected(_select($datasetName), "Production Dataset");
+	_click(_div($myModal));
+	_click(_span($SaveNow));
+	_click(_link($Publish));
+	_click(_div($PublishWorkflow));
+	_click(_link($Goback));
+	
+}
+
+
+
+/**
+* Function is for Switchback status verification from Tests List View .
+*@param : $groupName
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function SO_Execution_Status_OraclePFR($groupName) {
+	
+	Waitfor_TestWF_Completion_OraclePFR_SOSB($groupName, "Switchover");
+	//Waitfor_TestWF_Completion($groupName, "Switchover");
+
+}// End of SB_Execution_Status
+
+
+/**
+* Function is for Switchback status verification from Tests List View .
+*@param : $groupName
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function SB_Execution_Status_OraclePFR($groupName) {
+	
+	Waitfor_TestWF_Completion_OraclePFR_SOSB($groupName, "Switchback");
+	//Waitfor_TestWF_Completion($groupName, "Switchback");
+
+}// End of SB_Execution_Status
+
+
+/**
+* Function is to verify test workflow execution status verification from Tests List View .
+*@param : $groupName, $WFName
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+// Description:
+
+
+function Waitfor_TestWF_Completion_OraclePFR_SOSB($groupName, $WFName) {
+	var $i = 0;
+	// Looping till SO execution Complete
+	while ($i < 50) {
+		_log($i);
+		_wait(10000);
+		/*Popup_Handler();
+		_click(_link($Drill));
+		_click(_link($TestListView));
+		_click(_link($groupName));*/
+		//_click(_link($WFName));
+		navigateDrillListing($groupName);
+
+		if(_exists(_link("/.*/", _rightOf(_div("/" + $WFName +  "/")), _under(_div("Execution Status"))))){ 
+			var $testStatus = _getText(_link("/.*/", _rightOf(_div("/" + $WFName +  "/")), _under(_div("Execution Status"))));
+			_log($testStatus);
+			_assertExists("Test Status :", $testStatus);	
+		} else {
+			var $testStatus = _getText(_span("/.*/", _rightOf(_div("/" + $WFName +  "/")), _under(_div("Execution Status")))); 			
+			_assertExists("Test Status :", $testStatus);
+		}
+		
+		if ($testStatus == "FAILED") {
+			_wait(1000);
+			_fail($WFName, "workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+
+		} else if ($testStatus == "EXECUTING") {
+
+		} else if ($testStatus == "AWAITING INPUT") {
+
+			_click(_link(1, _near(_link($WFName))));
+			_click(_button($AwaitingInput));
+
+			if (_exists(_submit($OKtrueuserInputButtonbtnbtnprimarybtnxsbtnbtninfo))) {
+				_click(_submit($OKtrueuserInputButtonbtnbtnprimarybtnxsbtnbtninfo));
+
+				//_click(_link($Goback));
+
+				_call(window.history.back());
+
+			} 
+			
+			
+/*	else if(_exists(_paragraph("PAN-DORA-0186: Either configuration is missing or Invalid value found for key PANORA_WAIT_FOR_SYNC"))) {
+				
+				_click(_submit($ContinueassuccessCONTINUEASSUCCESSuserInputButtonbtnbtnprimarybtnxsbtnbtninfo));
+
+				//_click(_link("Go back"));
+
+				_call(window.history.back());
+
+				
+			}*/
+			
+	else if(_exists(_paragraph($FailedFileActionConfigopTypecopyFileFailedinfojavalangNullPointerExceptionoutkeys))){
+		_click(_submit($ContinueassuccessCONTINUEASSUCCESSuserInputButtonbtnbtnprimarybtnxsbtnbtninfo));
+		_call(window.history.back());
+	}		
+			
+			} 
+							
+		  /* else if ($testStatus == "EXECUTING") {
+		_wait(10000);
+		_click(_link("Go back"));
+	}*/ 
+	else if ($testStatus == "SUCCESS") {
+		_assertExists($WFName, "workflow executed succesfully.");
+		//_click(_link("Go back"));
+		break;		
+	}
+	$i = $i + 1;
+	//_click(_link("Go back"));
+}
+	//var $testStatus = _getText(_link("/.*/", _rightOf(_div("/" + $WFName +  "/")), _under(_div("Execution Status"))));
+	//_assertExists("Test Status :", $testStatus);
+	
+	//if ($testStatus == "AWAITING INPUT") {
+		//_fail("Failed because of waiting for user input");
+	//}
+	
+} // End of Waitfor_TestWF_Completion()
+
+
+/**
+* Function is for Validation of logs in Overview > RG Details > Continuity Workflows for oraclePFR solution post SO.
+*@param : null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+
+function Oracle_PFR_Continuity_Workflows_Post_SO() {
+	var $archivePathPR = get_archive_path_PR($ArchiveLogsLocationPR);
+	var $archivePathDR = get_archive_path_DR($ArchiveLogsLocationDR);
+	Oracale_PFR_Continuity_Workflows($groupName,$archivePathDR,$userDR, $pwdDR, $internalLogon,$oracleListenerIPDR, $dbSidSelect,$userDR, $pwdDR, $internalLogon,$oracleListenerIPDR, $dbSidSelect,"SO");
+} // End of Oracle_PFR_Continuity_Workflows_Post_SO()
+
+
+/**
+* Function is for Validation of logs in Overview > RG Details > Continuity Workflows for oraclePFR solution before SO.
+*@param : null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+function Oracle_PFR_Continuity_Workflows_Pre_SO() {
+	var $archivePathPR = get_archive_path_PR($ArchiveLogsLocationPR);
+	var $archivePathDR = get_archive_path_DR($ArchiveLogsLocationDR);
+	Oracale_PFR_Continuity_Workflows($groupName,$archivePathPR,$userPR, $pwdPR, $internalLogon,$oracleListenerIPPR, $dbSidSelect,$userPR, $pwdPR, $internalLogon,$oracleListenerIPPR, $dbSidSelect,"NormalCopy");
+}// End of Oracle_PFR_Continuity_Workflows_Pre_SO()
+
+
+/**
+ * Function is for Continuity Workflows.
+ * 
+ * @param : $groupName
+ * @return : null
+ * @Author: Padmavathi
+ * 
+ */
+
+
+function Oracale_PFR_Continuity_Workflows($groupName,$archivePath,$userPR, $pwdPR, $internalLogon,$oracleListenerIPPR, $dbSidSelect,$userPR, $pwdPR, $internalLogon,$oracleListenerIPPR, $dbSidSelect,$WFType) {
+	
+	Popup_Handler();
+	 var $primary = Get_OraclePFR_Primary_Continuity_Details_DB($userPR, $pwdPR, $internalLogon,$oracleListenerIPPR, $dbSidSelect);
+	 var $secondary = Get_OraclePFR_Secondary_Continuity_Details_DB($userDR, $pwdDR, $internalLogon,$oracleListenerIPDR, $dbSidSelect);
+	NavigateToRGDetailsPage($groupName);
+	_click(_link("icon-right-arrow ex-col-arrow collapsed", _near(_link($WFType))));
+	// PR Side
+	// 
+	_log($LastLogFiledumpedatprimaryDetailfromGuiPRside);
+	var $i=0;
+	while($i<10){
+	var $lastLogFileDump=_getText(_heading5($LastLogFiledumpedatprimary));
+	var $logFileDumpatPrimary=$lastLogFileDump.split($primary);
+	var $lastLogFileDumpedatPrimaryGui=$logFileDumpatPrimary[1];
+	_assertExists("$last Log File Dumped at Primary",$lastLogFileDumpedatPrimaryGui);
+	if($lastLogFileDumpedatPrimaryGui =="N/A"){
+	_wait(30000);
+	}
+	else
+	{
+	break;
+	_log($GoAhead);
+	}
+	$i++;
+	}
+	var $lastLogFileDumpedatPrimaryDb=$primary.get($lastLogFileDumpatPrimarydb);
+	_assertExists("$last Log File Dumped at Primary DB",$lastLogFileDumpedatPrimaryDb);
+	_assertTrue($lastLogFileDumpedatPrimaryGui<=$lastLogFileDumpedatPrimaryDb,"Comparing Last Log File dumped at PR from GUI and backend");
+
+	// Dump Log File Time Stamp Detail from Gui
+	var $dumpLogFileTimeStamp=_getText(_heading5($DumpLogFileTimestamp));
+	var $dumpLogFileTimeStampval=$dumpLogFileTimeStamp.split($Timestamp);
+	var $dumpLogFileTimeStampGui1=$dumpLogFileTimeStampval[1];
+	_assertExists("dump Log File Time Stamp",$dumpLogFileTimeStampGui1);
+	var $date = $dumpLogFileTimeStampGui1;
+	     var $dateString = $date.toString();
+	     var $dumpLogFileTimeStampGui = new java.text.SimpleDateFormat($ddMMMyyyyHHmmss).parse($dateString).getTime();
+	     _assertExists("dump Log File Time Stamp",$dumpLogFileTimeStampGui);
+	var $dumpLogFileTimeStampDb1=$primary.get($dumpLogFileTimeStampdb);
+	_assertExists("dump Log File Time Stamp DB",$dumpLogFileTimeStampDb1);
+	var $date = $dumpLogFileTimeStampDb1;
+	     var $dateString = $date.toString();
+	     var $dumpLogFileTimeStampDb = new java.text.SimpleDateFormat($ddMMMyyyyHHmmss).parse($dateString).getTime();
+	  _assertExists("dump Log File Time Stamp DB",$dumpLogFileTimeStampDb);
+
+	  _assertTrue($dumpLogFileTimeStampGui <= $dumpLogFileTimeStampDb,"Comparing Dump Log File Timestamp from PR in GUI and backend");
+	    
+	    // Last Dump Log Sequence Number Detail from Gui
+	     
+	var $lastDumpLogSequenceNumber=_getText(_heading5($LastDumpLogsequencenumber));
+	var $lastDumpLogSequenceNumberVal=$lastDumpLogSequenceNumber.split($number);
+	var $lastDumpLogSequenceNumberinGui=$lastDumpLogSequenceNumberVal[1];
+	_assertExists("last Dump Log Sequence Number",$lastDumpLogSequenceNumberinGui);
+	var $lastDumpLogSequenceNumberinDb=$primary.get($lastDumpLogSequenceNumberdb);
+	_assertExists("last Dump Log Sequence Number DB",$lastDumpLogSequenceNumberinDb);
+	_assertTrue($lastDumpLogSequenceNumberinGui <= $lastDumpLogSequenceNumberinDb,"Comparing Last Dump Log sequence number from PR in GUI and backend");
+	////////////////////////////////////////////////////////////////////////////////////////////////////
+	// DR Side
+	///////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Last Apply Log Sequence Number Detail from Gui
+	_log($LastLogFiledumpedatsecondaryDetailfromGuiDRside);
+	var $lastApplyLogSequenceNumber=_getText(_heading5($LastApplyLogsequencenumber));
+	var $lastApplyLogSequenceNumberVal=$lastApplyLogSequenceNumber.split($number);
+	var $lastApplyLogSequenceNumberGui=$lastApplyLogSequenceNumberVal[1];
+	_assertExists("last Apply Log Sequence Number",$lastApplyLogSequenceNumberGui); //ok
+	/////
+	var $lastApplyLogSequenceNumberDB=$secondary.get($lastApplyLogSequenceNumberdb);
+	_log("last Apply Log Sequence Number DB "+$lastApplyLogSequenceNumberDB); 
+	
+	_assertExists("last Apply Log Sequence Number DB",$lastApplyLogSequenceNumberDB); // DR side not able to fetch the query manually also
+	_assertTrue($lastApplyLogSequenceNumberGui <= $lastApplyLogSequenceNumberDB,"Comparing Log File Applied Timestamp on DR from GUI and backend");
+	
+	// Next Log File to be Applied at Secondary Detail from Gui
+	var $nextLogFiletobeatSecondary=_getText(_heading5($NextLogFiletobeAppliedatsecondary));
+	var $nextLogFiletobeAppliedatSecondary=$nextLogFiletobeatSecondary.split($secondary);
+	var $nextLogFiletobeAppliedatSecondaryGui=$nextLogFiletobeAppliedatSecondary[1];
+	_assertExists("next Log File to be Applied at Secondary",$nextLogFiletobeAppliedatSecondaryGui);
+	var $nextLogFiletobeAppliedatSecondaryDB=$secondary.get($nextLogFiletobeAppliedatsecondarydb); //ok
+	_log("next Log File to be Applied at Secondary DB "+ $nextLogFiletobeAppliedatSecondaryDB);
+	
+	//_assertExists("next Log File to be Applied at Secondary DB",$nextLogFiletobeAppliedatSecondaryDB); // due to DR machine slow not able to fetch the data
+	
+	//_assertTrue($nextLogFiletobeAppliedatSecondaryGui <= $nextLogFiletobeAppliedatSecondaryDB,"Comparing Log File Applied Timestamp on DR from GUI and backend");
+	
+	// Log File Applied Time Stamp Detail from Gui
+	var $logFileAppliedTimeStamp=_getText(_heading5($LogFileAppliedTimestamp));
+	var $logFileAppliedTimeStampVal=$logFileAppliedTimeStamp.split($Timestamp);
+	var $logFileAppliedTimeStampGui1=$logFileAppliedTimeStampVal[1];
+	_assertExists("log File Applied TimeStamp",$logFileAppliedTimeStampGui1);
+	var $date = $logFileAppliedTimeStampGui1;
+	     var $dateString = $date.toString();
+	     var $logFileAppliedTimeStampGui = new java.text.SimpleDateFormat($ddMMMyyyyHHmmss).parse($dateString).getTime();
+	     _assertExists("log File Applied TimeStamp",$logFileAppliedTimeStampGui);
+	var $logFileAppliedTimeStampDB1=$primary.get($logFileTimeAppliedStampdb);
+	_assertExists("log File Applied TimeStamp DB",$logFileAppliedTimeStampDB1);
+	var $date = $logFileAppliedTimeStampDB1;
+	     var $dateString = $date.toString();
+	     var $logFileAppliedTimeStampDB = new java.text.SimpleDateFormat($ddMMMyyyyHHmmss).parse($dateString).getTime();
+	     _assertExists("log File Applied TimeStamp DB",$logFileAppliedTimeStampDB);
+	     _assertTrue($logFileAppliedTimeStampGui <= $logFileAppliedTimeStampDB, "Comparing Log File Applied Timestamp on DR from GUI and backend"); 
+	
+}// End Of Continuity Workflows()
+
+
+
+/**
+ * Function is to get Continuity Primary details from DB for Oracle Log PFR
+ * *@param : $user, $pwd, $internalLogon
+  * @return : $props
+ * @Author: Padmavathi
+ * 
+ */
+
+function Get_OraclePFR_Primary_Continuity_Details_DB($user, $pwd, $internalLogon,$oracleListenerIP, $dbSidSelect) {
+	var $archivePathPR = get_archive_path_PR("Archive Logs Location PR");
+	var $archivePathDR = get_archive_path_DR($ArchiveLogsLocationDR);
+	// calling function to connect the PR machine from back end
+	var $props = Get_User_Properties_for_OracleDb_Connection($user, $pwd, $internalLogon);
+	var $conn = Get_Oracle_Db_Connection_URL($oracleListenerIP, $dbSidSelect);
+	var $db = _getDB("oracle.jdbc.driver.OracleDriver", $conn, $props);
+	// Execute query on PR back end to get the Last Log File dumped at primary
+	// Detail
+	var $lastLogFilePrimary = $db.select($selectnamefromvarchivedlogwheresequenceselectmaxsequencefromvarchivedlogalvinstanceivdatabasedwherealthreadithreadandupperalnamelikeupperarchivePathPRandalresetlogschangedresetlogschangeandalresetlogstimedresetlogstimeanduppernamelikeupperarchivePathPRandthreadselectthreadfromvinstanceorderbythread);
+	var $lastLogFileDumpatPrimarydb = $lastLogFilePrimary.toString();
+	_log($lastLogFileDumpatPrimarydb);
+	// Execute query on PR back end to get the Dump Log File Time stamp Detail
+	var $dumpLogFileTimeStampPR = $db.select($selecttocharcompletiontimeDDMonYYYYHH24MISSMYDATEfromvarchivedlogwheresequenceselectmaxsequencefromvarchivedlogalvinstanceivdatabasedwherealthreadithreadandalresetlogschangedresetlogschangeandalresetlogstimedresetlogstimeandthreadselectthreadfromvinstanceorderbythread);
+
+	var $a=$dumpLogFileTimeStampPR.toString();
+	var $LogFileTimeStampPR=$a.split("\n");
+	var $dumpLogFileTimeStampdb=$LogFileTimeStampPR[0];
+	_log($dumpLogFileTimeStampdb);
+
+	// Execute query on PR back end to get the Last Dump Log sequence number
+	// Detail
+	var $lastDumpLogSequencePR = $db.select($selectsequencefromvarchivedlogwheresequenceselectmaxsequencefromvarchivedlogalvinstanceivdatabasedwherealthreadithreadandupperalnamelikeupperarchivePathPRandalresetlogschangedresetlogschangeandalresetlogstimedresetlogstimeanduppernamelikeupperarchivePathPRandthreadselectthreadfromvinstanceorderbythread);
+	var $lastDumpLogSequenceNumber = $lastDumpLogSequencePR.toString();
+	var $lastDumpLogSequenceNumberdb = $lastDumpLogSequenceNumber.split("]]");
+	_log($lastDumpLogSequenceNumberdb);
+	// Execute query on PR back end to get the Log File Applied Time stamp
+	// Detail
+	var $logFileTimeAppliedStamp = $db.select($selecttocharcompletiontimeDDMonYYYYHH24MISSMYDATEfromvarchivedlogwheresequenceselectmaxsequencefromvarchivedlogalvinstanceivdatabasedwherealthreadithreadandalresetlogschangedresetlogschangeandalresetlogstimedresetlogstimeandthreadselectthreadfromvinstanceorderbythread);
+	    var $b=$logFileTimeAppliedStamp.toString();
+	var $logFileTimeAppliedStamp1=$b.split("\n");
+	var $logFileTimeAppliedStampdb=$logFileTimeAppliedStamp1[0];
+	_log($logFileTimeAppliedStampdb);
+
+	var $primary = new java.util.Properties();
+	$primary.put("lastLogFileDumpatPrimarydb", $lastLogFileDumpatPrimarydb);
+	$primary.put("dumpLogFileTimeStampdb", $dumpLogFileTimeStampdb);
+	$primary.put("lastDumpLogSequenceNumberdb", $lastDumpLogSequenceNumberdb);
+	$primary.put("logFileTimeAppliedStampdb", $logFileTimeAppliedStampdb);
+	return $primary;
+
+	}
+
+
+/**
+ * Function is to get Continuity Secondary details from DB
+ * @param :$user, $pwd, $internalLogon
+ * @return : $props
+ * @Author: Padmavathi
+ * 
+ */
+
+function Get_OraclePFR_Secondary_Continuity_Details_DB($user, $pwd, $internalLogon,$oracleListenerIP, $dbSidSelect){
+	// calling function to connect the DR machine from back end
+	var $archivePathDR = get_archive_path_DR($ArchiveLogsLocationDR);
+	var $props = Get_User_Properties_for_OracleDb_Connection($user, $pwd, $internalLogon);
+	var $conn = Get_Oracle_Db_Connection_URL($oracleListenerIP, $dbSidSelect);
+	var $db = _getDB("oracle.jdbc.driver.OracleDriver", $conn, $props);
+	_wait(10000);
+	// Execute query on DR back end to get the Next Log File to be Applied at secondary Detail  
+	
+	var $nextLogFiletbeAppliedatsecondary= $db.select($selectnamefromvarchivedlogwheresequenceselectmaxsequencefromvarchivedlogalvinstanceivdatabasedwherealthreadithreadandalresetlogschangedresetlogschangeandalresetlogstimedresetlogstimeandthreadselectthreadfromvinstanceorderbythread);
+	//anita
+	_wait(5000);
+	var $c = $nextLogFiletbeAppliedatsecondary.toString();
+	    var $nextLogFiletobeAppliedatsecondary1=$c.split(",");
+	    var $nextLogFiletobeAppliedatsecondarydb=$nextLogFiletobeAppliedatsecondary1[0];
+	    _log($nextLogFiletobeAppliedatsecondarydb);
+	//var $lastLogFileDumpatSecondarydb = $lastLogFilePR.split("[");
+	//var $nextLogFile=$lastLogFileDumpatSecondarydb.toString();
+	//var $nextLogFileDumpatSecondary=$nextLogFile.split("_");
+	    //var $nextLogFiletbeAppliedatDR=parseInt ($nextLogFileDumpatSecondary[1]) + parseInt(1);
+	    //var $nextLogFiletobeAppliedatsecondarydb=($nextLogFileDumpatSecondary[0]+"_"+$nextLogFiletbeAppliedatDR+"_"+$nextLogFileDumpatSecondary[2]);
+	      
+	    // Execute query on DR back end to get the Last Apply Log sequence number Detail
+	// var $lastApplyLogSequence = $db.select("select sequence# from v$archived_log where sequence#=(select max(sequence#) from v$archived_log al, v$instance i, v$database d where al.thread# = i.thread#  and al.resetlogs_change# = d.resetlogs_change# and al.resetlogs_time = d.resetlogs_time)  and thread# = (select thread# from v$instance) order by thread#");
+	 
+	 var $lastApplyLogSequence = $db.select($selectmaxsequencefromvloghistory);
+	 
+	 _wait(5000);var $archivePathDR = get_archive_path_DR("Archive Logs Location DR");
+	 var $lastApplyLogSequenceNumber = $lastApplyLogSequence.toString();
+	var $lastApplyLogSequenceNumberdb = $lastApplyLogSequenceNumber.split("]]");
+	_log($lastApplyLogSequenceNumberdb);
+	    var $secondary = new java.util.Properties();
+	$secondary.put("nextLogFiletobeAppliedatsecondarydb", $nextLogFiletobeAppliedatsecondarydb);
+	    $secondary.put("lastApplyLogSequenceNumberdb", $lastApplyLogSequenceNumberdb);
+	    
+	return $secondary; 
+}

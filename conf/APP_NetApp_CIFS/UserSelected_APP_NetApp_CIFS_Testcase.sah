@@ -1,0 +1,170 @@
+
+var $l_userInputsDataAPP_NetApp_CIFS = _readExcelFile($SAHI_HOME + "\\conf\\APP_NetApp_CIFS\\APP_NetApp_CIFS_Parameter.xls","User Seleeted Case");
+var $userDataLengthAPP_NetApp_CIFS  = $l_userInputsDataAPP_NetApp_CIFS.length-1;
+
+var $flag = 0;
+for($i = 3 ; $i <= $userDataLengthAPP_NetApp_CIFS ; $i++){
+	if($l_userInputsDataAPP_NetApp_CIFS[$i][4] == "Y"){	
+		$flag=$flag+1;	
+	}
+}
+
+//-----------Execution of Individual Testcase------------------------------
+
+var $g_siteAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[17][4];
+var g_agentNodeAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[18][4];
+var $g_componentRemoteDiscoveryAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[19][4];
+var $g_componentLocalDiscoveryAPP_NetApp_CIFS= $l_userInputsDataAPP_NetApp_CIFS[20][4];
+var $g_datasetDiscoveryAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[21][4];;
+var $g_datasetAutoDiscoveryAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[22][4];
+var $g_protectionSchemeDiscoveryAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[23][4];;
+var $g_protectionSchemeDetailsAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[24][4];
+var $g_groupCreationAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[25][4];
+var $g_moveGroupToManageAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[26][4];
+
+var $g_changeContinuityStateAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[27][4];
+var $g_postGroupCreationAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[28][4];
+var $g_componentStatusAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[29][4];
+var $g_datasetStatusAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[30][4];
+var $g_protectionSchemeStatusAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[31][4];
+
+var $g_continuityManagenentAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[32][4];
+var $g_importNCAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[33][4];
+var $g_importFOAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[34][4];
+var $g_startNCAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[35][4];
+var $g_monitorRelationshipAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[36][4];
+
+var $g_manageDRSolutionAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[37][4];
+var $g_groupInformationAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[38][4];;
+var $g_groupSnapshotAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[39][4];;
+var $g_replicationNCAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[40][4];
+var $g_rpoNCAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[41][4];
+var $g_rtoNCAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[42][4];
+var $g_importSOSBAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[43][4];
+var $g_stopNCAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[44][4];
+var $g_startSOAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[45][4];
+var $g_SOExecutionAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[46][4];
+
+var $g_replicationSOAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[47][4];
+var $g_importRNCAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[48][4];
+var $g_startRNCAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[49][4];
+var $g_groupInformaitionRNCAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[50][4];
+var $g_groupSnapshotAPP_NetApp_CIFS= $l_userInputsDataAPP_NetApp_CIFS[51][4];
+var $g_rpoRNCAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[52][4];
+var $g_replicationRNCAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[53][4];
+var $g_stopRNCAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[54][4];
+var $g_startSBAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[55][4];
+var $g_SBExecutionAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[56][4];
+
+var $g_monitorManageSBAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[57][4];
+var $g_remoteStopAPP_NetApp_CIFSAgent = $l_userInputsDataAPP_NetApp_CIFS[58][4];
+var $g_remoteStartAPP_NetApp_CIFSAgent = $l_userInputsDataAPP_NetApp_CIFS[59][4];
+var $g_localStopAPP_NetApp_CIFSAgent = $l_userInputsDataAPP_NetApp_CIFS[60][4];
+var $g_localStartAPP_NetApp_CIFSAgent = $l_userInputsDataAPP_NetApp_CIFS[61][4];
+var $g_replicaionStopAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[62][4];
+var $g_replicaionStartAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[63][4];
+var $g_startFOAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[64][4];
+var $g_FOExecutionAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[65][4];
+var $g_continuityStatusFOAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[66][4];
+
+var $g_rpoFOAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[67][4];
+var $g_monitorManageFOAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[68][4];
+
+//---------------For Executing All the Testcases------------------------
+var $g_executeAPP_NetApp_CIFSAll = $l_userInputsDataAPP_NetApp_CIFS[4][4];
+var $g_groupCreationAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[8][4];
+var $g_postGroupCreationAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[9][4];
+var $g_executeNCAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[10][4];
+var $g_executeSOSBAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[11][4];
+var $g_eventExecutionAPP_NetApp_CIFS = $l_userInputsDataAPP_NetApp_CIFS[12][4];
+var $g_executeFONetApp_SnapMirrro = $l_userInputsDataAPP_NetApp_CIFS[13][4];
+
+//--------------For Group Creation--------------------------------------
+
+if ($g_groupCreationAPP_NetApp_CIFS == "Y"){
+
+var $g_siteAPP_NetApp_CIFS = "Y";
+var $g_agentNodeAPP_NetApp_CIFS = "Y";
+	if($agentType == "Remote"){
+		var $g_componentRemoteDiscoveryAPP_NetApp_CIFS = "Y";
+	}else{
+		var $g_componentLocalDiscoveryAPP_NetApp_CIFS= "Y";
+	}
+var $g_datasetDiscoveryAPP_NetApp_CIFS = "Y";
+var $g_datasetAutoDiscoveryAPP_NetApp_CIFS = "Y";
+var $g_protectionSchemeDiscoveryAPP_NetApp_CIFS = "Y";
+var $g_protectionSchemeDetailsAPP_NetApp_CIFS = "Y";
+var $g_groupCreationAPP_NetApp_CIFS = "Y";
+var $g_moveGroupToManageAPP_NetApp_CIFS = "Y";
+var $g_changeContinuityStateAPP_NetApp_CIFS = "Y";
+}
+//-------------Post Group Creation-------------------------------------------------
+
+if ($g_postGroupCreationAPP_NetApp_CIFS == "Y"){
+var $g_postGroupCreationAPP_NetApp_CIFS = "Y";
+var $g_componentStatuAPP_NetApp_CIFS = "Y";
+var $g_datasetStatusAPP_NetApp_CIFS = "Y";
+var $g_protectionSchemeStatusAPP_NetApp_CIFS = "Y";
+var $g_continuityStatusAPP_NetApp_CIFS ="Y";
+var $g_continuityManagenentAPP_NetApp_CIFS = "Y";
+}
+//-----------Start NC ,Import FO WorkFlow and Verify Screens During NC---------------
+
+if ($g_executeNCAPP_NetApp_CIFS == "Y"){
+var $g_importNCAPP_NetApp_CIFS = "Y";
+var $g_importFOAPP_NetApp_CIFS = "Y";
+var $g_startNCAPP_NetApp_CIFS = "Y";
+var $g_monitorRelationshipAPP_NetApp_CIFS = "Y";
+var $g_manageDRSolutionAPP_NetApp_CIFS = "Y";
+var $g_groupInformationAPP_NetApp_CIFS = "Y";
+var $g_groupSnapshotAPP_NetApp_CIFS = "Y";
+var $g_replicationNCAPP_NetApp_CIFS = "Y";
+var $g_rpoNCAPP_NetApp_CIFS = "Y";
+var $g_rtoNCAPP_NetApp_CIFS = "Y";
+var $g_executeFOAPP_NetApp_CIFS = "Y"
+}
+//------------Import SO and SB Workflow,stop NC and start SO,RNC and SB------------------------
+
+if ($g_executeSOSBAPP_NetApp_CIFS == "Y"){
+var $g_importSOSBAPP_NetApp_CIFS = "Y";
+var $g_stopNCAPP_NetApp_CIFS = "Y";
+var $g_startSOAPP_NetApp_CIFS = "Y";
+var $g_SOExecutionAPP_NetApp_CIFS = "Y";
+var $g_replicationSOAPP_NetApp_CIFS = "Y";
+var $g_importRNCAPP_NetApp_CIFS = "Y";
+var $g_startRNCAPP_NetApp_CIFS = "Y";
+var $g_groupInformaitionRNCAPP_NetApp_CIFS = "Y";
+var $g_groupSnapshotAPP_NetApp_CIFS = "Y";
+var $g_rpoRNCAPP_NetApp_CIFS = "Y";
+var $g_replicationRNCAPP_NetApp_CIFS = "Y";
+var $g_stopRNCAPP_NetApp_CIFS = "Y";
+var $g_startSBAPP_NetApp_CIFS = "Y";
+var $g_SBExecutionAPP_NetApp_CIFS = "Y";
+var $g_monitorManageSBAPP_NetApp_CIFS = "Y";
+}
+//------------Event for Agent and Replication start and Stop-------------------------
+if ($g_eventExecutionAPP_NetApp_CIFS == "Y"){	
+	if($agentType == "Remote"){
+var $g_remoteStopAPP_NetApp_CIFSAgent = "Y";
+var $g_remoteStartAPP_NetApp_CIFSAgent = "Y";
+	}else {
+var $g_localStopAPP_NetApp_CIFSAgent = "Y";
+var $g_localStartAPP_NetApp_CIFSAgent = "Y";
+	}
+var $g_replicaionStopAPP_NetApp_CIFS = "Y";
+var $g_replicaionStartAPP_NetApp_CIFS = "Y";
+}
+//--------------FO Execution-----------------------------------------------
+if($g_executeFOAPP_NetApp_CIFS == "Y"){
+var $g_startFOAPP_NetApp_CIFS = "Y";
+var $g_FOExecutionAPP_NetApp_CIFS = "Y";
+var $g_continuityStatusFOAPP_NetApp_CIFS = "Y";
+var $g_rpoFOAPP_NetApp_CIFS = "Y";
+var $g_monitorManageFOAPP_NetApp_CIFS = "Y";
+}
+
+
+
+if($flag == 0){
+	$g_executeAPP_NetApp_CIFSAll = "Y";
+}

@@ -1,0 +1,386 @@
+//*************************************************************************
+ //** CompanyName : Sanovi an IBM Company Ltd.
+ //** Application Name : SCC. 
+ //** Objective : This script contains all the functions which are used commonly 
+ //**              all the solutions. 
+ //** AuthorName : Omprakash.v
+ //** Created Date : FEB 2017
+//************************************************************************
+
+function Verify_Advanced_Report_Installation()
+{
+	$sshCommand="test -r "+$EAMSROOT+"reports;echo $?";
+	$Advrep=SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand,"N");
+	if($Advrep=="0")
+		{
+		_log("Advanced report installed already");
+		}
+	else
+		{
+		_log("Starting Advanced report installation");
+		Copying_Advanced_Report_Binaries();
+		Advanced_Report_Installation();
+		}
+}
+
+/**
+* Function is to copy Advance report binaries.
+*@Author: Omprakash.v
+*
+*/
+function Copying_Advanced_Report_Binaries()
+{
+	var $sshCommand = "test -f install.bin;echo $?";
+	$advreportbinary = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	if($advreportbinary=="0")
+		{
+	var $sshCommand = "rm -rf install.bin;echo $?";
+	$advreportbinarydelete = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	if($advreportbinarydelete=="0")
+		{
+		_log("Seccesfully deleted previous binary file now you can copy new binary file");
+		}
+	else
+		{
+		_log("you can copy new binary file");
+		}
+		}
+	//We need to change job name with respect to latest job name from jenkins.
+var $sshCommand = "wget"+" "+$g_buildUrl+"SanoviDRM/AdvancedReporter/install.bin;echo EXIT Code : $?";
+$statusReportbinary = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	var $patt1=new RegExp("EXIT Code : 0");
+	var $repoutInstallBin = $patt1.test($statusReportbinary);
+	var $sshCommand = "chmod 777 "+" " + "install.bin" ;
+	$statusReportbinary = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+var $sshCommand = "test -f "+$Advrepcopylocation+"/PanacesServerInstaller.properties;echo $?" ;
+$advreportproperties = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+if($advreportproperties=="0")
+	{
+	var $sshCommand = "rm -rf "+$Advrepcopylocation+"/PanacesServerInstaller.properties;echo $?";
+	$advreportpropertydelete = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	if($advreportpropertydelete=="0")
+		{
+		_log("Seccesfully deleted previous property file, now you can copy new property file");
+		}
+	else
+		{
+		_log("you can copy new property file");
+		}
+	}
+var $sshCommand = "cp "+$DRMbuildServer+"/PanacesServerInstaller.properties"+" "+$Advrepcopylocation+";echo EXIT Code : $?";
+$statusReportproperty = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+var $patt1=new RegExp("EXIT Code : 0");
+var $outproperties = $patt1.test($statusReportproperty);
+
+if ($repoutInstallBin == true && $outproperties == true) {
+		_log("Advanced report build copied successfully");
+	} else {
+		_log("Advanced report build not copied successfully");
+		_fail("Advanced report build not copied successfully,so that stopping execution");
+	}
+}	
+
+
+/**
+* Function is to install Advanced report.
+*@Author: Omprakash.v
+*
+*/
+function Advanced_Report_Installation()
+{
+	var $sshCommand = 'sh' + ' '+ 'install.bin -f' + ' ' + $Advrepcopylocation +  'PanacesServerInstaller.properties';
+	$statusStringadv = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand,"Y");
+
+	var $panacesStatusStringadv = $statusStringadv.split(",");
+	
+	var $panacesStatusStringadv = $panacesStatusStringadv.pop().trim();
+	
+	_log($panacesStatusStringadv);
+	
+	if($panacesStatusStringadv != "Exiting with exit code: 0"){
+		_assertTrue(false);		
+		_log("Installation Exit code is not zero");
+	}	
+}
+
+/**
+* Function is to configure Advanced report.
+*@Author: Omprakash.v
+*
+*/
+function Advanced_Report_Configuration()
+{
+	var $sshCommand = "rm -rf "+$tomcatHome+"openreports3.2.tar.gz;echo $?";
+	$openreportsgzdelete=SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	if($openreportsgzdelete=="0")
+		{
+		_log("file is Deleted Succesfully");
+		}
+	else
+		{
+		_log("files are not exists");
+		}
+	var $sshCommand = "rm -rf "+$tomcatHome+"openreports.war;echo $?";
+	$openreportsdelete=SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	if($openreportsdelete=="0")
+		{
+		_log("file is Deleted Succesfully");
+		}
+	else
+		{
+		_log("files are not exists");
+		}
+	var $sshCommand = "rm -rf "+$tomcatHome+"webapps/"+"openreports;echo $?";
+	$openreportsdeleteweb=SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	if($openreportsdeleteweb=="0")
+		{
+		_log("file is Deleted Succesfully");
+		}
+	else
+		{
+		_log("files are not exists");
+		}
+	var $sshCommand = "rm -rf "+$tomcatHome+"webapps/"+"openreports.war;echo $?";
+	$openreportsdeleteweb1=SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	if($openreportsdeleteweb1=="0")
+		{
+		_log("file is Deleted Succesfully");
+		}
+	else
+		{
+		_log("files are not exists");
+		}
+var $sshCommand = "rm -rf "+$tomcatHome+"webapps/openreports_bak;echo $?";
+$openreportsjars=SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+var $sshCommand = "wget -r -nd -P " + $tomcatHome + " http://172.168.20.43/jenkins/job/DRM_Automation/ws/GPL/openreports3.2.tar.gz";
+SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+var $sshCommand = "tar -xvzf " + $tomcatHome + "openreports3.2.tar.gz"+" "+"-C"+" "+$tomcatHome+";echo $?";
+SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+var $sshCommand = "mv "+$tomcatHome+"webapps/openreports "+$tomcatHome+"webapps/openreports_bak;echo $?";
+SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+_wait(10000);
+var $sshCommand = "cp "+$tomcatHome+"openreports.war "+$tomcatHome+"webapps/;echo $?";
+SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+var $sshCommand = "test -r "+$tomcatHome+"webapps/openreports;echo $?";
+$openreportsfolder=SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+if($openreportsfolder=="0")
+	{
+	_log("succefully Unziped by tomcat");
+	}
+else {
+	_log("openreports.war is not unziped successfully");
+	_fail("openreports.war is not unziped successfully,so that stopping execution");
+}
+
+var $sshCommand = "rm -f "+$tomcatHome+"webapps/openreports/WEB-INF/lib/jasperreports-3.5.1.jar;echo $?";
+SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+var $sshCommand = "rm -f "+$tomcatHome+"webapps/openreports/WEB-INF/lib/jasperreports-3.5.1-javaflow.jar;echo $?";
+SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+
+var $sshCommand = "cp "+$tomcatHome+"webapps/openreports_bak/WEB-INF/lib/mariadb-java-client-1.1.8.jar"+" "+$tomcatHome+"webapps/openreports/WEB-INF/lib/;echo $?";
+$openreportsmariajars=SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+if($openreportsmariajars=="0")
+{
+_log("maria jars are copied Succesfully");
+}
+else
+	{
+	_log("maria jars are not copied Succesfully");
+	_fail("maria jars are not copied Succesfully,so that stopping execution");
+	}
+
+var $sshCommand = "cp "+$tomcatHome+"webapps/openreports_bak/WEB-INF/lib/jasperreports-4.5.0.jar"+" "+$tomcatHome+"webapps/openreports/WEB-INF/lib/;echo $?";
+$openreportsjasperjars=SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+if($openreportsjasperjars=="0")
+{
+_log("jasperjars are copied Succesfully");
+}
+else
+	{
+	_log("jasperjars are not copied Succesfully");
+	_fail("jasperjars are not copied Succesfully,so that stopping execution");
+	}
+
+var $sshCommand = "cp "+$tomcatHome+"webapps/openreports_bak/WEB-INF/lib/jasperreports-javaflow-4.5.0.jar"+" "+$tomcatHome+"webapps/openreports/WEB-INF/lib/;echo $?";
+$openreportsjasperjavaflwjars=SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+if($openreportsjasperjavaflwjars=="0")
+{
+_log("jasperjavaflw jars are copied Succesfully");
+}
+else
+	{
+	_log("jasperjavaflw jars are not copied Succesfully");
+	_fail("jasperjavaflw jars are not copied Succesfully,so that stopping execution");
+	}
+
+var $sshCommand = "rm -rf "+$tomcatHome+"webapps/openreports_bak;echo $?";
+$openreportsjars=SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+var $sshCommand = "rm -rf "+$EAMSROOT+"/lib/openreports_dependencies;echo $?";
+SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+
+var $sshCommand = "unzip "+$EAMSROOT+"/lib/openreports_dependencies.zip -d "+$EAMSROOT+"lib/openreports_dependencies;echo $?";
+$openreportsjars=SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+
+var $sshCommand = "test -r "+$EAMSROOT+"/lib/openreports_dependencies;echo $?";
+$openreportsdepende=SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+if($openreportsdepende=="0")
+	{
+	_log("openreports_dependencies folder has been created");
+	}
+else {
+	_log("openreports_dependencies folder has been not created");
+	_fail("openreports_dependencies folder has been not created,so that stopping execution");
+}
+var $sshCommand = "rm -rf "+$tomcatHome+"/webapps/openreports/WEB-INF/classes;echo $?";
+SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+
+var $sshCommand = "cp -r "+$EAMSROOT+"/lib/openreports_dependencies/WEB-INF/classes "+$tomcatHome+"/webapps/openreports/WEB-INF/;echo $?";
+$copyClasses=SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+if($copyClasses=="0")
+{
+_log("classes folder is copied Succesfully");
+}
+else
+	{
+	_log("classes folder is not copied Succesfully");
+	_fail("classes folder is not copied Succesfully,so that stopping execution");
+	}
+var $sshCommand = "rm -rf "+$tomcatHome+"/webapps/openreports/WEB-INF/lib/etl.jar;echo $?";
+SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+
+var $sshCommand = "cp "+$EAMSROOT+"/lib/openreports_dependencies/WEB-INF/lib/etl.jar "+$tomcatHome+"/webapps/openreports/WEB-INF/lib/;echo $?";
+$etljarfile=SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+if($etljarfile=="0")
+{
+_log("etl jar file is copied Succesfully");
+}
+else
+	{
+	_log("etl jar file is not copied Succesfully");
+	_fail("etl jar file is not copied Succesfully,so that stopping execution");
+	}
+var $sshCommand = "wget -r -nd -P /opt/advrep/ http://172.168.20.43/jenkins/job/DRM_Automation/ws/advancereportsql.sh;echo $?";
+SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+
+var $sshCommand = "chmod 777"+" "+"/opt/advrep/advancereportsql.sh;echo $?";
+SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+
+var $sshCommand = "sh"+" "+"/opt/advrep/advancereportsql.sh;echo $?";
+$advreportssh=SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+if($advreportssh=="0")
+{
+_log("succefully login to mysql and enters the command");
+}
+else {
+_log("successfully not login");
+_fail("successfully not login,so that stopping execution");
+}
+
+var $sshCommand = 'sh' + ' ' + $EAMSROOT + 'bin/' + 'panaces restart;echo $?';
+$advreportssh=SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+
+_wait(20000);
+// checking panaces,tomcat,agent Node status
+var $sshCommand = 'sh' + ' ' + $EAMSROOT + 'bin/' + 'panaces status';
+$panacsStatus = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+
+var $panacesStatusString1 = $panacsStatus.split(",");
+var $panacesServerStatus1 = $panacesStatusString1[0];
+_assertExists("panacesServerStatus", $panacesServerStatus1);
+var $tomcatServerStatus1 = $panacesStatusString1[1];
+_assertExists("TomcatServerStatus", $tomcatServerStatus1);
+var $agentNodeStatus1 = $panacesStatusString1[3];
+_assertExists("AgentNodeStatus", $agentNodeStatus1);
+
+if (($panacesServerStatus1 == "Panaces server is running") && ($tomcatServerStatus1 == "Tomcat server is running") && ($agentNodeStatus1 == "Agent Node is running")) {
+
+	_log("Panaces,Tomcat,AgentNode started successfully");
+}else
+	{
+	_log("Panaces,Tomcat,AgentNode not started successfully");
+	_fail("Panaces,Tomcat,AgentNode not started successfully,so that stopping execution");
+	}
+_wait(10000);
+$i = 0;
+while(true){
+	var $sshCommand = "tail -5 "+$EAMSROOT+"var/log/console.log";
+	$consoleStatus = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	
+	if($consoleStatus.indexOf("Panaces Services successfully") > -1){
+								  
+		_log("Panaces services Started Successfully, so start verifying the other services");
+		break;
+	}
+	if($i == 20){
+		_log("Failed Panaces services Started Successfully, so start verifying the other services");
+		break;
+	}
+	_wait(60000);
+	$i++;
+}
+}
+
+function Verifying_Advanced_Report_Configuration()
+{
+	navigateToReports();
+	_click(_link("Advanced Reports"));
+	_wait(20000);
+	if(_exists(_div("Advanced Reports")))
+	{
+	_log("Advanced reporter is configured successfully");
+	_click(_button("Update Advanced Report Data"));
+	_wait(20000);
+	}
+else
+	{
+	_log("Advanced reporter is not configured successfully");
+	_fail("Advanced reporter is not configured successfully,so that stopping execution");
+	_click(_link("Go back to reports"));
+	}
+}
+
+function Verifying_Report_Tab()
+{
+	loginToAdvancedReporter($usernameAdv, $passwordAdv);
+	_wait(10000);
+	if(_exists(_link("Reports")))
+			{
+		_log("Report tab is available");
+		}
+	else{
+		_log("Report tab is Not available");
+	}
+}
+
+function Verifying_Scheduled_Report_Tab()
+{
+	if(_exists(_link("Scheduled Reports")))
+	{
+_log("Scheduled Report tab is available");
+	}
+else{
+_log("Scheduled Report tab is Not available");
+}
+}
+
+function loginToAdvancedReporter($usernameAdv, $passwordAdv) {			
+		_navigateTo('http://' + $drmServer + ':8080/openreports');
+		if (_exists(_textbox("userName"))) {
+			 _setValue(_textbox("userName"), $usernameAdv);
+			 _setValue(_password("password"), $passwordAdv);
+			_click(_submit("Login"));
+			_waiT(5000);
+		}else{
+			_log("Advanced report already login");
+			}
+		if(_exists(_span("Invalid User Name or Password!")))
+			{
+			_log("Advanced report login is failing");
+			_assertTrue(false);
+			}
+	else
+			{
+			_log("Advanced report successfully login");
+}
+}
+

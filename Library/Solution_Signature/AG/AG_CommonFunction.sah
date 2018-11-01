@@ -1,0 +1,313 @@
+
+function Create_Remote_Component_AG_PR($systemType, $compname, $compip, $compsite, $remoteUserNameVal, $remotePwdVal){
+	Create_Remote_Component($systemType, $compname, $compip, $compsite, $remoteUserNameVal, $remotePwdVal);
+}
+
+function Create_Remote_Component_AG_DR($systemType, $compname, $compip, $compsite, $remoteUserNameVal, $remotePwdVal){
+	Create_Remote_Component($systemType, $compname, $compip, $compsite, $remoteUserNameVal, $remotePwdVal);
+}
+
+function Create_AG_Dataset_PR($systemTypeDataset, $dependentComponentName, $datasetName, $fileNameTextPath){
+	Create_APP_PFR_Dataset($systemTypeDataset, $dependentComponentName, $datasetName, $fileNameTextPath);
+}
+
+function Create_AG_Dataset_DR($systemTypeDataset, $dependentComponentName, $datasetName, $fileNameTextPath){
+	Create_APP_PFR_Dataset($systemTypeDataset, $dependentComponentName, $datasetName, $fileNameTextPath);
+}
+
+function Create_AG_ProtectionScheme_PR($systemTypeProtection,$sername,$mgmtHostPFR){
+	 Create_ProtectionScheme($systemTypeProtection,$sername,$mgmtHostPFR);
+}
+
+function Create_AG_ProtectionScheme_DR($systemTypeProtection,$sername,$mgmtHostPFR){
+	 Create_ProtectionScheme($systemTypeProtection,$sername,$mgmtHostPFR);
+}
+
+
+function Create_Remote_Component($systemType, $compname, $compip, $compsite, $remoteUserNameVal, $remotePwdVal) {
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($Components));
+	if (_exists(_link($compname) || _exists(_cell($compip)))) {
+		_log("component already exists");
+		
+		$compName = _getText(_link("/.*/", _leftOf(_cell($compip))));
+	} else {
+		_setSelected(_select($systemType), $systemType);
+		_wait(1000);
+		_click(_button($Go));
+		_setSelected(_select($ComponentType), $systemType);
+		_setValue(_textbox($compip), $compip);
+		_setValue(_textbox($compname), $compname);
+		_click(_button($Ping));
+		
+		if($subscriber != ""){
+			_setSelected(_select($subscriberId), $subscriber);
+		}
+		_wait(1000);
+		var $ping = "Ping to $compip was successful.";
+		_assertExists($ping);
+		_setSelected(_select($compsite), $compsite);
+		_setSelected(_select($credList), "Add new credential");
+		_setValue(_textbox($usernameval), $remoteUserNameVal);
+		_setValue(_password($pwdval), $remotePwdVal);
+		_click(_button($TestCredentials));
+		_wait(1000);
+		var $testCredentials = "Credential Check Passed";
+		_assertExists(_span($testCredentials));
+		_clearLastAlert();
+		_click(_button($Save));
+		navigateToDiscovery();
+		_click(_link($Subsystems));
+		_click(_link($Components));
+		if (_exists(_link($compname))) {
+			_log("component created succesfully");
+		} else {
+			_assertEqual("component created succesfully",_lastAlert()); 
+			_fail("component not created succesfully.So that stopping execution.");
+		}
+	}
+}// end of RemoteComponent()
+
+
+function Create_APP_PFR_Dataset($systemTypeDataset, $dependentComponentName, $datasetName, $fileNameTextPath){
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($Datasets));
+	if (_exists(_link($datasetName))) {
+		_assertExists($DatasetalreadyExists);
+	} else {
+	_setSelected(_select("systemType"), $systemTypeDataset);
+	_click(_button($Go));
+	_setSelected(_select("dependentComponentName"), $dependentComponentName);
+	_setValue(_textbox("datasetName"), $datasetName);
+	_setValue(_textbox($fileNameText), $fileNameTextPath);
+	_click(_button($Add));
+	_click(_button($Save));
+	_click(_link($Subsystems));
+	_click(_link($Datasets));
+	if (_exists(_link($datasetName))){
+		_assertExists($DatasetCreated);
+	} else {
+		_assertEqual("dataset created succesfully",_lastAlert()); 	
+		_fail("Dataset not created");
+	}
+}
+}
+
+function Create_ProtectionScheme($systemTypeProtection,$sername,$mgmtHostPFR)
+{
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($ProtectionSchemes));
+	if (_exists(_link($sername))) {
+		_assertExists($Protectionschemealreadyexists);
+	} else {
+	_setSelected(_select("systemType"), $systemTypeProtection);
+	_click(_button($Go));
+	
+	_setSelected(_select($mgmtHostPFR2), $mgmtHostPFR);
+	_setValue(_textbox("sername"), $sername);
+  if (_exists(_link($RegisterAgent))) 
+  {
+	_click(_link($RegisterAgent));
+	_wait(30000, _cell($CONNECTED));
+	} 
+	
+	var $status = _getCellText(_cell(1, _near(_cell($Status))));
+	if($status == $CONNECTED)
+	{
+	_assertExists($AgentisCONNECTED);
+	}
+	// code -added
+	else if (_exists(_link($RegisterAgent))) 
+  {
+	_click(_link($RegisterAgent));
+	_wait(110000, _cell("CONNECTED"));
+	} 
+	else
+	{
+	 _fail("Agent is not CONNECTED");
+	}
+	_clearLastAlert();
+	_click(_button($Save));
+	_wait(3000);
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($ProtectionSchemes));
+	if (_exists(_link($sername))) 
+	{
+	_assertExists($ProtectionSchemescreatedsuccessfully);
+	} 
+	else 
+	{
+		_assertEqual("Protection Scheme created",_lastAlert()); 
+	_fail("Protection Schemes not created successfully.");
+	}
+}
+}
+
+function Creation_APP_PFR_Group($groupName, $groupDescription, $SolutionSignature, $primaryComponents, $remoteComponents, $primaryDatasets, $remoteDatasets, $primaryProtections, $remoteProtections,$fileNameTextPath1,$fileNameTextPath2) {
+	$groupCreation = Create_FG($groupName, $groupDescription, $SolutionSignature, $primaryComponents, $remoteComponents, $primaryDatasets, $remoteDatasets, $primaryProtections, $remoteProtections);
+	if ($groupCreation.get($flag) == 0) {
+		_log("Same group name already exists");
+	} else {
+		_setValue(_textbox("interval"), "300");
+		_setSelected(_select("protlist"), $fileNameTextPath1);
+		_setSelected(_select("remoteSources"), $fileNameTextPath2);
+		_click(_button("//»//"));
+		_click(_button($Save));
+		
+		_click(_link($License));
+		_click(_checkbox("Recovery"));
+		_click(_checkbox("Test"));
+		_click(_button($licensebutton));
+		
+		_click(_link($RPORTO));
+		_setValue(_textbox("rpoint1"), "180");
+		_click(_button($apply));
+		
+		_click(_button($Finish));
+        _wait(5000);
+        navigateToGroups();
+		if (_exists(_link($groupName))) {
+			_assertExists($Groupcreatedsuccesfully);
+		} else {
+			_fail("Group not created succesfully.So that stopping execution.");
+		}
+	}
+}// End Of APP_FG_PFR_Group_Creation
+
+
+function Create_FG($groupName, $groupDescription, $SolutionSignature, $primaryComponents, $remoteComponents, $primaryDatasets, $remoteDatasets, $primaryProtections, $remoteProtections,$solsignVal) {
+	navigateToGroups();
+	var $flag;
+
+	if (_exists(_link($groupName))) {
+		$flag = 0;
+	} else {
+		$flag = 1;
+		//_setSelected(_select("createGroup"),"Recovery Group");
+		_click(_button($DiscoverRecoveryGroup));
+		_wait(1000);
+		//_click(_button("/Go/"));
+		_setValue(_textbox("groupName"), $groupName);
+		_setValue(_textarea("groupDescription"), $groupDescription);	
+		if($subscriber != ""){
+			_setSelected(_select($subscriberId), $subscriber);
+		}
+		_setSelected(_select($solutionType), $SolutionSignature);	
+		_click(_button($Next));
+		_wait(10000);
+		_click(_link($ServerComponent));
+		_click(_checkbox($primaryComponents, _near(_cell($primaryComponents, _under(_tableHeader($PrimaryComponent))))));
+		_click(_checkbox($remoteComponents, _near(_cell($remoteComponents, _under(_tableHeader($RemoteComponent))))));
+		_click(_submit($Save));
+		_wait(2000);
+		_click(_link($ApplicationDataset));
+		_click(_checkbox($showAll));
+		_wait(1000);
+		_setSelected(_select("primaryDatasets[1]"), $primaryDatasets);
+		_setSelected(_select("remoteDatasets[1]"), $remoteDatasets);
+		_click(_submit($SaveSlash));
+		_click(_link($DataProtection));
+		_setSelected(_select("primaryProtections"), $primaryProtections);
+		_setSelected(_select("remoteProtections"), $remoteProtections);
+		_click(_button($Save));
+		_click(_button($Next));
+		_wait(20000);
+	}
+	var $groupCreation = new java.util.Properties();
+	$groupCreation.put("flag", $flag);
+	return $groupCreation;
+} // End of groupCreation()
+
+/**
+* Function is to Verify Dataset status from GUI and DB from PR.
+*@param : null
+*@return : null
+* Author: Govinda Mengji
+*
+*/
+function Verify_APP_PFR_Dataset_Status_PR() {
+	Verify_Dataset_Status($datasetNamePR);
+}
+
+/**
+* Function is to Verify Dataset status from GUI and DB from DR.
+*@param : null
+*@return : null
+* Author: Govinda Mengji
+*
+*/
+function Verify_APP_PFR_Dataset_Status_DR() {
+	Verify_Dataset_Status($datasetNameDR);
+}
+
+/**
+* Function is to Verify Dataset status from GUI and DB.
+*@param : erName, $drmPassword,$compIP, $remoteUserNameValPR, $remotePwdValPR,$sernamePR,$datasetName
+*@return : null
+* Author: Govinda Mengji
+*
+*/
+function Verify_Dataset_Status($datasetName) {
+     var $datasetStatusGui = Get_Dataset_Status_Gui($datasetName);
+	_assertExists($datasetStatusGui.get($status), "Dataset Status from GUI");
+}
+
+
+
+
+
+
+/**
+* Function is to Verify_Dataset_Details from GUI PR
+*@param : null
+*@return : null
+* Author: Govinda Mengji
+*
+*/
+
+
+function Verify_Dataset_Details_APP_PFR_PR(){
+	Verify_Dataset_Details($datasetNamePR);
+	
+}
+
+/**
+* Function is to Verify_Dataset_Details from GUI DR
+*@param : null
+*@return : null
+* Author: Govinda Mengji
+*
+*/
+
+function Verify_Dataset_Details_APP_PFR_DR(){
+	Verify_Dataset_Details($datasetNameDR);
+	
+}
+
+/**
+* Function is to Verify_Dataset_Details from GUI 
+*@param :$datasetName
+*@return : null
+* Author: Govinda Mengji
+*
+*/
+
+function Verify_Dataset_Details($datasetName){
+	
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($Datasets));
+	_click(_link($datasetName));
+	
+	var $applicationSubSystemPathLocations=_getCellText(_cell(1,_near(_cell($ApplicationSubSystemPathLocation))));
+	var $applicationSubSystemPathLocation=$applicationSubSystemPathLocations.split(",");
+	_assertExists("ApplicationSubSystem Path/Location from GUI", $applicationSubSystemPathLocation[0]);
+	
+}
+
+
+

@@ -1,0 +1,558 @@
+
+function Agent_DB2PropertyFile_Update_001() {
+	try {
+		AgentBuild_Copy_into_AgentHost_PR();
+		} catch ($e) { 
+			_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Agent_PropertyFile_Update_001 () Function: AgentBuild_Copy_into_AgentHost_PR(),execution got failed.kindly check the log for more details");
+		_fail("Agent Build not coppied succesfully on PR.So that stopping execution.");
+	}
+	try {
+		AgentBuild_Copy_into_AgentHost_DR();
+		} catch ($e) { 
+			_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Agent_PropertyFile_Update_001 () Function: AgentBuild_Copy_into_AgentHost_DR ,execution got failed.kindly check the log for more details");
+		_fail("Agent Build not coppied succesfully on DR.So that stopping execution.");
+	}
+	try {
+		Update_DB2PropertyFile_LocalAgent_PR();
+		} catch ($e) { 
+			_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Agent_PropertyFile_Update_001 () Function: Update_PropertyFile_LocalAgent_PR() ,execution got failed.kindly check the log for more details");
+		_fail("Property File not updated succesfully on PR.So that stopping execution.");
+	}
+	try {
+		Update_DB2PropertyFile_LocalAgent_DR();
+		} catch ($e) { 
+			_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Agent_PropertyFile_Update_001 () Function: Update_PropertyFile_LocalAgent_DR,execution got failed.kindly check the log for more details");
+		_fail("Property File not updated succesfully on DR.So that stopping execution.");
+	}
+}
+
+function DB2_FDB_HP3PAR_Component_Local_Discovery_0002() {
+	try {
+		Create_Local_ComponentPR();
+		Create_Local_ComponentDR();
+		} catch ($e) { 
+			_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Component_Local_Discovery_0002(),Function: Create_Local_ComponentPR or Create_Local_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("component not created succesfully.So that stopping execution.");
+	}
+}
+
+function DB2_FDB_HP3PAR_Dataset_Discovery_0007() {
+	try {
+		Create_DB2_HP3PAR_Dataset_PR();// In Database > DB2_HP3PAR.sah
+		Create_DB2_HP3PAR_Dataset_DR();// In Database > DB2_HP3PAR.sah
+		} catch ($e) { 
+			_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:DB2_FDB_HP3PAR_Dataset_Discovery_0007(),Function: Create_DB2_HP3PAR_Dataset_PR or Create_DB2_HP3PAR_Dataset_DR ,execution got failed.kindly check the log for more details");
+		_fail("dataset not created succesfully.So that stopping execution.");
+	}
+
+}
+
+
+function DB2_HP3PAR_Protectionscheme_status_0021(){
+	try {
+		Get_Protectionscheme_Status_Gui_PR(); 
+		} catch ($e) { 
+			_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:DB2_HP3PAR_Protectionscheme_status_0021(),Function: Get_Protectionscheme_Status_Gui_PR ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		Get_Protectionscheme_Status_Gui_DR();
+		} catch ($e) { 
+			_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:DB2_HP3PAR_Protectionscheme_status_0021(),Function: Get_Protectionscheme_Status_Gui_PR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Agent_PropertyFile_Update_DB2() {
+	try {
+		AgentBuild_Copy_into_AgentHost_PR();
+		} catch ($e) { 
+			_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Agent_PropertyFile_Update_001 () Function: AgentBuild_Copy_into_AgentHost_PR(),execution got failed.kindly check the log for more details");
+		_fail("Agent Build not coppied succesfully on PR.So that stopping execution.");
+	}
+	try {
+		AgentBuild_Copy_into_AgentHost_DR();
+		} catch ($e) { 
+			_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Agent_PropertyFile_Update_001 () Function: AgentBuild_Copy_into_AgentHost_DR ,execution got failed.kindly check the log for more details");
+		_fail("Agent Build not coppied succesfully on DR.So that stopping execution.");
+	}
+	try {
+		Update_PropertyFile_LocalAgentDB2_PR();
+		} catch ($e) { 
+			_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Agent_PropertyFile_Update_001 () Function: Update_PropertyFile_LocalAgent_PR() ,execution got failed.kindly check the log for more details");
+		_fail("Property File not updated succesfully on PR.So that stopping execution.");
+	}
+	try {
+		Update_PropertyFile_LocalAgentDB2_DR();
+		} catch ($e) { 
+			_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Agent_PropertyFile_Update_001 () Function: Update_PropertyFile_LocalAgent_DR,execution got failed.kindly check the log for more details");
+		_fail("Property File not updated succesfully on DR.So that stopping execution.");
+	}
+}
+
+
+function DB2_FDB_HP3PAR_Dataset_status_0011() {
+	try {
+		Verify_DB2_HP3PAR_Dataset_Details_PR(); 
+		} catch ($e) { 
+			_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:DB2_HP3PAR_Dataset_status_0011(),Function: Verify_Dataset_Status_PR ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		Verify_DB2_HP3PAR_Dataset_Details_DR();
+		} catch ($e) { 
+			_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:DB2_HP3PAR_Dataset_status_0011(),Function: Verify_Dataset_Status_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function DB2_HP3PAR_Protectionscheme_Discovery_0018() {
+	try {
+		Create_DB2_HP3PAR_ProtectionschemePR(); 
+		Create_DB2_HP3PAR_ProtectionschemeDR(); 
+		} catch ($e) { 
+			_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: DB2_HP3PAR_Protectionscheme_Discovery_0018(),Function: Create_DB2_HP3PAR_ProtectionSchemePR or Create_DB2_HP3PAR_ProtectionSchemeDR ,execution got failed.kindly check the log for more details");
+		_fail("Protection Schemes not created succesfully.So that stopping execution.");
+	}
+}
+
+function DB2_HP3PAR_GroupCreation_001() {
+	try {
+		Create_DB2_HP3PAR_Group();
+		} catch ($e) { 
+			_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: DB2_HP3PAR_GroupCreation_0022(),Function: DB2_HP3PAR_GroupCreation ,execution got failed.kindly check the log for more details");
+		_fail("Group not created succesfully.So that stopping execution.");
+	}
+
+}
+
+
+function DB2_HP3PAR_Move_Group_Manage_0006() {
+	try {
+		Move_To_Manage_Group($groupName); // In Common > Group_Operation.sah
+		} catch ($e) { 
+			_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Move_Group_Manage_0006(),Function: Move_To_Manage_Group ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+
+}
+
+
+
+
+/**
+ * Function is for Adding the RepInfo and getStatus TCL file in PR and DR
+ * 
+ * @param :null
+ * @return : null
+ * @Author: Saiteja M
+ * 
+ */
+	function Add_RepInf_getStatus_PR_DR(){
+		try {
+			add_HP3PAR_RepInfo_getStatusTcl($compIPPR, $remoteUserNameValPR, $remotePwdValPR,$localAgentPathDR + "DRMAgents");
+			} catch($e) {
+				_assertTrue(false);
+				_log($e.toString(),"Custom1");
+				_log("Adding RepInfo and getStatus TCL files in PR got failed. kindly check the log for more details");
+			   }
+		try {
+			add_HP3PAR_RepInfo_getStatusTcl($compIPDR, $remoteUserNameValDR, $remotePwdValDR,$localAgentPathDR + "DRMAgents");
+			} catch($e) {
+				
+				_assertTrue(false);
+				_log($e.toString(),"Custom1");
+				_log("Adding RepInfo and getStatus TCL files in DR got failed. kindly check the log for more details");
+			} 
+	}
+
+
+/**
+ * Function is for Adding the start and stop tcl scripts in (PR) and (DR)
+ * 
+ * @param :null
+ * @return : null
+ * @Author: Saiteja M
+ * 
+ */
+	function Add_HP3PAR_StartTcl_PR() {
+	add_HP3PAR_StartTcl($compIPPR, $remoteUserNameValPR, $remotePwdValPR,$localAgentPathPR + "DRMAgents");
+	}
+
+	function Add_HP3PAR_StopTcl_PR() {
+	add_HP3PAR_StopTcl($compIPPR, $remoteUserNameValPR, $remotePwdValPR,$localAgentPathPR + "DRMAgents");
+    }
+
+	function Add_HP3PAR_StartTcl_DR() {
+		add_HP3PAR_StartTcl($compIPDR, $remoteUserNameValDR, $remotePwdValDR,$localAgentPathDR + "DRMAgents");
+	}
+
+	function Add_HP3PAR_StopTcl_DR() {
+		add_HP3PAR_StopTcl($compIPDR, $remoteUserNameValDR, $remotePwdValDR,$localAgentPathDR + "DRMAgents");
+	}
+	
+	
+ 
+/**
+ * Function is for Adding the start and stop tcl scripts in PR and DR
+ * 
+ * @param :null
+ * @return : null
+ * @Author: Saiteja M
+ * 
+ */
+function Add_HP3PAR_Start_Stop_TCL_PR_DR() {
+	try {
+		Add_HP3PAR_StartTcl_PR();
+	} catch ($e) { 
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("Adding StartTcl file to PR got failed.kindly check the log for more details");
+	}
+
+	try {
+	Add_HP3PAR_StopTcl_PR();
+	} catch($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("Adding StopTcl file to PR got failed.kindly check the log for more details");
+	}
+	try {
+	Add_HP3PAR_StartTcl_DR();
+	} catch($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("Adding StartTcl file to DR got failed.kindly check the log for more details");
+	}
+	try {
+	Add_HP3PAR_StopTcl_DR();
+	} catch($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("Adding StopTcl file to DR got failed.kindly check the log for more details");
+	}
+	
+}
+
+
+/**
+ * Function is for Creating DB in PR and DR
+ * 
+ * @param :null
+ * @return : null
+ * @Author: Saiteja M
+ * 
+ */
+   function Creating_DB_PR() {
+	   try {
+	Create_Db2Database($userPR, $pwdPR, $compIPPR, $dataBaseName);
+	   }
+	   catch($e) {
+		   _assertTrue(false);
+		   _log($e.toString(),"Custom1");
+			_log("Creating DB in PR got failed.kindly check the log for more details");
+	   }
+	}
+
+	function Creating_DB_DR() {
+		try {
+		Create_Db2Database($userDR, $pwdDR, $compIPDR, $dataBaseName);
+	}
+		catch($e) {
+			_assertTrue(false);
+			   _log($e.toString(),"Custom1");
+				_log("Creating DB in DR got failed.kindly check the log for more details");
+		}
+	}
+	
+
+
+/**
+	 * Function is for Droping DB in PR and DR
+	 * 
+	 * @param :null
+	 * @return : null
+	 * @Author: Saiteja M
+	 * 
+*/
+	   function Droping_DB_PR() {
+		   try {
+			   Drop_Db2Database($userPR, $pwdPR, $compIPPR, $dataBaseName);
+		}
+		   catch($e) {
+			   _assertTrue(false);
+			   _log($e.toString(),"Custom1");
+				_log("Droping DB in PR got failed.kindly check the log for more details"); }
+		}
+
+		function Droping_DB_DR() {
+			try {
+				Drop_Db2Database($userDR, $pwdDR, $compIPDR, $dataBaseName);
+				}
+				   catch($e) {
+					   _assertTrue(false);
+					   _log($e.toString(),"Custom1");
+						_log("Droping DB in DR got failed.kindly check the log for more details"); }
+		}
+	
+
+/**
+	 * Function is for Adding the RepInfo_tcl script in BP RepInfoworkflow (PR and DR)
+	 * 
+	 * @param :null
+	 * @return : null
+	 * @Author: Saiteja M
+	 * 
+ */
+	function Add_RepInfoTCL_BP_RepInfoWorkflw_PR(){
+		try {
+			Add_RepInfoTCL_BP_RepInfoWorkflw_DB2_HP3PAR_PR_DR($compNamePR,$TclPath_PR);
+			}
+			   catch($e) {
+				   _assertTrue(false);
+				   _log($e.toString(),"Custom1");
+					_log("Adding PR Repinfo.TCL file to Repinfo workflow got failed.kindly check the log for more details"); 
+					}
+	}
+	
+	
+	function Add_RepInfoTCL_BP_RepInfoWorkflw_DR(){
+		try {
+			Add_RepInfoTCL_BP_RepInfoWorkflw_DB2_HP3PAR_PR_DR($compNameDR,$TclPath_DR);
+			}
+			   catch($e) {
+				   _assertTrue(false);
+				   _log($e.toString(),"Custom1");
+					_log("Adding DR Repinfo.TCL file to Repinfo workflow got failed.kindly check the log for more details"); 
+					}
+	}
+	
+		
+/**
+		 * Function is for Checking Protectionscheme status when getStatus.tcl RepState is UNKNOWN PR and DR
+		 * 
+		 * @param :null
+		 * @return : null
+		 * @Author: Saiteja M
+		 * 
+	*/
+	function ProtectionStatus_GetSatatusTCL_RepState_Uknown_PR(){
+		try {
+			edit_getStatusTcl_HP3PAR_PR_Unknown_GetStatus_rep();
+			Protection_Scheme_Status_GetStatusTCL($sernamePR,$UNKNOWNHP3PAR);
+		}
+		  catch($e) {
+			  _assertTrue(false);
+			  _log($e.toString(),"Custom1");
+			  _log("ProtectionScheme updating to UKNOWN or Event raising got failed, kindly check the logs for more details");
+		  }
+	}
+	
+	function ProtectionStatus_GetSatatusTCL_RepState_Uknown_DR(){
+		try {
+			edit_getStatusTcl_HP3PAR_DR_Unknown_GetStatus_rep();
+			Protection_Scheme_Status_GetStatusTCL($sernameDR,$UNKNOWNHP3PAR);
+		}
+		  catch($e) {
+			  _assertTrue(false);
+			  _log($e.toString(),"Custom1");
+			  _log("ProtectionScheme updating to UKNOWN or Event raising got failed, kindly check the logs for more details");
+		  }
+	}
+		
+		
+/**
+	 * Function is for Checking PR Protectionscheme status when getStatus.tcl RepState is c (PR) and (DR)
+	 * 
+	 * @param :null
+	 * @return : null
+	 * @Author: Saiteja M
+	 * 
+	*/
+	function ProtectionStatus_GetSatatusTCL_RepState_Active_PR(){
+		try {
+			edit_getStatusTcl_HP3PAR_PR_Active_GetStatus_rep();
+			Protection_Scheme_Status_GetStatusTCL($sernamePR,$ACTIVEHP3PAR);
+		}
+		  catch($e) {
+			  _assertTrue(false);
+			  _log($e.toString(),"Custom1");
+			  _log("ProtectionScheme updating to ACTIVE or Event raising got failed, kindly check the logs for more details");
+		  }
+	}
+
+	
+	function ProtectionStatus_GetSatatusTCL_RepState_Active_DR(){
+		try {
+			edit_getStatusTcl_HP3PAR_DR_Active_GetStatus_rep();
+			Protection_Scheme_Status_GetStatusTCL($sernameDR,$ACTIVEHP3PAR);
+		}
+		  catch($e) {
+			  _assertTrue(false);
+			  _log($e.toString(),"Custom1");
+			  _log("ProtectionScheme updating to ACTIVE or Event raising got failed, kindly check the logs for more details");
+		  }
+	}
+
+/**
+ * Function is for Checking PR Protectionscheme status when getStatus.tcl RepState is INACTIVE (PR) and (DR)
+ * 
+ * @param :null
+ * @return : null
+ * @Author: Saiteja M
+ * 
+*/
+	function ProtectionStatus_GetSatatusTCL_RepState_INActive_PR(){
+		try {
+			edit_getStatusTcl_HP3PAR_PR_Inactive_GetStatus_rep();
+			Protection_Scheme_Status_GetStatusTCL($sernamePR,$INACTIVEHP3PAR);
+		}
+		  catch($e) {
+			  _assertTrue(false);
+			  _log($e.toString(),"Custom1");
+			  _log("ProtectionScheme updating to INACTIVE or Event raising got failed, kindly check the logs for more details");
+		  }
+	}
+
+	
+	function ProtectionStatus_GetSatatusTCL_RepState_INActive_DR(){
+		try {
+			edit_getStatusTcl_HP3PAR_DR_Inactive_GetStatus_rep();
+			Protection_Scheme_Status_GetStatusTCL($sernameDR,$INACTIVEHP3PAR);
+		}
+		  catch($e) {
+			  _assertTrue(false);
+			  _log($e.toString(),"Custom1");
+			  _log("ProtectionScheme updating to INACTIVE or Event raising got failed, kindly check the logs for more details");
+		  }
+	}
+	
+	
+
+
+/**
+* Function is for Checking DR Protectionscheme status when getStatus.tcl RepState is INACTIVE (PR) AND (DR)
+* 
+* @param :null
+* @return : null
+* @Author: Saiteja M
+* 
+*/
+	function Datalag_Updated_PR_001(){
+		try{
+			Datalag_Updated_Inactive_PR();
+		}
+		catch($e){
+			_assertTrue(false);
+			_log($e.toString(),"Custom1");
+			  _log("Datalag update or Deviation Event raising got failed, kindly check the logs for more details");
+		}
+	}
+	
+	
+	function Datalag_Updated_DR_001(){
+		try{
+			Datalag_Updated_Inactive_DR();
+		}
+		catch($e){
+			_assertTrue(false);
+			_log($e.toString(),"Custom1");
+			  _log("Datalag update or Deviation Event raising got failed, kindly check the logs for more details");
+		}
+	}
+
+/**
+* Function is for the Datalag and RepStatus in Replication Page after editing the RepInfo.TCL to UNKNOWN (PR) and (DR)
+* 
+* @param :null
+* @return : null
+* @Author: Saiteja M
+* 
+*/
+	function Datalag_RepStatus_UNKNOWN_PR_001(){
+		try {
+			Datalag_RepStatus_RepInfoTCL_PR_Unknown();
+		}
+		catch($e){
+			_assertTrue(false);
+			_log($e.toString(),"Custom1");
+			  _log("Datalag or Repstate update got failed, kindly check the logs for more details");
+		}
+	}
+	
+	
+
+	function Datalag_RepStatus_UNKNOWN_DR_001(){
+		try {
+			Datalag_RepStatus_RepInfoTCL_DR_Unknown();
+		}
+		catch($e){
+			_assertTrue(false);
+			_log($e.toString(),"Custom1");
+			  _log("Datalag or Repstate update got failed, kindly check the logs for more details");
+		}
+	}
+
+	
+/**
+ * Function is for checking replication status  by clicking start and stop replication buttons in GUI.
+ * 
+ * @param :null
+ * @return : null
+ * @Author: Saiteja M
+ * 
+*/ 
+	
+	function Start_Replication_Button_ReplicationStatus_ACTIVE(){
+		try {
+			Start_Replication_Button_ACTIVE();
+		}
+		catch($e){
+			_assertTrue(false);
+			_log($e.toString(),"Custom1");
+			  _log("Replication status update got failed, kindly check the logs for more details");
+		}
+	}
+	
+	function Stop_Replication_Button_ReplicationStatus_INACTIVE(){
+		try {
+			Stop_Replication_Button_INACTIVE();
+		}
+		catch($e){
+			_assertTrue(false);
+			_log($e.toString(),"Custom1");
+			  _log("Replication status update got failed, kindly check the logs for more details");
+		}
+	}
+	
+	

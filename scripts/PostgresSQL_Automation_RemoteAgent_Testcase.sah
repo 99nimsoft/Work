@@ -1,0 +1,371 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the remote agent test cases which are the part of  Posrgres SR solution. 
+ ** AuthorName : Aditi Jain
+ ** Created Date : Nov 2013
+ ************************************************************************/
+
+_log("=================================Pre-Condition===================================", "Custom1");
+
+//don't change this below line.
+_include("../Library/Solution_Signature/Include/PostgresSQL_include.sah");
+//_include("../conf/DRMInstallation_Parameter_New.sah");
+_include("../conf/DRMInstallation_Parameter.sah");
+// mentioned the correct parameter file name which user are going to execute within the "" code.
+_include("../conf/PostgresSQL/PostgresSQL_Remote_Agent_Parameter.sah");
+
+_include("../conf/PostgresSQL/UserSelected_PostgresSQL_Testcase.sah");
+
+_include("../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+// *************************************************************************************
+// Notes: below test cases for remote agent
+
+WorkFlow_copy_001();
+
+UnInstall_Remote_Agent_SilentMode_PR();  //uninstalling remote Agent. Pfr Services for PR
+UnInstall_Remote_Agent_SilentMode_DR(); //uninstalling remote Agent. Pfr Services for DR
+AgentBuild_Copy_into_PFRFile_PR();
+AgentBuild_Copy_into_PFRFile_DR();
+Copy_Property_file();
+Update_PropertyFile_RemoteAgent_PR();
+Update_PropertyFile_RemoteAgent_DR();
+Install_Remote_Agent_SilentMode_PR();
+Install_Remote_Agent_SilentMode_DR();
+
+
+Login_001();
+_log("=================================Test========================================", "Custom1");
+
+
+if ($g_executePostgresSRAll == "Y" || $g_agentNodePostgresSR == "Y") {
+	var $test2 = _testcase("Object_Manager/ Common/ Components/ Component_04 ", "Create Agent Node");
+	$test2.start();
+	Agent_node_001();
+	$test2.end();
+}
+
+if ($g_executePostgresSRAll == "Y" || $g_componentRemotePostgresSR == "Y") {
+	var $test3 = _testcase("Object_Manager/ Common/ Components/ Component_0003", "Create New Component");
+	$test3.start();
+	PostgresSR_Component_Remote_Discovery_0003();
+	$test3.end();
+}
+
+if ($g_executePostgresSRAll == "Y" || $g_datasetPostgresSR == "Y") {
+	var $test4 = _testcase("Continuity_Manager/ Template/ PostgresSR_SR/ PostgresSR_0004", "Dataset Discovery");
+	$test4.start();
+	PostgresSR_Dataset_Discovery_0004();
+	$test4.end();
+}
+
+if ($g_executePostgresSRAll == "Y" || $g_datasetStatusPostgresSR == "Y") {
+	var $test5 = _testcase("Continuity_Manager/ Template/ PostgresSR_SR/ PostgresSR_0005", "Dataset Status");
+	$test5.start();
+	PostgresSR_Dataset_status_0005();
+	$test5.end();
+}
+
+if ($g_executePostgresSRAll == "Y" || $g_protectionSchemePostgresSR == "Y") {
+	var $test6 = _testcase("Continuity_Manager/ Template/ PostgresSR_SR/ PostgresSR_0006", "Protection Scheme discovery");
+	$test6.start();
+	PostgresSR_Protectionscheme_Discovery_0006();
+
+	$test6.end();
+}
+
+if ($g_executePostgresSRAll == "Y" || $g_protectionSchemeStatusPostgresSR == "Y") {
+	var $test7 = _testcase("Continuity_Manager/ Template/ PostgresSR_SR/ PostgresSR_0007", "Protection Scheme status");
+	$test7.start();
+	PostgresSR_Protectionscheme_status_0007();
+	$test7.end();
+}
+
+if ($g_executePostgresSRAll == "Y" || $g_groupCreationPostgresSR == "Y") {
+	var $test8 = _testcase("Continuity_Manager/Template/PostgresSR_SR/PostgresSR_0008", "PostgresSR Group Creation");
+	$test8.start();
+	PostgresSR_GroupCreation_0008();
+	$test8.end();
+}
+
+if ($g_executePostgresSRAll == "Y" || $g_moveToManagePostgresSR == "Y") {
+	var $test9 = _testcase("Continuity_Manager/Common/FG/Group/GroupCreation_0009", "Move group to manage");
+	$test9.start();
+	PostgresSR_Move_Group_Manage_0009();
+	$test9.end();
+}
+
+if ($g_executePostgresSRAll == "Y" || $g_changeContinuityStatePostgresSR == "Y") {
+	var $test10 = _testcase("Continuity_Manager/Common/FG/Manage/Change_Continuity_State_0010", "Change Continuity Status");
+	$test10.start();
+	PostgresSR_Change_Continuity_State_0010();
+	$test10.end();
+}
+
+if ($g_executePostgresSRAll == "Y" || $g_componentStatusPostgresSR == "Y") {
+	var $test11 = _testcase("Object_Manager/ Common/ Components/ Subsystem_Moinitoring_0011", "Verifying Component Status");
+	$test11.start();
+	PostgresSR_Component_Status_0011();
+	$test11.end();
+}
+
+if ($g_executePostgresSRAll == "Y" || $g_continuityStatePostgresSR == "Y") {
+	var $test12 = _testcase("Continuity_Manager/Common/FG/Monitor/MON_0012", "Checking Continuity Status");
+	$test12.start();
+	PostgresSR_Contiunity_Status_0012();
+
+	$test12.end();
+}
+
+
+
+
+if ($g_executePostgresSRAll == "Y" || $g_startNCPostgresSR == "Y") {
+	var $test13 = _testcase("Continuity_Manager/Common/FG/Manage/NormalCopy_0013", "Start NC");
+	$test13.start();
+	PostgresSR_Start_NormalCopy_0013();
+
+	$test13.end();
+}
+
+if ($g_executePostgresSRAll == "Y" || $g_SOExecutionPostgresSR == "Y") {
+	var $test14 = _testcase("Continuity_Manager/ Template/ PostgresSR/", "Publish FO Workflow");
+	$test14.start();
+	PostgresSR_Publish_FO_0014();
+	$test14.end();
+}
+
+
+
+
+if ($g_executePostgresSRAll == "Y" || $g_groupInformationNCPostgresSR == "Y") {
+	var $test15 = _testcase("Continuity_Manager/Common/FG/Manage/Continuity_Management_0015", "Group Information During NC");
+	$test15.start();
+	PostgresSR_Continuity_Work_Flow_NC_0015();
+	$test15.end();
+}
+
+
+
+if ($g_executePostgresSRAll == "Y" || $g_monitorRelationshipPostgresSR == "Y") {
+	var $test16 = _testcase("Continuity_Manager/Common/FG/Monitor/Normal_Copy_0016", "Monitor Relationship");
+	$test16.start();
+	PostgresSR_Monitor_Relationship_0016();
+	$test16.end();
+}
+
+
+if ($g_executePostgresSRAll == "Y" || $g_replicationNCPostgresSR == "Y") {
+	var $test17 = _testcase("Continuity_Manager/ Template/ PostgresSR_SR/ PostgresSR_0028", "Replication Screen During NC");
+	$test17.start();
+	PostgresSR_NC_PostgresSR_Replication_0017();
+	$test17.end();
+}
+
+if ($g_executePostgresSRAll == "Y" || $g_rpoNCPostgresSR == "Y") {
+	var $test18 = _testcase("Continuity_Manager/ Template/ PostgresSR_SR/ PostgresSR_0018 ", "RPO During NC");
+	$test18.start();
+	PostgresSR_NC_PostgresSR_RPO_0018();
+	$test18.end();
+}
+
+if ($g_executePostgresSRAll == "Y" || $g_rtoNCPostgresSR == "Y") {
+	var $test19 = _testcase("Continuity_Manager/ Template/ PostgresSR_SR/ PostgresSR_0019", "RTO During NC");
+	$test19.start();
+	PostgresSR_NC_PostgresSR_RTO_0019();
+	$test19.end();
+}
+
+if ($g_executePostgresSRAll == "Y" || $g_stopNCPostgresSR == "Y") {
+	var $test20 = _testcase(" Continuity_Manager/ Common/ FG/ Manage/ Graceful_Shutdown_0020", "Stop NC ");
+	$test20.start();
+	PostgresSR_Stop_NC_0020();
+	$test20.end();
+}
+
+if ($g_executePostgresSRAll == "Y" || $g_startSOPostgresSR == "Y") {
+	var $test21 = _testcase(" Continuity_Manager/ Common/ FG/ Tests/ SOSB_0021", "Start SO");
+	$test21.start();
+	PostgresSR_Start_SO_0021();
+	$test21.end();
+}
+
+if ($g_executePostgresSRAll == "Y" || $g_SOExecutionPostgresSR == "Y") {
+	var $test22 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0022", "SO Execution");
+	$test22.start();
+	PostgresSR_SO_Execution_0022();
+	$test22.end();
+}
+
+
+if ($g_executePostgresSRAll == "Y" || $g_startRNCPostgresSR == "Y") {
+	var $test23 = _testcase("Start_RNC_0023", "Start RNC");
+	$test23.start();
+	PostgresSR_Start_RNC_0023();
+	$test23.end();
+}
+
+if ($g_executePostgresSRAll == "Y" || $g_groupInformationRNCPostgresSR == "Y") {
+	var $test24 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0024", "Group Information");
+	$test24.start();
+	PostgresSR_RNC_Execution_0024();
+
+	$test24.end();
+}
+
+
+ 
+ if ($g_executePostgresSRAll == "Y" || $g_groupSnapshotRNCPostgresSR == "Y") {
+	var $test25 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0025", "Group Snapshot");
+	$test25.start();
+	PostgresSR_RNC_Continuity_Work_Flow_0025();
+	$test25.end();
+}
+
+ if ($g_executePostgresSRAll == "Y" || $g_monitorRelationshipPostgresSR == "Y") {
+		var $test16 = _testcase("Continuity_Manager/Common/FG/Monitor/Normal_Copy_0016", "Monitor Relationship");
+		$test16.start();
+		PostgresSR_Monitor_Relationship_0016();
+		$test16.end();
+	}
+
+
+if ($g_executePostgresSRAll == "Y" || $g_rpoRNCPostgresSR == "Y") {
+	var $test26 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0026", "RNC RPO");
+	$test26.start();
+	PostgresSR_RNC_Rpo_Monitor_0026();
+
+	$test26.end();
+}
+
+
+if ($g_executePostgresSRAll == "Y" || $g_stopRNCPostgresSR == "Y") {
+	var $test27 = _testcase("Continuity_Manager/ Common/ FG/ Tests/ SOSB_0027", "Stop RNC");
+	$test27.start();
+	PostgresSR_Stop_RNC_0027();
+	$test27.end();
+}
+
+if ($g_executePostgresSRAll == "Y" || $g_startSBPostgresSR == "Y") {
+	var $test28 = _testcase("Continuity_Manager/ Common/ FG/ Tests/ SOSB_0028", "Start SB");
+	$test28.start();
+	PostgresSR_Start_SB_0028();
+	$test28.end();
+}
+
+if ($g_executePostgresSRAll == "Y" || $g_SBExecutionPostgresSR == "Y") {
+	var $test29 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0029", "SB Execution");
+	$test29.start();
+	PostgresSR_SB_Execution_0029();
+	$test29.end();
+}
+
+if ($g_executePostgresSRAll == "Y" || $g_monitorSBPostgresSR == "Y") {
+	var $test30 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0030", "SB Monitor Manage");
+	$test30.start();
+	PostgresSR_SB_Monitor_Manage_0030();
+	$test30.end();
+}
+
+///////////////////DRYRUN REPORT SCRIPT/////////////////////////////////////
+
+if ($g_executePostgresSRAll == "Y" || $g_PostgresSR_Dryrun_Report == "Y") {
+	var $test26 = _testcase("Continuity_Manager/Common/FG/DryRun_Report_Function", "verify Dry run reports");
+	$test26.start();
+	PostgresSR_Dryrun_Report_Testcase();
+    $test26.end();
+}
+
+if ($g_executePostgresSRAll == "Y" || $g_groupInformationNCPostgresSR == "Y") {
+	var $test15 = _testcase("Continuity_Manager/Common/FG/Manage/Continuity_Management_0015", "Group Information During NC");
+	$test15.start();
+	PostgresSR_Continuity_Work_Flow_NC_0015();
+	$test15.end();
+}
+
+if ($g_executePostgresSRAll == "Y" || $g_monitorRelationshipPostgresSR == "Y") {
+	var $test16 = _testcase("Continuity_Manager/Common/FG/Monitor/Normal_Copy_0016", "Monitor Relationship");
+	$test16.start();
+	PostgresSR_Monitor_Relationship_0016();
+	$test16.end();
+}
+
+
+if ($g_executePostgresSRAll == "Y" || $g_replicationNCPostgresSR == "Y") {
+	var $test17 = _testcase("Continuity_Manager/ Template/ PostgresSR_SR/ PostgresSR_0028", "Replication Screen During NC");
+	$test17.start();
+	PostgresSR_NC_PostgresSR_Replication_0017();
+	$test17.end();
+}
+
+if ($g_executePostgresSRAll == "Y" || $g_rtoNCPostgresSR == "Y") {
+	var $test19 = _testcase("Continuity_Manager/ Template/ PostgresSR_SR/ PostgresSR_0019", "RTO During NC");
+	$test19.start();
+	PostgresSR_NC_PostgresSR_RTO_0019();
+	$test19.end();
+}
+if ($g_executePostgresSRAll == "Y" || $g_osAgentStopEventPostgresSR == "Y") {
+	var $test31 = _testcase("Continuity_Manager/Template/PostGre_with_Streaming_Replicator/PostgreSQL_0031", "SB Monitor Manage");
+	$test31.start();
+	PostgresSR_Remote_Stop_linux_Agent_0031();
+	$test31.end();
+}
+
+if ($g_executePostgresSRAll == "Y" || $g_osAgentStartEventPostgresSR == "Y") {
+	var $test32 = _testcase("Continuity_Manager/Template/PostGre_with_Streaming_Replicator/PostgreSQL_0032", "SB Monitor Manage");
+	$test32.start();
+	PostgresSR_Remote_Start_linux_Agent_0032();
+	$test32.end();
+}
+if($g_executePostgresSRAll == "Y" || $g_Validation_Manager_Execution == "Y"){
+	var $test50 = _testcase("APP_PFR/APP_PFR_Group_Health_Status_0101","Validation Manager Execution");
+	$test50.start();
+	Validation_Manager_Execution();
+	$test50.end();
+	}
+/*
+if ($g_executePostgresSRAll == "Y" || $g_startFOPostgresSR == "Y") {
+	var $test39 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0001", "Start FO");
+	$test39.start();
+	PostgresSR_Start_FO_0001();
+	$test39.end();
+}
+
+if ($g_executePostgresSRAll == "Y" || $g_FOExecutionPostgresSR == "Y") {
+	var $test40 = _testcase("Continuity_Manager/ Template/ PostgresSR_SR/ PostgresSR_0058", "FO Execution");
+	$test40.start();
+	PostgresSR_FO_execution_0058();
+	$test40.end();
+}
+
+if ($g_executePostgresSRAll == "Y" || $g_continuityStatusFOPostgresSR == "Y") {
+	var $test41 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0007", "Continuity Status FO");
+	$test41.start();
+	PostgresSR_Continuity_Status_FO_0007();
+	$test41.end();
+}
+
+if ($g_executePostgresSRAll == "Y" || $g_rpoFOPostgresSR == "Y") {
+	var $test42 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0003", "RPO FO");
+	$test42.start();
+	PostgresSR_FO_RPO_0003();
+	$test42.end();
+}
+
+if ($g_executePostgresSRAll == "Y" || $g_monitorManageFOPostgresSR == "Y") {
+	var $test43 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0006", "Monitor Manage FO");
+	$test43.start();
+	PostgresSR_FO_Monitor_Manage_0006();
+	$test43.end();
+}
+
+if ($g_executePostgresSRAll == "Y" || $$g_continuityStateFO == "Y") {
+	var $test44 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0006", "Monitor Manage FO");
+	$test44.start();
+	PostgresSR_Continuity_Status_FO_0007();
+	$test44.end();
+}
+*/
+_log("================================Post-Condition================================== ", "Custom1");
+
+Logout_001();

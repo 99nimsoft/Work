@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?><ws:workflow xmlns:ws="http://www.sanovi.com/panaces/workflow/">
+    <userDef size="0"/>
+    <name>FJWFBPI</name>
+    <version>7.1 35316</version>
+    <description>null</description>
+    <approverList/>
+    <action-list>
+        <action id="0" successPathId="1" failurePathId="1">
+            <registeredName>Custom</registeredName>
+            <name>Custom</name>
+            <uniqueName/>
+            <description>This is Custom action</description>
+            <timeToExecute>0</timeToExecute>
+            <recurrence>0</recurrence>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction etcComputationType="userDefined">
+                    <serverName/>
+                    <command/>
+                    <timeout>180</timeout>
+                    <sudoUsername/>
+                    <execDir/>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>7724</joinId>
+            <version>7.1 35316</version>
+        </action>
+        <fork-group id="1" successPathId="2">
+            <registeredName>DefaultForkGroup</registeredName>
+            <name>DefaultForkGroup</name>
+            <uniqueName/>
+            <description>DefaultForkGroup action</description>
+            <deletable>false</deletable>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:defaultForkGroup>
+                    <actionsToWaitForList>
+                        <item>7726</item>
+                    </actionsToWaitForList>
+                    <waitForAllActions>true</waitForAllActions>
+                </ws:defaultForkGroup>
+            </privateProperties>
+            <action-list>
+                <action id="0" final="true">
+                    <registeredName>BPIAction</registeredName>
+                    <name>BPIAction</name>
+                    <uniqueName/>
+                    <description>BPIAction action</description>
+                    <deletable>false</deletable>
+                    <actionFailureEvent severity="INFO"/>
+                    <userInputEvent severity="INFO"/>
+                    <userInputOnFailureEvent severity="CRITICAL"/>
+                    <privateProperties>
+                        <ws:WorkflowAction name="ForkjoinRAL2" group="Oracle_DG_Remote" operation="START" block="true"/>
+                    </privateProperties>
+                    <joinId>7726</joinId>
+                    <version>7.1 35316</version>
+                </action>
+            </action-list>
+        </fork-group>
+        <action id="2" final="true">
+            <registeredName>Custom</registeredName>
+            <name>Custom</name>
+            <uniqueName/>
+            <description>This is Custom action</description>
+            <timeToExecute>0</timeToExecute>
+            <recurrence>0</recurrence>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction etcComputationType="userDefined">
+                    <serverName/>
+                    <command/>
+                    <timeout>180</timeout>
+                    <sudoUsername/>
+                    <execDir/>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>7727</joinId>
+            <version>7.1 35316</version>
+        </action>
+    </action-list>
+</ws:workflow>

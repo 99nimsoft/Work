@@ -1,0 +1,67 @@
+
+var $l_customActionRAL = _readExcelFile("../../../conf/RAL/SFR/SFR_RalInputs.xls","Sheet1");  //To read the inputs from the drm_inputs excel file.
+
+
+var $l_filterActionRAL = _readExcelFile("../../../conf/RAL/SFR/SFR_RalInputs.xls","Sheet2");  //To read the inputs from the drm_inputs excel file.
+
+
+var $l_sync_Transfer_ActionRAL = _readExcelFile("../../../conf/RAL/SFR/SFR_RalInputs.xls","Sheet3");
+
+
+$serverIP = $l_customActionRAL[3][3];
+$serverUsername = $l_customActionRAL[4][3];
+$serverPassword = $l_customActionRAL[5][3];
+$groupName = "app_pfr_remote"; //$l_customActionRAL[6][3];
+$directoryPath = $l_customActionRAL[7][3];
+	
+$WorkflowName = "AutomationRal";
+
+$site = "DRM_Site";
+$os = "Linux";
+$compName = $os + "_" +$serverIP; 
+
+$ralString = "PFR";
+$ralCategory = "PFR";
+$ralName = " PFROperation";
+
+
+//////////////////////////////////////////////////Filter File set//////////////////////////////////////////////////////////////
+$sourceFolder = $l_filterActionRAL[4][12];
+$RecursivePath = $l_filterActionRAL[5][12];
+
+$filefolder = $l_filterActionRAL[4][9]; // file/folder 
+
+
+
+$Exclude = $l_filterActionRAL[4][2];
+$Include = $l_filterActionRAL[4][3];
+$files = $l_filterActionRAL[4][4];
+$Directories = $l_filterActionRAL[4][5];
+$Both = $l_filterActionRAL[4][6];
+$Casesensitive = $l_filterActionRAL[4][7];
+$Recursive = $l_filterActionRAL[4][8];
+
+
+//////////////////////////////////////////////////Sync Delete File set//////////////////////////////////////////////////////////////
+
+$compNameIP_PR = $l_sync_Transfer_ActionRAL[7][2];
+$compNameIP_DR = $l_sync_Transfer_ActionRAL[8][2];
+$sername = $l_sync_Transfer_ActionRAL[13][2];  //Current Production Service
+$sourceDirectory = $l_sync_Transfer_ActionRAL[14][2]; 
+$targetDirectory  = $l_sync_Transfer_ActionRAL[15][2];
+
+$cmdScriptPathPR = $sourceDirectory;
+$compipPR = $compNameIP_PR;
+$remoteUserNameValPR = $l_sync_Transfer_ActionRAL[9][2]; 
+$remotePwdValPR = $l_sync_Transfer_ActionRAL[10][2];
+$syncdeletefile= $l_sync_Transfer_ActionRAL[16][2];
+$cmdScriptPathDR = $targetDirectory;
+
+$compipDR =$compNameIP_DR;
+$remoteUserNameValDR = $l_sync_Transfer_ActionRAL[11][2];
+$remotePwdValDR = $l_sync_Transfer_ActionRAL[12][2];
+//////////////////////////////////////////////////TRANSFERr File set//////////////////////////////////////////////////////////////
+$sourceHost = $compNameIP_PR; 
+$targetHost = $compNameIP_DR;
+$sourceDir = $sourceDirectory;
+$targetDirAdd = $targetDirectory;

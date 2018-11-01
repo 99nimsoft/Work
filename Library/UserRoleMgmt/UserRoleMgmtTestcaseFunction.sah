@@ -1,0 +1,868 @@
+function createUsers_0001(){
+	try {
+		CreateUser($supadmin);
+		CreateUser($admin);
+		CreateUser($operator);
+		CreateUser($notification);
+		} catch ($e) { 
+		  _log($e.toString(),"Fetchlog");
+		_log("for test Case ID: Creation  of  different users,execution got failed.kindly check the log for more details");
+		_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+}
+
+function Assign_Group_User_0001(){
+	try {
+		//Assign_Group_User($username,$groupName);
+		Assign_Group_User($admin,$groupName);
+		Assign_Group_User($operator,$groupName);
+		Assign_Group_User($notification,$groupName);
+		} catch ($e) { 
+		  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID: Assigning Groups to different Users,execution got failed.kindly check the log for more details");
+		//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+}
+
+function Verifying_CreateUserlink_0001(){
+	
+	try {
+		login($supuname, $suppwd);
+		VerifyCreate_Userlink();
+		} catch ($e) { 
+		  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID: VerifyCreate_Userlink: VerifyCreate_Userlink for support user,execution got failed.kindly check the log for more details");
+		//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+		
+	try {
+		login($admin, $password1);
+		VerifyCreate_Userlink();
+		} catch ($e) { 
+		  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID: VerifyCreate_Userlink: VerifyCreate_Userlink for admin user,execution got failed.kindly check the log for more details");
+		//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+		
+		try {
+			login($operator, $password1);
+			VerifyCreate_Userlink();
+			} catch ($e) { 
+			  _log($e.toString(),"UserRoleManagement");
+			_log("for test Case ID:VerifyCreate_Userlink: VerifyCreate_Userlink for operaotr user,execution got failed.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+}
+function Verifying_SetSystemOption_0002(){
+	try {
+		login($supuname, $suppwd);
+		VerifySystemOption_link();
+		} catch ($e) { 
+		  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID: VerifySystemOption: VerifySystemOption_link(),execution got failed for  support  user.kindly check the log for more details");
+		//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+		
+	try {
+		login($admin, $password1);
+		VerifySystemOption_link();
+		} catch ($e) { 
+		  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID: VerifySystemOption: VerifySystemOption_link(),execution got failed for  admin  user,execution got failed.kindly check the log for more details");
+		//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+		
+		try {
+			login($operator, $password1);
+			VerifySystemOption_link();
+			} catch ($e) { 
+			  _log($e.toString(),"UserRoleManagement");
+			_log("for test Case ID:  VerifySystemOption: VerifySystemOption_link(),execution got failed for operator user,execution got failed.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+	
+}
+function Verifying_UserPreference_0003(){
+	try {
+		login($supadmin, $password1);
+		VerifyUserPreference_link();
+		} catch ($e) { 
+		  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID:  VerifyUserPreference_link: VerifyUserPreference_link(),execution got failed for SupperAdmin user,execution got failed.kindly check the log for more details");
+	//	_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+		
+		try {
+			login($supuname, $suppwd);
+			VerifyUserPreference_link();
+			} catch ($e) { 
+			  _log($e.toString(),"UserRoleManagement");
+			_log("for test Case ID: VerifyUserPreference_link: VerifyUserPreference_link(),execution got failed for support user.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+		
+	try {
+		login($admin, $password1);
+		VerifyUserPreference_link();
+		} catch ($e) { 
+		  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID: VerifyUserPreference_link: VerifyUserPreference_link(),execution got failed for Admin user.kindly check the log for more details");
+		//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+		
+		try {
+			login($operator, $password1);
+			VerifyUserPreference_link();
+			} catch ($e) { 
+			  _log($e.toString(),"UserRoleManagement");
+			_log("for test Case ID: VerifyUserPreference_link: VerifyUserPreference_link(),execution got failed for operator user.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+
+}
+
+function Verify_UserModify_Properties_0004(){
+	
+	try {
+		login($supadmin, $password1);
+		VerifyUserModifyProperties_link($supadmin);
+		} catch ($e) { 
+		  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID: Verify_UserModify_Properties_link: Verify_UserModify_Properties_link(),execution got failed for SuperAdmin user.kindly check the log for more details");
+		//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+		
+	try {
+		login($supuname, $suppwd);
+		VerifyUserModifyProperties_link($supuname);
+		} catch ($e) { 
+		  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID:  Verify_UserModify_Properties_link: Verify_UserModify_Properties_link(),execution got failed for support user.kindly check the log for more details");
+		//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+		
+	try {
+		login($admin, $password1);
+		VerifyUserPreference_link($admin);
+		} catch ($e) { 
+		  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID: Verify_UserModify_Properties_link: Verify_UserModify_Properties_link(),execution got failed for admin user.kindly check the log for more details");
+		//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+		
+		try {
+			login($operator, $password1);
+			VerifyUserPreference_link($operator);
+			} catch ($e) { 
+			  _log($e.toString(),"UserRoleManagement");
+			_log("for test Case ID: Verify_UserModify_Properties_link: Verify_UserModify_Properties_link(),execution got failed for operator user.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+	
+}
+ function   Verify_DeleteUser_Link_0005(){
+	 
+	 try {
+		    login($supadmin, $password1);
+			VerifyDeleteUserLink($supadmin);
+			} catch ($e) { 
+			  _log($e.toString(),"Fetchlog");
+			_log("for test Case ID: Verify_DeleteUser_Link: Verify_DeleteUser_Link(),execution got failed for SuperAdmin user.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+			try {
+				login($supuname, $suppwd);
+				VerifyDeleteUserLink($supuname);
+				} catch ($e) { 
+				  _log($e.toString(),"Fetchlog");
+				_log("for test Case ID: Verify_DeleteUser_Link: Verify_DeleteUser_Link,execution got failed for Support user.kindly check the log for more details");
+			//	_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+				}
+				
+			try {
+				login($admin, $password1);
+				VerifyDeleteUserLink($admin);
+				} catch ($e) { 
+				  _log($e.toString(),"Fetchlog");
+				_log("for test Case ID: Verify_DeleteUser_Link: Verify_DeleteUser_Link,execution got failed for support user.kindly check the log for more details");
+				//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+				}
+				
+				try {
+					login($operator, $password1);
+					VerifyDeleteUserLink($operator);
+					} catch ($e) { 
+					  _log($e.toString(),"Fetchlog");
+					_log("for test Case ID:Verify_DeleteUser_Link:Verify_DeleteUser_Link,execution got failed for support user.kindly check the log for more details");
+				//	_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+					}
+			
+ }
+ 
+ 
+ 
+ function   Verify_Agetns_Link_0006(){
+	 
+	 try {
+		    login($supadmin, $password1);
+		    VerifyAgentsLink($supadmin);
+			} catch ($e) { 
+			  _log($e.toString(),"Fetchlog");
+			_log("for test Case ID: Change_ContinuityStatus_Group Function: Change_ContinuityStatus_Group_SO(),execution got failed.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+			try {
+				login($supuname, $suppwd);
+				VerifyAgentsLink($supuname);
+				} catch ($e) { 
+				  _log($e.toString(),"Fetchlog");
+				_log("for test Case ID: Change_ContinuityStatus_Group Function: Change_ContinuityStatus_Group_SO(),execution got failed.kindly check the log for more details");
+				//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+				}
+				
+			try {
+				login($admin, $password1);
+				VerifyAgentsLink($admin);
+				} catch ($e) { 
+				  _log($e.toString(),"Fetchlog");
+				_log("for test Case ID: Change_ContinuityStatus_Group Function: Change_ContinuityStatus_Group_SO(),execution got failed.kindly check the log for more details");
+				//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+				}
+				
+				try {
+					login($operator, $password1);
+					VerifyAgentsLink($operator);
+					} catch ($e) { 
+					  _log($e.toString(),"Fetchlog");
+					_log("for test Case ID: Change_ContinuityStatus_Group Function: Change_ContinuityStatus_Group_SO(),execution got failed.kindly check the log for more details");
+				//	_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+					}
+			
+ }
+ 
+ 
+ 
+ 
+ function  Verify_Tab_Status_0007(){
+
+		try {
+			login($supadmin, $password1);
+			VerifyDifferentTab($supadmin);
+			} catch ($e) { 
+			  _log($e.toString(),"UserRoleManagement");
+			_log("for test Case ID: Verify_UserModify_Properties_link: Verify_UserModify_Properties_link(),execution got failed for SuperAdmin user.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+		try {
+			login($supuname, $suppwd);
+			VerifyDifferentTab($supuname);
+			} catch ($e) { 
+			  _log($e.toString(),"UserRoleManagement");
+			_log("for test Case ID:  Verify_UserModify_Properties_link: Verify_UserModify_Properties_link(),execution got failed for support user.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+		try {
+			login($admin, $password1);
+			VerifyDifferentTab($admin);
+			} catch ($e) { 
+			  _log($e.toString(),"UserRoleManagement");
+			_log("for test Case ID: Verify_UserModify_Properties_link: Verify_UserModify_Properties_link(),execution got failed for admin user.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+			try {
+				login($operator, $password1);
+				VerifyDifferentTab($operator);
+				} catch ($e) { 
+				  _log($e.toString(),"UserRoleManagement");
+				_log("for test Case ID: Verify_UserModify_Properties_link: Verify_UserModify_Properties_link(),execution got failed for operator user.kindly check the log for more details");
+			//	_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+				}
+ }
+ function  Verify_Credential_Check_0008(){
+	 try {
+		    login($supadmin, $password1);
+		    VerifyCredentialCheckStatus($a_user,$compIpPR);
+			} catch ($e) { 
+			  _log($e.toString(),"Fetchlog");
+			_log("for test Case ID: Change_ContinuityStatus_Group Function: Change_ContinuityStatus_Group_SO(),execution got failed.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+			try {
+				login($supuname, $suppwd);
+				VerifyCredentialCheckStatus($a_user,$compIpPR);
+				} catch ($e) { 
+				  _log($e.toString(),"Fetchlog");
+				_log("for test Case ID: Change_ContinuityStatus_Group Function: Change_ContinuityStatus_Group_SO(),execution got failed.kindly check the log for more details");
+				//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+				}
+				
+			try {
+				login($admin, $password1);
+				VerifyCredentialCheckStatus($a_user,$compIpPR);
+				} catch ($e) { 
+				  _log($e.toString(),"Fetchlog");
+				_log("for test Case ID: Change_ContinuityStatus_Group Function: Change_ContinuityStatus_Group_SO(),execution got failed.kindly check the log for more details");
+				//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+				}
+				
+				try {
+					login($operator, $password1);
+					VerifyCredentialCheckStatus($a_user,$compIpPR);
+					} catch ($e) { 
+					  _log($e.toString(),"Fetchlog");
+					_log("for test Case ID: Change_ContinuityStatus_Group Function: Change_ContinuityStatus_Group_SO(),execution got failed.kindly check the log for more details");
+					//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+					}
+			
+ }
+  
+ 
+ function  Verification_Events_Status_0009(){
+	 try {
+		    login($supadmin, $password1);
+		    VerifyEventsStatusCheck($supadmin);
+			} catch ($e) { 
+			  _log($e.toString(),"Fetchlog");
+			_log("for test Case ID: Change_ContinuityStatus_Group Function: Change_ContinuityStatus_Group_SO(),execution got failed.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+			try {
+				login($supuname, $suppwd);
+				VerifyEventsStatusCheck($supuname);
+				} catch ($e) { 
+				  _log($e.toString(),"Fetchlog");
+				_log("for test Case ID: Change_ContinuityStatus_Group Function: Change_ContinuityStatus_Group_SO(),execution got failed.kindly check the log for more details");
+				//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+				}
+				
+			try {
+				login($admin, $password1);
+				VerifyEventsStatusCheck($admin);
+				} catch ($e) { 
+				  _log($e.toString(),"Fetchlog");
+				_log("for test Case ID: Change_ContinuityStatus_Group Function: Change_ContinuityStatus_Group_SO(),execution got failed.kindly check the log for more details");
+				_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+				}
+				
+				try {
+					login($operator, $password1);
+					VerifyEventsStatusCheck($operator);
+					} catch ($e) { 
+					  _log($e.toString(),"Fetchlog");
+					_log("for test Case ID: Change_ContinuityStatus_Group Function: Change_ContinuityStatus_Group_SO(),execution got failed.kindly check the log for more details");
+					_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+					}
+			
+ }
+function Verifying_Group_Details_0010(){
+	try {
+	    login($supadmin, $password1);
+	    VerifyEventsStatusCheck($supadmin);
+		} catch ($e) { 
+		  _log($e.toString(),"Fetchlog");
+		_log("for test Case ID: Change_ContinuityStatus_Group Function: Change_ContinuityStatus_Group_SO(),execution got failed.kindly check the log for more details");
+		_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+		
+		try {
+			login($supuname, $suppwd);
+			VerifyEventsStatusCheck($supuname);
+			} catch ($e) { 
+			  _log($e.toString(),"Fetchlog");
+			_log("for test Case ID: Change_ContinuityStatus_Group Function: Change_ContinuityStatus_Group_SO(),execution got failed.kindly check the log for more details");
+			_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+		try {
+			login($admin, $password1);
+			VerifyEventsStatusCheck($admin);
+			} catch ($e) { 
+			  _log($e.toString(),"Fetchlog");
+			_log("for test Case ID: Change_ContinuityStatus_Group Function: Change_ContinuityStatus_Group_SO(),execution got failed.kindly check the log for more details");
+			_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+			try {
+				login($operator, $password1);
+				VerifyEventsStatusCheck($operator);
+				} catch ($e) { 
+				  _log($e.toString(),"Fetchlog");
+				_log("for test Case ID: Change_ContinuityStatus_Group Function: Change_ContinuityStatus_Group_SO(),execution got failed.kindly check the log for more details");
+				_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+				}
+ }
+
+
+function Verification_ManageTab_Status_0011(){
+	//delete_FetchLogs_BeforeFetch($logspath);
+	//Fetch_Log($groupName);
+	try {
+	    login($supadmin, $password1);
+	    Verify_Manage_Workflow("NormalFullCopy",$supadmin);
+	    Verify_Manage_Workflow("NormalCopy",$supadmin);
+	    Verify_Manage_Workflow("Failover",$supadmin);
+	    Verify_Manage_Workflow("Fallback",$supadmin);
+	    Verify_Manage_Workflow("ReverseNormalCopy",$supadmin);
+
+/*
+	    _assertExists(_link("Edit Workflow", _near(_link("NormalFullCopy"))))
+	    _assertExists(_link("Edit Workflow", _near(_link("NormalCopy"))))
+	    _assertExists(_link("Edit Workflow", _near(_link("Failover"))))
+	    _assertExists(_link("Edit Workflow", _near(_link("Fallback"))))
+	    _assertExists(_link("Edit Workflow", _near(_link("ReverseNormalCopy"))))*/
+	    } catch ($e) { 
+		  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID: Verification_ManageTab_Status: Verification_ManageTab_Status,execution got failed for Super Admin.kindly check the log for more details");
+		//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+		
+		try {
+			login($supuname, $suppwd);
+        Verify_Manage_Workflow("NormalFullCopy",$supuname);
+	    Verify_Manage_Workflow("NormalCopy",$supuname);
+	    Verify_Manage_Workflow("Failover",$supuname);
+	    Verify_Manage_Workflow("Fallback",$supuname);
+	    Verify_Manage_Workflow("ReverseNormalCopy",$supuname);
+			} catch ($e) { 
+			  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID: Verification_ManageTab_Status: Verification_ManageTab_Status,execution got failed for SupportUser.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+		try {
+			login($admin, $password1);
+			  Verify_Manage_Workflow("NormalFullCopy",$admin);
+			    Verify_Manage_Workflow("NormalCopy",$admin);
+			    Verify_Manage_Workflow("Failover",$admin);
+			    Verify_Manage_Workflow("Fallback",$admin);
+			    Verify_Manage_Workflow("ReverseNormalCopy",$admin);
+			} catch ($e) { 
+			  _log($e.toString(),"UserRoleManagement");
+				_log("for test Case ID: Verification_ManageTab_Status: Verification_ManageTab_Status,execution got failed for  Admin.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+			try {
+				login($operator, $password1);
+				 Verify_Manage_Workflow("NormalFullCopy",$operator);
+				    Verify_Manage_Workflow("NormalCopy",$operator);
+				    Verify_Manage_Workflow("Failover",$operator);
+				    Verify_Manage_Workflow("Fallback",$operator);
+				    Verify_Manage_Workflow("ReverseNormalCopy",$operator);
+
+				} catch ($e) { 
+				  _log($e.toString(),"UserRoleManagement");
+					_log("for test Case ID: Verification_ManageTab_Status: Verification_ManageTab_Status,execution got failed for operator.kindly check the log for more details");
+			//	_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+				}
+ 
+
+	
+}
+
+
+
+function Verification_OpHistory_Status_0012(){
+	try {
+	    login($supadmin, $password1);
+	    Verify_Operational_History($supadmin);
+	    } catch ($e) { 
+		  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID: Verification_OpHistory_Status: Verification_OpHistory_Status,execution got failed for Super Admin.kindly check the log for more details");
+		//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+		
+		try {
+			login($supuname, $suppwd);
+	    Verify_Operational_History($supuname);
+			} catch ($e) { 
+			  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID: Verification_OpHistory_Status: Verification_OpHistory_Status,execution got failed for SupportUser.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+		try {
+			login($admin, $password1);
+		    Verify_Operational_History($admin);
+			} catch ($e) { 
+			  _log($e.toString(),"UserRoleManagement");
+				_log("for test Case ID: Verification_OpHistory_Status: Verification_OpHistory_Status,execution got failed for  Admin.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+			try {
+				login($operator, $password1);
+			    Verify_Operational_History($operator);
+				} catch ($e) { 
+				  _log($e.toString(),"UserRoleManagement");
+					_log("for test Case ID: Verification_OpHistory_Status: Verification_OpHistory_Status,execution got failed for operator.kindly check the log for more details");
+			//	_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+				}
+ 
+
+	
+}
+
+
+
+function Verification_Create_Site_0013(){
+	try {
+	    login($supadmin, $password1);
+	    Verify_Sites($supadmin);
+	    } catch ($e) { 
+		  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID:Verification_Craete_Site: Verification_Craete_Site,execution got failed for Super Admin.kindly check the log for more details");
+		//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+		
+		try {
+			login($supuname, $suppwd);
+	    Verify_Sites($supuname);
+			} catch ($e) { 
+			  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID: Verification_OpHistory_Status: Verification_OpHistory_Status,execution got failed for SupportUser.kindly check the log for more details");
+			_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+		try {
+			login($admin, $password1);
+			Verify_Sites($admin);
+			} catch ($e) { 
+			  _log($e.toString(),"UserRoleManagement");
+				_log("for test Case ID: Verification_Craete_Site: Verification_Craete_Site,execution got failed for  Admin.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+			try {
+				login($operator, $password1);
+				Verify_Sites($operator);
+				} catch ($e) { 
+				  _log($e.toString(),"UserRoleManagement");
+					_log("for test Case ID: Verification_Craete_Site: Verification_Craete_Site,execution got failed for operator.kindly check the log for more details");
+				//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+				}
+ 
+
+	
+}
+
+function Verification_DS_Comp_Pro_0014(){
+	try {
+	    login($supadmin, $password1);
+	    Verify_Comp_DS_Ps_Status($supadmin);
+	    } catch ($e) { 
+		  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID:Verification_DS_Comp_Pro: Verification_DS_Comp_Pro,execution got failed for Super Admin.kindly check the log for more details");
+		//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+		
+		try {
+			login($supuname, $suppwd);
+	    Verify_Comp_DS_Ps_Status($supuname);
+			} catch ($e) { 
+			  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID: Verification_DS_Comp_Pro: Verification_DS_Comp_Pro,execution got failed for SupportUser.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+		try {
+			login($admin, $password1);
+			Verify_Comp_DS_Ps_Status($admin);
+			} catch ($e) { 
+			  _log($e.toString(),"UserRoleManagement");
+				_log("for test Case ID: Verification_DS_Comp_Pro: Verification_DS_Comp_Pro,execution got failed for  Admin.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+			try {
+				login($operator, $password1);
+				Verify_Comp_DS_Ps_Status($operator);
+				} catch ($e) { 
+				  _log($e.toString(),"UserRoleManagement");
+					_log("for test Case ID: Verification_DS_Comp_Pro: Verification_DS_Comp_Pro,execution got failed for operator.kindly check the log for more details");
+				//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+				}
+ 
+
+	
+}
+
+function Verifiaction_Notification_Status_0015(){
+	try {
+	    login($supadmin, $password1);
+	    Verify_Notification_Status($a_user);
+	    } catch ($e) { 
+		  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID:Verifiaction_Notification_Status: Verifiaction_Notification_Status,execution got failed for Super Admin.kindly check the log for more details");
+		//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+		
+		try {
+			login($supuname, $suppwd);
+			Verify_Notification_Status($a_user);
+			} catch ($e) { 
+			  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID: Verifiaction_Notification_Status: Verifiaction_Notification_Status,execution got failed for SupportUser.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+		try {
+			login($admin, $password1);
+			Verify_Notification_Status($a_user);
+			} catch ($e) { 
+			  _log($e.toString(),"UserRoleManagement");
+				_log("for test Case ID: Verifiaction_Notification_Status: Verifiaction_Notification_Status,execution got failed for  Admin.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+			try {
+				login($operator, $password1);
+				Verify_Notification_Status($a_user);
+				} catch ($e) { 
+				  _log($e.toString(),"UserRoleManagement");
+					_log("for test Case ID: Verification_DS_Comp_Pro: Verification_DS_Comp_Pro,execution got failed for operator.kindly check the log for more details");
+				//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+				}
+ 
+
+
+}
+function Verifying_ServerFailOver_0016(){
+	try {
+	    login($supadmin, $password1);
+	    Verify_ServerFailOver_Status($supadmin);
+	    } catch ($e) { 
+		  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID:Verifiaction_Notification_Status: Verifiaction_Notification_Status,execution got failed for Super Admin.kindly check the log for more details");
+		//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+		
+		try {
+			login($supuname, $suppwd);
+			Verify_ServerFailOver_Status($supuname);
+			} catch ($e) { 
+			  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID: Verifiaction_Notification_Status: Verifiaction_Notification_Status,execution got failed for SupportUser.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+		try {
+			login($admin, $password1);
+			Verify_Notification_Status($admin);
+			} catch ($e) { 
+			  _log($e.toString(),"UserRoleManagement");
+				_log("for test Case ID: Verifiaction_Notification_Status: Verifiaction_Notification_Status,execution got failed for  Admin.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+			try {
+				login($operator, $password1);
+				Verify_Notification_Status($operator);
+				} catch ($e) { 
+				  _log($e.toString(),"UserRoleManagement");
+					_log("for test Case ID: Verifiaction_Notification_Status: Verifiaction_Notification_Status,execution got failed for operator.kindly check the log for more details");
+				//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+				}
+ 
+
+}
+
+function  Verifying_License_Status_0017(){
+	try {
+	    login($supadmin, $password1);
+	    Verify_License_Status($supadmin);
+	    } catch ($e) { 
+		  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID:Verifying_License_Status: Verifying_License_Status,execution got failed for Super Admin.kindly check the log for more details");
+		//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+		
+		try {
+			login($supuname, $suppwd);
+		    Verify_License_Status($supuname);
+			} catch ($e) { 
+			  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID: Verifying_License_Status: Verifying_License_Status,execution got failed for SupportUser.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+		try {
+			login($admin, $password1);
+		    Verify_License_Status($admin);
+			} catch ($e) { 
+			  _log($e.toString(),"UserRoleManagement");
+				_log("for test Case ID: Verifying_License_Status: Verifying_License_Status,execution got failed for  Admin.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+			try {
+				login($operator, $password1);
+			    Verify_License_Status($operator);
+				} catch ($e) { 
+				  _log($e.toString(),"UserRoleManagement");
+					_log("for test Case ID: Verifying_License_Status: Verifying_License_Status,execution got failed for operator.kindly check the log for more details");
+				//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+				}
+
+}
+
+
+
+
+function Verifying_BusinessProcess_0018(){
+	try {
+	    login($supadmin, $password1);
+	    Verify_BusinessProcess_Status($supadmin);
+	    } catch ($e) { 
+		  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID:Verifying_BusinessProcess: Verifying_BusinessProcess,execution got failed for Super Admin.kindly check the log for more details");
+		//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+		
+		try {
+			login($supuname, $suppwd);
+		    Verify_BusinessProcess_Status($supuname);
+			} catch ($e) { 
+			  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID: Verifiaction_Notification_Status: Verifiaction_Notification_Status,execution got failed for SupportUser.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+		try {
+			login($admin, $password1);
+		    Verify_BusinessProcess_Status($admin);
+			} catch ($e) { 
+			  _log($e.toString(),"UserRoleManagement");
+				_log("for test Case ID: Verifiaction_Notification_Status: Verifiaction_Notification_Status,execution got failed for  Admin.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+			try {
+				login($operator, $password1);
+			    Verify_BusinessProcess_Status($operator);
+				} catch ($e) { 
+				  _log($e.toString(),"UserRoleManagement");
+					_log("for test Case ID: Verification_DS_Comp_Pro: Verification_DS_Comp_Pro,execution got failed for operator.kindly check the log for more details");
+				//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+				}
+}
+
+
+
+function Verifying_DashBoard_Help_0019(){
+	try {
+	    login($supadmin, $password1);
+	    Verify_DashBoard_HelpLink();
+	    } catch ($e) { 
+		  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID:Verifying_BusinessProcess: Verifying_BusinessProcess,execution got failed for Super Admin.kindly check the log for more details");
+		//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+		
+		try {
+			login($supuname, $suppwd);
+			Verify_DashBoard_HelpLink();
+			} catch ($e) { 
+			  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID: Verifiaction_Notification_Status: Verifiaction_Notification_Status,execution got failed for SupportUser.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+		try {
+			login($admin, $password1);
+			Verify_DashBoard_HelpLink();
+			} catch ($e) { 
+			  _log($e.toString(),"UserRoleManagement");
+				_log("for test Case ID: Verifiaction_Notification_Status: Verifiaction_Notification_Status,execution got failed for  Admin.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+			try {
+				login($operator, $password1);
+				Verify_DashBoard_HelpLink();
+				} catch ($e) { 
+				  _log($e.toString(),"UserRoleManagement");
+					_log("for test Case ID: Verification_DS_Comp_Pro: Verification_DS_Comp_Pro,execution got failed for operator.kindly check the log for more details");
+				//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+				}
+ 
+
+
+}
+function  Verifying_Drill_Listing_Status_0020(){
+	try {
+	    login($supadmin, $password1);
+	    Verify_Drill_Listing($supadmin,"Switchover");
+	    Verify_Drill_Listing($supadmin,"Switchback");
+	    
+	    } catch ($e) { 
+		  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID: Verifying_Drill_Listing_Status: Verifying_Drill_Listing_Status,execution got failed for Super Admin.kindly check the log for more details");
+		//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+		
+		try {
+			login($supuname, $suppwd);
+			Verify_Drill_Listing($supuname,"Switchover");
+			Verify_Drill_Listing($supuname,"Switchback");
+			} catch ($e) { 
+			  _log($e.toString(),"UserRoleManagement");
+		_log("for test Case ID: Verifying_Drill_Listing_Status: Verifying_Drill_Listing_Status,execution got failed for SupportUser.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+		try {
+			login($admin, $password1);
+			Verify_Drill_Listing($admin,"Switchover");
+			Verify_Drill_Listing($admin,"Switchback");
+			} catch ($e) { 
+			  _log($e.toString(),"UserRoleManagement");
+				_log("for test Case ID: Verifying_Drill_Listing_Status: Verifying_Drill_Listing_Status,execution got failed for  Admin.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+			try {
+				login($operator, $password1);
+				Verify_Drill_Listing($operator,"Switchover");
+				Verify_Drill_Listing($operator,"Switchback");
+				   
+
+				} catch ($e) { 
+				  _log($e.toString(),"UserRoleManagement");
+					_log("for test Case ID: Verifying_Drill_Listing_Status: Verifying_Drill_Listing_Status,execution got failed for operator.kindly check the log for more details");
+			//	_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+				}
+ 
+
+	
+
+}
+function Login_Different_User_0002(){
+
+	try {
+		login($admin, $password);
+		Fetch_Log_Normal();
+		} catch ($e) { 
+		  _log($e.toString(),"Fetchlog");
+		_log("for test Case ID: Change_ContinuityStatus_Group Function: Change_ContinuityStatus_Group_SO(),execution got failed.kindly check the log for more details");
+		_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+		
+		try {
+			login($operator, $password);
+			Fetch_Log_Opr();
+			} catch ($e) { 
+			  _log($e.toString(),"Fetchlog");
+			_log("for test Case ID: Change_ContinuityStatus_Group Function: Change_ContinuityStatus_Group_SO(),execution got failed.kindly check the log for more details");
+			_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+					
+	
+}

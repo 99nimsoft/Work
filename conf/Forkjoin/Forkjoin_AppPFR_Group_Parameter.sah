@@ -1,0 +1,166 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the Remote Agents parameters for APP PFR group for Forkjoin test
+ ** AuthorName : ANita
+ ** Created Date : Dec 2016
+ ***********************************************************************************************/
+
+
+if($BrowserLang == "N"){
+	var $l_Forkjoin=_readExcelFile($SAHI_HOME + "\\conf\\Forkjoin\\Forkjoin_Parameter.xls","AppPFRRemote");
+}
+else if($BrowserLang == "Y-JA"){
+	var $l_Forkjoin=_readExcelFile($SAHI_HOME + "\\conf\\Forkjoin\\Forkjoin_Parameter.xls","AppPFRRemote_JA");
+	}
+
+else if($BrowserLang == "Y-EN"){
+	var $l_Forkjoin=_readExcelFile($SAHI_HOME + "\\conf\\Forkjoin\\Forkjoin_Parameter.xls","AppPFRRemote_EN");
+	}
+
+
+
+
+
+//This user Input required to Login the DRM server
+var $username = $l_Forkjoin[3][2]; // DRM server GUI user name e.g. "swati"
+var $password = $l_Forkjoin[4][2]; // DRM server GUI pwd
+
+//This user Input required to install the local agents
+var $RemoteAgentPathPR = $l_Forkjoin[13][5]; // this is the Path where user has install the agent on PR "/opt/panaces/"
+var $RemoteAgentPathDR = $l_Forkjoin[14][5]; // this is the Path where user has install the agent on DR "/opt/panaces/"
+
+
+//Remote Agent Installation
+var $agentBuildPR =$l_Forkjoin[15][5];
+var $agentBuildDR=$l_Forkjoin[16][5];
+var $PfrStart="1";
+var $PfrServicePath=$l_Forkjoin[17][5];
+var $systemType = $l_Forkjoin[19][2];
+var $osType = $l_Forkjoin[18][2];
+
+
+//This user Input required to create the Site
+if($BrowserLang == "N"){
+	var $locationPR = "PR"; // PR Site Location
+	var $incharge = "drmadmin"; // Site Incharge
+	var $addressPR = "Mumbai"; // PR site Address
+	var $locationDR = "DR"; // DR Site Location
+	var $addressDR = "Bangalore";// DR site Address
+	}
+	else
+		{
+	var $locationPR = "一次"; // PR Site Location
+	var $incharge = "drmadmin"; // Site Incharge
+	var $addressPR = "ムンバイ"; // PR site Address
+	var $locationDR = "リモート"; // DR Site Location
+	var $addressDR = "バンガロール";// DR site Address
+		}
+
+//This user Input required to create the Component for Local or remote
+var $agentType = "Remote"; // This if for agent type always enter as e.g. Local or Remote.Note Here first letter is upper case and remaining lower case.
+var $compIPPR = $l_Forkjoin[7][2]; // PR Componenet ID
+var $compIPDR = $l_Forkjoin[8][2]; // DR Componenet ID
+var $remoteUserNameValPR = $l_Forkjoin[9][2]; // PR Machine user name. this information required for both local and remote
+var $remotePwdValPR = $l_Forkjoin[10][2]; // PR Machine Pwd name. this information required for both local and remote
+var $remoteUserNameValDR = $l_Forkjoin[11][2];// DR Machine user name. this information required for both local and remote
+var $remotePwdValDR = $l_Forkjoin[12][2];// PR Machine Pwd name. this information required for both local and remote
+var $compNamePR = $l_Forkjoin[13][2]; // PR Componenet Name
+var $compNameDR = $l_Forkjoin[14][2]; // DR Componenet Name
+
+
+//This user Input required to create the dataset
+var $systemTypeDataset = "Application SubSystem";
+var $datasetNamePR = $l_Forkjoin[3][5]; // PR dataset name
+var $datasetNameDR = $l_Forkjoin[4][5]; // DR dataset name
+var $fileNameTextPathPR = $l_Forkjoin[5][5];
+var $fileNameTextPathDR = $l_Forkjoin[6][5];
+
+
+//This user Input required to create the protection Scheme
+var $sernamePR = $l_Forkjoin[9][5]; // PR Protection Scheme name
+var $sernameDR = $l_Forkjoin[10][5]; // DR Protection Scheme name
+var $mgmtHostPFRPR = $compNamePR + " (" + $compIPPR + ")"; 
+var $mgmtHostPFRDR = $compNameDR + " (" + $compIPDR + ")"; 
+
+//This user Input required to create the Group
+var $groupName = $l_Forkjoin[17][2];// Group name
+
+
+var $groupDescription = "APP PFR"; // Group description
+
+// *********************************************************************************************************************************************
+// Important Note : Please don't modify/edit any below variable or its value.
+// If you made any changes of variable and its value, script will not execute.
+// *********************************************************************************************************************************************
+
+var $primaryPanacesServer = $drmServer; // this is Primary DRM server
+var $panacesAgentNodeAddressPR = $compIPPR;
+var $panacesAgentNodeAddressDR = $compIPDR;
+var $compsitePR = $locationPR;
+var $compsiteDR = $locationDR;
+var $primaryComponents = $compNamePR;
+var $remoteComponents = $compNameDR;
+var $primaryDatasets = $datasetNamePR;
+var $remoteDatasets = $datasetNameDR;
+
+var $primaryProtections = $sernamePR;
+var $remoteProtections = $sernameDR;
+
+var $mgmtHostDGPR =$compNamePR+' ('+$compIPPR+')';
+var $mgmtHostDGDR = $compNameDR+' ('+$compIPDR+')';
+var $dependentComponentNamePR = $compNamePR;
+var $dependentComponentNameDR = $compNameDR;
+var $incharge = "drmadmin";
+var $desiredRpo = "300";
+var $rpoCompute = "300";
+var $systemTypeProtection = "PFR"; // Protection Scheme type
+if($BrowserLang == "N"){
+	var $SolutionSignature = "Application SubSystem with PFR";// Solution type
+}
+else{
+	var $SolutionSignature= "PFR付きApplication Subsystem";
+}
+var $systemTypeDataset = "Application SubSystem"; // database subsystem
+var $datasetType = "Application SubSystem";// database Type
+var $drmDbUserName = "automation"; // DRM server database user id
+var $drmDbPassword = "sanovi";// DRM server database password
+var $APP_PFRAgentChk = "1";
+var $localAgentPathPR =  $RemoteAgentPathPR;
+var $localAgentPathDR = $RemoteAgentPathDR;
+
+
+////////////////Forkjoin RAL //////////////////////////////////////////////
+
+var $usernameB="UserB";
+var $workflowXMlFile1 = $l_Forkjoin[28][3];
+var $workflowXMlFile2 = $l_Forkjoin[29][3];
+var $workflowXMlFile3 = $l_Forkjoin[30][3];
+var $workflowXMlFile4 = $l_Forkjoin[31][3];
+var $workflowXMlFile5 = $l_Forkjoin[32][3];
+var $workflowXMlFile6 = $l_Forkjoin[33][3]; //TE action workflow xml file name
+var $workflowXMlFile7 = $l_Forkjoin[34][3]; //BPI action workflow  xml file name
+var $workflowXMlFile8 = $l_Forkjoin[35][3]; //BCO action workflow  xml file name
+var $workflowXMlFile9 = $l_Forkjoin[36][3]; //Multiple Rals vertically betn Forkjoin workflow  xml file name
+var $workflowXMlFile10 = $l_Forkjoin[37][3]; //Multiple Forkjoin Horizontally xml file name 
+var $workflowXMlFile11 = $l_Forkjoin[38][3]; //Import Forkjoin WF edit publish
+var $workflowXMlFile12 = $l_Forkjoin[39][3]; //Import Action group WF edit publish
+
+/////////////////////////////////////////////////////////////////////////////////
+
+var $ralName1 = $l_Forkjoin[28][2]; 
+var $ralName2 = $l_Forkjoin[29][2];
+var $ralName3 = $l_Forkjoin[30][2];
+var $ralName4 = $l_Forkjoin[31][2];
+var $ralName5 = $l_Forkjoin[32][2];
+var $ralName6 = $l_Forkjoin[33][2]; // TE action ral name
+var $ralName7 = $l_Forkjoin[34][2]; // bpi ral name
+var $ralName8 = $l_Forkjoin[35][2]; // bco ral name
+var $ralName9 = $l_Forkjoin[36][2]; //Multiple Rals vertically betn Forkjoin ral name
+var $ralName10 = $l_Forkjoin[37][2]; //Multiple Forkjoin Horizontally ral name
+var $ralName11 = $l_Forkjoin[38][2]; //Import Forkjoin WF ral name
+var $ralName12 = $l_Forkjoin[39][2]; //Import  Action group WF ral name
+
+
+
+

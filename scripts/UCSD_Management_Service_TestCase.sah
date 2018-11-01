@@ -1,0 +1,247 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the remote agent test cases which are the part of CDRM feature. 
+ ** AuthorName : Karimulla Shakhadari
+ ** Created Date : Aug 2014
+ ************************************************************************/
+
+//don't change the below line.
+_include("../Library/Management_Service/UCSD/ucsdAccountValidation.sah");
+_include("../Library/Common/Common_Function.sah");
+_include("../Library/Common/CDRMCommon/CDRM_Common_Function.sah");
+_include("../conf/DRMInstallation_Parameter.sah");
+_include("../conf/UCSD_PARAM/Ucsd_Parameter.sah");
+_include("../Library/Solution_Signature/Include/Common_Automation_testcase_Function.sah");
+
+// *************************************************************************************************************************************************
+
+
+Login_001();
+_continueOnError();
+
+
+var $test0 = _testcase("UCSD_0001"," Converged Link availability");
+
+$test0.start(); 
+
+checkConvergedLinkAvailability();       
+
+$test0.end();
+
+var $test1 = _testcase("UCSD_0002"," Check Navigation after clicking on Coverged link");
+
+$test1.start(); 
+
+checkNavigationForConverged();     
+_continueOnError();
+$test1.end();
+
+var $test2 = _testcase("UCSD_0003"," Check Add UCSD Director link");
+
+$test2.start(); 
+
+checkAddUcsDirectorLink();     
+
+$test2.end();
+
+var $test3 = _testcase("UCSD_0004"," Check UCS Director Management service availability before any account creation ");
+
+$test3.start(); 
+
+checkUcsDirector();
+
+$test3.end();
+
+
+var $test4 = _testcase("UCSD_0005"," Check navigation after clicking on Add UCSD Director link");
+
+$test4.start(); 
+
+checkAddUcsDirectorLinkNavigation();
+
+$test4.end();
+
+var $test5 = _testcase("UCSD_0006"," Check available fields in Add UCSD Director page");
+
+$test5.start(); 
+
+checkAddUcsDirectorFields();
+
+$test5.end();
+
+var $test6 = _testcase("UCSD_0007"," Test cred with valid data");
+
+$test6.start(); 
+
+checkCredentialWithValidData($key,$ucsdiphostname);
+
+$test6.end();
+
+var $test7 = _testcase("UCSD_0008"," Test cred without accesskey");
+
+$test7.start(); 
+
+checkCredentialWithoutKey($ucsdiphostname);
+
+$test7.end();
+
+var $test8 = _testcase("UCSD_0009"," Test cred without ServerIP");
+
+$test8.start(); 
+
+checkCredentialWithoutServerIp($key);
+
+$test8.end();
+
+var $test9 = _testcase("UCSD_0010"," UCSD Management service Discovery");
+
+$test9.start(); 
+ucsdSave($accountname, $site, $ucsdiphostname, $key);
+
+$test9.end();
+
+var $test10 = _testcase("UCSD_0011"," UCSD Management service Account Status with inavalid details");
+
+$test10.start(); 
+ucsdAccStatusWithInvalidDetails( $accountname1, $site,$Invalidkey, $invalidServerIp);
+
+$test10.end();
+
+var $test11 = _testcase("UCSD_0012"," UCSD Management service Account Status with inavalid AccessKey");
+
+$test11.start(); 
+ucsdAccStatusWithInvalidDetails( $accountname2, $site,$Invalidkey, $ucsdiphostname3);
+
+$test11.end();
+
+var $test12 = _testcase("UCSD_0013"," UCSD Management service Account Status with inavalid ServerIP");
+
+$test12.start(); 
+ucsdAccStatusWithInvalidDetails( $accountname4, $site,$key, $invalidServerIp1);
+
+$test12.end();
+
+var $test13 = _testcase("UCSD_0014"," UCSD Management service Agent presence in Agent listing page");
+
+$test13.start(); 
+ucsdAgentPresenceInAgentList( $accountname);
+
+$test13.end();
+
+var $test14 = _testcase("UCSD_0015"," UCSD Management service Agent status in Agent listing page");
+
+$test14.start(); 
+ucsdAgentStatusInAgentList( $accountname);
+
+$test14.end();
+
+var $test15 = _testcase("UCSD_0016"," UCSD Management Account status After stopping the agent");
+
+$test15.start(); 
+ucsdAgentStatusAfterStopingAgent( $accountname);
+
+$test15.end();
+
+var $test16 = _testcase("UCSD_0017"," UCSD Management Account status After starting the agent");
+
+$test16.start(); 
+ucsdAgentStatusAfterStartingAgent( $accountname);
+
+$test16.end();
+
+var $test17 = _testcase("UCSD_0018"," UCSD Management Account details from Database");
+
+$test17.start(); 
+checkAccountDetailInDb($accountname, $msSite, $ucsdiphostname,$key);
+
+$test17.end();
+
+
+var $test18 = _testcase("UCSD_0019"," UCSD Management Account presence after discovery");
+
+$test18.start(); 
+ucsdAccDetails($accountname);
+
+$test18.end();
+
+var $test19 = _testcase("UCSD_0020"," Navigation after click on GoBack button ");
+
+$test19.start(); 
+ucsdAccGoButtonTest($accountname);
+
+$test19.end();
+
+
+var $test20 = _testcase("UCSD_0021"," Availability of Edit UCSD Account functionality ");
+
+$test20.start(); 
+
+editUcsdPageAvailability($accountname1);
+$test20.end();
+
+
+var $test21 = _testcase("UCSD_0022"," Updating UCSD Account IPAddress with different IP ");
+
+$test21.start(); 
+
+editUcsd($accountname1);
+$test21.end();
+
+var $test22 = _testcase("UCSD_0023"," Database verification after updating IPaddress of UCSD Acc  ");
+
+$test22.start(); 
+
+checkDb($accountname1);
+$test22.end();
+
+
+var $test23 = _testcase("UCSD_0024"," Creating UCSD ACC with IP of already existing UCSD Acc ");
+
+$test23.start(); 
+
+ucsAccWithExistingIp($accountname5, $site, $ucsdiphostname, $key);
+$test23.end();
+
+
+
+var $test24 = _testcase("UCSD_0025"," Creating UCSD ACC with the name of already existing UCSD Acc  ");
+
+$test24.start(); 
+
+ucsAccWithExistingName($accountname, $site, $ucsdiphostname3, $key3);
+$test24.end();
+
+var $test25 = _testcase("UCSD_0026"," Database verification after updating IPaddress of UCSD Acc  ");
+
+$test25.start(); 
+
+deleteUcs($accountname1);
+$test25.end();
+
+
+
+var $test26 = _testcase("UCSD_0027"," Verifying the UCSD Agent deletion from Agent lising page, once after respective Account deletion ");
+
+$test26.start(); 
+
+deleteUcsDetailsInAgentList($accountname1);
+$test26.end();
+
+
+
+var $test27 = _testcase("UCSD_0028"," Database verification after deleting UCSD Acc  ");
+
+$test27.start(); 
+
+deletetedUcsDetailsInDB($accountname1);
+$test27.end();
+
+/*var $test28 = _testcase("UCSD_0029"," Test cred with Invalid data");
+
+$test28.start(); 
+
+checkCredentialWithInValidData($Invalidkey,$invalidServerIp);
+
+$test28.end();*/
+logout();

@@ -1,0 +1,2173 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are the part of MSSQL_LOG_NetAPP_SM solution screen wise fetching and comparing data from DB and GUI. 
+ ** @AuthorName : Abdul Kareem A L
+ ** Created Date : Jun 2014
+ ************************************************************************/
+
+/**
+* Function is for Functional Group creation for MSSQL_LOG_NetAPP_SM solution.
+*@param :null
+*@return : null
+*@Author: Abdul Kareem A L
+*
+*/
+
+/* Function to edit the NC workflow*/
+
+//function MSSQL_LOG_NetApp_SM_Edit_NormalCopy_0001(){
+
+//function Edit_NC_Workflow($fileNC,$PRLogPath,$MountDrive,$PRBackupLogPath,$DRUndoPath,$PRUndoPath)
+
+
+//EDIT FAILOVER WORKFLOW.
+function Edit_FO_Workflow()
+{
+	 
+	  var $fileRead= _userDataDir() +"\\MSSQL\\\MSSQLLogNetApp\\" + $fileFO;
+	  
+	  var $xmlStr = _readFile($fileRead); 
+	 
+	  var $newXmlStr = $xmlStr.replace('<?xml version="1.0" encoding="UTF-8"?>',"");
+   
+	  var $xml = new XML($newXmlStr); 
+	
+	  /*
+	  <entry key="MOUNT_DRIVE" value="L:\"/>
+	  <entry key="PANSQL_LOADLOGS_PATH" value="L:\"/>
+	  <entry key="PANSQL_BACKUP_LOGS_PATH" value="L:\"/>
+	  <entry key="PANSQL_LOADLOGS_UNDO_LOGDIR" value="c:\UNDO"/>
+	  <entry key="PANSQL_BACKUPLOGS_UNDO_LOGDIR" value="c:\UNDO\db.undo"/>
+	  */
+	  
+	  $xml..userDef..entry.(@key=="PANSQL_LOADLOGS_PATH").(@value=$PRLogPath);
+	 
+	  $xml..userDef..entry.(@key=="MOUNT_DRIVE").(@value=$MountDrive);
+	 
+	  $xml..userDef..entry.(@key=="PANSQL_BACKUP_LOGS_PATH").(@value=$PRBackupLogPath);
+	  
+	  $xml..userDef..entry.(@key=="PANSQL_LOADLOGS_UNDO_LOGDIR").(@value=$DRUndoPath);
+	 
+	  $xml..userDef..entry.(@key=="PANSQL_BACKUPLOGS_UNDO_LOGDIR").(@value=$PRUndoPath);
+	 
+	   _writeFile($xml.toString(),$fileRead, true);
+
+}
+
+
+//EDIT NORMAL COPY WORKFLOW
+
+function Edit_NC_Workflow()
+{
+	 
+	  var $fileRead= _userDataDir() +"\\MSSQL\\\MSSQLLogNetApp\\" + $fileNC;
+	  
+	  var $xmlStr = _readFile($fileRead); 
+	 
+	  var $newXmlStr = $xmlStr.replace('<?xml version="1.0" encoding="UTF-8"?>',"");
+     
+	  var $xml = new XML($newXmlStr); 
+	
+	  $xml..userDef..entry.(@key=="PANSQL_LOADLOGS_PATH").(@value=$PRLogPath);
+	 
+	  $xml..userDef..entry.(@key=="MOUNT_DRIVE").(@value=$MountDrive);
+	 
+	  $xml..userDef..entry.(@key=="PANSQL_BACKUP_LOGS_PATH").(@value=$PRBackupLogPath);
+	  
+	  $xml..userDef..entry.(@key=="PANSQL_LOADLOGS_UNDO_LOGDIR").(@value=$DRUndoPath);
+	 
+	  $xml..userDef..entry.(@key=="PANSQL_BACKUPLOGS_UNDO_LOGDIR").(@value=$PRUndoPath);
+	 
+	   _writeFile($xml.toString(),$fileRead, true);
+
+}
+
+
+//EDITING THE SO WORKFLOW
+
+function Edit_SO_Workflow()
+{
+	 
+	  var $fileRead= _userDataDir() +"\\MSSQL\\\MSSQLLogNetApp\\" + $fileSO;
+	  
+	  var $xmlStr = _readFile($fileRead); 
+	 
+	  var $newXmlStr = $xmlStr.replace('<?xml version="1.0" encoding="UTF-8"?>',"");
+   
+	  var $xml = new XML($newXmlStr); 
+	
+	 /* <entry key="PANSQL_LOADLOGS_PATH" value="L:\"/>
+	        <entry key="MOUNT_DRIVE" value="L:\"/>
+	        <entry key="PANSQL_BACKUP_LOGS_PATH" value="L:\"/>
+	        <entry key="PANSQL_LOADLOGS_UNDO_LOGDIR" value="J:\"/>
+	        <entry key="PANSQL_BACKUPLOGS_UNDO_LOGDIR" value="J:\netapp_UNDO"/>
+	  */
+	  
+	  $xml..userDef..entry.(@key=="PANSQL_LOADLOGS_PATH").(@value=$PRLogPath);
+	 
+	  $xml..userDef..entry.(@key=="MOUNT_DRIVE").(@value=$MountDrive);
+	 
+	  $xml..userDef..entry.(@key=="PANSQL_BACKUP_LOGS_PATH").(@value=$PRBackupLogPath);
+	  
+	  $xml..userDef..entry.(@key=="PANSQL_LOADLOGS_UNDO_LOGDIR").(@value=$DRUndoPath);
+	 
+	  $xml..userDef..entry.(@key=="PANSQL_BACKUPLOGS_UNDO_LOGDIR").(@value=$PRUndoPath);
+	 
+	   _writeFile($xml.toString(),$fileRead, true);
+
+}
+
+
+//EDITING THE RNC WORKFLOW
+
+function Edit_RNC_Workflow()
+{
+	 
+	  var $fileRead= _userDataDir() +"\\MSSQL\\\MSSQLLogNetApp\\" + $fileRNC;
+	  
+	  var $xmlStr = _readFile($fileRead); 
+	 
+	  var $newXmlStr = $xmlStr.replace('<?xml version="1.0" encoding="UTF-8"?>',"");
+   
+	  var $xml = new XML($newXmlStr); 
+	
+	 /* var $RPRLogPath = "G:\\"; // PANSQL_LOADLOGS_PATH= (DR Logfile Path) 
+		var $RMountDrive = "G:\\";  //MOUNT_DRIVE= (DR Logfile Path)
+		var $RPRBackupLogPath = "E:\\"; // PANSQL_BACKUP_LOGS_PATH= (PR Logfile Path)
+		var $RDRUndoPath = "F:\\"; // PANSQL_LOADLOGS_UNDO_LOGDIR= (DR Datafile Path)
+		var $RPRUndoPath = "G:\\"; //PANSQL_BACKUPLOGS_UNDO_LOGDIR= (DR Logfile Path)
+	  */
+	  
+	  $xml..userDef..entry.(@key=="PANSQL_LOADLOGS_PATH").(@value=$RPRLogPath);
+	 
+	  $xml..userDef..entry.(@key=="MOUNT_DRIVE").(@value=$RMountDrive);
+	 
+	  $xml..userDef..entry.(@key=="PANSQL_BACKUP_LOGS_PATH").(@value=$RPRBackupLogPath);
+	  
+	  $xml..userDef..entry.(@key=="PANSQL_LOADLOGS_UNDO_LOGDIR").(@value=$RDRUndoPath);
+	 
+	  $xml..userDef..entry.(@key=="PANSQL_BACKUPLOGS_UNDO_LOGDIR").(@value=$RPRUndoPath);
+	 
+	   _writeFile($xml.toString(),$fileRead, true);
+
+}
+
+
+//EDITING THE SB WORKFLOW
+
+function Edit_SB_Workflow()
+{
+	 
+	  var $fileRead= _userDataDir() +"\\MSSQL\\\MSSQLLogNetApp\\" + $fileSB;
+	  
+	  var $xmlStr = _readFile($fileRead); 
+	 
+	  var $newXmlStr = $xmlStr.replace('<?xml version="1.0" encoding="UTF-8"?>',"");
+   
+	  var $xml = new XML($newXmlStr); 
+	
+	 /* var $RPRLogPath = "G:\\"; // PANSQL_LOADLOGS_PATH= (DR Logfile Path) 
+		var $RMountDrive = "G:\\";  //MOUNT_DRIVE= (DR Logfile Path)
+		var $RPRBackupLogPath = "E:\\"; // PANSQL_BACKUP_LOGS_PATH= (PR Logfile Path)
+		var $RDRUndoPath = "F:\\"; // PANSQL_LOADLOGS_UNDO_LOGDIR= (DR Datafile Path)
+		var $RPRUndoPath = "G:\\"; //PANSQL_BACKUPLOGS_UNDO_LOGDIR= (DR Logfile Path)
+	  */
+	  
+	  $xml..userDef..entry.(@key=="PANSQL_LOADLOGS_PATH").(@value=$RPRLogPath);
+	 
+	  $xml..userDef..entry.(@key=="MOUNT_DRIVE").(@value=$RMountDrive);
+	 
+	  $xml..userDef..entry.(@key=="PANSQL_BACKUP_LOGS_PATH").(@value=$RPRBackupLogPath);
+	  
+	  $xml..userDef..entry.(@key=="PANSQL_LOADLOGS_UNDO_LOGDIR").(@value=$RDRUndoPath);
+	 
+	  $xml..userDef..entry.(@key=="PANSQL_BACKUPLOGS_UNDO_LOGDIR").(@value=$RPRUndoPath);
+	 
+	   _writeFile($xml.toString(),$fileRead, true);
+
+}
+
+
+
+
+
+
+
+
+function MSSQL_LOG_NetApp_SM_RTOCheck() {
+	//EDIT RTO WORKFLOW
+	//Edit_FO_Workflow(); //THE VALUES ARE CURRENTLY OF NC.
+	
+	//IMPORT RTO WORKFLOW
+	//var $PathFailover = $l_Sahi_UserData +"\\"+ $WFPath + "\\" + $fileFO;
+	//Import_WF($groupName, $PathFailover, "Continuity...", "Failover");
+	
+	
+	//VALIDATE THE RTO
+	
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("RPO/RTO"));
+
+	// verification of current RTO :
+
+	
+	var $stepName1 = parseInt(_getText(_cell(1, _near(_cell("Remote Pre-check")))));
+	var $stepName2 = parseInt(_getText(_cell(1, _near(_cell("Lock Group")))));
+	var $stepName3 = parseInt(_getText(_cell(1, _near(_cell("Off On Disk")))));
+	var $stepName4 = parseInt(_getText(_cell(1, _near(_cell("Apply TRN Logs")))));
+	var $stepName5 = parseInt(_getText(_cell(1, _near(_cell("GroupUnlock")))));
+	var $stepName6 = parseInt(_getText(_cell(1, _near(_cell("Break Replication")))));
+	var $stepName7 = parseInt(_getText(_cell(1, _near(_cell("Off On Disk")))));
+	var $stepName8 = parseInt(_getText(_cell(1, _near(_cell("Recover DR Database")))));
+	
+	var $expectedCompletionTime = Math.floor($stepName1 + $stepName2 + $stepName3 + $stepName4 + $stepName5 + $stepName6 + $stepName7 + $stepName8);
+	_log("Total RTO in Seconds: " + $expectedCompletionTime + "In Minutes: " + $expectedCompletionTime/60 )
+	_assertExists("Expected completion time", $expectedCompletionTime);
+
+	// Calling function Calculate_Rto from Group_manager.sah
+	$dbRto = Calculate_Rto($expectedCompletionTime);
+	return $dbRto;
+
+} // End of MSSQL_LOG_NetApp_SM_RTOCheck
+
+
+// Validating the Monitor > Group > Replication Page.
+
+function MSSQL_LOG_NetApp_SM_Replication_Details($groupName,$WFType)
+{
+	 _click(_link("Monitor"));
+	 _click(_link($groupName));
+	 _click(_link("Replication"));
+	     
+	  var $protectionGUI = _getCellText(_cell(0,_rightOf(_cell("Protection:"))));
+     _assertEqual($NetAppsystemType , $protectionGUI,"Comparing Protection Schema name's in Replication page");
+		
+      var $replicationStatus = _getCellText(_cell(0,_rightOf(_cell("Replication Status:"))));
+	  _assertEqual("ACTIVE", $replicationStatus);
+		
+	  var $primaryRemoteServicesGUIPR = _getCellText(_cell(0,_rightOf(_cell("Primary - Remote Services:"))));
+	  _assertExists("Primary Remote Services from GUI", $primaryRemoteServicesGUIPR);
+	  var $primaryRemoteServicesGUI = $primaryRemoteServicesGUIPR.split("-");
+
+	  var $stateonDR = _getCellText(_cell(0,_rightOf(_cell("State:"))));
+	  _assertEqual("snapmirrored" , $stateonDR, "Validating DR State Information in Replication page");	  
+	  
+	  var $statusonDR = _getCellText(_cell(1, _near(_cell("Status:"))));
+	  _assertEqual("idle" , $statusonDR, "Validating DR Status Information in Replication page");
+	  
+	  var $primarymode =  _getCellText(_cell(0,_rightOf(_cell("Mode"))));
+	  _assertEqual("7-Mode" , $primarymode, "Validating  Primary Mode Information in Replication page");
+	  
+	  var $remotemode = _getCellText(_cell(1,_rightOf(_cell("Mode"))));
+	  _assertEqual("7-Mode" , $remotemode, "Validating Remote Mode Information in Replication page");
+	  
+	  var $primarylunpath = _getCellText(_cell(0,_rightOf(_cell("QTree/LUN Path:"))));
+	 	  
+	  var $remotelunpath = _getCellText(_cell(1,_rightOf(_cell("QTree/LUN Path:"))));
+	 	  
+	  var $primarylocation = _getCellText(_cell(0,_rightOf(_cell("Location:"))));
+	  	  	  	  
+	  var $remotelocation = _getCellText(_cell(1,_rightOf(_cell("Location:"))));
+	 		  
+	  var $primaryvolumename = _getCellText(_cell(0,_rightOf(_cell("Volume Name:"))));
+	  
+	  var $remotevolumename = _getCellText(_cell(1,_rightOf(_cell("Volume Name:"))));
+	  
+	  
+
+	  if ($WFType == "Normalcopy") {
+		  _assertEqual($sernamePR, $primaryRemoteServicesGUI[0], "Comparing Primary Protection Schema name in Replication page");
+		  _assertEqual($sernameDR, $primaryRemoteServicesGUI[1], "Comparing Remotey Protection Schema name in Replication page");
+		  _assertEqual($lunPathPR ,$primarylunpath, "Comparing Primary Lunpath in Replication page");
+		  _assertEqual($lunPathDR, $remotelunpath, "Comparing Remote Lunpath in Replication page");
+		  _assertEqual($volumeNamePR , $primarylocation, "Comparing Primary Volume name in Replication page");
+		  _assertEqual($volumeNameDR, $remotelocation, "Comparing Remote Lunpath in Replication page");
+		  _assertEqual("Abdul_Data_27_PR" , $primaryvolumename, "Comparing Primary Volume name in Replication page");
+		  _assertEqual("ak_log" , $remotevolumename, "Comparing Remote Volume name in Replication page");
+	  }
+		  
+	  if ($WFType == "Reverse Normalcopy") {
+		  _assertEqual($sernamePR, $primaryRemoteServicesGUI[1], "Comparing Primary Protection Schema name in Replication page");
+		  _assertEqual($sernameDR, $primaryRemoteServicesGUI[0], "Comparing Remotey Protection Schema name in Replication page");
+		  _assertEqual($lunPathPR ,$remotelunpath, "Comparing Primary Lunpath in Replication page");
+		  _assertEqual($lunPathDR, $primarylunpath, "Comparing Remote Lunpath in Replication page");
+		  _assertEqual($volumeNamePR , $remotelocation, "Comparing Primary Volume name in Replication page");
+		  _assertEqual($volumeNameDR, $primarylocation, "Comparing Remote Lunpath in Replication page");
+		  _assertEqual("Abdul_Data_27_PR" , $remotevolumename, "Comparing Primary Volume name in Replication page");
+		  _assertEqual("ak_log" , $primaryvolumename, "Comparing Remote Volume name in Replication page");
+	  }
+	  
+	  
+}//End of MSSQL_LOG_NetApp_SM_Replication_Details After NC
+
+
+function MSSQL_LOG_NetApp_SM_NC_Check_SO_Status($groupName, $WFName) {
+	var $i = 0;
+	// Looping till SO execution Complete
+	while ($i < 50) {
+		_log($i);
+		_wait(10000);
+		Popup_Handler();
+		_click(_link("Test"));
+		_click(_link("Test List View"));
+		_click(_link($groupName));
+		
+		//_click(_link($WFName));
+
+		var $testStatus = _getText(_span(6, _near(_link($WFName))));
+		_assertExists("Test Status :", $testStatus);
+		
+		if ($testStatus == "FAILED") {
+			_wait(1000);
+			_fail($WFName, "workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+		} else if ($testStatus == "EXECUTING") {
+			_click(_link(1, _near(_link($WFName))));
+	
+
+			if (_exists(_submit("OK=true userInputButton btn btn-primary btn-xs btn btn-info"))) {
+				_click(_submit("OK=true userInputButton btn btn-primary btn-xs btn btn-info"));
+				_click(_link("Go back"));
+			} 
+			
+			else if(_exists(_paragraph("PAN-TSQL-0083: Switchover failed for group " + $groupName + ""))) {
+				
+				_click(_submit("Continue=CONTINUE userInputButton btn btn-primary btn-xs btn btn-info"));
+				_click(_link("Go back"));
+			} 
+		
+				} 
+		
+	
+			else if ($testStatus == "EXECUTING") {
+			_wait(10000);
+			_click(_link("Go back"));
+		} else if ($testStatus == "SUCCESS") {
+			_assertExists($WFName, "workflow executed succesfully.");
+			break;
+		}
+		$i = $i + 1;
+		
+	}
+	_click(_link("Go back"));
+	
+	if ($testStatus == "AWAITING_INPUT") {
+		_fail("Failed because of waiting for user input");
+	}// End of while loop
+} // End of Waitfor_TestWF_Completion()
+
+
+//RNC > MANAGE > GROUP INFORMATION VALIDATION (ReConsider)
+
+function MSSQL_LOG_NetApp_SM_Groupinfo_PostSO() {
+	MSSQL_LOG_NetApp_SM_Manage_GroupInfo($groupName,$datasetNameDR,$compIPDR,$remoteUserNameValDR,$remotePwdValDR);
+	//MSSQL_LOG_NetApp_SM_Manage_GroupInfo($groupName,"SO");
+	
+}// End of NetApp_SnapMirror_Groupinformation_Post_SO()
+
+
+//RNC > MONITOR > GROUPSNAPSHOT 
+
+function MSSQL_LOG_NetApp_SM_Groupsnapshot_Post_SO() {
+	
+	MSSQL_LOG_NetApp_SM_Groupsnapshot($groupName,$datasetNameDR,$compIPDR,$remoteUserNameValDR,$remotePwdValDR,"SO");
+
+} // End of NetApp_SnapMirror_Groupsnapshot_Post_SO()
+
+//
+
+function NetAPP_SnapMirror_Rpo_Post_SO() {
+
+	 NetAPP_SnapMirror_Rpo_Status($groupName,$datasetNameDR,$compIPDR,$remoteUserNameValDR,$remotePwdValDR);
+	
+} // End of NetAPP_SnapMirror_Post_SO()
+
+
+//STOPPING RNC
+
+function MSSQL_LOG_NetApp_SM_Stop_RNC($groupName) {
+	_click(_link("Manage"));
+	_click(_link("Groups List View"));
+	_click(_link($groupName));
+	_click(_link("Manage DR Solution"));
+	if (_exists(_button("Stop Reverse NormalCopy"))) {
+		_click(_button("Stop Reverse NormalCopy"));
+		_click(_checkbox("cbox"));
+		_click(__button("Continue"));
+		_wait(30000);
+		Popup_Handler();
+		
+		var $i = 0;
+		// Looping till Initiate Reverse NormalCopy button appears
+		while ($i < 10) {
+			_log($i);
+			_wait(10000);
+			_click(_link("Manage"));
+			_click(_link("Groups List View"));
+			_click(_link($groupName));
+			_click(_link("Manage DR Solution"));
+			if (_exists(_button("Initiate Reverse NormalCopy", _near(_link("Manage DR Solution"))))) {
+				_log("Initiate Reverse NormalCopy button exists");
+				break;
+			} else {
+					_log("Initiate Reverse NormalCopy button not exists");
+			}
+			$i = $i + 1;
+		} // End of while loop
+	} else {
+		_log("Reverse Normal Copy button does not exists and the group might be already in Reverse normal copy stopped state");
+	}
+	_assertExists(_button("Initiate Reverse NormalCopy", _near(_link("Manage DR Solution"))));
+} // End of Stop_Reverse_Normal_Copy()
+
+
+
+//
+
+function MSSQL_LOG_NetApp_SM_SB_Execution_Status($groupName) {
+	
+	MSSQL_LOG_NetApp_SM_SB_Completion_Check($groupName, "Switchback");
+
+}// End of SB_Execution_Status
+
+
+function MSSQL_LOG_NetApp_SM_SB_Completion_Check($groupName, $WFName) {
+	var $i = 0;
+	// Looping till SO execution Complete
+	while ($i < 50) {
+		_log($i);
+		_wait(10000);
+		Popup_Handler();
+		_click(_link("Test"));
+		_click(_link("Test List View"));
+		_click(_link($groupName));
+		
+		//_click(_link($WFName));
+
+		var $testStatus = _getText(_span(6, _near(_link($WFName))));
+		_assertExists("Test Status :", $testStatus);
+		
+		if ($testStatus == "FAILED") {
+			_wait(1000);
+			_fail($WFName, "workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+		} else if ($testStatus == "EXECUTING") {
+			_click(_link(1, _near(_link($WFName))));
+			if (_exists(_submit("OK=true userInputButton btn btn-primary btn-xs btn btn-info"))) {
+				_click(_submit("OK=true userInputButton btn btn-primary btn-xs btn btn-info"));
+				_click(_link("Go back"));
+			} 
+			else if(_exists(_paragraph("PAN-TSQL-0084: Switchback failed for group " + $groupName + ""))){
+				_click(_submit("Continue=CONTINUE userInputButton btn btn-primary btn-xs btn btn-info"));
+				_click(_link("Go back"));
+			} 
+			} 
+		else if ($testStatus == "EXECUTING") {
+			_wait(10000);
+			_click(_link("Go back"));
+		} else if ($testStatus == "SUCCESS") {
+			_assertExists($WFName, "workflow executed succesfully.");
+			break;
+		}
+		$i = $i + 1;
+		
+	}
+	_click(_link("Go back"));
+	
+	if ($testStatus == "AWAITING_INPUT") {
+		_fail("Failed because of waiting for user input");
+	} // End of while loop
+} // End of Waitfor_TestWF_Completion()
+
+
+
+
+
+function Creation_MSSQL_LOG_NetAPP_SM_Group() {
+	//$groupCreation = Create_FG($groupName, $groupDescription, $SolutionSignature, $primaryComponents, $remoteComponents, $primaryNetAppComponent, $remoteNetAppComponent, $primaryDatasets, $remoteDatasets, $primaryProtections, $remoteProtections);
+	if (_exists(_link($groupName))) {
+		_log("A Group with the name" + $groupName + "already exists");
+	} else {
+		navigateToDiscovery();
+		_click(_link("Groups"));
+		//_click(_cell("Create new - Group - Functional Group Application Group Business Group 3 Site Group"));
+		_setSelected(_select("createGroup"), "Functional Group");
+		_click(_button("Go "));
+		_wait(1000);
+		_setValue(_textbox("groupName"), $groupName);
+		_setValue(_textarea("groupDescription"), $groupDescription);	
+		if($subscriber != ""){
+		   _setSelected(_select("subscriberId"), $subscriber);
+		} 
+		_setSelected(_select("solutionType"), $SolutionSignature);
+		_click(_button("/Next/"));
+		_wait(10000);
+		_click(_link("Server Component"));
+		_click(_checkbox("primaryComponents", _near(_cell($primaryComponent, _under(_tableHeader("PrimaryComponent"))))));
+		_click(_checkbox("remoteComponents", _near(_cell($remoteComponent, _under(_tableHeader("RemoteComponent"))))));
+		_wait(1000);
+		_click(_checkbox("primaryComponents", _near(_cell($NetAppcompNamePR,_under(_tableHeader("PrimaryComponent"))))));
+		_click(_checkbox("remoteComponents", _near(_cell($NetAppcompNameDR,_under(_tableHeader("RemoteComponent"))))));
+		
+		_click(_submit("Save"));
+		_wait(2000);
+		_click(_link("Application Dataset"));		
+		
+		_setSelected(_select("primaryDatasets"), $datasetNamePR);
+		_setSelected(_select("remoteDatasets"), $datasetNameDR);
+		_click(_submit(" Save"));
+		_wait(1000);
+		_click(_link("Data Protection"));
+		_setSelected(_select("primaryProtections"), $primaryProtection);
+		_setSelected(_select("remoteProtections"), $remoteProtection);
+		_click(_button("Save"));
+		_click(_button("/Next/"));
+		_wait(1000);
+		_click(_button("Save"));
+		_click(_link("License"));
+		_click(_link("License"));
+		_click(_checkbox("Recovery"));
+		_click(_checkbox("Test"));
+		_click(_button("Save[2]"));
+		_click(_button("Finish"));
+		if (_exists(_link($groupName))) {
+			_assertExists("Group created succesfully");
+		} else {
+			_fail("Group creation Un-succesfull. Execution Stopped.");
+		}
+	}
+}// End Of Creation_MSSQL_LOG_NetAPP_SM_Group
+
+/**
+* Function is for Post Group Creation Discovery > Groups > Solution Details > Show Advanced Configuration Post SO.
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function Post_Group_Creation_Post_SO(){
+	
+	Post_Group_Creation_Details($groupName);
+}
+
+/**
+* Function is for Post Group Creation Discovery > Groups > Solution Details > Show Advanced Configuration before SO.
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function Post_Group_Creation(){
+	
+	Post_Group_Creation_Details($groupName);
+}
+
+/**
+* Function is for Post Group Creation Discovery > Groups > Solution Details.
+*@param : $groupName
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function Post_Group_Creation_Details($groupName){
+	navigateToDiscovery();
+	_click(_link("Groups"));
+	_click(_link($groupName));
+	_click(_link("Solution Details"));
+	
+	var $replicationInterval= _getCellText(_textbox("interval"));
+	_assertExists("Replication Interval at GUI",$replicationInterval);
+	
+	var $mapProtected=_getCellText(_option(0));
+	_assertExists("Source and Destination Path from GUI", $mapProtected);
+	
+		
+}
+
+//VALIDATING THE RELATIONSHIP PAGE.
+
+function MSSQL_LOG_NetApp_Monitor_Relationship($groupName) {
+	/*
+	 * _wait(60000); Popup_Handler(); _wait(60000); Popup_Handler(); _wait(60000);
+	 */
+	/*	Popup_Handler();
+	_wait(5000);
+	Popup_Handler();
+
+	 $count = 0;
+		while($count<10){
+			_wait(30000);
+			$count++;	
+		}
+		*/
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("Relationship"));
+	_click(_link("Expand All"));
+
+	// Validation of Solution Signature
+	var $drSolutionSignature = _getText(_cell(1, _near(_cell("DR Solution Signature[1]"))));
+	_assertEqual($SolutionSignature, $drSolutionSignature, "Comparing DR Solution Signature from the user input and GUI for group");
+
+	// Validation of Replication Details for PR
+	var $primaryService = _getText(_link(0, _near(_strong("Primary Service"))));
+	_assertEqual($primaryProtection, $primaryService, "Checking Protection Scheme name from user input and GUI showing for PR");
+
+	// Splitting the strings to get the replication type for PR
+	var $replicationTypePR = _getText(_cell(0, _near(_strong("Primary Service"))));
+	var $replicationPR = $replicationTypePR.split(":");
+	var $replication_PR = $replicationPR[1].split("[");
+	var $primaryServiceType = $replication_PR[1].split("]");
+
+	var $primaryServiceType1=$primaryServiceType[0];
+
+   _assertEqual($systemTypeProtection, $primaryServiceType1, "Checking System type Protection from user input and GUI showing for PR");
+
+
+	var $primaryServiceStatus = _getText(_cell(0, _near(_strong("Primary Service Status"))));
+	_assertExists("Primary Service Status:", $primaryServiceStatus);
+
+	// Validation of Replication Details for DR
+	var $remoteService = _getText(_link(0, _near(_strong("Remote Service"))));
+	_assertEqual($remoteProtection, $remoteService, "Checking Protection Scheme from user input and GUI for DR");
+
+	// Splitting the strings to get the replication type for DR
+	var $replicationTypeDR =  _getText(_cell(0, _near(_strong("Remote Service"))));
+	var $replicationDR = $replicationTypeDR.split(":");
+	var $replication_DR = $replicationDR[1].split("[");
+	var $remoteServiceType = $replication_DR[1].split("]");
+
+	var $remoteServiceType1=$remoteServiceType[0];
+	
+	_assertEqual($systemTypeProtection,$remoteServiceType1 , "Checking System type Protection from user input and GUI showing for DR");
+
+
+	var $remoteServiceStatus = _getText(_cell(0, _near(_strong("Remote Service Status"))));
+	_assertExists("Remote Service Status:", $remoteServiceStatus);
+
+	// Validation of Data set for PR
+	var $primaryDataset = _getText(_link(1, _near(_strong("Primary Dataset"))));
+	_assertExists("Primary Dataset:", $primaryDataset);
+	_assertEqual($datasetNamePR, $primaryDataset, "Checking Dataset from user input and GUI for PR");
+
+	// Splitting the strings to get the Data set type for PR
+	var $datasetPR = _getText(_cell(0, _near(_strong("Primary Dataset"))));
+	var $datasetTypePR = $datasetPR.split(":");
+	var $prDataset = $datasetTypePR[1].split("[");
+	var $prDatasetType = $prDataset[1].split("]");
+	_assertEqual($datasetType, $prDatasetType[0], "Checking Dataset Type from user input and GUI for PR");
+
+	var $primaryDataset = _getText(_cell(0, _near(_strong("Primary Dataset Status"))));
+	var $primaryDatasetPR = $primaryDataset.split(":");
+	_assertExists("Primary Dataset Status:", $primaryDatasetPR[2]);
+
+	// Validation of Data set for DR
+	var $remoteDataset = _getText(_link(0, _near(_strong("Remote Dataset"))));
+	_assertEqual($datasetNameDR, $remoteDataset, "Checking Dataset from user input and GUI for DR");
+
+	// Splitting the strings to get the Data set type for DR
+	var $datasetDR = _getText(_cell(0, _near(_strong("Remote Dataset"))));
+	var $datasetType_DR = $datasetDR.split(":");
+	var $drDataset = $datasetType_DR[1].split("[");
+	var $drDatasetType = $drDataset[1].split("]");
+	_assertEqual($datasetType, $drDatasetType[0], "Checking Dataset Type from user input and GUI for DR");
+
+	var $remoteDataset = _getText(_cell(0, _near(_strong("Remote Dataset Status"))));
+	var $remoteDataset_DR = $remoteDataset.split(":");
+	_assertExists("Remote Dataset Status:", $remoteDataset_DR[2]);
+	
+	
+	// Validation of Component for PR 1
+	var $primaryComponent = _getText(_link(0, _near(_strong("Primary Component 1"))));
+	_assertEqual($compNamePR, $primaryComponent, "Checking WIN PR Component from user input and GUI");
+
+	// Splitting the strings to get the Component type for PR
+	var $componentPR = _getText(_cell(0, _near(_strong("Primary Component 1"))));
+	var $systemTypePR = $componentPR.split(":");
+	var $prComponent = $systemTypePR[1].split("[");
+	var $prSystemType = $prComponent[1].split("]");
+	_assertEqual($systemType, $prSystemType[0], "Checking Component Type PR (WIN) from user input and GUI");
+
+	var $prComponent1 = _getText(_cell(0, _near(_strong("Primary Component 1 Status"))));
+	var $prComponent = $prComponent1.split(":");
+	_assertExists("WIN PR Primary Component Status", $prComponent[1]);
+	
+	
+		// Validation of Component for PR 2
+	var $primaryComponent = _getText(_link(0, _near(_strong("Primary Component 2"))));
+	_assertEqual($NetAppcompNamePR, $primaryComponent, "Checking LNX PR (NetApp) component from user input and GUI");
+
+	// Splitting the strings to get the Component type for PR
+	var $componentPR = _getText(_cell(0, _near(_strong("Primary Component 2"))));
+	var $systemTypePR = $componentPR.split(":");
+	var $prComponent = $systemTypePR[1].split("[");
+	var $prSystemType = $prComponent[1].split("]");
+	_assertEqual($NetAppsystemType, $prSystemType[0], "Checking Component Type PR (LNX) from user input and GUI");
+
+	var $prComponent1 = _getText(_cell(0, _near(_strong("Primary Component 2 Status"))));
+	var $prComponent = $prComponent1.split(":");
+	_assertExists("LNX PR Primary Component Status", $prComponent[1]);
+
+	// Validation of Component for DR 1
+	var $remoteComponent = _getText(_link(0, _near(_strong("Remote Component 1"))));
+	_assertEqual($NetAppcompNameDR, $remoteComponent, "Checking LNX DR (NetApp) Component from user input and GUI");
+
+	// Splitting the strings to get the Component type for DR
+	var $componentDR = _getText(_cell(0, _near(_strong("Remote Component 1"))));
+	var $systemTypeDR = $componentDR.split(":");
+	var $drComponent = $systemTypeDR[1].split("[");
+	var $drSystemType = $drComponent[1].split("]");
+	_assertEqual($NetAppsystemType, $drSystemType[0], "Checking Component Type DR (LNX) from user input and GUI");
+
+	var $remoteComponent = _getText(_cell(0, _near(_strong("Remote Component 1 Status"))));
+	var $remoteComponentDR = $remoteComponent.split(":");
+	_assertExists("LNX DR Remote Component Status:", $remoteComponentDR[1]);
+
+
+
+// Validation of Component for DR 2
+	var $remoteComponent = _getText(_link(0, _near(_strong("Remote Component 2"))));
+	_assertEqual($compNameDR, $remoteComponent, "Checking WIN DR Component from user input and GUI");
+
+	// Splitting the strings to get the Component type for DR
+	var $componentDR = _getText(_cell(0, _near(_strong("Remote Component 2"))));
+	var $systemTypeDR = $componentDR.split(":");
+	var $drComponent = $systemTypeDR[1].split("[");
+	var $drSystemType = $drComponent[1].split("]");
+	_assertEqual($systemType, $drSystemType[0], "Checking Component Type DR (WIN) from user input and GUI");
+
+	var $remoteComponent = _getText(_cell(0, _near(_strong("Remote Component 2 Status"))));
+	var $remoteComponentDR = $remoteComponent.split(":");
+	_assertExists("WIN DR Remote Component Status:", $remoteComponentDR[1]);
+	
+}
+
+
+//VERIFYING THE MANAGE > GROUP LIST VIEW > GROUP INFORMATION PAGE
+
+function MSSQL_LOG_NetApp_SM_Manage_GroupInfo($groupName, $WFType) {
+	_wait(6000);
+
+	_click(_link("Manage"));
+	_click(_link("Groups List View"));
+	_click(_link($groupName));
+	_click(_link("Group Information"));
+
+	var $productionSiteConfigured = _getText(_cell(1, _near(_cell("Production Site:"), _under(_cell("Configured")))));
+	_assertExists("Configured Production Site:", $productionSiteConfigured);
+	var $productionSiteCurrent = _getText(_cell(2, _near(_cell("Production Site:"), _under(_cell("Current")))));
+	_assertExists("Current Production Site:", $productionSiteCurrent);
+
+	// Verify Configured and Current Site for PR
+	if ($WFType == "SO") {
+		_assertNotExists($productionSiteConfigured, $productionSiteCurrent, "Current PR site not same as configured  .Site status incorrect");
+	} else {
+		_assertExists($productionSiteConfigured, $productionSiteCurrent, "Comparing configured and current PR site");
+	}
+
+	var $productionServerConfigured = _getText(_cell(1, _near(_cell("Production Server:"), _under(_cell("Configured")))));
+	_assertExists("Configured Production Server:", $productionServerConfigured);
+	var $productionServerCurrent = _getText(_cell(2, _near(_cell("Production Server:"), _under(_cell("Current")))));
+	_assertExists("Current Production Server:", $productionServerCurrent);
+
+	if ($WFType == "SO") {
+		_assertNotExists($productionServerConfigured, $productionServerCurrent, "Current PR server not same as configured  .Site status incorrect");
+	} else {
+		_assertExists($productionServerConfigured, $productionServerCurrent, "Comparing configured and current PR server");
+	}
+
+	var $DRSiteConfigured = _getText(_cell(1, _near(_cell("DR Site:"), _under(_cell("Configured")))));
+	_assertExists("Configured DR Site:", $DRSiteConfigured);
+	var $DRSiteCurrent = _getText(_cell(2, _near(_cell("DR Site:"), _under(_cell("Current")))));
+	_assertExists("Current DR Site:", $DRSiteCurrent);
+
+	// Verify Configured and Current Site for DR
+
+	if ($WFType == "SO") {
+		_assertNotEqual($DRSiteConfigured, $DRSiteCurrent, "Current DR site not same as configured  .Site status incorrect");
+	} else {
+		_assertExists($DRSiteConfigured, $DRSiteCurrent, "Comparing configured and current DR site");
+	}
+
+	var $DRServerConfigured = _getText(_cell(1, _near(_cell("DR Server:"), _under(_cell("Configured")))));
+	_assertExists("Configured DR Server:", $DRServerConfigured);
+	var $DRServerCurrent = _getText(_cell(2, _near(_cell("DR Server:"), _under(_cell("Current")))));
+	_assertExists("Current DR Server:", $DRServerCurrent);
+	if ($WFType == "SO") {
+		_assertNotExists($DRServerConfigured, $DRServerCurrent, "Current DR server not same as configured  .Site status incorrect");
+	} else {
+		_assertExists($DRServerConfigured, $DRServerCurrent, "Comparing configured and current DR site");
+	}
+
+	var $currentGroupState = _getText(_cell(1, _near(_cell("Current Group State:"))));
+	_assertExists("Current Group State:", $currentGroupState);
+	var $currentContinuityStatus = _getText(_cell(1, _near(_cell("Current Continuity Status:"))));
+	_assertExists("Current Continuity Status:", $currentContinuityStatus);
+	var $continuityOperation = _getText(_cell(1, _near(_cell("Continuity Operation:"))));
+	_assertExists("Continuity Operation:", $continuityOperation);
+}// End of Group_ManageGroupInformation()
+
+
+//VERIFYING THE MONITOR > GROUP > GROUP SNAPSHOT PAGE
+
+/*
+function NetApp_SnapMirror_Managedrsolution() {
+	NetApp_SnapMirror_Managedrsolution_Status($groupName);
+}// End o fNetApp_SnapMirror_Managedrsolution()
+
+*/
+
+
+function MSSQL_LOG_NetApp_SM_Managedrsolution_Status($groupName,$WFType){
+	_click(_link("Manage"));
+	_click(_link("Groups List View"));
+	_click(_link($groupName));
+	_click(_link("Manage DR Solution"));
+
+	// calling Group_ManageGroupInformation to verify the PR and DR site status
+	Group_Managedrsolution($WFType);
+
+	var $protectionMechanism = _getCellText(_cell(1, _near(_cell("Protection Mechanism:"))));
+	_assertExists("Protection Mechanism is:", $protectionMechanism);
+	_assertEqual($systemTypeProtection, $protectionMechanism, "Validating Protection Mechanism in GUI");
+	
+	var $replicationStatusGui = _getText(_cell(1, _near(_cell("Replication Status:"))));
+	_assertExists("Replication Status:", $replicationStatusGui);
+	
+	
+ 
+}// MSSQL_LOG_NetApp_SM_Managedrsolution_Status()
+
+
+
+//VERIFYING THE MONITOR > GROUP > GROUP SNAPSHOT PAGE
+
+function MSSQL_LOG_NetApp_SM_Groupsnapshot() {
+	
+	NetApp_SnapMirror_Groupsnapshot_Status($groupName,  $datasetNamePR, $compIPPR, $remoteUserNameValPR, $remotePwdValPR, "NC");
+}// End of NetApp_SnapMirror_Groupsnapshot()
+
+
+function NetApp_SnapMirror_Groupsnapshot_Status($groupName,$datasetName,$compIP,$remoteUserNameVal,$remotePwdVal,$WFType) {
+	Popup_Handler();
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("Group Snapshot"));
+	//PR
+    var $PRbfrLasttimewhentheLogfilesgotmodifiedGUI=_getCellText(_cell(1,_near(_cell("Last Log File backed up at :"))));
+    _assertExists("PR: Before: Last Log File backed up at :" ,$PRbfrLasttimewhentheLogfilesgotmodifiedGUI);
+  
+    var $PRbfrlasttimewhentheLogfilesgotmodifiedGUIBF = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($PRbfrLasttimewhentheLogfilesgotmodifiedGUI).getTime();
+	_assertExists("PR: Before: Last Log File backed up at Parsed:", $PRbfrlasttimewhentheLogfilesgotmodifiedGUIBF);
+    
+	var $PRbfrLastLogfilesBackedUPGUI=_getCellText(_cell(1,_near(_cell("Last Log File backed up:"))));
+    _assertExists("PR: Before: Last Log File backed up:" ,$PRbfrLastLogfilesBackedUPGUI);
+    
+    
+    
+    //DR    
+    var $DRbfrLasttimewhentheLogfilesgotRestoredGUI=_getCellText(_cell(1,_near((_cell("Last Log File Restored at:")))));
+    _assertExists("PR: Before: Last Log File Restored at:",$DRbfrLasttimewhentheLogfilesgotRestoredGUI);
+   
+    var $DRbfrLasttimewhentheLogfilesgotRestoredGUIBF = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($DRbfrLasttimewhentheLogfilesgotRestoredGUI).getTime();
+ 	_assertExists("PR: Before: Last Log File Restored at:", $DRbfrLasttimewhentheLogfilesgotRestoredGUIBF);
+ 	
+ 	var $DRbfrLastLogfilesgotRestoredGUI=_getCellText(_cell(1,_near((_cell("Last Log File Restored:")))));
+    _assertExists("PR: Before: Last Log File Restored:",$DRbfrLastLogfilesgotRestoredGUI);
+   
+ 	
+    
+ 	
+ 	
+/*  navigateToDiscovery()
+   _click(_link("Subsystems"));
+   _click(_link("Datasets"));
+   _click(_link($datasetName));
+   
+   var $applicationPath1 = _getCellText(_cell(1,_near(_cell("ApplicationSubSystem Path/Location:"))));
+   var $application=$applicationPath1.split(",");
+   var $applicationPath=$application[0];
+   //$path = "$applicationPath"; 
+   
+    var $sshCommand = "echo > " + $applicationPath +"/file01.txt";
+	 $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+    
+	
+   
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("Group Snapshot"));
+
+	 $count = 0;
+		while($count<10){
+			_wait(30000);
+			$count++;	
+		}
+		
+		
+		
+   	$db = Get_MSsql_Db_Connection_URL("192.168.20.27","dbnm","sa","Sanovi123");
+    var $time = currentTime();
+$db.update("CREATE TABLE [dbo].[Table_"+$time+"](" +
+			"[col1] [varchar](50) NULL," +
+			"[col2] [varchar](50) NULL," +
+			"[col3] [varchar](50) NULL," +
+			"[col4] [varchar](50) NULL," +
+			"[col5] [varchar](50) NULL" +
+          ")"); 
+	
+
+       $db = Get_MSsql_Db_Connection_URL($ipPR,$database,$userPR, $pwdPR);
+           _log("The connection string",$db);
+           var $time = currentTime();
+           _log("The Current Time",$time);
+           
+         $db.update("CREATE TABLE [dbo].[Table_"+$time+"](" +
+		          "[col1] [varchar](50) NULL," +
+		          "[col2] [varchar](50) NULL," +
+		          "[col3] [varchar](50) NULL," +
+
+                  ")"); 
+
+
+_wait(100); 
+  
+//$db = Get_MSsql_Db_Connection_URL($compIPPR,$datasetDBnm,$datasetPrDBUsrnm,$datasetPrDBpwd);
+ 	$db = Get_MSsql_Db_Connection_URL("192.168.20.27","dbnm","sa","Sanovi123");
+	
+	var $TimeStampDB2 = $db.select("use "+ $datasetDBnm +" ;select TOP 1  [End Time] as endTime from ::fn_dblog (null, null) where ([End Time] is NOT NULL) ORDER BY [End Time] DESC;");
+	var $TimeStampDB1=$TimeStampDB2; 
+	var $TimeStampDB = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss").parse($TimeStampDB1));
+	var $TimeStampDB1=$TimeStampDB.split(":");
+	var $TimeStampDB=$TimeStampDB1[0]+":"+$TimeStampDB1[1]+":"+$TimeStampDB1[2];
+	_assertExists("Transaction Time DB",$TimeStampDB);
+
+	
+  var $date = $TimeStampDB;
+  var $dateString = $date.toString();
+  var $TimeStamp = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+  _assertExists("TimeStamp", $TimeStamp);
+	*/
+    _log("Will wait for 5 minutes or so for the next log to appear");
+  $count = 0;
+	while($count<15){
+		_wait(30000);
+		$count++;
+		}
+	
+ 	
+ 	
+   // _wait(360000);
+    
+	//PR
+  /*  var $LasttimewhentheApplicationSubSystemfilesgotmodifiedGUI=_getCellText(_cell(1,_near(_cell("Last Log File backed up:"))));
+    _assertExists("Last Log File backed up:" ,$LasttimewhentheApplicationSubSystemfilesgotmodifiedGUI);
+    var $lasttimewhentheApplicationSubSystemfilesgotmodifiedGUIAF = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($LasttimewhentheApplicationSubSystemfilesgotmodifiedGUI).getTime();
+  	_assertExists("Last Log File backed up at : ", $LasttimewhentheApplicationSubSystemfilesgotmodifiedGUI);*/
+    
+    
+    //DR    
+    /*var $TimeuntilwhenApplicationSubSystemfilesareavailableGUI=_getCellText(_cell(1,_near((_cell("Last Log File Restored at:")))));
+    _assertExists("Last Log File Restored at:",$TimeuntilwhenApplicationSubSystemfilesareavailableGUI);
+    var $timeuntilwhenApplicationSubSystemfilesareavailableGUIAF = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($TimeuntilwhenApplicationSubSystemfilesareavailableGUI).getTime();
+  	_assertExists("Last Log File Restored at:", $timeuntilwhenApplicationSubSystemfilesareavailableGUIAF);*/
+    
+    
+  //PR
+    var $PRaftrLasttimewhentheLogfilesgotmodifiedGUI=_getCellText(_cell(1,_near(_cell("Last Log File backed up at :"))));
+    _assertExists("PR: After: Last Log File backed up at :" ,$PRaftrLasttimewhentheLogfilesgotmodifiedGUI);
+  
+    var $PRaftrlasttimewhentheLogfilesgotmodifiedGUIBF = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($PRaftrLasttimewhentheLogfilesgotmodifiedGUI).getTime();
+	_assertExists("PR: After: Last Log File backed up at Parsed:", $PRaftrlasttimewhentheLogfilesgotmodifiedGUIBF);
+    
+	var $PRaftrLastLogfilesBackedUPGUI=_getCellText(_cell(1,_near(_cell("Last Log File backed up:"))));
+    _assertExists("PR: After: Last Log File backed up:" ,$PRaftrLastLogfilesBackedUPGUI);
+    
+    
+    
+    //DR    
+    var $DRaftrLasttimewhentheLogfilesgotRestoredGUI=_getCellText(_cell(1,_near((_cell("Last Log File Restored at:")))));
+    _assertExists("DR: After: Last Log File Restored at:",$DRaftrLasttimewhentheLogfilesgotRestoredGUI);
+   
+    var $DRaftrLasttimewhentheLogfilesgotRestoredGUIBF = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($DRaftrLasttimewhentheLogfilesgotRestoredGUI).getTime();
+ 	_assertExists("DR: After: Last Log File Restored at:", $DRaftrLasttimewhentheLogfilesgotRestoredGUIBF);
+ 	
+ 	var $DRaftrLastLogfilesgotRestoredGUI=_getCellText(_cell(1,_near((_cell("Last Log File Restored:")))));
+    _assertExists("DR: After: Last Log File Restored:",$DRaftrLastLogfilesgotRestoredGUI);
+    
+    
+ // _assertTrue($lasttimewhentheApplicationSubSystemfilesgotmodifiedGUIBF<=$lasttimewhentheApplicationSubSystemfilesgotmodifiedGUIAF, "Last time when the ApplicationSubSystem files got modified is Equal in GUI and db");
+ 
+//  _assertTrue($timeuntilwhenApplicationSubSystemfilesareavailableGUIBF<=$timeuntilwhenApplicationSubSystemfilesareavailableGUIAF, "Time until when ApplicationSubSystem files are available is Equal in GUI and db");
+ 
+    _assertTrue($PRaftrLastLogfilesBackedUPGUI > $PRbfrLastLogfilesBackedUPGUI, "A new log file was successfully generated" + $PRaftrLastLogfilesBackedUPGUI + "at :" + $PRaftrLasttimewhentheLogfilesgotmodifiedGUI );
+    _assertTrue($DRaftrLastLogfilesgotRestoredGUI > $DRbfrLastLogfilesgotRestoredGUI, "A new log file was successfully Restored" + $DRaftrLastLogfilesgotRestoredGUI + "at :" + $DRaftrLasttimewhentheLogfilesgotRestoredGUI);
+    
+    
+}
+// End Of NetApp_SnapMirror_Groupsnapshot();
+
+
+
+//VERIFYING THE NC RPO:
+
+/*
+function MSSQL_LOG_NetApp_SM_Rpo() {
+
+	MSSQL_LOG_NetApp_SM_Rpo_Status($groupName,$datasetNamePR,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+
+	}// End of NetAPP_SnapMirror()
+
+	/**
+	* Function is for Verification of the all RPO detail from RPO/RTO screen for NetAPP SnapMirror solution.
+	*@param : $groupName,$datasetName,$compIP,$remoteUserNameVal,$remotePwdVal
+	*@return : $dbRecoveryPoint
+	*@Author: Padmavathi
+	*
+	
+	function MSSQL_LOG_NetApp_SM_Rpo_Status($groupName,$datasetName,$compIP,$remoteUserNameVal,$remotePwdVal) {
+
+		Popup_Handler();
+		_click(_link("Monitor"));
+		_click(_link($groupName));
+		_click(_link("RPO/RTO"));
+
+		// PR Details
+		
+		var $PrLastTrxnID = _getCellText(_cell(1, _near(_cell("Last Transaction ID(LSN) :"), _near(_cell("Primary")))));
+		_assertExists("PR Last Transaction ID",$PrLastTrxnID);
+		var $PrLastTrxnTm = _getCellText(_cell(1, _near(_cell("Last Transaction Time :"), _near(_cell("Primary")))));
+		_assertExists("PR Last Transaction Time :",$PrLastTrxnTm);
+		
+		
+		//DR Details
+		var $DrLastTrxnID = _getCellText(_cell(1, _near(_strong("Last Transaction ID(LSN) :[1]"), _near(_cell("Remote")))));
+		_assertExists("DR Last Transaction ID",$DrLastTrxnID);
+		var $DrLastTrxnTm = _getCellText(_cell(1, _near(_strong("Last Transaction Time :[1]"), _near(_cell("Remote")))));
+		_assertExists("DR Last Transaction Time :",$DrLastTrxnTm);
+		/*
+		
+		
+		//PR
+	    var $lastTimeApplicationFilesGotModified =_getCellText(_cell(1,_near(_cell("Last Transaction Time : "))));
+	    _assertExists("Last Transaction Time from GUI" ,$lastTimeApplicationFilesGotModified);
+	        
+	    var $lastTimeApplicationFilesGotModifiedBF = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($lastTimeApplicationFilesGotModified).getTime();
+		_assertExists("Last Transaction Time from GUI", $lastTimeApplicationFilesGotModified);
+	    
+	    //DR    
+	    var $timeUntilApplicationFilesareavailable =_getCellText(_cell(1,_near((_cell("Time Until Application Files are available:")))));
+	    _assertExists("Time Until Application Files are available from GUI",$timeUntilApplicationFilesareavailable);
+	   
+	    var $timeUntilApplicationFilesareavailableBF = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($timeUntilApplicationFilesareavailable).getTime();
+	 	_assertExists("Time Until Application Files are available", $timeUntilApplicationFilesareavailable);
+	    
+	  navigateToDiscovery()
+	   _click(_link("Subsystems"));
+	   _click(_link("Datasets"));
+	   _click(_link($datasetName));
+	   
+	   var $applicationPath1 = _getCellText(_cell(1,_near(_cell("ApplicationSubSystem Path/Location:"))));
+	   var $application=$applicationPath1.split(",");
+	   var $applicationPath=$application[0];
+	   //$path = "$applicationPath"; 
+	   
+	   var $sshCommand = "echo > " + $applicationPath +"/file100.txt";
+	   $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	    
+	   _click(_link("Monitor"));
+		_click(_link($groupName));
+		_click(_link("RPO/RTO"));
+		 $count = 1;
+			while($count<10){
+				_wait(30000);
+				$count++;	
+			}
+				
+	    
+		//PR
+	    var $lastTimeApplicationFilesGotModifiedGUI =_getCellText(_cell(1,_near(_cell("Last Time Application Files Got Modified:"))));
+	    _assertExists("Last Time Application Files Got Modified from GUI" ,$lastTimeApplicationFilesGotModified);
+	  
+	    var $lastTimeApplicationFilesGotModified = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($lastTimeApplicationFilesGotModifiedGUI).getTime();
+	  	_assertExists("Last Time Application Files Got Modified from GUI", $lastTimeApplicationFilesGotModified);
+	    
+	    //DR    
+	    var $timeUntilApplicationFilesareavailableGUI =_getCellText(_cell(1,_near((_cell("Time Until Application Files are available:")))));
+	    _assertExists("Time Until Application Files are available from GUI",$timeUntilApplicationFilesareavailable);
+
+	    var $timeUntilApplicationFilesareavailable = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($timeUntilApplicationFilesareavailableGUI).getTime();
+	  	_assertExists("Time Until Application Files are available from GUI", $timeUntilApplicationFilesareavailable);
+	    
+	    _assertTrue($lastTimeApplicationFilesGotModifiedBF<=$lastTimeApplicationFilesGotModified, "Last Time Application Files Got Modified is Equal in GUI and db");
+	    _assertTrue($timeUntilApplicationFilesareavailableBF<=$timeUntilApplicationFilesareavailable, "Time Until Application Files are available is Equal in GUI and db");
+	    	 
+	// Calling Calulate_Rpo function to verify RPO calculation from gui
+		$dbRpo = Calulate_Rpo($lastTimeApplicationFilesGotModifiedGUI,$timeUntilApplicationFilesareavailableGUI);
+	    $recoveryPointinDB = $dbRpo.get("recoveryPointDB");
+	    
+	    $dbRecoveryPoint = new java.util.Properties();
+	 	$dbRecoveryPoint.put("recoveryPointDB", $recoveryPointinDB);
+		return $dbRpo;
+		return $dbRecoveryPoint; 
+	
+	}// End Of NetApp_SnapMirror RPO
+
+*/
+
+
+	function MSSQL_LOG_NetApp_SM_RPO_Status($ipPR,$database,$userPR, $pwdPR) {
+		_wait(1000);
+		Popup_Handler();
+		_click(_link("Monitor"));
+		Popup_Handler();
+		_click(_link($groupName));
+		_click(_link("RPO/RTO"));
+		
+		
+// PR Details
+		
+		var $PrLastTrxnID = _getCellText(_cell(1, _near(_cell("Last Transaction ID(LSN) :"), _near(_cell("Primary")))));
+		_assertExists("PR Last Transaction ID",$PrLastTrxnID);
+		var $PrLastTrxnTm = _getCellText(_cell(1, _near(_cell("Last Transaction Time :"), _near(_cell("Primary")))));
+		_assertExists("PR Last Transaction Time :",$PrLastTrxnTm);
+		
+		
+		//DR Details
+		var $DrLastTrxnID = _getCellText(_cell(1, _near(_strong("Last Transaction ID(LSN) :[1]"), _near(_cell("Remote")))));
+		_assertExists("DR Last Transaction ID",$DrLastTrxnID);
+		var $DrLastTrxnTm = _getCellText(_cell(1, _near(_strong("Last Transaction Time :[1]"), _near(_cell("Remote")))));
+		_assertExists("DR Last Transaction Time :",$DrLastTrxnTm);
+				
+
+	//Transaction ID from GUI
+		var $transactionIDPRGui=_getCellText(_cell(1, _near(_cell("Last Transaction ID(LSN) :"), _near(_cell("Primary")))));
+		_assertExists("PR Last Transaction ID",$transactionIDPRGui);
+		//Transaction ID from DB
+		$db = Get_MSsql_Db_Connection_URL($ipPR,$database,$userPR, $pwdPR);
+		// executing query on PR
+		var $rpoStatus1 = $db.select("use "+ "" + $database + ""+";"+"select TOP 1 [Current LSN] as lsn,CONVERT (VARCHAR(24),[End Time],113)as Endtime from ::fn_dblog (null, null) where ([End Time] is NOT NULL) ORDER BY [End Time] DESC;");
+		var $transactionPRDB1 = $rpoStatus1.toString();
+		var $transactionIDPRDB2=$transactionPRDB1.split(",");
+		var $transactionIDPRDB=$transactionIDPRDB2[0];
+		_assertExists("RPO value DB PR",$transactionIDPRDB);
+		
+		var $i = 0;
+		while($i < 15){
+		if($transactionIDPRGui == $transactionIDPRDB){
+		_assertEqual($transactionIDPRDB,$transactionIDPRGui,"Comparing Transaction ID from GUI and DB");
+		break;
+		}
+		else if($transactionIDPRGui < $transactionIDPRDB){
+		_wait(30000);
+		Popup_Handler();
+		var $transactionIDPRGui=_getText(_cell(1, _near(_cell("Last Transaction ID(LSN) :",_under(_cell("Primary"))))));
+		_assertExists("RPO value GUI",$transactionIDPRGui);
+		}
+		else if($transactionIDPRGui > $transactionIDPRDB){
+		_wait(30000);
+		Popup_Handler();
+		//Transaction ID from GUI
+		var $transactionIDPRGui=_getText(_cell(1, _near(_cell("Last Transaction ID(LSN) :",_under(_cell("Primary"))))));
+		_assertExists("RPO value GUI",$transactionIDPRGui);
+		//Transaction ID from DB
+		$db = Get_MSsql_Db_Connection_URL($ipPR,$database,$userPR, $pwdPR);
+		// executing query on PR
+		var $rpoStatus1 = $db.select("use "+ "" + $database + ""+";select TOP 1 [Current LSN] as lsn, [End Time] as endTime, [Transaction ID] as transId from ::fn_dblog (null, null) where ([End Time] is NOT NULL) ORDER BY [End Time] DESC;");
+		var $transactionPRDB1 = $rpoStatus1.toString();
+		var $transactionIDPRDB2=$transactionPRDB1.split(",");
+		var $transactionIDPRDB=$transactionIDPRDB2[0];
+		_assertExists("RPO value DB",$transactionIDPRDB);
+		}
+		$i = $i + 1;
+		}//End Of Transaction ID while loop
+		//Transaction Time from GUI
+		var $transactionTimePRGui=_getText(_cell(1, _near(_cell("Last Transaction Time :",_under(_cell("Primary"))))));
+		_assertExists("Transaction Time in GUI",$transactionTimePRGui);
+		
+		
+
+		var $PRRpoTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($transactionTimePRGui).getTime();
+		
+
+		
+		
+		//Transaction Time from DB
+		var $transactionTimePRDB1=($transactionIDPRDB2[1]);
+		var $transactionTimePRDB = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss").parse($transactionTimePRDB1));
+		var $transactionTimePRDB1=$transactionTimePRDB.split(":");
+		var $transactionTimePRDB=$transactionTimePRDB1[0]+":"+$transactionTimePRDB1[1]+":"+$transactionTimePRDB1[2];
+		_assertExists("Transaction Time DB",$transactionTimePRDB);
+		
+		var $i = 0;
+		while($i < 10){
+		if($transactionTimePRGui == $transactionTimePRDB){
+		_assertEqual($transactionTimePRDB,$transactionTimePRGui,"Comparing Transaction time from Db and GUI");
+		break;
+		}
+		else {
+		_wait(30000);
+		Popup_Handler();
+		var $transactionTimePRGui=_getText(_cell(1, _near(_cell("Last Transaction Time :",_under(_cell("Primary"))))));
+		_assertExists("Transaction Time in GUI",$transactionTimePRGui);
+		//Transaction Time from DB
+		var $transactionTimePRDB1=$transactionIDPRDB2[1];
+		var $transactionTimePRDB = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss").parse($transactionTimePRDB1));
+		var $transactionTimePRDB1=$transactionTimePRDB.split(":");
+		var $transactionTimePRDB=$transactionTimePRDB1[0]+":"+$transactionTimePRDB1[1]+":"+$transactionTimePRDB1[2];
+		_assertExists("Transaction Time DB",$transactionTimePRDB);
+		
+	}
+		$i = $i + 1;
+	}
+		
+		//Transaction ID DR
+		
+		$db = Get_MSsql_Db_Connection_URL($ipDR,$database,$userDR, $pwdDR);
+		//Transaction ID from GUI DR
+		var $transactionIDDRGui=_getText(_cell(1, _near(_cell("Last Transaction ID(LSN) :",_under(_cell("Remote"))))));
+		_assertExists("RPO value GUI",$transactionIDDRGui);
+		var $LSNGui = $db.select("Declare " +
+			"@LSN varchar(22)," +
+			"@LSN1 varchar(11), " +
+			"@LSN2 varchar(10), " +
+			"@LSN3 varchar(5)," +
+			"@NewLSN varchar(26)" +
+			"Set @LSN = "+"'"+ $transactionIDDRGui +"'"+";" +
+					"Set @LSN1 = LEFT(@LSN, 8);" +
+					"Set @LSN2 = SUBSTRING(@LSN, 10, 8);" +
+					"Set @LSN3 = RIGHT(@LSN, 4);" +
+					"Set @LSN1 = CAST(CONVERT(VARBINARY, '0x' +RIGHT(REPLICATE('0', 8) + @LSN1, 8), 1) As int);" +
+					"Set @LSN2 = CAST(CONVERT(VARBINARY, '0x' +RIGHT(REPLICATE('0', 8) + @LSN2, 8), 1) As int);" +
+					"Set @LSN3 = CAST(CONVERT(VARBINARY, '0x' +RIGHT(REPLICATE('0', 8) + @LSN3, 8), 1) As int);" +
+					"Select CAST(@LSN1 as varchar(8)) +CAST(RIGHT(REPLICATE('0', 10) + @LSN2, 10) as varchar(10)) +CAST(RIGHT(REPLICATE('0', 5) + @LSN3, 5) as varchar(5))");
+		_assertExists("RPO value GUI in Hex Format",$LSNGui);
+		//Transaction ID from DB
+
+		//executing query on DR
+		var $rpoStatusDR1 = $db.select("use msdb ; select bs.backup_start_date as TIME ,bs.last_lsn  as LSN from backupset bs inner join backupmediafamily fm on bs.media_set_id = fm.media_set_id where fm.physical_device_name = (select TOP 1 fm.physical_device_name from backupset bs inner join  backupmediafamily fm on bs.media_set_id = fm.media_set_id where bs.database_name="+"'"+ $database +"'"+" order by fm.media_set_id desc);");
+		var $transactionDRDB1 = $rpoStatusDR1.toString();
+		_assertExists("*********",$rpoStatusDR1);
+		var $transactionIDDRDB2=$transactionDRDB1.split(",");
+		var $transactionIDDRDB=$transactionIDDRDB2[1];
+		_assertExists("RPO value DB DR",$transactionIDDRDB);
+		
+		var $i = 0;
+		while($i < 15){
+		
+		if($LSNGui == $transactionIDDRDB){
+		_assertEqual($transactionIDDRDB,$LSNGui,"Comparing Transaction Id from DB and GUI");
+		break;
+	}
+		else if($LSNGui < $transactionIDDRDB){
+		_wait(30000);
+		Popup_Handler();
+		var $transactionIDDRGui=_getText(_cell(1, _near(_cell("Last Transaction ID(LSN) :",_under(_cell("Remote"))))));
+		_assertExists("RPO value GUI",$transactionIDDRGui);
+		var $LSNGui = $db.select("Declare " +
+				"@LSN varchar(22)," +
+				"@LSN1 varchar(11), " +
+				"@LSN2 varchar(10), " +
+				"@LSN3 varchar(5)," +
+				"@NewLSN varchar(26)" +
+				"Set @LSN = "+"'"+ $transactionIDDRGui +"'"+";" +
+						"Set @LSN1 = LEFT(@LSN, 8);" +
+						"Set @LSN2 = SUBSTRING(@LSN, 10, 8);" +
+						"Set @LSN3 = RIGHT(@LSN, 4);" +
+						"Set @LSN1 = CAST(CONVERT(VARBINARY, '0x' +RIGHT(REPLICATE('0', 8) + @LSN1, 8), 1) As int);" +
+						"Set @LSN2 = CAST(CONVERT(VARBINARY, '0x' +RIGHT(REPLICATE('0', 8) + @LSN2, 8), 1) As int);" +
+						"Set @LSN3 = CAST(CONVERT(VARBINARY, '0x' +RIGHT(REPLICATE('0', 8) + @LSN3, 8), 1) As int);" +
+						"Select CAST(@LSN1 as varchar(8)) +CAST(RIGHT(REPLICATE('0', 10) + @LSN2, 10) as varchar(10)) +CAST(RIGHT(REPLICATE('0', 5) + @LSN3, 5) as varchar(5))");
+		_assertExists("RPO value GUI in Hex Format",$LSNGui);
+	}
+		else if($LSNGui > $transactionIDDRDB){
+		_wait(30000);
+		Popup_Handler();
+		//Transaction ID from GUI DR
+		var $transactionIDDRGui=_getText(_cell(1, _near(_cell("Last Transaction ID(LSN) :",_under(_cell("Remote"))))));
+		_assertExists("RPO value GUI",$transactionIDDRGui);
+		var $LSNGui = $db.select("Declare " +
+				"@LSN varchar(22)," +
+				"@LSN1 varchar(11), " +
+				"@LSN2 varchar(10), " +
+				"@LSN3 varchar(5)," +
+				"@NewLSN varchar(26)" +
+				"Set @LSN = "+"'"+ $transactionIDDRGui +"'"+";" +
+						"Set @LSN1 = LEFT(@LSN, 8);" +
+						"Set @LSN2 = SUBSTRING(@LSN, 10, 8);" +
+						"Set @LSN3 = RIGHT(@LSN, 4);" +
+						"Set @LSN1 = CAST(CONVERT(VARBINARY, '0x' +RIGHT(REPLICATE('0', 8) + @LSN1, 8), 1) As int);" +
+						"Set @LSN2 = CAST(CONVERT(VARBINARY, '0x' +RIGHT(REPLICATE('0', 8) + @LSN2, 8), 1) As int);" +
+						"Set @LSN3 = CAST(CONVERT(VARBINARY, '0x' +RIGHT(REPLICATE('0', 8) + @LSN3, 8), 1) As int);" +
+						"Select CAST(@LSN1 as varchar(8)) +CAST(RIGHT(REPLICATE('0', 10) + @LSN2, 10) as varchar(10)) +CAST(RIGHT(REPLICATE('0', 5) + @LSN3, 5) as varchar(5))");
+		_assertExists("RPO value GUI in Hex Format",$LSNGui);
+		//Transaction ID from DB
+		
+		//executing query on PR
+		var $rpoStatusDR1 = $db.select("use msdb ; select bs.backup_start_date as TIME ,bs.last_lsn  as LSN from backupset bs inner join backupmediafamily fm on bs.media_set_id = fm.media_set_id where fm.physical_device_name = (select TOP 1 fm.physical_device_name from backupset bs inner join  backupmediafamily fm on bs.media_set_id = fm.media_set_id where bs.database_name="+"'"+ $database +"'"+" order by fm.media_set_id desc);");
+		var $transactionDRDB1 = $rpoStatusDR1.toString();
+		_assertExists("*********",$rpoStatusDR1);
+		var $transactionIDDRDB2=$transactionDRDB1.split(",");
+		var $transactionIDDRDB=$transactionIDDRDB2[1];
+		_assertExists("RPO value DB DR",$transactionIDDRDB);
+	}
+		$i = $i + 1;
+	}
+
+
+		
+		//Transaction Time from GUI DR
+		var $transactionTimeDRGui=_getText(_cell(1, _near(_cell("Last Transaction Time :",_under(_cell("Remote"))))));
+		_assertExists("Transaction Time in GUI",$transactionTimeDRGui);
+		
+
+		
+		var $DRRpoTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($transactionTimeDRGui).getTime();
+
+
+		
+		//Transaction Time from DB DR
+		var $rpoStatusDR1 = $db.select("use msdb ; select bs.backup_start_date as TIME ,bs.last_lsn  as LSN from backupset bs inner join backupmediafamily fm on bs.media_set_id = fm.media_set_id where fm.physical_device_name = (select TOP 1 fm.physical_device_name from backupset bs inner join  backupmediafamily fm on bs.media_set_id = fm.media_set_id where bs.database_name="+"'"+ $database +"'"+" order by fm.media_set_id desc);");
+		var $transactionDRDB1 = $rpoStatusDR1.toString();
+		var $transactionIDDRDB2=$transactionDRDB1.split(",");
+		var $transactionTimeDRDB1=$transactionIDDRDB2[0];
+		var $transactionTimeDRDB = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse($transactionTimeDRDB1));
+		var $transactionTimeDRDB1=$transactionTimeDRDB.split(":");
+		var $transactionTimeDRDB=$transactionTimeDRDB1[0]+":"+$transactionTimeDRDB1[1]+":"+$transactionTimeDRDB1[2];
+		_assertExists("Transaction Time DB",$transactionTimeDRDB);
+		var $i = 0;
+		while($i < 10){
+		if($transactionTimeDRGui == $transactionTimeDRDB){
+		_assertEqual($transactionTimeDRDB,$transactionTimeDRGui,"Comparing Transaction time from Db and GUI");
+		break;
+	}
+	else {
+		_wait(30000);
+		Popup_Handler();
+		//Transaction Time from GUI DR
+		var $transactionTimeDRGui=_getText(_cell(1, _near(_cell("Last Transaction Time :",_under(_cell("Remote"))))));
+		_assertExists("Transaction Time in GUI",$transactionTimeDRGui);
+		//Transaction Time from DB DR
+		var $rpoStatusDR1 = $db.select("use msdb ; select bs.backup_start_date as TIME ,bs.last_lsn  as LSN from backupset bs inner join backupmediafamily fm on bs.media_set_id = fm.media_set_id where fm.physical_device_name = (select TOP 1 fm.physical_device_name from backupset bs inner join  backupmediafamily fm on bs.media_set_id = fm.media_set_id where bs.database_name="+"'"+ $database +"'"+" order by fm.media_set_id desc);");
+		var $transactionDRDB1 = $rpoStatusDR1.toString();
+		var $transactionIDDRDB2=$transactionDRDB1.split(",");
+		var $transactionTimeDRDB1=$transactionIDDRDB2[0];
+		var $transactionTimeDRDB = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse($transactionTimeDRDB1));
+		var $transactionTimeDRDB1=$transactionTimeDRDB.split(":");
+		var $transactionTimeDRDB=$transactionTimeDRDB1[0]+":"+$transactionTimeDRDB1[1]+":"+$transactionTimeDRDB1[2];
+		_assertExists("Transaction Time DB",$transactionTimeDRDB);
+		
+	}
+	$i = $i + 1;
+	}
+		if ($PRRpoTime < $DRRpoTime){
+			var $currenRpoGui = _getText(_cell(1, _near(_cell("Current App RPO:"))));
+			_assertExists("Current RPO GUI", $currenRpoGui);
+			_assertEqual("00:00:00",$currenRpoGui, "If DR is head of PR then Current APP RPO will be 00:00:00");
+		    }
+
+		else{
+
+		//Calling Calulate_Rpo function to verify RPO calculation from gui
+		$dbRpo = Calulate_Rpo($transactionTimePRDB, $transactionTimeDRDB);
+		$dbRecoveryPoint = $dbRpo.get("recoveryPointDB");
+
+		//$dbRecoveryPoint = new java.util.Properties();
+		//$dbRecoveryPoint.put("RecoveryPointDB", $$dbRecoveryPoint);
+		return $dbRpo;
+		return $dbRecoveryPoint;
+	}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+* Function is for Verification of replication status in replication page after SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function APP_PFR_Replication_Post_SO() {
+	APP_PFR_Replication_Status($groupName,$compIPDR,$remoteUserNameValDR,$remotePwdValDR,"SO");
+}
+
+/**
+* Function is for Verification of replication status in replication page before SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function APP_PFR_Replication() {
+	APP_PFR_Replication_Status($groupName,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+}
+
+
+/**
+* Function is for Verification of  in replication page .
+*@param : $groupName,$compIP,$remoteUserNameVal,$remotePwdVal,$WFType
+*@return : null
+*@Author: Govinda Mengji
+*/
+function APP_PFR_Replication_Status($groupName,$compIP,$remoteUserNameVal,$remotePwdVal,$WFType){
+	_click(_link("Manage"));
+	_click(_link("Groups List View"));
+	_click(_link($groupName));
+	_click(_link("Manage DR Solution"));
+    var $filesetNameGUI=_getCellText(_cell(1,_near(_cell("Fileset Name:"))));
+    $path = "$EAMSROOT/panacesFileReplicator/filesets/"+$filesetNameGUI+"/" ; 
+    
+    Replication_Details($groupName,$WFType);
+     
+     _click(_span("ui-icon ui-icon-triangle-1-e")); 
+    
+    
+    var $i=0;
+    while($i < 10) {
+    _wait(100);
+    
+    ////
+    var $sshCommand = "grep -R \"FILESET_TOTAL_REPLICATED_ACTUALSIZE=\" " + $path+ $filesetNameGUI+".rt";
+	$status = Execute_Ssh_Command($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommand);
+
+    var $totalreplication = $status.get("output").toString();
+	var $totalreplicationsize=$totalreplication.split("=");
+    var $totalreplicationactualsize=($totalreplicationsize[1]);
+	var $totalreplicationactualsizedb=$totalreplicationactualsize.split(",");
+	var $TotalReplicationactualSizedb=($totalreplicationactualsizedb[0]+" "+ "Bytes");
+	_assertExists("Total Replication Actual Size from db", $TotalReplicationactualSizedb);
+	
+	var $totalReplicatedActualSizeGUI=_getCellText(_cell(0,_rightOf(_cell("Total Replicated Actual Size"))));
+    _assertExists("Total Replicated Actual Size from GUI" ,  $totalReplicatedActualSizeGUI);
+
+	_assertEqual($TotalReplicationactualSizedb,$totalReplicatedActualSizeGUI, "Validate value from db and GUI Total Replicated Actual Size");
+  
+    ////FILESET_RECENT_FILES_REPLICATED
+	
+	var $sshCommand = "grep -R \"FILESET_RECENT_FILES_REPLICATED=\" " + $path+ $filesetNameGUI+".rt";
+	$status = Execute_Ssh_Command($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommand);
+    
+    var $lastReplicatedFile1=$status.get("output").toString();
+	var $lastReplicatedFile2=$lastReplicatedFile1.split("=");
+
+ 	var  $lastReplicatedFiledb=($lastReplicatedFile2[1]);
+    
+	_assertExists("Last Replicated File from db", $lastReplicatedFiledb);
+	 
+	var $lastReplicatedFileGUI=_getCellText(_cell(0,_rightOf(_cell("Last Replicated File[1]"))));
+    _assertExists("Last Replicated File from GUI" ,$lastReplicatedFileGUI);
+     
+	_assertEqual($lastReplicatedFiledb,$lastReplicatedFileGUI , "Valiadate value from db and GUI Last Replicated File");
+	 
+    
+	////
+	var $sshCommand = "grep -R \"FILESET_RECENT_FILES_REPLICATED_SIZE=\" " + $path+ $filesetNameGUI+".rt";
+	$status = Execute_Ssh_Command($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommand);
+
+  	var $lastReplicatedFilesize1=$status.get("output").toString();
+	var $lastReplicatedFilesize2=$lastReplicatedFilesize1.split("=");
+    var  $lastReplicatedFilesizedb=($lastReplicatedFilesize2[1]+" "+ "Bytes");
+    
+	_assertExists("Last Replicated File size from  db", $lastReplicatedFilesizedb);
+	 
+	var $lastReplicatedFilesizeGUI=_getCellText(_cell(0,_rightOf(_cell("Last Replicated File size"))));
+    _assertExists("Last Replicated File size from GUI" ,$lastReplicatedFilesizeGUI);
+     
+	_assertEqual($lastReplicatedFilesizedb,$lastReplicatedFilesizeGUI , "Valiadate value from db and GUI Last Replicated File size");
+	 
+  
+	///
+    var $sshCommand = "grep -R \"REPLICATION_THRUPUT=\" " + $path+ $filesetNameGUI+".rt";
+ 	$status = Execute_Ssh_Command($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommand);
+
+ 	var $throughput= $status.get("output").toString();
+ 	var $throughputdb0=$throughput.split("=");
+    var $throughputdb2=($throughputdb0[1]);
+ 	var $throughputdb1=$throughputdb2.split(",");
+ 	var  $throughputdb=($throughputdb1[0]+" "+"Bytes/Sec");
+	 
+	_assertExists("Throughtput from db", $throughputdb);
+	 
+	var $throughputGUI=_getCellText(_cell(0,_rightOf(_cell("Throughput"))));
+    _assertExists("Throughtput from GUI", $throughputGUI);
+	 
+	_assertEqual($throughputdb,$throughputGUI, "Validate Throughput"); 
+	
+	if($lastReplicatedFiledb != "N/A")
+	{
+		_wait(1000);
+		break;
+	}
+    $i++;
+    }
+}
+
+
+// Replication Page for LOCAL and REMOTE
+
+
+
+
+/**
+* Function is for Verification of the all RPO detail from RPO/RTO screen for APP PFR solution Post SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function APP_PFR_Rpo_Post_SO() {
+
+	 APP_PFR_Rpo_Status($groupName,$datasetNameDR,$compIPDR,$remoteUserNameValDR,$remotePwdValDR);
+	
+} // End of APP_Rpo_Post_SO()
+
+/**
+* Function is for Verification of the all RPO detail from RPO/RTO screen for APP PFR solution before SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*
+*/
+function APP_PFR_Rpo() {
+
+APP_PFR_Rpo_Status($groupName,$datasetNamePR,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+
+}// End of APP_Rpo()
+
+/**
+* Function is for Verification of the all RPO detail from RPO/RTO screen for APP PFR solution.
+*@param : $groupName,$datasetName,$compIP,$remoteUserNameVal,$remotePwdVal
+*@return : $dbRecoveryPoint
+*@Author: Govinda Mengji
+*
+*/
+function APP_PFR_Rpo_Status($groupName,$datasetName,$compIP,$remoteUserNameVal,$remotePwdVal) {
+
+	Popup_Handler();
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("RPO/RTO"));
+	//PR
+    var $ApplicationFilesModificationTimeStampGUI=_getCellText(_cell(1,_near(_cell("Application Files Modification Timestamp:"))));
+    _assertExists("Application Files Modification Timestamp from GUI" ,$ApplicationFilesModificationTimeStampGUI);
+        
+    var $applicationFilesModificationTimestampGUI = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($ApplicationFilesModificationTimeStampGUI).getTime();
+	_assertExists("Application Files Modification Timestamp from GUI", $applicationFilesModificationTimestampGUI);
+    
+    //DR    
+    var $LastReplicatedApplicationFileTimeStampGUI=_getCellText(_cell(1,_near((_cell("Last Replicated Application File Timestamp:")))));
+    _assertExists("Last Replicated Application File Timestamp from GUI",$LastReplicatedApplicationFileTimeStampGUI);
+   
+    var $lastReplicatedApplicationFileTimestampGUI = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($LastReplicatedApplicationFileTimeStampGUI).getTime();
+ 	_assertExists("Last Replicated Application File Timestamp from GUI", $lastReplicatedApplicationFileTimestampGUI);
+    
+  navigateToDiscovery()
+   _click(_link("Subsystems"));
+   _click(_link("Datasets"));
+   _click(_link($datasetName));
+   
+   var $applicationPath1 = _getCellText(_cell(1,_near(_cell("ApplicationSubSystem Path/Location:"))));
+   var $application=$applicationPath1.split(",");
+   var $applicationPath=$application[0];
+   //$path = "$applicationPath"; 
+   
+   var $sshCommand = "echo > " + $applicationPath +"/file100.txt";
+   $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+    
+   _click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("RPO/RTO"));
+	 $count = 1;
+		while($count<10){
+			_wait(30000);
+			$count++;	
+		}
+			
+
+    
+	//PR
+    var $ApplicationFilesModificationTimeStamp=_getCellText(_cell(1,_near(_cell("Application Files Modification Timestamp:"))));
+    _assertExists("Application Files Modification Timestamp from GUI" ,$ApplicationFilesModificationTimeStamp);
+  
+    var $applicationFilesModificationTimestamp = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($ApplicationFilesModificationTimeStamp).getTime();
+  	_assertExists("Last Replicated Application File Timestamp from GUI", $applicationFilesModificationTimestamp);
+    
+    //DR    
+    var $LastReplicatedApplicationFileTimeStamp=_getCellText(_cell(1,_near((_cell("Last Replicated Application File Timestamp:")))));
+    _assertExists("Last Replicated Application File Timestamp from GUI",$LastReplicatedApplicationFileTimeStamp);
+
+    var $lastReplicatedApplicationFileTimestamp = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($LastReplicatedApplicationFileTimeStamp).getTime();
+  	_assertExists("Last Replicated Application File Timestamp from GUI", $lastReplicatedApplicationFileTimestamp);
+    
+    _assertTrue($applicationFilesModificationTimestampGUI<=$applicationFilesModificationTimestamp, "Application Files Modification Timestamp is Equal in GUI and db");
+    _assertTrue($lastReplicatedApplicationFileTimestampGUI<=$lastReplicatedApplicationFileTimestamp, "Last Replicated Application File Timestamp is Equal in GUI and db");
+    	 
+// Calling Calulate_Rpo function to verify RPO calculation from gui
+	$dbRpo = Calulate_Rpo($ApplicationFilesModificationTimeStamp,$LastReplicatedApplicationFileTimeStamp);
+    $recoveryPointinDB = $dbRpo.get("recoveryPointDB");
+    
+    $dbRecoveryPoint = new java.util.Properties();
+ 	$dbRecoveryPoint.put("recoveryPointDB", $recoveryPointinDB);
+	return $dbRpo;
+	return $dbRecoveryPoint;
+	
+}// End Of APP PFR RPO
+
+/**
+* Function is for Verification of the all RTO detail from RPO/RTO screen for APP PFR solution
+*@param : null
+*@return : $dbRto
+*@Author: Govinda Mengji
+*
+*/
+
+function APP_PFR_Rto() {
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("RPO/RTO"));
+
+	// verification of current RTO :
+
+	
+	var $stepName1 = parseInt(_getText(_cell(1, _near(_cell("Remote Site Health Check"), _under(_cell("Expected Completion Time (sec)"))))));
+	var $stepName2 = parseInt(_getText(_cell(1, _near(_cell("Stop PFR Services"), _under(_cell("Expected Completion Time (sec)"))))));
+	var $stepName3 = parseInt(_getText(_cell(1, _near(_cell("Stop the application on Primary Server."), _under(_cell("Expected Completion Time (sec)"))))));
+	var $stepName4 = parseInt(_getText(_cell(1, _near(_cell("Check ApplicationSubSystem consistency"), _under(_cell("Expected Completion Time (sec)"))))));
+	var $stepName5 = parseInt(_getText(_cell(1, _near(_cell("Start the application on DR server."), _under(_cell("Expected Completion Time (sec)"))))));
+	
+	var $expectedCompletionTime = Math.floor($stepName1 + $stepName2 + $stepName3 + $stepName4 + $stepName5);
+	_assertExists("Expected completion time", $expectedCompletionTime);
+
+	// Calling function Calculate_Rto from Group_manager.sah
+	$dbRto = Calculate_Rto($expectedCompletionTime);
+	return $dbRto;
+
+} // End of APP_PFR RTO
+
+/**
+* Function is for Verification of details in Manage-Manage DR Solution screen for APP_PFR solution Post SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function APP_PFR_Managedrsolution_PostSO() {
+	APP_PFR_Managedrsolution_Status($groupName,"SO");
+} // End of APP_PFR_Managedrsolution_PostSO()
+
+/**
+* Function is for Verification of details in Manage-Manage DR Solution screen for APP_PFR solution before SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function APP_PFR_Managedrsolution() {
+	APP_PFR_Managedrsolution_Status($groupName);
+}// End of APP_PFR_Managedrsolution()
+
+
+/**
+* Function is for Verification of details in Manage-Manage DR Solution screen for APP_PFR solution.
+*@param : $groupName,$WFType 
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function APP_PFR_Managedrsolution_Status($groupName,$WFType){
+	_click(_link("Manage"));
+	_click(_link("Groups List View"));
+	_click(_link($groupName));
+	_click(_link("Manage DR Solution"));
+
+	// calling Group_ManageGroupInformation to verify the PR and DR site status
+	Group_Managedrsolution($WFType);
+
+	navigateToDiscovery();
+	_click(_link("Groups"));
+	_click(_link("Subsystems"));
+	_click(_link("Protection Schemes"));
+	_wait(1000);
+	_click(_link($sernamePR, _near(_cell($systemTypeProtection))));
+	
+	var $filesetName=_getCellText(_cell(1,_near(_cell("Protection Scheme Fileset Name:"))));
+
+	// Getting value of Pair name from GUI
+	_click(_link("Manage"));
+	_click(_link("Groups List View"));
+	_click(_link($groupName));
+	_click(_link("Manage DR Solution"));
+ 
+	var $filesetNameGUI=_getCellText(_cell(1,_near(_cell("Fileset Name:"))));
+	
+	_assertEqual($filesetName,$filesetNameGUI, "Validating FilesetName");
+
+
+	var $protectionMechanism = _getCellText(_cell(1, _near(_cell("Protection Mechanism:"))));
+	_assertExists("Protection Mechanism is:", $protectionMechanism);
+	_assertEqual($systemTypeProtection, $protectionMechanism, "Validating Protection Mechanism in GUI");
+	
+	var $replicationStatusGui = _getText(_cell(1, _near(_cell("Replication Status:"))));
+	_assertExists("Replication Status:", $replicationStatusGui);
+	
+	
+ 
+}// end Of APP_PFR_Managedrsolution_Status()
+
+/**
+* Function is for Validation of logs in Monitor > GroupSnapshot screen for APPPFR solution post SO.
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function APP_PFR_Groupsnapshot_Post_SO() {
+	
+	APP_PFR_Groupsnapshot_Status($groupName,$datasetNameDR,$compIPDR,$remoteUserNameValDR,$remotePwdValDR,"SO");
+
+} // End of APP_Groupsnapshot_Post_SO()
+
+
+/**
+* Function is for Validation of logs in Monitor > GroupSnapshot screen for APPPFR solution before SO.
+*@param : null
+**@return : null
+*@Author: Govinda Mengji
+*
+*/
+function APP_PFR_Groupsnapshot() {
+	
+	APP_PFR_Groupsnapshot_Status($groupName,$datasetNamePR,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+}// End of APP_Groupsnapshot()
+
+/**
+* Function is for Validation of logs in Monitor > GroupSnapshot screen for APPPFR solution.
+*@param :$groupName,$datasetName,$compIP,$remoteUserNameVal,$remotePwdVal,$WFType
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function APP_PFR_Groupsnapshot_Status($groupName,$datasetName,$compIP,$remoteUserNameVal,$remotePwdVal,$WFType) {
+	Popup_Handler();
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("Group Snapshot"));
+
+	// verifying Recovery Point
+	if ($WFType == "SO") {
+		if (_exists(_cell("Not supported in Switchover mode"))) {
+			_log("So done successfully");
+		} else {
+			_log("Gui not showing correct value");
+		}
+		// calling APP_PFR_RPO_Post_SO function
+		
+		APP_PFR_Rpo_Post_SO();
+
+	} else {
+		// calling APP_PFR_RPO function
+		 APP_PFR_Rpo();
+	}
+	
+	var $recoveryPointGui1 = _getText(_span(1, _near(_span("DR Data Consistent up to:"), _near(_cell("Continuity")))));
+	 var $date = $recoveryPointGui1;
+     var $dateString = $date.toString();
+     var $recoveryPointGui = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+ 	_assertExists("Recovery Point DR Data Consistent up to:", $recoveryPointGui);
+ 	if ($recoveryPointinDB == $recoveryPointGui){
+	_assertEqual($recoveryPointinDB, $recoveryPointGui, "Validating Recovery Point DR Data Consistent upto correct in GUI");
+}
+ 	else {
+ 		_log("Validating Recovery Point DR Data Consistent is not  correct in GUI");
+ 	}
+	// Verfing Recovery time
+	if ($WFType == "SO") {
+		if (_exists(_cell("Not supported in Switchover mode"))) {
+			_log("Not supported in Switchover mode");
+		}
+	} else {
+		Popup_Handler();
+		_click(_link("Monitor"));
+		_click(_link($groupName));
+		_click(_link("Group Snapshot"));
+		var $recoveryTimeGui1 = (_getText(_cell(5, _near(_span("Est. time to recover:", _near((_cell("Recovery Time")))))))).split("Est. time to recover:");
+		var $recoveryTimeGui = $recoveryTimeGui1[1];
+		_assertExists("Recovery Time  Est. time to recover:", $recoveryTimeGui);
+		// calling function to calculate rto for Recovery Time
+		var $dbRto = APP_PFR_Rto($groupName);
+		Popup_Handler();
+		_click(_link("Monitor"));
+		_click(_link($groupName));
+		_click(_link("Group Snapshot"));
+		_assertEqual($dbRto.get("actualRtoDB"), $recoveryTimeGui, "Validating Recovery Time  Est. time to recover correct in GUI");
+	}
+	Popup_Handler();
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("Group Snapshot"));
+	var $continuityOperation = _getText(_cell(1, _near(_cell("Continuity Operation:"))));
+	_assertExists("Continuity Operation:", $continuityOperation);
+
+	//PR
+    var $ApplicationFilesModificationTimeStampGUI=_getCellText(_cell(1,_near(_cell("Application Files Modification Timestamp:[1]"))));
+    _assertExists("Application Files Modification Timestamp from GUI" ,$ApplicationFilesModificationTimeStampGUI);
+  
+    var $applicationFilesModificationTimestampGUI = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($ApplicationFilesModificationTimeStampGUI).getTime();
+	_assertExists("Application Files Modification Timestamp from GUI", $applicationFilesModificationTimestampGUI);
+    
+    
+    //DR    
+    var $LastReplicatedApplicationFileTimeStampGUI=_getCellText(_cell(1,_near((_cell("Last Replicated Application File Timestamp:[1]")))));
+    _assertExists("Last Replicated Application File Timestamp from GUI",$LastReplicatedApplicationFileTimeStampGUI);
+   
+    var $lastReplicatedApplicationFileTimestampGUI = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($LastReplicatedApplicationFileTimeStampGUI).getTime();
+ 	_assertExists("Last Replicated Application File Timestamp from GUI", $lastReplicatedApplicationFileTimestampGUI);
+    
+  navigateToDiscovery()
+   _click(_link("Subsystems"));
+   _click(_link("Datasets"));
+   _click(_link($datasetName));
+   
+   var $applicationPath1 = _getCellText(_cell(1,_near(_cell("ApplicationSubSystem Path/Location:"))));
+   var $application=$applicationPath1.split(",");
+   var $applicationPath=$application[0];
+   //$path = "$applicationPath"; 
+   
+    var $sshCommand = "echo > " + $applicationPath +"/file01.txt";
+	 $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+    
+	
+   
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("Group Snapshot"));
+
+	 $count = 0;
+		while($count<10){
+			_wait(30000);
+			$count++;	
+		}
+	//PR
+    var $ApplicationFilesModificationTimeStamp=_getCellText(_cell(1,_near(_cell("Application Files Modification Timestamp:[1]"))));
+    _assertExists("Application Files Modification Timestamp from GUI" ,$ApplicationFilesModificationTimeStamp);
+  
+    
+    var $applicationFilesModificationTimestamp = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($ApplicationFilesModificationTimeStamp).getTime();
+  	_assertExists("Last Replicated Application File Timestamp from GUI", $applicationFilesModificationTimestamp);
+    
+    
+    //DR    
+    var $LastReplicatedApplicationFileTimeStamp=_getCellText(_cell(1,_near((_cell("Last Replicated Application File Timestamp:[1]")))));
+    _assertExists("Last Replicated Application File Timestamp from GUI",$LastReplicatedApplicationFileTimeStamp);
+
+    var $lastReplicatedApplicationFileTimestamp = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($LastReplicatedApplicationFileTimeStamp).getTime();
+  	_assertExists("Last Replicated Application File Timestamp from GUI", $lastReplicatedApplicationFileTimestamp);
+    
+    
+  _assertTrue($applicationFilesModificationTimestampGUI<=$applicationFilesModificationTimestamp, "Application Files Modification Timestamp is Equal in GUI and db");
+ 
+  _assertTrue($lastReplicatedApplicationFileTimestampGUI<=$lastReplicatedApplicationFileTimestamp, "Last Replicated Application File Timestamp is Equal in GUI and db");
+ 
+}
+// End Of APP PFRGroupsnapshot()
+
+/**
+* Function is for verification of details in Manage-Group Information screen for APP_PFR solution Post SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function APP_PFR_Groupinformation_Post_SO() {
+	APP_PFR_Groupinformation_Details($groupName,$datasetNameDR,$compIPDR,$remoteUserNameValDR,$remotePwdValDR,"SO");
+}// End of APP_Groupinformation_Post_SO()
+
+/**
+* Function is for verification of details in Manage-Group Information screen for APP_PFR solution Before SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function APP_PFR_Groupinformation() {
+	APP_PFR_Groupinformation_Details($groupName,$datasetNamePR,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+}// End of APP_Groupinformation()
+
+
+/**
+* Function is for verification of details in Manage-Group Information screen for APP_PFR solution Before SO
+*@param : $groupName,$userPR, $pwdPR, $internalLogon,$APPListenerIPPR, $dbSidSelect,$userDR, $pwdDR, $internalLogon,$APPListenerIPDR, $dbSidSelect,$WFType
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function APP_PFR_Groupinformation_Details($groupName,$datasetName,$compIP,$remoteUserNameVal,$remotePwdVal,$WFType)
+{
+
+	_click(_link("Manage"));
+	_click(_link("Groups List View"));
+	_click(_link($groupName));
+	_click(_link("Group Information"));
+  // calling Group_ManageGroupInformation to verify the PR and DR site status
+    Group_Managegroupinformation($groupName, $WFType);
+      
+//PR
+     
+ 	var $i=0;
+	while($i<10){
+		var $ApplicationFilesModificationTimeStampGUI=_getCellText(_cell(1,_near(_cell("Application Files Modification Timestamp:"))));
+	     _assertExists("Application Files Modification Timestamp from GUI" ,$ApplicationFilesModificationTimeStampGUI);
+	if($ApplicationFilesModificationTimeStampGUI =="N/A"){
+		_wait(30000);
+	}
+	else
+		{
+		break;
+		_log("Go Ahead");
+		}
+	$i++;
+	}
+   
+     var $applicationFilesModificationTimestampGUI = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($ApplicationFilesModificationTimeStampGUI).getTime();
+ 	_assertExists("Application Files Modification Timestamp from GUI", $applicationFilesModificationTimestampGUI);
+     
+     
+     //DR    
+     var $LastReplicatedApplicationFileTimeStampGUI=_getCellText(_cell(1,_near((_cell("Last Replicated Application File Timestamp:")))));
+     _assertExists("Last Replicated Application File Timestamp from GUI",$LastReplicatedApplicationFileTimeStampGUI);
+    
+     var $lastReplicatedApplicationFileTimestampGUI = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($LastReplicatedApplicationFileTimeStampGUI).getTime();
+  	_assertExists("Last Replicated Application File Timestamp from GUI", $lastReplicatedApplicationFileTimestampGUI);
+     
+   navigateToDiscovery()
+    _click(_link("Subsystems"));
+    _click(_link("Datasets"));
+    _click(_link($datasetName));
+    
+    var $applicationPath1 = _getCellText(_cell(1,_near(_cell("ApplicationSubSystem Path/Location:"))));
+    var $application=$applicationPath1.split(",");
+    var $applicationPath=$application[0];
+    //$path = "$applicationPath"; 
+    
+     var $sshCommand = "echo > " + $applicationPath +"/file00.txt";
+ 	 $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+    
+ 	_click(_link("Manage"));
+	_click(_link("Groups List View"));
+	_click(_link($groupName));
+	_click(_link("Group Information"));
+
+	 $count = 0;
+		while($count<10){
+			_wait(30000);
+			$count++;	
+		}
+	 //PR
+     var $ApplicationFilesModificationTimeStamp=_getCellText(_cell(1,_near(_cell("Application Files Modification Timestamp:"))));
+     _assertExists("Application Files Modification Timestamp from GUI" ,$ApplicationFilesModificationTimeStamp);
+   
+     
+     var $applicationFilesModificationTimestamp = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($ApplicationFilesModificationTimeStamp).getTime();
+   	_assertExists("Last Replicated Application File Timestamp from GUI", $applicationFilesModificationTimestamp);
+     
+     
+     //DR    
+     var $LastReplicatedApplicationFileTimeStamp=_getCellText(_cell(1,_near((_cell("Last Replicated Application File Timestamp:")))));
+     _assertExists("Last Replicated Application File Timestamp from GUI",$LastReplicatedApplicationFileTimeStamp);
+
+     var $lastReplicatedApplicationFileTimestamp = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($LastReplicatedApplicationFileTimeStamp).getTime();
+   	_assertExists("Last Replicated Application File Timestamp from GUI", $lastReplicatedApplicationFileTimestamp);
+     
+     
+    _assertTrue($applicationFilesModificationTimestampGUI<=$applicationFilesModificationTimestamp, "Application Files Modification Timestamp is Equal in GUI and db");
+ 
+   _assertTrue($lastReplicatedApplicationFileTimestampGUI<=$lastReplicatedApplicationFileTimestamp, "Last Replicated Application File Timestamp is Equal in GUI and db");
+ 
+}
+
+/**
+* Function is to Start NormalFULLCopy for APP_PFR Solution
+* *@param : $groupName
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function Execute_NFC($groupName) {
+	_click(_link("Manage"));
+	_click(_link("Groups List View"));
+	_click(_link($groupName));
+	_click(_link("Manage DR Solution"));
+
+	if (_exists(_button("Stop Replication"))) {
+		_log("button Stop Replication existes");
+	} else {
+		_wait(10000);
+		_click(_button("Start Replication"));
+	    _wait(10000);
+	}
+	if (_exists(_button("/Initiate NormalFullCopy/"))) {
+		_click(_button("Initiate NormalFullCopy"));
+		if (_exists(_cell("Workflow Readiness"))) {
+			_click(_button("/workflowrun/"));
+		}
+		_click(_checkbox("cbox"));
+		_click(_button("/Continue/"));
+		_wait(10000);
+		Popup_Handler();
+		var $i = 0;
+
+		// Looping till Stop Normal Copy button appears
+		while ($i < 30) {
+			_log($i);
+			_wait(10000);
+			_click(_link("Manage"));
+			_click(_link("Groups List View"));
+			_click(_link($groupName));
+			_click(_link("Manage DR Solution"));
+			if (_exists(_button("/Initiate NormalCopy/"))) {
+				_log("Start NormalCopy button exists");
+				break;
+			} 
+			else
+				_log("Start NormalCopy button not exists");
+			
+			if (_exists(_button("Stop Replication")))
+				{
+				_log("Replication Started");
+				}else{
+					_click(_button("Start Replication"));
+						}
+				$i = $i + 1;
+		}
+		// End of while
+	} else {
+		_log("Initiate NormalFullCopy button does not exists and the group might be already in normal copy state");
+	}
+	_assertExists(_button("/Initiate NormalCopy/", _near(_link("Manage DR Solution"))));
+
+
+} // End of executeNFC()
+
+
+/**
+* Function is to File Creation on PR for APP_PFR Solution
+* *@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function File_Creation_PR(){
+	File_Creation($datasetNamePR,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	
+}
+/**
+* Function is to File Creation for APP_PFR Solution
+* *@param : $datasetNamePR,$compIP,$remoteUserNameVal,$remotePwdVal
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function File_Creation($datasetNamePR,$compIP,$remoteUserNameVal,$remotePwdVal){
+	
+	  navigateToDiscovery()
+	   _click(_link("Subsystems"));
+	   _click(_link("Datasets"));
+	   _click(_link($datasetNamePR));
+	   
+	   var $applicationPath1 = _getCellText(_cell(1,_near(_cell("ApplicationSubSystem Path/Location:"))));
+	   var $application=$applicationPath1.split(",");
+	   var $applicationPath=$application[0];
+	   
+	  var $sshCommand = "echo > " + $applicationPath +"/file00.txt";
+	  $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+      _wait(100);
+	  
+	  var $sshCommand = "echo > " + $applicationPath +"/file01.txt";
+	  $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+      _wait(100);
+       
+      var $sshCommand = "echo > " + $applicationPath +"/file02.txt";
+	  $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+      _wait(100);
+	  
+      var $sshCommand = "echo > " + $applicationPath +"/file03.txt";
+	  $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	  _wait(100);
+	  
+	  var $sshCommand = "echo > " + $applicationPath +"/file04.txt";
+	  $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	  _wait(100);
+	  
+	  var $sshCommand = "echo > " + $applicationPath +"/file05.txt";
+	  $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	   
+}
+
+/**
+* Function is for Replication Details  APP_PFR Solution
+* *@param : $groupName,$WFType
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+
+function Replication_Details($groupName,$WFType)
+{
+	 _click(_link("Monitor"));
+	 _click(_link($groupName));
+	 _click(_link("Replication"));
+	     
+	  var $protectionGUI = _getCellText(_cell(0,_rightOf(_cell("Protection:"))));
+     _assertExists("Protection from GUI" , $protectionGUI);
+		
+      var $replicationStatus=_getCellText(_cell(0,_rightOf(_cell("Replication Status:"))));
+	  _assertExists("Replication Status from GUI", $replicationStatus);
+		
+	  var $primaryRemoteServicesGUIPR = _getCellText(_cell(0,_rightOf(_cell("Primary - Remote Services:"))));
+	  _assertExists("Primary Remote Services from GUI", $primaryRemoteServicesGUIPR);
+	  var $primaryRemoteServicesGUIPR2 = $primaryRemoteServicesGUIPR.toString();
+	  var $primaryRemoteServicesGUI = $primaryRemoteServicesGUIPR2.split(" ");
+	  
+	if ($WFType == "SO") {
+		_assertEqual($primaryRemoteServicesGUI[0], $sernameDR, "Current PR site not same as configured  .Site status incorrect");
+		_assertEqual($primaryRemoteServicesGUI[2], $sernamePR, "Current PR site not same as configured  .Site status incorrect");
+	} else {
+		_assertEqual($primaryRemoteServicesGUI[0], $sernamePR, "Comparing configured and current PR site");
+		_assertEqual($primaryRemoteServicesGUI[2], $sernameDR, "Comparing configured and current PR site");
+	}	
+}
+
+	
+	
+	
+
+

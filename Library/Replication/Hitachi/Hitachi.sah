@@ -1,0 +1,103 @@
+
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains Creation of Protection Scheme for both remote and local agents. 
+ ** AuthorName : Aditi Jain
+ ** Created Date : Dec 2013
+ ************************************************************************/
+
+/**
+* Function is for Creating Protection Schemes in TC  solution for PR.
+*@param :  null
+*@return : null
+* Author: Aditi Jain
+*
+*/
+
+function Create_Hitachi_ProtectionSchemePR() {
+	Create_Hitachi_ProtectionScheme($systemTypeProtection, $mgmtHostDGPR,$sernamePR);
+
+	
+}
+
+/**
+* Function is for Creating Protection Schemes in TC  solution for DR.
+*@param :  null
+*@return : null
+* Author: Aditi Jain
+*
+*/
+function Create_Hitachi_ProtectionSchemeDR() {
+	Create_Hitachi_ProtectionScheme($systemTypeProtection, $mgmtHostDGDR,$sernameDR,$sernameHCMDR);
+
+}
+
+
+/**
+* Function is for Creating Protection Schemes in TC  solution.
+*@param :  $systemTypeProtection,  $mgmtHostDG
+*@return : null
+* Author: Aditi Jain
+*
+*/
+
+function Create_Hitachi_ProtectionScheme($systemTypeProtection, $mgmtHostDG,$sername,$sernameHCM) {
+	navigateToDiscovery();
+	_click(_link("Subsystems"));
+	_click(_link("Protection Schemes"));
+	// Validation of Protection scheme.
+	if (_exists(_link($sername), _under(_tableHeader("Name[2]")))) {
+		_assertExists("Protection Scheme already exists");
+	} else {
+_setSelected(_select("systemType"), $systemTypeProtection);
+_click(_button("/Go/"));
+_setSelected(_select("mgmtHost_TrueCopy"), $mgmtHostDG);
+
+var $i=0;
+while ($i<10) {
+	if (_exists(_link("Register Agent"))) {
+		_click(_link("Register Agent"));
+		_wait(30000);
+	}
+	else if (_exists(_cell("Agent is not registered."))) {
+		_wait(5000);
+		navigateToDiscovery();
+		_click(_link("Subsystems"));
+		_click(_link("Protection Schemes"));
+		_setSelected(_select("systemType"), $systemTypeProtection);
+		_wait(1000);
+		
+	}
+	 else {
+			_log("go ahead");
+			break;
+		}
+	$i++;
+	}
+
+_click(_link("/Advanced Configuration/",_rightOf(_link($DBgroupName))));
+_setValue(_textbox("svcname"), $sername);
+_setValue(_textbox("pvol0"),$VolsizeDR);
+_click(_button("Save"));
+
+if ($sername==$sernameDR){
+_click(_link("/Advanced Configuration/",_rightOf(_link($DBgroupNameSI))));
+_setValue(_textbox("svcname"), $sernameHCM);
+_setValue(_textbox("pvol0"),$VolsizeDRSC);
+_click(_button("Save"));
+_click(_button("/Save/"));
+}
+_click(_button("Finish"));
+
+	}
+	// Validation after creating Protection Scheme
+	if (_exists($sername, _under(_tableHeader("Name[2]")))) {
+		_assertExists("Protection Scheme created");
+	} else {
+		_assertEqual("Protection Scheme created",_lastAlert()); 	
+		_fail("Protection scheme not created");
+//_click(_button("Discover now"));
+
+}
+}

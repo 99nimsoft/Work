@@ -1,0 +1,100 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script is used to send the log report through mail.
+ ** AuthorName : Anantha Sakthi
+ ** Created Date : Dec 2013
+ ************************************************************************/
+
+function Get_Sahi_Home_Path() {
+	$l_Sahi_UserData = _userDataDir();
+	$SAHI_USERDATA = $l_Sahi_UserData + "\\";
+	$g_Sahi_UserData = $l_Sahi_UserData.replace(/\\/g,"/") + "/";
+	$l_Userdir = $l_Sahi_UserData.substring(0,1);
+	$sahi_build_userDrive = $l_Userdir;
+	$l_Userpath = $l_Sahi_UserData.substring(3,($l_Sahi_UserData.length)-9);
+	$l_Userpath = $l_Userpath.replace(/\\/g,"/");
+	$g_mnt_UserData = "/mnt/" + $l_Userpath +"/userdata/";	
+	$SAHI_HOME = $l_Sahi_UserData + "\\scripts\\DRM_Automation_pumice\\";
+	$g_mnt_SAHI_HOME = $g_Sahi_UserData +"/scripts/DRM_Automation_pumice/";
+	return $SAHI_HOME;
+	return $g_mnt_SAHI_HOME;
+	
+}
+
+/**
+* Function is to write on batch file.
+*@param :$message,$filepath
+*@return : null
+*@Author: Anantha Sakthi
+*
+*/
+
+function writeToFile($message,$filepath){
+	out = new java.io.FileWriter($filepath, false);   
+	out.write($message);
+	out.close();
+}
+
+_include("../conf/DRMInstallation_Parameter.sah");
+
+var $l_currentTime = new Date(); //Global method for fetching current system date
+var $l_year = $l_currentTime.getFullYear();
+var $l_month = $l_currentTime.getMonth() + 1;
+var $l_date = $l_currentTime.getDate();
+
+if ($l_month < 10) {
+	var $l_month = "0" + $l_month;
+}
+
+if ($l_date < 10) {
+	var $l_date = "0" + $l_date;
+}
+
+$date = $l_year + "/" + $l_month + "/" + $l_date;
+var $CurrentDate = new java.text.SimpleDateFormat("dd MMMM, yyyy").format(new java.text.SimpleDateFormat("yyyy/MM/dd").parse($date));
+
+var $newBuild = _getGlobal("newBuildName");
+
+var $suiteInfo = _suiteInfo();
+var $host = Packages.java.net.InetAddress.getLocalHost().getHostAddress();
+var $reportId = $suiteInfo["suiteReportId"];
+
+var $summaryReport = _readFile($SAHI_HOME +"conf\\SummaryReport.txt");
+
+var $bodyHeader = "Dear Team,";
+var $buildName = "\n\nTesting done on Build: \n" + $newBuild;
+var $logMessage = "\n\nPlease find the below summary report:\n" + $summaryReport;
+
+var $logPath = "\n\nPlease find the Sahi report from the below link: \n http://" + $host + ":9999/_s_/dyn/pro/DBReports";
+var $bodyFooter = "\n\nRegards \nAutomation Team \n";
+
+var $bodyString = $bodyHeader + $buildName + $logMessage + $logPath + $bodyFooter;
+
+//sendEmail("Daily Build Sahi Automation Report for " + $CurrentDate, $bodyString,"anantha.sakthi@sanovi.com");
+sendEmail("Daily Build Sahi Automation Report for " + $CurrentDate, $bodyString,"automation_team@sanovi.com");
+sendEmail("Daily Build Sahi Automation Report for " + $CurrentDate, $bodyString,"sqa@sanovi.com");
+sendEmail("Daily Build Sahi Automation Report for " + $CurrentDate, $bodyString,"dl_Eng_leaders@sanovi.com");
+
+_execute("cmd /c taskKill /F /IM PsExec.exe");
+
+writeToFile("",$SAHI_HOME +"conf\\SummaryReport.txt");
+
+/**
+* Function is to send an email.
+*@param :  $emailSubject, $emailBody
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+function sendEmail($emailSubject, $emailBody,$toAddress) {
+	var $host = "192.168.1.15";
+	var $port = "25";
+	var $username = "bugzilla@sanovi.com";
+	var $password = "sanovi@2012";
+	var $isSSL = false; // set to true if you use SSL
+	var $mailer = new Packages.net.sf.sahi.ant.Mailer($host, $port, $username, $password, $isSSL);
+	var $from = "bugzilla@sanovi.com";
+	var $to = $toAddress;
+	$mailer.send($from, $to, $emailSubject, $emailBody);
+}

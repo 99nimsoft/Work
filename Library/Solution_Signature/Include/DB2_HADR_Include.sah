@@ -1,0 +1,11 @@
+_include("../../../Library/Common/Common_Function.sah");
+_include("../../../Library/Solution_Signature/Include/Common_Automation_testcase_Function.sah");
+_include("../../../Library/Component/Component_Common.sah");
+_include("../../../Library/Common/Operation_On_FG/Dryrun_Report_Common.sah");
+_include("../../../Library/Common/Operation_On_FG/Group_Operation.sah");
+_include("../../../Library/Component/LINUX/Linux.sah");
+_include("../../../Library/Database/DB2/DB2.sah");
+_include("../../../Library/Replication/HADR/HADR.sah");
+_include("../../../Library/Solution_Signature/DB2_HADR/DB2_HADR_Solution.sah");
+_include("../../../Library/Solution_Signature/DB2_HADR/DB2_HADR_events.sah");
+_include("../../../Library/Solution_Signature/DB2_HADR/DB2_HADR_Automation_testcase_Function.sah");

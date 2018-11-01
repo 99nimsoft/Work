@@ -1,0 +1,18 @@
+_include("../../Library/Common/Common_Function.sah");
+_include("../../conf/DRMInstallation_Parameter.sah");
+_include("../../conf/RAL/CustomAction/CustomActionParameter_Script.sah");
+_include("../../Library/RAL/CustomAction/CustomAction_RAL.sah");
+_include("../../Library/RAL/CustomAction/CustomAction_TestCaseFunctions.sah");
+_include("../../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+
+
+Login_001();
+_log("================================Post-Condition================================== ", "Custom1");
+
+
+
+
+
+_log("================================Post-Condition================================== ", "Custom1");
+
+Logout_001();

@@ -1,0 +1,7 @@
+_include("../../../Library/Common/Common_Function.sah");
+_include("../../../Library/Component/Component_Common.sah");
+_include("../../../Library/Solution_Signature/Include/Common_Automation_testcase_Function.sah");
+_include("../../../Library/Common/Operation_On_FG/Group_Operation.sah");
+_include("../../../Library/Solution_Signature/Sys_Capture/System_Capture_TestCaseFunction.sah");
+_include("../../../Library/Solution_Signature/Sys_Capture/System_CaptureFunction.sah");
+_include("../../../conf/SYSTEM_CAPTURE_LOG/SystemCapture_Paramter.sah");

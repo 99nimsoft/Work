@@ -1,0 +1,817 @@
+function APP_PFR_Agent_Instllation_001(){
+	try {
+		Install_Local_Agent_SilentMode_OS_Authentication_PR();
+		Install_Local_Agent_SilentMode_OS_Authentication_DR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0003(),Function: Create_Site_PR or Create_Site_DR ,execution got failed.kindly check the log for more details");
+		_fail("site not created succesfully.So that stopping execution.");
+	}
+}
+
+
+function APP_PFR_Component_Local_Discovery_0002() {
+	try {
+	    //$storageCheck = "Y"; // if needed
+		Create_Local_ComponentPR();
+		Create_Local_ComponentDR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Component_Local_Discovery_0002(),Function: Create_Local_ComponentPR or Create_Local_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("component not created succesfully.So that stopping execution.");
+	}
+}
+
+function APP_PFR_Component_Remote_Discovery_0018() {
+	try {
+		Create_Remote_ComponentPR();
+		Create_Remote_ComponentDR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Component_Remote_Discovery_0018(),Function: Create_Remote_ComponentPR or Create_Remote_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("component not created succesfully.So that stopping execution.");
+	}
+}
+
+function APP_PFR_Dataset_Discovery_0007() {
+	try {
+		Create_APP_PFR_Dataset_PR();
+		Create_APP_PFR_Dataset_DR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:APP_PFR_Dataset_Discovery_0007(),Function: Create_APP_PFR_Dataset_PR or Create_APP_PFR_Dataset_DR ,execution got failed.kindly check the log for more details");
+		_fail("dataset not created succesfully.So that stopping execution.");
+	}
+
+}
+
+function APP_PFR_Auto_DatasetDiscovery0009() {
+	try {
+		Verify_Dataset_Details_APP_PFR_PR();
+		Verify_Dataset_Details_APP_PFR_DR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:APP_PFR_Auto_DatasetDiscovery0009(),Function: Verify_Dataset_Details_PR or Verify_Dataset_Details_DR,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Dataset_status_0011() {
+	try {
+		Verify_APP_PFR_Dataset_Status_PR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:APP_PFR_Dataset_status_0011(),Function: Verify_Dataset_Status_PR ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		Verify_APP_PFR_Dataset_Status_DR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:APP_PFR_Dataset_status_0011(),Function: Verify_Dataset_Status_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Protectionscheme_Discovery_0018() {
+	try {
+		Create_Oracle_PFR_ProtectionSchemePR();
+		Create_Oracle_PFR_ProtectionSchemeDR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: APP_PFR_Protectionscheme_Discovery_0018(),Function: Create_APP_PFR_ProtectionSchemePR or Create_APP_PFR_ProtectionSchemeDR ,execution got failed.kindly check the log for more details");
+		_fail("Protection Schemes not created succesfully.So that stopping execution.");
+	}
+}
+
+function APP_PFR_Protectionscheme_local_status_0021(){
+	try{
+		Get_Status_Protection_Scheme_PFR_PR();
+	} catch ($e){
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: APP_PFR_Protectionscheme_status_0021(),Function: Verify_Protection_Scheme_Status_PR ,execution got failed.kindly check the log for more details");
+	}
+	try{
+		Get_Status_Protection_Scheme_PFR_DR();
+	} catch ($e){
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: APP_PFR_Protectionscheme_status_0021(),Function: Verify_Protection_Scheme_Status_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Protectionscheme_status_0021() {
+	try {
+		Verify_Protection_Scheme_Status_PR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: APP_PFR_Protectionscheme_status_0021(),Function: Verify_Protection_Scheme_Status_PR ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		Verify_Protection_Scheme_Status_DR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: APP_PFR_Protectionscheme_status_0021(),Function: Verify_Protection_Scheme_Status_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_GroupCreation_0022() {
+	try {
+		Creation_APP_PFR_Group();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: APP_PFR_GroupCreation_0022(),Function: APP_FG_DG_Group_Creation ,execution got failed.kindly check the log for more details");
+		_fail("Group not created succesfully.So that stopping execution.");
+	}
+
+}
+
+function APP_PFR_Move_Group_Manage_0006() {
+	try {
+		Move_To_Manage_Group($groupName);
+		_wait(100);
+		Change_ContinuityStatus_Group($groupName, $ContState_NR);
+		publishBCO($groupName,"Failover"); 
+		} catch ($e) {
+		_log($e.toString(),"Custom1");
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Move_Group_Manage_0006(),Function: Move_To_Manage_Group ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+}
+
+
+function APP_PFR_Start_NFC_0006() {
+	try {
+		Execute_NFC($groupName, "NormalFullCopy");
+		BCO_Exceution_Status($groupName, "NormalFullCopy")
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Move_Group_Manage_0006(),Function: Move_To_Manage_Group ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+}
+
+function APP_PFR_Post_Group_Creation_0010() {
+	try {
+		File_Creation_PR();
+		Post_Group_Creation();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Post_Group_Creation_0010(),Function: Post_Group_Creation ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Component_Status_0001() {
+	try {
+		Verify_Component_Status_PR($agentType);
+		Verify_Component_Status_DR($agentType);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Component_Status_0001(),Function: Verify_Component_Status_PR or Verify_Component_Status_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Contiunity_Status_0002() {
+	try {
+		Verify_Continuitystatus_Before_NC();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Contiunity_Status_0002(),Function: Verify_Continuitystatus_Before_NC ,execution got failed.kindly check the log for more details");
+	}
+}
+function APP_PFR_Continuity_Management_0015() {
+	try {
+		Group_Managedrsolution();
+		
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Continuity_Management_0015(),Function: Group_Managedrsolution ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Start_NormalCopy_0001() {
+	try {
+		Execute_NC($groupName, "NormalCopy");
+		publishBCO( $groupName, "Failover" );
+		// Verify_Continuitystatus_In_NC();
+		$count = 0;
+		while ($count < 10) {
+			_wait(30000);
+			$count++;
+		}
+	} catch ($e) {
+		_log($e.toString(), "Custom1");
+		_log("for test Case ID: Start_NormalCopy_0001(),Function: Execute_NC or Verify_Continuitystatus_In_NC ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+function APP_PFR_Continuity_Workflows_NC() {
+	try {
+		APP_PFR_Continuity_Workflows_Pre_SO();
+		// Verify_Continuitystatus_In_NC();
+		$count = 0;
+		while ($count < 10) {
+			_wait(30000);
+			$count++;
+		}
+	} catch ($e) {
+		_log($e.toString(), "Custom1");
+		_log("for test Case ID: Continuity_Workflows(),Function: Continuity_Workflows execution got failed.kindly check the log for more details");
+	}
+}
+
+
+function APP_PFR_Continuity_Workflows_RNC() {
+	try {
+		APP_PFR_Continuity_Workflows_Post_SO();
+		// Verify_Continuitystatus_In_NC();
+		$count = 0;
+		while ($count < 10) {
+			_wait(30000);
+			$count++;
+		}
+	} catch ($e) {
+		_log($e.toString(), "Custom1");
+		_log("for test Case ID: Continuity_Workflows(),Function: Continuity_Workflows execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Monitor_Relationship_0030() {
+	try {
+		Monitor_Relationship($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Monitor_Relationship_0030(),Function: Monitor_Relationship ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Manage_DRsolution_0029() {
+	try {
+		NC_Execution_Status($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: APPDg_Manage_DRsolution_0029(),Function: NC_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("NC workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+	try {
+		APP_PFR_Managedrsolution();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: APPDg_Manage_DRsolution_0029(),Function: APP_PFR_Managedrsolution ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_GroupInformation_Manage_0007() {
+	try {
+		APP_PFR_Groupinformation();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: GroupInformation_Manage_0007(),Function: APP_PFR_Groupinformation ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Groupsnapshot_Monitor_0001() {
+	try {
+		APP_PFR_Groupsnapshot();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Gruopsnapshot_Monitor_0001(),Function: APP_PFR_Gruopsnapshot ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_NC_Replication_0028() {
+	try {
+		APP_PFR_Replication();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: NC_APP_PFR_Replication_0028(),Function: APP_PFR_Replication ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_NC_RPO_0026() {
+	try {
+		APP_PFR_Rpo();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: NC_APP_PFR_RPO_0026(),Function: APP_PFR_Rpo ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+function APP_PFR_NC_RTO_0027() {
+	try {
+		APP_PFR_Rto_new();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: NC_APP_PFR_RTO_0027(),Function: APP_PFR_Rto ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Stop_NC_0002() {
+	try {
+		NC_Execution_Status($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_NC_0002(),Function: NC_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("NC workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+	try {
+		Stop_NC($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_NC_0002(),Function: Stop_NC ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Start_SO_0011() {
+	try {
+		Start_SO($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_SO_0011(),Function: Start_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_SO_Execution_0012() {
+	try {
+		Verify_Continuity_Status($groupName, "Switchover In Progress");
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SO_Execution_0012(),Function: Verify_Continuitystatus_In_SO ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		SO_Execution_Status($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SO_Execution_0012(),Function: SO_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("SO workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+}
+
+function APP_PFR_SO_Verify_Continuitystatus_013() {
+	try {
+		Verify_Continuity_Status($groupName, "DR Resync is not started");
+		} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SO_Replication_0013(),Function: Verify_Continuitystatus_After_SO execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Start_RNC_0033() {
+	try {
+		Execute_Reverse_Normal_Copy($groupName);
+		$count = 0;
+		while ($count < 10) {
+			_wait(30000);
+			$count++;
+		}
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_RNC_0033(),Function: Execute_Reverse_Normal_Copy or APP_PFR_Managedrsolution_PostSO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_RNC_Groupinformation_Monitor_0022() {
+	try {
+		RNC_Execution_Status($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_RNC_0033(),Function: RNC_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("RNC workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+	try {
+		APP_PFR_Groupinformation_Post_SO();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: RNC_Groupinformation_Monitor_0022(),Function: APP_PFR_Groupinformation_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_RNC_Groupsnapshot_Monitor_0021() {
+	try {
+		APP_PFR_Groupsnapshot_Post_SO();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: RNC_Gruopsnapshot_Monitor_0021(),Function: APP_PFR_Gruopsnapshot_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_RNC_Rpo_Monitor_0023() {
+	try {
+		APP_PFR_Rpo_Post_SO();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: RNC_Rpo_Monitor_0023(),Function: APP_PFR_Rpo_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_RNC_Replication_0024() {
+	try {
+		APP_PFR_Replication_Post_SO();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: RNC_Replication_0024(),Function: APP_PFR_Replication_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Stop_RNC_0033() {
+	try {
+		RNC_Execution_Status($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_RNC_0033(),Function: RNC_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("RNC workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+	try {
+		Stop_Reverse_Normal_Copy($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_RNC_0033(),Function: Stop_Reverse_Normal_Copy ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Start_SB_0034() {
+	try {
+		Verify_Continuitystatus_Stop_RNC();
+		Start_SB($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_SB_0034(),Function: Verify_Continuitystatus_Stop_RNC or Start_SB ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_SB_Execution_0035() {
+	try {
+		Verify_Continuitystatus_In_SB();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SB_Execution_0035(),Function: Verify_Continuitystatus_In_SB ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		SB_Execution_Status($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SB_Execution_0035(),Function: SB_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("SB workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+}
+
+function APP_PFR_SB_Monitor_Manage_0038() {
+	try {
+		Verify_Continuity_Status($groupName, "DR Sync is Aborted");
+		APP_PFR_Managedrsolution();
+		APP_PFR_Replication();
+	
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SB_Monitor_Manage_0038(),Function: managedrsolution or Replication or Gruopsnapshot or Managegroupinformation or RPO or RTO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Dryrun_Report_Testcase() {
+	try {
+		Dryrun_for_Diffrent_Workflows("NormalFullCopy");
+		Dryrun_for_Diffrent_Workflows("NormalCopy");
+		Dryrun_for_Diffrent_Workflows("Switchover");
+		Dryrun_for_Diffrent_Workflows("ReverseNormalCopy");
+		Dryrun_for_Diffrent_Workflows("Switchback");
+		Dryrun_for_Diffrent_Workflows("Failover");
+		Dryrun_for_Diffrent_Workflows("FallbackResync");
+		Dryrun_for_Diffrent_Workflows("Fallback");
+} catch ($e) {
+	_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: APP_PFR_Dryrun_Report_Testcase(),Function: APP_PFR_Dryrun_Report,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Start_FO_0001() {
+	try {
+		Start_FO($groupName, "Failover");
+		//Verify_Continuitystatus_In_FO();
+		$count = 0;
+		while($count<10){
+			_wait(30000);
+			$count++;
+	} 
+	}
+		catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_FO_0001(),Function: Stop_NC or Start_FO or Verify_Continuitystatus_In_FO  ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+function APP_PFR_FO_execution_0058() {
+	try {
+		FO_Execution_Status($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: FO_execution_0058(),Function: FO_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("Fail over workflow execution faild.So that stopping execution.Kindly check the logs for further details");
+	}
+}
+
+function APP_PFR_FO_RPO_0003() {
+	try {
+		Calculate_RPO_Post_FO($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: FO_RPO_0003(),Function: Calculate_RPO_Post_FO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_FO_RTO_0004() {
+	try {
+		Calculate_RTO_Post_FO($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: FO_RPO_0003(),Function: Calculate_RPO_Post_FO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_FO_Replication_0005() {
+	try {
+		Replication_Post_FO($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: FO_RPO_0003(),Function: Calculate_RPO_Post_FO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_FO_Monitor_Manage_0006() {
+	try {
+		Gruopsnapshot_Post_FO($groupName);
+		Groupinformation_Post_FO($groupName);
+		Replication_Post_FO($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: FO_Monitor_Manage_0006(),Function: Gruopsnapshot_Post_FO or Groupinformation_Post_FO or Replication_Post_FO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Continuity_Status_FO_0007() {
+	try {
+		Verify_Continuitystatus_After_FO();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Continuity_Status_FO_0007(),Function: Verify_Continuitystatus_After_FO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+////////////////////////////////////////Agents/////////////////////////////////////////
+
+
+
+function APP_PFR_Remote_Stop_APP_PFR_Agent_0039() {
+	try {
+		APP_PFR_Remote_PR_PFR_Agent_Stop_Event();
+		APP_PFR_Remote_DR_PFR_Agent_Stop_Event();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Stop_APP_PFR_Agent_0039(),Function: APP_PFR_Remote_PR_APP_PFR_Agent_Stop_Event or APP_PFR_Remote_DR_APP_PFR_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Remote_Start_APP_PFR_Agent_0038() {
+	try {
+		APP_PFR_Remote_PR_PFR_Agent_Start_Event();
+		APP_PFR_Remote_DR_PFR_Agent_Start_Event();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Start_APP_PFR_Agent_0038(),Function: APP_PFR_Remote_PR_APP_PFR_Agent_Start_Event or APP_PFR_Remote_DR_APP_PFR_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+///
+function APP_PFR_Remote_Stop_Linux_Agent_0051() {
+	try {
+		APP_Remote_PR_Linux_Agent_Stop_Event();
+		APP_Remote_DR_Linux_Agent_Stop_Event();
+		
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: APP_PFR_Stop_replication_0051(),Function: APP_PFR_Stop_Replication_event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Remote_Start_Linux_Agent_0052() {
+	try {
+		APP_Remote_PR_Linux_Agent_Start_Event();
+		APP_Remote_DR_Linux_Agent_Start_Event();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: APP_PFR_Start_replication_0052(),Function: APP_PFR_Start_Replication_event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+function APP_PFR_Remote_Stop_APP_PFR_Agent_SO_InActive_0039() {
+	try {
+		APP_PFR_Remote_PR_PFR_Agent_Stop_Event_SO_InActive();
+		APP_PFR_Remote_DR_PFR_Agent_Stop_Event_SO_InActive();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Stop_APP_PFR_Agent_0039(),Function: APP_PFR_Remote_PR_APP_PFR_Agent_Stop_Event or APP_PFR_Remote_DR_APP_PFR_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Remote_Start_APP_PFR_Agent_SO_InActive_0038() {
+	try {
+		APP_PFR_Remote_PR_PFR_Agent_Start_Event_SO_InActive();
+		APP_PFR_Remote_DR_PFR_Agent_Start_Event_SO_InActive();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Start_APP_PFR_Agent_0038(),Function: APP_PFR_Remote_PR_APP_PFR_Agent_Start_Event or APP_PFR_Remote_DR_APP_PFR_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Remote_Stop_Linux_Agent_SO_InActive_0051() {
+	try {
+		APP_Remote_PR_Linux_Agent_Stop_Event_SO_InActive();
+		APP_Remote_DR_Linux_Agent_Stop_Event_SO_InActive();
+		
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: APP_PFR_Stop_replication_0051(),Function: APP_PFR_Stop_Replication_event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Remote_Start_Linux_Agent_SO_InActive_0052() {
+	try {
+		APP_Remote_PR_Linux_Agent_Start_Event_SO_InActive();
+		APP_Remote_DR_Linux_Agent_Start_Event_SO_InActive();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: APP_PFR_Start_replication_0052(),Function: APP_PFR_Start_Replication_event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+////////////////////Local Agent//////////////////////////////////////////////////
+
+function APP_PFR_Local_Stop_APP_PFR_Agent_0039() {
+	try {
+		APP_PFR_Local_PR_PFR_Agent_Stop_Event();
+		APP_PFR_Local_DR_PFR_Agent_Stop_Event();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Local_Stop_APP_PFR_Agent_0039(),Function: APP_PFR_Local_PR_APP_PFR_Agent_Stop_Event or APP_PFR_Local_DR_APP_PFR_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Local_Start_APP_PFR_Agent_0038() {
+	try {
+		APP_PFR_Local_PR_PFR_Agent_Start_Event();
+		APP_PFR_Local_DR_PFR_Agent_Start_Event();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Local_Start_APP_PFR_Agent_0038(),Function: APP_PFR_Local_PR_APP_PFR_Agent_Start_Event or APP_PFR_Local_DR_APP_PFR_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+///
+function APP_PFR_Local_Stop_Linux_Agent_0051() {
+	try {
+		APP_Local_PR_Linux_Agent_Stop_Event();
+		APP_Local_DR_Linux_Agent_Stop_Event();
+		
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: APP_PFR_Stop_replication_0051(),Function: APP_PFR_Stop_Replication_event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Local_Start_Linux_Agent_0052() {
+	try {
+		APP_Local_PR_Linux_Agent_Start_Event();
+		APP_Local_DR_Linux_Agent_Start_Event();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: APP_PFR_Start_replication_0052(),Function: APP_PFR_Start_Replication_event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+/////
+
+function APP_PFR_Local_Stop_APP_PFR_Agent_SO_InActive_0039() {
+	try {
+		APP_PFR_Local_PR_PFR_Agent_Stop_Event_SO_InActive();
+		APP_PFR_Local_DR_PFR_Agent_Stop_Event_SO_InActive();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Local_Stop_APP_PFR_Agent_0039(),Function: APP_PFR_Local_PR_APP_PFR_Agent_Stop_Event or APP_PFR_Local_DR_APP_PFR_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Local_Start_APP_PFR_Agent_SO_InActive_0038() {
+	try {
+		APP_PFR_Local_PR_PFR_Agent_Start_Event_SO_InActive();
+		APP_PFR_Local_DR_PFR_Agent_Start_Event_SO_InActive();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Local_Start_APP_PFR_Agent_0038(),Function: APP_PFR_Local_PR_APP_PFR_Agent_Start_Event or APP_PFR_Local_DR_APP_PFR_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Local_Stop_Linux_Agent_SO_InActive_0051() {
+	try {
+		APP_Local_PR_Linux_Agent_Stop_Event_SO_InActive();
+		APP_Local_DR_Linux_Agent_Stop_Event_SO_InActive();
+		
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: APP_PFR_Stop_replication_0051(),Function: APP_PFR_Stop_Replication_event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Local_Start_Linux_Agent_SO_InActive_0052() {
+	try {
+		APP_Local_PR_Linux_Agent_Start_Event_SO_InActive();
+		APP_Local_DR_Linux_Agent_Start_Event_SO_InActive();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: APP_PFR_Start_replication_0052(),Function: APP_PFR_Start_Replication_event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+/////////////////////////////// SFR Customer scenarios //////////////////////////////////////////
+
+function SFR_CustomerScenarios_Random_fileDelete() {
+	try {
+		ReadCustomerScenarios_Values(8);
+		Sync_deleteWith_NoFilesWithRandomDelete($No_Of_Files,$File_Size,$FileName_Length);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");		
+	}
+}
+
+function SFR_CustomerScenarios_NofFileDelete() {
+	try {
+		ReadCustomerScenarios_Values(9);
+		Sync_deleteWith_NoFiles($No_Of_Files,$File_Size,$FileName_Length,$NoOfFiles_ToDelete,$NoOffolders_TDdelete);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");		
+	}
+}
+
+function SFR_CustomerScenarios_SyncInProgress_fileDelete() {
+	try {
+		ReadCustomerScenarios_Values(10);
+		Syncronized_deleteWith_NoFiles($No_Of_Files,$File_Size,$FileName_Length);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");		
+	}
+}
+
+function SFR_CustomerScenarios_DiskFull() {
+	try {
+		ReadCustomerScenarios_Values(11);
+		disKFull_AndResume_Replication($No_Of_Files,$File_Size,$FileName_Length,"/auto/diskfull/");
+	} catch ($e) {
+		_log($e.toString(),"Custom1");		
+	}
+}
+
+function APP_PFR_Remote_Group_Status_0100() {
+	try {
+		Group_Status_Info($groupName);
+		
+	} catch ($e) {
+		_log($e.toString(),"Custom1");	
+		log("for test Case ID: APP_PFR_Group_Status_0100(),Function: APP_PFR_Group_Status ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Group_Status_BasedONEvents_0101() {
+	try {
+		Group_Status_BasedONEvents($groupName);
+		
+	} catch ($e) {
+		_log($e.toString(),"Custom1");	
+		log("for test Case ID: Group_Status_BasedONEvents_0101(),Function: Group_Status_BasedONEvents ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function SFR_CustomerScenarios_Replication_fileOpen() {
+	try {
+		 Execute_NC($groupName, "NormalCopy");
+		 Replication_fileOpen();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");		
+	}
+}
+
+function SFR_CustomerScenarios_Replication_fileModify() {
+	try {
+		 Replication_fileModify();
+		 Stop_NC($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");		
+	}
+}

@@ -1,0 +1,27 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains APP PFR Solution specific
+ ** AuthorName : 
+ ** Created Date : 
+ ***********************************************************************************************/
+
+var $Excel1=_getExcel($SAHI_HOME + "\\Library\\Solution_Signature\\VM_TO_ZERTO\\ObjectRepository\\VM_TO_ZERTO_ObjectRepository.xls","Param");
+
+var $Excel=$Excel1.getData();
+
+var $g_selLang = $l_drmLogin[1][2];
+if($BrowserLang == "N"){
+
+	var $j = 2;
+}
+else if($BrowserLang == "Y-JA"){
+	
+	var $j = 3;
+	}
+
+else if($BrowserLang == "Y-EN"){
+		
+		var $j = 3;
+	}
+////////////////////Solution\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\

@@ -1,0 +1,710 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the common functions which are the part of RAL( Recovery automation library). 
+ **@AuthorName : Anantha Sakthi
+ ** Created Date : April 2015
+ ************************************************************************/
+
+
+/**
+ * Function is used to any any Ral into layout in workflow editor.
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+function AddRalIntoLayout($ralString,$ralCategory,$ralName){
+	_click(_span("glyphIon"));
+	_click(_link("select2-choice"));
+	_setValue(_textbox(10), $ralString);
+	_click(_div($ralCategory));
+	_click(_span("glyphicon icon-blue-plus plusIconRals", _near(_span($ralName))));
+	_click(_span("glyphIon"));
+	_dragDrop(_image("notifications_green.png"),_image("notifications_yellow.png"));
+}
+	
+/**
+ * Function is used to execute any Ral from listing page.
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+
+function executeWorkflow($groupName,$WorkflowName){
+	
+	navigateDrillListing($groupName);
+	if(_exists(_image($ExecuteWorkflow, _near(_link($WorkflowName))))){
+		_click(_image($ExecuteWorkflow, _near(_link($WorkflowName))));
+		_click(_link($Execute));
+		_log($WorkflowName + "workflow execution started successfully");
+		_wait(3000);
+		_click(_link($EXECUTING, _near(_link($WorkflowName))));
+	}else
+		{
+		_log($WorkflowName + "workflow execution got failed");
+		}
+}
+/**
+ * Function is used to execute any Ral from listing page.
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+
+
+
+function validateExecutionPage($WorkflowName){  
+	
+    var	$startTime = _getText(_span(1, _near(_span($StartTime))));
+    var	$startTime=$startTime.toString();
+	_log("Start time "+$startTime);	
+	$count=0;
+	while($count<2){
+		_wait(20000);
+		$count++;
+	}
+    var	$endTime = _getText(_heading4(0, _near(_span($NotExecuted))));
+	_log($endTime);
+    var $endTime = $endTime.split($Time);
+    var $endTime = $endTime[1].toString();
+	var $startTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($startTime).getTime();
+	var $endTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($endTime).getTime();
+	$elapsedTime = ($endTime - $startTime)/1000;	
+
+	
+	
+	$elapsedTime = Math.abs($elapsedTime);
+	
+	_assertExists("elapsedTime", $elapsedTime);
+	// converting $currenRpoinsec in HH:MM:SS format
+	/*var $hour = Math.floor($elapsedTime / 3600);
+	if ($hour >0) {
+		$hour = "0" + $hour;
+	}*/
+	/*var $minute = Math.floor(($elapsedTime % 3600) / 60);
+	if ($minute < 60) {
+		$minute = "0" + $minute;
+	}else{
+	var	$hour = "0" + $hour;
+	}*/
+	var $second = ($elapsedTime % 3600) % 60;
+	if ($second < 60) {
+		$second = "0" + $second;
+	}else{
+	var	$minute = "0" + $minute;
+
+	}
+	$elapsedTime = $hour + ":" + $minute + ":" + $second;	
+	
+	if($elapsedTime=="0"){
+	var $elapsedTimeGUI = "0";
+}
+
+else {
+$elapsedTimeGUI =  _getText(_span(2, _near(_span($TimeElapsed))));
+$elapsedTimeGUI = $elapsedTimeGUI.split("s");
+}
+_assertEqual($elapsedTime,$elapsedTimeGUI[0]);
+/*
+$status = _getText(_heading6($workflowStatus));
+if($status == "SUCCESS SUCCESS"){
+	_assertEqual("SUCCESS SUCCESS",$status);
+}
+else if($status == "ABORTED ABORTED"){
+	_assertEqual("ABORTED ABORTED",$status);
+}
+	*/
+}
+
+
+
+
+
+/**
+ * Function is used to create workflow.
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+function createWorkFlow($groupName,$WorkflowName){
+	navigateDrillListing($groupName);
+	if (_exists(_link($WorkflowName))) {
+		_log("Workflow already exists");		
+	} else {	
+		_click(_link($CreateNew));
+		_setValue(_textbox("name"), $WorkflowName);
+		//_setSelected(_select("type"), $Drill);
+		_setSelected(_select("type"), $test);//Temporary line
+		_click(_button($CreateNew));
+		_click(_paragraph("text_ellipsis"));
+		_click(_button("deleteBtn"));
+		_wait(2000);
+		_click(_button("OK[1]"));
+		_click(_link($save1));
+
+	}
+}
+
+/**
+ * Function is used to create workflow.
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+function createBPWorkFlow($WorkflowName){
+	navigateToBPWorkflow();
+	if (_exists(_link($WorkflowName))) {
+		_log("Workflow already exists");		
+	} else {	
+		_click(_link($CreateNew));
+		_setValue(_textbox("name"), $WorkflowName);
+		_setSelected(_select("type"), $BusinessProcess);
+		_click(_button($CreateNew));
+		_click(_paragraph("text_ellipsis"));
+		_click(_button("deleteBtn"));
+		_wait(2000);
+		_click(_button("OK[1]"));
+		_click(_link($save1));
+
+	}
+}
+
+
+/**
+ * Function is used to create the script in the backend for timeout related test cases.
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+
+
+function CreateBackendScript($command, $cmdScriptPath, $compip, $remoteUserNameVal, $remotePwdVal){
+
+	//var $sshCommand1 = "echo " + "\"" +  $command + "\">>" + $cmdScriptPath;
+	var $sshCommand1 = "echo " + "echo \"" +  $command + "\">>" + $cmdScriptPath;
+
+
+	$status = SecuredShellConnection($compip, $remoteUserNameVal, $remotePwdVal, $sshCommand1);
+	
+	var $sshCommand2 = "chmod 777 " + $cmdScriptPath;
+
+	$status = SecuredShellConnection($compip, $remoteUserNameVal, $remotePwdVal, $sshCommand2);
+		
+}
+
+
+
+/**
+ * Function is used to validate the execution status in report page.
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+function ValidateTheReportPage($status,$ralName){
+	
+	NavigateToReportExecutionPage();
+	
+	$startTime = _getText(_cell(2, _near(_link($ralName))));
+	$endTime	  = _getText(_cell(3, _near(_link($ralName))));
+	
+
+	
+	$TimeElaspsedFromGuI = _getText(_cell(4, _near(_link($ralName))));
+	
+	_assertEqual($TimeElaspsed, $TimeElaspsedFromGuI,"validate the time elaspsed ");
+
+	
+	$initiateBy = _getText(_cell(4, _near(_link($ralName))));
+	
+	_assertEqual($username,$initiateBy,"validate the initiateby username");
+	
+	$executionStatus = _getText(_cell(4, _near(_link($ralName))));
+		
+	_assertEqual($status,$executionStatus,"validating the execution status");
+}
+
+/**
+ * Function is used to validate the execution status in workflow listing page.
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+function ValidateTheWorkflowListingPage($WorkflowName){
+	navigateDrillListing($groupName);
+	if(_exists(_span(5, _near(_link($WorkflowName))))){
+		$status2=_getText(_span(5, _near(_link($WorkflowName))));
+		$status1=$status2.split($Version);
+		_log($status1);
+		$status=$status1[0];
+		_log($status);
+		if($status== $obj_SUCCESS){
+			_assertEqual($obj_SUCCESS,$status);
+		}
+		else if($status== $obj_Failed){
+			_assertEqual($obj_Failed,$status);
+		}
+	}else {
+		_log("Workflow Not execute");
+		_assertTrue("FALSE");
+	}
+}
+
+/**
+ * Function is used to validate the execution status in workflow listing page.
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+
+function  Drills_Workflow_Execution_Status($WorkflowName,$ralName){
+	
+	
+	var $i=0;
+	while($i<20){
+		_log($i);
+		 $testStatus = _getText(_span($executionCurrentStatus));
+		if ($testStatus == $obj_EXECUTING) {
+			_wait(100000);
+		}
+		
+			if(_isVisible(_button($AwaitingInput))){
+				_click(_button($AwaitingInput));
+				_click(_submit($RetryRETRYuserInputButtonbtnbtnprimarybtnxsbtnbtninfo));
+				_wait(20000);
+				
+				if(_assertExists(_button($AwaitingInput))){
+					_click(_button($AwaitingInput));
+					_click(_submit($RetryRETRYuserInputButtonbtnbtnprimarybtnxsbtnbtninfo));
+					_wait(20000);
+					if(_assertExists(_button($AwaitingInput))){
+						_click(_button($AwaitingInput));
+						_click(_submit($RetryRETRYuserInputButtonbtnbtnprimarybtnxsbtnbtninfo));
+						_wait(20000);
+						
+						
+						if(_assertExists(_button($AwaitingInput))){
+							_click(_button($AwaitingInput));
+							_click(_submit($QuitABORTuserInputButtonbtnbtnprimarybtnxsbtnbtninfo));
+							break;
+						}
+					}
+				}
+				
+			_click(_span("glyphicon icon-caret-right", _near(_span($ralName))));
+			//_wait(1000);
+			var $variable=_getText(_preformatted(0));
+			_log($variable);
+		}
+		
+		
+		$i=$i+1;
+		
+		
+	}
+	_assertExists("Test Status :", $testStatus);
+	if ($testStatus == $obj_ABORTED) {
+		_fail("Failed because of waiting for user input");
+	}	else if ($testStatus == $obj_SUCCESS) {
+		_assertExists($WorkflowName, "workflow executed succesfully.");		
+	}else if ($testStatus == $obj_EXECUTING) {
+		_fail("Failed because of waiting for user input");
+	}
+	else if ($testStatus == $obj_AWAITINGINPUT) {
+		_fail("Failed because of waiting for user input");
+	}
+	
+	//validateExecutionPage($WorkflowName);
+}
+
+
+/**
+ * Function is used to validate the execution status in DRY Run page.
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+function ValidateTheDryRunPage($status,$ralName){
+	
+	NavigateToDryRunReportPage();
+		
+	$initiateBy = _getText(_cell(3, _near(_link($ralName))));
+	
+	_assertEqual($username,$initiateBy,"validate the initiateby username");
+	
+	$executionStatus = _getText(_cell(4, _near(_link($ralName))));
+		
+	_assertEqual($status,$executionStatus,"validating the execution status");
+	
+	_click(_link($ralName));
+			
+}
+
+/**
+ * Function is used to validate the execution status in backend server.
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+function ValidateTheBackendServer($sshCommand,$serverIP,$serverUsername,$serverPassword,$os_Type){
+	
+		_click(_span("glyphicon icon-caret-right", _near(_span($ralName))));
+		_wait(1000);
+
+	if($ralName == $obj_StartProcess){
+		var	$outputMessageGUI2 = _getText(_preformatted(0));
+		_log($outputMessageGUI2);
+		var	$outputMessageGUI1 = $outputMessageGUI2.split($STDOUT);
+		_log($outputMessageGUI1[1]);
+		var	$outputMessageGUI3 = $outputMessageGUI1[1].replace(/\,/g, " ").trim();
+		_log($outputMessageGUI3);
+		
+		var	$status1 = SecuredShellConnection($serverIP, $serverUsername, $serverPassword, $sshCommand);
+		 _log($status1);
+		  var	$status = $status1.replace(/\,/g, " ");
+		     _log($status);
+			_assertEqual($outputMessageGUI3,$status);
+	}
+	
+	if($ralName =="Custom" && $os_Type != "Windows"){
+		_log("I am  not  in windows");
+		var	$outputMessageGUI4 = _getText(_preformatted(0));
+		_log($outputMessageGUI4);
+		var	$outputMessageGUI3 = $outputMessageGUI4.split($Output);
+		_log($outputMessageGUI3);
+		var	$outputMessageGUI = $outputMessageGUI3[1].replace(/,\r\n\t/g," ").trim();
+		     _log("GUI output Custom" + $outputMessageGUI);
+		     
+		     var	$status1 = SecuredShellConnection($serverIP, $serverUsername, $serverPassword, $sshCommand);
+			 _log($status1);
+			 // var	$status = $status1.replace(/\,/g, " ");
+		     
+	      var	$status = $status1.replace(/\,/g, " ").trim();
+		     _log($status);
+		//	_assertEqual($outputMessageGUI,$status);
+		     if($outputMessageGUI.indexOf($status) > -1){
+		    	 _log("Both are compared and  equal");
+		    	// _assertExist()
+		     }
+		     else{
+		    	 _log("Both are compared and not equal");
+		     }
+			
+			//_assertContainsText($outputMessageGUI,$status,"Compared");
+	}
+	
+	if($ralName =="Custom" && $os_Type == "Windows"){
+		_log("I am  inside  the windows");
+		var	$outputMessageGUI2 = _getText(_preformatted(0));
+		_log($outputMessageGUI2);
+		var	$outputMessageGUI1 = $outputMessageGUI2.split($Output);
+		_log($outputMessageGUI1);
+	var	$outputMessageGUI = $outputMessageGUI1[1].replace(/,\r\n\t/g," ").trim();
+    _log("GUI output Custom" + $outputMessageGUI);
+    
+	var	$status1 = RemoteConnectionToWindows($serverIP, $serverUsername, $serverPassword,$sshCommand);
+
+
+	//var $status = RemoteConnectionToWindows($sshIP, $sshUserID, $sshPassword, $sshCommand, $error);
+
+	_log($status1);
+	var	$status = $status1.replace(/\,/g, " ").trim();
+	
+	 if($outputMessageGUI.indexOf($status) > -1){
+    	 _log("Both are compared and  equal");
+    	// _assertExist()
+     }
+     else{
+    	 _log("Both are compared and not equal");
+     }
+	
+	//_assertContainsText($outputMessageGUI,$status,"Compared");
+
+	
+		//_assertEqual($outputMessageGUI,$status);
+	}
+	
+}
+/**
+ * Function is used to navigate to workflow editor page.
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+function NavigateToWorkflowEditor($workflowName){
+	//NavigateToListingPage($groupName);
+	
+	_click( _link($Editworkflow, _near(_link($workflowName))));	
+}
+
+/**
+ * Function is used to navigate to listing page.
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+function NavigateToListingPage(){
+	_click(_link($Admin));
+	_click(_link($Drill));
+	_click(_heading4($Summary));
+	_click(_link($ViewAll));
+    _click(_link($groupName));
+}
+
+/**
+ * Function is used to navigate to workflow Execution in report page.
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+function NavigateToReportExecutionPage(){
+	_click(_link($Test));
+	_click(_link($Reports));
+	_click(_link($groupName));
+	_setSelected(_select($chartType), $obj_WorkFlowEx);
+}
+
+
+
+
+
+
+
+
+
+function successFailurePatterns($Spattern,$Fpattern,$WorkflowName,$serverIP, $serverUsername, $serverPassword, $sshCommand){
+	
+	
+	if($Spattern=="" || $Fpattern == ""){
+//////////////////////Failure pattren///////////////////////
+if($Fpattern!=""){
+		
+		if(_isVisible(_button($AwaitingInput))){
+			_click(_button($AwaitingInput));
+			_click(_link($Viewactionlog));				
+			var	$outputMessageGUI = _getText(_preformatted(0));				
+			_log("Gui Output : "+$outputMessageGUI);
+				_assertContainsText($Fpattern,_preformatted(0),"find failure pattern in the output");
+				_click(_submit($QuitABORTuserInputButtonbtnbtnprimarybtnxsbtnbtninfo));
+		}
+		else 
+			{
+			_click(_span("glyphicon icon-caret-right", _near(_span($ralName))));
+			_wait(20000);
+			var	$outputMessageGUI = _getText(_preformatted(0));
+			_assertNotContainsText($Fpattern,_preformatted(0),"Did not find failure pattern in the output");
+			_click(_span("glyphicon icon-caret-right icon-caret-down",_near(_span($StartProcess))));
+			}
+}
+		
+		
+//////////////////////Succuss pattren///////////////////////
+	    if($Spattern!="" ){
+
+	    	if(_isVisible(_button($AwaitingInput)) ){
+				_click(_button($AwaitingInput));
+				_click(_link($Viewactionlog));
+				var	$outputMessageGUI = _getText(_preformatted(0));
+				_log("Gui Output : "+$outputMessageGUI);
+				_assertNotContainsText($Spattern,_preformatted(0),"find success pattern in the output");
+				_click(_submit($QuitABORTuserInputButtonbtnbtnprimarybtnxsbtnbtninfo));
+				
+				}
+			
+			else 
+				{
+			_click(_span("glyphicon icon-caret-right", _near(_span($ralName))));
+			_wait(20000);
+			var	$outputMessageGUI = _getText(_preformatted(0));
+			_assertContainsText($Spattern,_preformatted(0),"Did not find success pattern in the output");
+			_click(_span("glyphicon icon-caret-right icon-caret-down",_near(_span($StartProcess))));
+		    }
+}
+	}
+	
+	else if($Spattern!="" && $Fpattern!= ""){
+	
+	$flagsptrn="";
+	$flagfptrn="";
+	var	$status1 = SecuredShellConnection($serverIP, $serverUsername, $serverPassword, $sshCommand);
+	 _log($status1);
+	  var	$status = $status1.replace(/\,/g, " ").trim();
+	     _log($status);
+	     if($status.indexOf($Spattern) > -1){
+	      $flagsptrn="NAW";
+	      _log($flagsptrn);
+	     } else {
+	     $flagsptrn="AW";
+	      _log($flagsptrn);
+	     }
+	     if($status.indexOf($Fpattern) > -1){
+	      $flagfptrn="AW";
+	      _log($flagfptrn);
+	     }else{
+	     	 $flagfptrn="NAW";
+	     	  _log($flagfptrn);
+	     	 }
+
+	     
+	     
+	     if($flagsptrn=="NAW" && $flagfptrn=="AW"){
+	    	 SuccessfailurePatternAwaitingInput($Spattern,$Fpattern,$flagsptrn,$flagfptrn);
+	     }
+       if($flagsptrn=="NAW" && $flagfptrn=="NAW"){
+    	   SuccessfailurePatternAwaitingInput($Spattern,$Fpattern,$flagsptrn,$flagfptrn);
+	     }
+	    if($flagsptrn=="AW" && $flagfptrn=="NAW"){
+	    	SuccessfailurePatternAwaitingInput($Spattern,$Fpattern,$flagsptrn,$flagfptrn);
+	    } 
+      if($flagsptrn=="AW" && $flagfptrn=="AW"){
+    	  SuccessfailurePatternAwaitingInput($Spattern,$Fpattern,$flagsptrn,$flagfptrn);
+	    } 
+    
+
+}	
+}
+ 
+ function SuccessfailurePatternAwaitingInput($Spattern,$Fpattern,$sptrn,$fptrn){
+	 if($sptrn=="NAW" && $fptrn=="AW"){
+		      checkAwaitingInput();
+			_assertContainsText($Fpattern,_preformatted(0),"find failure pattern in the output");
+			_assertContainsText($Spattern,_preformatted(0)," find success pattern in the output");
+			_wait(10000);
+			_click(_submit($QuitABORTuserInputButtonbtnbtnprimarybtnxsbtnbtninfo));
+	        }
+	 
+	 else if($sptrn=="AW" && $fptrn=="NAW"){
+		 
+	      checkAwaitingInput();
+	      _assertNotContainsText($Fpattern,_preformatted(0),"Did not find failure pattern in the output");
+			_assertNotContainsText($Spattern,_preformatted(0),"Did not find success pattern in the output");
+			_wait(10000);
+			_click(_submit($QuitABORTuserInputButtonbtnbtnprimarybtnxsbtnbtninfo)); 
+
+	 }
+	 else if($sptrn=="AW" && $fptrn=="AW"){
+		    checkAwaitingInput();
+			_assertNotContainsText($Spattern,_preformatted(0),"Did not find success pattern in the output");
+			_assertContainsText($Fpattern,_preformatted(0),"find failure pattern in the output");
+			_click(_submit($QuitABORTuserInputButtonbtnbtnprimarybtnxsbtnbtninfo)); 
+	 }
+	 else if($sptrn=="NAW" && $fptrn=="NAW"){
+		 _click(_span("glyphicon icon-caret-right", _near(_span($ralName))));
+			_wait(20000);
+			var	$outputMessageGUI = _getText(_preformatted(0));
+			_assertContainsText($Spattern,_preformatted(0),"find success pattern in the output");
+			_assertNotContainsText($Fpattern,_preformatted(0),"Did not find failure pattern in the output");
+	 }
+	 
+	 
+ }
+
+	function checkAwaitingInput(){
+		_wait(20000);
+			 if(_isVisible(_button($AwaitingInput))){
+				_click(_button($AwaitingInput));
+				_wait(2000);
+				
+				 $testStatus =  _getText(_span(15, _near(_span($TimeElapsed))));
+					_log($testStatus);
+					 while($testStatus == $obj_EXECUTING) {
+						 var $i=0;
+						 while($i<5){
+							_wait(2000);
+						 $i=$i+1;
+						}
+					
+					
+				 }
+		
+				_click(_link($Viewactionlog));	
+				//_wait(5000);
+				var	$outputMessageGUI = _getText(_preformatted(0));	
+               _log("Gui Output : "+$outputMessageGUI);				
+				
+			 }
+				
+				
+	}
+
+
+
+
+	function deleteSuccessFailurePatterns(){
+		_wait(5000);
+		while((_exists(_textbox($success, _near(_label($SuccessPattern)))))&&(_textbox($failure, _near(_label($FailurePattern))))){
+	if(_isVisible(_textbox($success, _near(_label($SuccessPattern))))){
+		_click(_span("glyphicon glyphicon-trash removeContent", _near(_textbox($success))));	
+	}
+	if(_isVisible(_textbox($failure, _near(_label($FailurePattern))))){
+		_click(_span("glyphicon glyphicon-trash removeContent", _near(_textbox($failure))));	
+	}
+		}
+		_wait(5000);
+	}
+
+
+/**
+ * Function is used to navigate to workflow Execution in report page.
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+
+	function preConditionForRAL_GroupCreation(){
+		//Site_0003();
+		//
+		//Agent_node_001();
+		APP_PFR_Component_Remote_Discovery_0018();
+		APP_PFR_Dataset_Discovery_0007();
+		APP_PFR_Auto_DatasetDiscovery0009();
+		APP_PFR_Protectionscheme_Discovery_0018();
+		APP_PFR_GroupCreation_0022();
+		Move_To_Manage_Group($groupName);
+	}
+
+

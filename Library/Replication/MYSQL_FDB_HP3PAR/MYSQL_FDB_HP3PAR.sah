@@ -1,0 +1,95 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains Creation of Protection Scheme for both remote and local agents. 
+ ** AuthorName : Omprakash V
+ ** Created Date : OCT 2016
+ ************************************************************************/
+//Description:create Protection Schemes in MYSQL solution for PR
+
+/**
+* Function is for Creating Protection Schemes in MYSQL solution for PR.
+*@param :  null
+*@return : null
+* Author: Omprakash V
+*
+*/
+
+function Create_Mysql_ProtectionschemePR() {
+	Create_Mysql_Protectionscheme($systemTypeProtection, $sernamePR, $mgmtHostMySQLHP3PARPR, $ProtectionIPAddressPR, $ProtectionUserNamePR, $ProtectionPasswordPR, $remotecopyVolGrp,$verVolList,$lunList,$hostList );
+}// end of Mysql_ProtectionschemePR()
+
+
+/**
+* Function is for Creating Protection Schemes in MYSQL solution for DR.
+*@param :  null
+*@return : null
+* Author: Omprakash V
+*
+*/
+
+function Create_Mysql_ProtectionschemeDR() {
+	Create_Mysql_Protectionscheme($systemTypeProtection, $sernameDR, $mgmtHostMySQLHP3PARDR, $ProtectionIPAddressDR, $ProtectionUserNameDR, $ProtectionPasswordDR, $remotecopyVolGrp,$verVolList,$lunList,$hostList );
+}
+// End of Mysql_ProtectionschemeDR()
+
+
+/**
+* Function is for Creating Protection Schemes in MYSQL solution.
+*@param :  $systemTypeProtection, $sername, $$mgmtHostMysqlHP3PAR, $protectionIPAddress, $protectionUserName, $protectionPassword, $protectionPortNumber
+*@return : null
+* Author: Omprakash V
+*
+*/
+
+function Create_Mysql_Protectionscheme($systemTypeProtection, $sername, $mgmtHostMysqlHP3PAR, $protectionIPAddress, $protectionUserName, $protectionPassword, $protectionPortNumber) {
+	Popup_Handler();
+	_wait(6000);
+	navigateToDiscovery();
+	_click(_link($MYSQL_FDB_HP3PAR_Subsystems));
+	_click(_link($MYSQL_FDB_HP3PAR_ProtectionSchemes));
+	if (_exists(_link($sername))) {
+		_log("Protectionscheme already exists");
+	} else {
+		_setSelected(_select($MYSQL_FDB_HP3PAR_systemType), $systemTypeProtection);
+		_click(_button($MYSQL_FDB_HP3PAR_Go));
+		_setSelected(_select($MYSQL_FDB_HP3PAR_mgmtHost_HP3PAR), $mgmtHostMysqlHP3PAR);
+		_setValue(_textbox($MYSQL_FDB_HP3PAR_sername), $sername);
+		var $i = 0;
+		// Looping till Register Agent link appears
+		while ($i < 10) {
+			// Pause for 30 seconds
+			_log($i);
+			_wait(30000);
+
+			if (_exists(_link($MYSQL_FDB_HP3PAR_RegisterAgent))) {
+				_click(_link($MYSQL_FDB_HP3PAR_RegisterAgent));
+				_wait(30000);
+			} else if (_exists(_cell($MYSQL_FDB_HP3PAR_LinuxOS, _near(_cell($MYSQL_FDB_HP3PAR_AgentName))))) {
+				_log("Agent is CONNECTED");
+				break;
+			}
+			$i = $i + 1;
+		}// While loop ended
+
+		_setValue(_textbox($MYSQL_FDB_HP3PAR_OtherReplicatorInputElement_0, _near(_cell($MYSQL_FDB_HP3PAR_HP3PARDetails))),$remotecopyVolGrp);
+		_setValue(_textbox($MYSQL_FDB_HP3PAR_OtherReplicatorInputElement_1, _near(_cell($MYSQL_FDB_HP3PAR_HP3PARDetails))), $verVolList);
+		_setValue(_textbox($MYSQL_FDB_HP3PAR_OtherReplicatorInputElement_2, _near(_cell($MYSQL_FDB_HP3PAR_HP3PARDetails))), $lunList);
+		_setValue(_textbox($MYSQL_FDB_HP3PAR_OtherReplicatorInputElement_3, _near(_cell($MYSQL_FDB_HP3PAR_HP3PARDetails))), $hostList);
+		_wait(3000);
+		
+		_click(_button($MYSQL_FDB_HP3PAR_Save));
+		_wait(10000);
+		navigateToDiscovery();
+		_click(_link($MYSQL_FDB_HP3PAR_Subsystems));
+		_click(_link($MYSQL_FDB_HP3PAR_ProtectionSchemes));
+		if (_exists(_link($sername))) {
+			_log("Protection Schemes created succesfully");
+		} else {
+			_assertEqual("Protection Schemes created succesfully",_lastAlert()); 	
+			_fail("Protection Schemes not created succesfully.So that stopping execution.");
+		}
+	}
+
+}// end Of Mysql_Protectionscheme()
+

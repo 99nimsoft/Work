@@ -1,0 +1,126 @@
+ var $l_OracleTC=_readExcelFile($SAHI_HOME + "\\conf\\Oracle_TC\\OracleTC_Parameter.xls","Local");
+
+//This user Input required to Login the DRM server
+var $username = $l_OracleTC[3][2]; // DRM server GUI user name e.g. "swati"
+var $password = $l_OracleTC[4][2]; // DRM server GUI pwd
+
+//For OS AUTHENTICATION
+var $OS_Authentication = $l_OracleTC[25][2];
+var $OS_User = $l_OracleTC[26][2];
+
+//This user Input required to create the Site
+var $locationPR = "PR"; // PR Site Location
+var $incharge = "drmadmin"; // Site Incharge
+var $addressPR = "Mumbai"; // PR site Address
+var $locationDR = "DR"; // DR Site Location
+var $addressDR = "Bangalore";// DR site Address
+
+//This user Input required to create the Component for Local or remote
+var $agentType = "Local"; // This if for agent type always enter as e.g. Local or Local.Note Here first letter is upper case and remaining lower case.
+var $compIPPR = $l_OracleTC[7][2];
+var $compIPDR = $l_OracleTC[8][2];
+var $remoteUserNameValPR = $l_OracleTC[9][2]; // PR Machine user name. this information required for both local and Local
+var $remotePwdValPR = $l_OracleTC[10][2]; // PR Machine Pwd name. this information required for both local and Local
+var $remoteUserNameValDR = $l_OracleTC[11][2];// DR Machine user name. this information required for both local and Local
+var $remotePwdValDR = $l_OracleTC[12][2];// PR Machine Pwd name. this information required for both local and Local
+var $compNamePR = $l_OracleTC[13][2];// PR Componenet Name
+var $compNameDR = $l_OracleTC[14][2]; // DR Componenet Name
+var $compIPstoragePR = $l_OracleTC[15][2];
+var $compIPstorageDR = $l_OracleTC[16][2];
+var $remoteUserNameValstoragePR=$l_OracleTC[17][2];
+var $remotePwdValstoragePR=$l_OracleTC[18][2];
+var $remoteUserNameValstorageDR=$l_OracleTC[19][2];
+var $remotePwdValstorageDR=$l_OracleTC[20][2];
+var $compNamestoragePR = $l_OracleTC[21][2];
+var $compNamestorageDR = $l_OracleTC[22][2]; // DR Componenet Name
+var $internalLogon = "sysdba";
+
+var $horcmNo=$l_OracleTC[10][5]; ;
+//Installing PFR Service
+var $localAgentPathPR = $l_OracleTC[28][5];
+var $localAgentPathDR = $l_OracleTC[29][5];
+var $agentBuildPR =$l_OracleTC[30][5];
+var $agentBuildDR = $l_OracleTC[31][5];
+
+//This user Input required to create the dataset
+var $dbSidSelect = $l_OracleTC[3][5]; 
+var $userPR =  $l_OracleTC[4][5]; ;// for oracle db connection
+var $pwdPR =  $l_OracleTC[5][5]; ;// for oracle db connection
+var $userDR =  $l_OracleTC[6][5]; ;// for oracle db connection
+var $pwdDR =  $l_OracleTC[7][5]; ;// for oracle db connection
+var $datasetNamePR = $l_OracleTC[8][5]; // PR dataset name
+var $datasetNameDR = $l_OracleTC[9][5]; // DR dataset name
+
+//This user Input required to create the protection Scheme
+var $sernamePR=$l_OracleTC[16][5];
+var $sernameDR=	$l_OracleTC[17][5];
+var $sernameHCMPR=$l_OracleTC[18][5];
+var $sernameHCMDR =$l_OracleTC[19][5];
+var $userNameVal = "oracle";
+var $pwdVal = "oracle";
+var $dgDiscoveryHostIPPR = $compIPPR;// protection scheme
+var $dgDiscoveryHostIPDR = $compIPDR;
+var $dgDiscoverySID = $l_OracleTC[3][5]; ; // database Name
+var $DBgroupName=$l_OracleTC[28][2];
+var $DBgroupNameSI=	$l_OracleTC[30][2];
+
+//This user Input required to create the Group
+var $groupName = $l_OracleTC[13][5]; // Group name
+var $groupDescription = "ORA_TC"; // Group description
+
+
+var $devMountPointTCPR = $l_OracleTC[22][5];
+var $devMountPointSIPR = $l_OracleTC[23][5];
+var $devMountPointTCDR = $l_OracleTC[24][5];
+var $devMountPointSIDR = $l_OracleTC[25][5];
+
+// *********************************************************************************************************************************************
+// Important Note : Please don't modify/edit any below variable or its value.
+// If you made any changes of variable and its value, script will not execute.
+// *********************************************************************************************************************************************
+
+var $primaryPanacesServer = $drmServer; // this is Primary DRM server
+var $panacesAgentNodeAddressPR = $compIPPR;
+var $panacesAgentNodeAddressDR = $compIPDR;
+var $compsitePR = $locationPR;
+var $compsiteDR = $locationDR;
+var $primaryComponents = $compNamePR;
+var $remoteComponents = $compNameDR;
+var $primaryDatasets = $datasetNamePR;
+var $remoteDatasets = $datasetNameDR;
+var $primaryProtections = $sernamePR;
+var $remoteProtections = $sernameDR;
+var $mgmtHostDGPR =$compNamePR+' ('+$compIPPR+')';
+var $mgmtHostDGDR = $compNameDR+' ('+$compIPDR+')';
+var $dependentComponentNamePR = $compNamePR;
+var $dependentComponentNameDR = $compNameDR;
+var $oracleListenerIPPR = $dgDiscoveryHostIPPR;
+var $oracleListenerIPDR = $dgDiscoveryHostIPDR;
+var $incharge = "drmadmin";
+var $desiredRpo = "300";
+var $rpoCompute = "300";
+var $systemTypeProtection = "Hitachi Replication"; // Protection Scheme type
+var $SolutionSignature = "Oracle Archive Logs with Hitachi Replication"; // Solution type
+var $systemTypeDataset = "Oracle"; // database subsystem
+var $datasetType = "Oracle";// database Type
+var $systemType = "Linux";
+var $osType = "Linux";
+var $drmDbUserName = "automation"; // DRM server database user id
+var $drmDbPassword = "sanovi";// DRM server database password
+var $oracleAgentChk="1";
+
+var $WFPath = "/Oracle/OracleArLogTrueCopy"; // Location of SO/SB/FO xml file
+var $fileNC = "BCS-OracleArLogTC-NC.xml";
+var $fileRNC= "BCS-OracleArLogTC-RNC.xml";
+var $fileSO = "BCS-OracleArLogTC-SO.xml"; // Location of SO xml file
+var $fileSB = "BCS-OracleArLogTC-SB.xml"; // Location of SB xml file
+var $fileFO = "BCS-OracleArLogTC-FO.xml"; // Location of FO xml file
+var $filePostRTO="BCS-OracleArLogTC-PostRTO.xml";
+var $filePreRTO="BCS-OracleArLogTC-PreRTO.xml";
+var $dgDiscoveryDest = "/.*service=.*/i";
+var $PfrStart="1";
+var $oracleAgentChk ="1";
+var $truecopyAgentChk="1";
+
+
+

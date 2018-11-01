@@ -1,0 +1,176 @@
+
+
+function Trigger_Ral_Initiate_NormalFullcopy(){
+	//Before add the code forGroup  should  be  Normal reset  mode  
+ Trigger_Ral_Initiate_copy($groupName,$InitiateNormalFullCopy,$WorkflowNm);
+}
+
+function Trigger_Ral_Initiate_NormalFullcopyBP(){
+	//Before add the code forGroup  should  be  Normal reset  mode  
+	Trigger_Ral_Initiate_BPcopy($groupName,$InitiateNormalFullCopy);
+}
+
+function Trigger_Ral_Start_SO($groupName,$workflowType,WorkflowNameTwo){
+	createWorkFlow($groupName,$WorkflowNameTwo);
+	navigateDrillListing($groupName);
+	$versionNo = _getText(_span(0, _rightOf(_link($WorkflowNameTwo))));
+	
+	if("Version: 0" == $versionNo){		
+		
+		NavigateToDrillWorkflowEditor($groupName,$WorkflowNameTwo);
+		AddRalIntoLayout($ralString,$ralCategory,$ralNameIE);
+	} else {
+		NavigateToDrillWorkflowEditor($groupName,$WorkflowNameTwo);
+	}
+	editTriggerTEAction($groupName,$workflowType);
+	publishWorkflow();
+	executeWorkflow($groupName,$WorkflowNameTwo);
+	Drills_Workflow_Execution_Status($WorkflowNameTwo,$ralNameIE);
+}
+
+function Trigger_Ral_Start_SB($groupName,$workflowType,$WorkflowNameTwo){
+	navigateDrillListing($groupName);
+	NavigateToWorkflowEditor($groupName,$WorkflowNameTwo);
+	editTriggerTEAction($groupName,$workflowType);
+	publishWorkflow();
+	executeWorkflow($groupName,$WorkflowNameTwo);
+	Drills_Workflow_Execution_Status($WorkflowNameTwo,$ralNameIE);
+}
+
+function Trigger_Ral_Initiate_BPcopy($groupName,$workflowType){
+	//TriggerRal_Move_Group_Manage_0001();
+	createBPWorkFlow($WorkflowName);
+	//$groupname="MYSQL_SR_Remote_5257";
+	navigateToBPWorkflow();
+	
+	NavigateToBPWorkflowEditor($WorkflowName);
+	AddRalIntoLayout($ralString,$ralCategory,$ralName);
+	/*
+		$versionNo = _getText(_span(1, _rightOf(_link($WorkflowName))));
+		
+		if("Version 0" == $versionNo){		
+			
+			NavigateToBPWorkflowEditor($WorkflowName);
+			AddRalIntoLayout($ralString,$ralCategory,$ralName);
+		} else {
+			NavigateToBPWorkflowEditor($WorkflowName);
+		}*/
+		editTriggerBCO($groupName,$workflowType);
+		publishWorkflow();
+		executeWorkflow($WorkflowName);
+		Drills_Workflow_Execution_Status($WorkflowName,$ralName);
+	}
+
+function Trigger_Ral_Initiate_copy($groupName,$workflowType,$WorkflowName){
+
+createWorkFlow($groupName,$WorkflowName);
+
+navigateDrillListing($groupName);
+
+//AddRalIntoLayout($ralString,$ralCategory,$ralName);
+
+	$versionNo = _getText(_span(0, _rightOf(_link($WorkflowName))));
+	
+	if("Version: 0" == $versionNo){		
+		
+		NavigateToDrillWorkflowEditor($groupName,$WorkflowName);
+		AddRalIntoLayout($ralString,$ralCategory,$ralName);
+	} else {
+		NavigateToDrillWorkflowEditor($groupName,$WorkflowName);
+	}
+	editTriggerBCO($groupName,$workflowType);
+	publishWorkflow();
+	executeWorkflow($groupName,$WorkflowName);
+	navigateDrillListing($groupName);
+	Drills_Workflow_Execution_Status($WorkflowName,$ralName);
+}
+	
+function Trigger_Ral_Initiate_Failover($groupName,$WrkflwNm){
+	Trigger_Ral_InitiateStop_NcRnc($groupName,$InitiateFailover,$WrkflwNm);
+}
+
+function Trigger_Ral_Initiate_Fallback($groupName,$WrkflwNm){
+	Trigger_Ral_InitiateStop_NcRnc($groupName,$InitiateFallback,$WrkflwNm);
+}
+
+function  Trigger_Ral_InitiateOrStop_NcRnc($groupName,$workflowType,$WrkflwNm){
+	createWorkFlow($groupName,$WrkflwNm);
+	navigateDrillListing($groupName);
+		$versionNo = _getText(_span(0, _rightOf(_link($WrkflwNm))));
+		
+		if("Version: 0" == $versionNo){		
+			
+			NavigateToDrillWorkflowEditor($groupName,$WrkflwNm);
+			AddRalIntoLayout($ralString,$ralCategory,$ralName);
+		} else {
+			NavigateToDrillWorkflowEditor($groupName,$WrkflwNm);
+		}
+	
+	Trigger_Ral_InitiateStop_NcRnc($groupName,$workflowType,$WrkflwNm);
+}
+
+function Trigger_Ral_Stop_Normalcopy($groupName,$WrkflwNm){
+	Trigger_Ral_InitiateStop_NcRnc($groupName,$StopNormalCopy,$WrkflwNm);
+}
+
+function  Trigger_Ral_Initiate_ReverseNormalcopy($groupName,$WrkflwNm){
+	Trigger_Ral_InitiateStop_NcRnc($groupName,$InitiateReverseNormalCopy,$WrkflwNm);
+}
+
+function  Trigger_Ral_Stop_ReverseNormalcopy($groupName,$WrkflwNm){
+	Trigger_Ral_InitiateStop_NcRnc($groupName,$StopReverseNormalCopy,$WrkflwNm);
+}
+
+
+
+
+function Trigger_Ral_InitiateStop_NcRnc($groupName,$workflowType,$WorkflowName){
+	if($workflowType ==$InitiateReverseNormalCopy || $workflowType == $StopReverseNormalCopy||
+		$workflowType ==$InitiateFailover || $workflowType == $InitiateFallback	){
+		navigateDrillListing($groupName);
+		NavigateToWorkflowEditor($WorkflowName);
+	}
+	
+	editTriggerBCO($groupName,$workflowType);
+	publishWorkflow();
+	executeWorkflow($groupName,$WorkflowName);
+}
+
+
+
+
+
+function editTriggerTEAction($groupName,$workflowType){
+	_click(_paragraph("text_ellipsis"));
+	_click(_button("infoBtn"));
+	_click(_link($ActionProperties));
+	_setSelected(_select("groupName"), $groupName);
+	_wait(5000);
+	_setSelected(_select("testName"), $workflowType);
+	_click(_select("testName"));
+	_click(_div("myModal"));
+}
+
+
+function AddRalIntoLayout($ralString,$ralCategory,$ralName){
+	_click(_span("glyphIon"));
+	_click(_link("select2-choice"));
+	_setValue(_textbox(10), $ralString);
+	_click(_div($ralCategory));
+	_click(_span("glyphicon icon-blue-plus plusIconRals", _near(_span($ralName))));
+	_click(_span("glyphIon"));
+	_dragDrop(_image("notifications_green.png"),_image("notifications_yellow.png"));
+}
+
+function editTriggerBCO($groupName,$workflowType){
+	_click(_paragraph("text_ellipsis"));
+	_click(_button("infoBtn"));
+	_click(_link($ActionProperties));
+	_setSelected(_select("groupName"), $groupName);
+    _setSelected(_select("selectTheTrigger"),$workflowType);
+  	_click(_select("selectTheTrigger"));
+	_click(_div("myModal"));
+}
+
+
+//function editTriggerBCO($groupName,$workflowName)

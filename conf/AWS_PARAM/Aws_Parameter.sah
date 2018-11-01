@@ -1,0 +1,79 @@
+var $l_awsInputs =_readExcelFile($SAHI_HOME +"\\conf\\AWS_PARAM\\AWS_Parameter.xls","Remote");
+var $username = $l_awsInputs[3][2];// DRM server User name
+var $password = $l_awsInputs[4][2];// DRM server Password name
+
+var $msType=$l_awsInputs[9][2];
+var $msName=$l_awsInputs[8][2];
+var $msName1="testAws1";
+var $msName2="testAws2";
+var $msName3="testAws3";
+var $msName4="testAws4";
+var $newMsName="testAws_new";
+var $regions=$l_awsInputs[11][2];
+var $changeRegions="us-west-1";
+var $awsaccessid=$l_awsInputs[12][2];
+var $changeAwsaccessid="AKIAJCA5T2CX4BNYQQ";
+var $awssecretkey=$l_awsInputs[13][2];;
+var $invalidAwsaccessid="AKJCA5T2CX4BNYA6QQ";
+var $invalidAwssecretkey="7QIb7IM76K1pBtrUMo8JVSV5uYJAaK7HO";
+
+var $component = $l_awsInputs[10][2];//component for AWS Account
+var $instanceIp = "20.0.0.164";
+var $instanceName = "Demo_WinLogship_PR";
+var $instanceId = "i-4436e916";
+var $typeId = "3";// for DB
+
+var $EventMentioned="AWSAgentUPEvevnt";
+
+
+var $msSite=$l_awsInputs[7][2];
+var $location="PR";
+var $address="PR";
+var $incharge="drmadmin";
+var $locationDR="DR";
+var $addressDR="DR";
+var $inchargeDR="drmadmin";
+var $nameOfevent="AWSAgentUPEvevnt";
+var $description="AWS Agent is up";
+
+//DB PARAM
+var $hostUserNamePR=$l_awsInputs[16][2];// 
+var $hostPasswordPR=$l_awsInputs[17][2];
+var $hostIPPR=$l_awsInputs[19][2];
+var $hostPortPR=$l_awsInputs[18][2];
+
+
+
+//-----------------------------------------------------
+
+
+//This user Input required to create the Group
+var $groupName = "AWS_StatelessAPP" // Group name
+var $groupDescription = "Stateless App"; // Group description
+
+
+// *********************************************************************************************************************************************
+// Important Note : Please don't modify/edit any below variable or its value.
+// If you made any changes of variable and its value, script will not execute.
+// *********************************************************************************************************************************************
+
+var $systemType="Linux";
+var $primaryComponents = "pr";
+var $prcompip="1.1.1.1";
+var $prcompsite=$location;
+var $prremoteUserNameVal="root";
+var $prremotePwdVal="sanovi";
+var $drremoteComponents ="dr";
+var $drcompip="2.2.2.2";
+var $drcompsite=$locationDR;
+var $drremoteUserNameVal="root";
+var $drremotePwdVal="sanovi";
+
+var $desiredRpo = "300";
+var $rpoCompute = "300";
+var $systemTypeProtection = "PFR"; // Protection Scheme type
+var $SolutionSignature = "Stateless Application on AWS"; // Solution type
+var $cstate="Normal Inactive";
+
+
+

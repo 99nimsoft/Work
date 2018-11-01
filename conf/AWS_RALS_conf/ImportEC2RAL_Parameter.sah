@@ -1,0 +1,32 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the Remote Agents parameters for Postgres SR 
+ ** AuthorName : Govinda Mengji
+ ** Created Date : Oct 2013
+ ***********************************************************************************************/
+
+var $l_ImportEC2RAL=_readExcelFile($SAHI_HOME + "\\conf\\AWS_RALS_conf\\VM_AWS_Parameter.xls","ImportEC2RAL");
+
+var $username =$l_ImportEC2RAL[3][2];
+var $password = $l_ImportEC2RAL[4][2];
+
+
+
+// This user Input required to create the Component for Local or remote
+
+
+
+
+var  $mgmtServiceName=$l_ImportEC2RAL[7][2];
+var $region= $l_ImportEC2RAL[8][2];
+var  $availabilityZone =$l_ImportEC2RAL[9][2];
+var  $instanceType =$l_ImportEC2RAL[10][2];
+var  $architecture=  $l_ImportEC2RAL[11][2];
+var  $platform=  $l_ImportEC2RAL[12][2];
+var  $subnetId=  $l_ImportEC2RAL[13][2];
+var  $replicationApplianceName=$l_ImportEC2RAL[14][2];
+var  $fileFormat=  $l_ImportEC2RAL[15][2];
+var  $rawFilePath=  $l_ImportEC2RAL[16][2];
+var  $bucketName=  $l_ImportEC2RAL[17][2];
+var $groupName=$l_ImportEC2RAL[20][2];

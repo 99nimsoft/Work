@@ -1,0 +1,959 @@
+<?xml version="1.0" encoding="UTF-8"?><ws:workflow xmlns:ws="http://www.sanovi.com/panaces/workflow/">
+    <userDef size="0"/>
+    <name>ForkjoinRAL3</name>
+    <version>7.1 35316</version>
+    <description>null</description>
+    <approverList/>
+    <action-list>
+        <action id="0" successPathId="1" failurePathId="1">
+            <registeredName>Custom</registeredName>
+            <name>Custom</name>
+            <uniqueName/>
+            <description>Custom action</description>
+            <deletable>false</deletable>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction type="cmd" etcComputationType="userDefined">
+                    <serverName/>
+                    <command/>
+                    <sudoUsername/>
+                    <execDir/>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                        <dryrunexecType>2</dryrunexecType>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>14452</joinId>
+            <version>7.1 35316</version>
+        </action>
+        <fork-group id="1" successPathId="2">
+            <registeredName>DefaultForkGroup</registeredName>
+            <name>DefaultForkGroup</name>
+            <uniqueName/>
+            <description>DefaultForkGroup action</description>
+            <deletable>false</deletable>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:defaultForkGroup>
+                    <actionsToWaitForList>
+                        <item>14454</item>
+                        <item>14455</item>
+                    </actionsToWaitForList>
+                    <waitForAllActions>true</waitForAllActions>
+                </ws:defaultForkGroup>
+            </privateProperties>
+            <action-list>
+                <action id="0" successPathId="1" failurePathId="1">
+                    <registeredName>StartProcess</registeredName>
+                    <name>StartProcess</name>
+                    <uniqueName/>
+                    <description>StartProcess action</description>
+                    <recurrence>0</recurrence>
+                    <deletable>false</deletable>
+                    <operationType>8</operationType>
+                    <syncName/>
+                    <actionFailureEvent severity="INFO"/>
+                    <userInputEvent severity="INFO"/>
+                    <userInputOnFailureEvent severity="CRITICAL"/>
+                    <privateProperties>
+                        <ws:StartProcess componentName="Production Server" componentType="dynamic" command="date" waitFor="180"/>
+                    </privateProperties>
+                    <joinId>14454</joinId>
+                    <version>7.1 35316</version>
+                </action>
+                <action id="1" final="true">
+                    <registeredName>StartProcess</registeredName>
+                    <name>StartProcess</name>
+                    <uniqueName/>
+                    <description>StartProcess action</description>
+                    <recurrence>0</recurrence>
+                    <deletable>false</deletable>
+                    <operationType>8</operationType>
+                    <syncName/>
+                    <actionFailureEvent severity="INFO"/>
+                    <userInputEvent severity="INFO"/>
+                    <userInputOnFailureEvent severity="CRITICAL"/>
+                    <privateProperties>
+                        <ws:StartProcess componentName="Production Server" componentType="dynamic" command="vmstat" waitFor="180"/>
+                    </privateProperties>
+                    <joinId>14455</joinId>
+                    <version>7.1 35316</version>
+                </action>
+            </action-list>
+        </fork-group>
+        <action id="2" successPathId="3" failurePathId="3">
+            <registeredName>Custom</registeredName>
+            <name>Custom</name>
+            <uniqueName/>
+            <description>This is Custom action</description>
+            <timeToExecute>0</timeToExecute>
+            <recurrence>0</recurrence>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction type="cmd" etcComputationType="userDefined" componentType="dynamic">
+                    <serverName>DR Server</serverName>
+                    <command/>
+                    <timeout>180</timeout>
+                    <sudoUsername/>
+                    <execDir>date</execDir>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                        <dryrunexecType>2</dryrunexecType>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>14456</joinId>
+            <version>7.1 35316</version>
+        </action>
+        <fork-group id="3" successPathId="4">
+            <registeredName>DefaultForkGroup</registeredName>
+            <name>DefaultForkGroup</name>
+            <uniqueName/>
+            <description>DefaultForkGroup action</description>
+            <deletable>false</deletable>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:defaultForkGroup>
+                    <actionsToWaitForList>
+                        <item>14458</item>
+                        <item>14459</item>
+                    </actionsToWaitForList>
+                    <waitForAllActions>true</waitForAllActions>
+                </ws:defaultForkGroup>
+            </privateProperties>
+            <action-list>
+                <action id="0" successPathId="1" failurePathId="1">
+                    <registeredName>GroupSiteHealthCheck</registeredName>
+                    <name>GroupSiteHealthCheck</name>
+                    <description>GroupSiteHealthCheck action</description>
+                    <deletable>false</deletable>
+                    <actionFailureEvent severity="INFO"/>
+                    <userInputEvent severity="INFO"/>
+                    <userInputOnFailureEvent severity="CRITICAL"/>
+                    <privateProperties>
+                        <ws:groupSiteHealthCheck site="PRIMARY"/>
+                    </privateProperties>
+                    <joinId>14458</joinId>
+                    <version>7.1 35316</version>
+                </action>
+                <action id="1" final="true">
+                    <registeredName>GroupSiteHealthCheck</registeredName>
+                    <name>GroupSiteHealthCheck</name>
+                    <description>GroupSiteHealthCheck action</description>
+                    <deletable>false</deletable>
+                    <actionFailureEvent severity="INFO"/>
+                    <userInputEvent severity="INFO"/>
+                    <userInputOnFailureEvent severity="CRITICAL"/>
+                    <privateProperties>
+                        <ws:groupSiteHealthCheck site="PRIMARY"/>
+                    </privateProperties>
+                    <joinId>14459</joinId>
+                    <version>7.1 35316</version>
+                </action>
+            </action-list>
+        </fork-group>
+        <action id="4" successPathId="5" failurePathId="5">
+            <registeredName>Custom</registeredName>
+            <name>Custom</name>
+            <uniqueName/>
+            <description>This is Custom action</description>
+            <timeToExecute>0</timeToExecute>
+            <recurrence>0</recurrence>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction type="cmd" etcComputationType="userDefined" componentType="dynamic">
+                    <serverName>DR Server</serverName>
+                    <command/>
+                    <timeout>180</timeout>
+                    <sudoUsername/>
+                    <execDir>date</execDir>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                        <dryrunexecType>2</dryrunexecType>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>14460</joinId>
+            <version>7.1 35316</version>
+        </action>
+        <fork-group id="5" successPathId="6">
+            <registeredName>DefaultForkGroup</registeredName>
+            <name>DefaultForkGroup</name>
+            <uniqueName/>
+            <description>DefaultForkGroup action</description>
+            <deletable>false</deletable>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:defaultForkGroup>
+                    <actionsToWaitForList>
+                        <item>14462</item>
+                        <item>14463</item>
+                    </actionsToWaitForList>
+                    <waitForAllActions>true</waitForAllActions>
+                </ws:defaultForkGroup>
+            </privateProperties>
+            <action-list>
+                <action id="0" successPathId="1" failurePathId="1">
+                    <registeredName>Custom</registeredName>
+                    <name>Custom</name>
+                    <uniqueName/>
+                    <description>This is Custom action</description>
+                    <timeToExecute>0</timeToExecute>
+                    <recurrence>0</recurrence>
+                    <actionFailureEvent/>
+                    <userInputEvent severity="INFO"/>
+                    <userInputOnFailureEvent severity="CRITICAL"/>
+                    <privateProperties>
+                        <ws:scriptAction type="cmd" etcComputationType="userDefined" componentType="dynamic">
+                            <serverName>DR Server</serverName>
+                            <command/>
+                            <timeout>180</timeout>
+                            <sudoUsername/>
+                            <execDir>date</execDir>
+                            <logFilePath/>
+                            <CustomActionDryrunConfig>
+                                <commandPath>null</commandPath>
+                                <dryrunexecType>2</dryrunexecType>
+                            </CustomActionDryrunConfig>
+                        </ws:scriptAction>
+                    </privateProperties>
+                    <joinId>14462</joinId>
+                    <version>7.1 35316</version>
+                </action>
+                <action id="1" final="true">
+                    <registeredName>GroupSiteHealthCheck</registeredName>
+                    <name>GroupSiteHealthCheck</name>
+                    <description>GroupSiteHealthCheck action</description>
+                    <deletable>false</deletable>
+                    <actionFailureEvent severity="INFO"/>
+                    <userInputEvent severity="INFO"/>
+                    <userInputOnFailureEvent severity="CRITICAL"/>
+                    <privateProperties>
+                        <ws:groupSiteHealthCheck site="SECONDARY"/>
+                    </privateProperties>
+                    <joinId>14463</joinId>
+                    <version>7.1 35316</version>
+                </action>
+            </action-list>
+        </fork-group>
+        <action id="6" successPathId="7" failurePathId="7">
+            <registeredName>Custom</registeredName>
+            <name>Custom</name>
+            <uniqueName/>
+            <description>This is Custom action</description>
+            <timeToExecute>0</timeToExecute>
+            <recurrence>0</recurrence>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction type="cmd" etcComputationType="userDefined" componentType="dynamic">
+                    <serverName>DR Server</serverName>
+                    <command/>
+                    <timeout>180</timeout>
+                    <sudoUsername/>
+                    <execDir>date</execDir>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                        <dryrunexecType>2</dryrunexecType>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>14464</joinId>
+            <version>7.1 35316</version>
+        </action>
+        <fork-group id="7" successPathId="8">
+            <registeredName>DefaultForkGroup</registeredName>
+            <name>DefaultForkGroup</name>
+            <uniqueName/>
+            <description>DefaultForkGroup action</description>
+            <deletable>false</deletable>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:defaultForkGroup>
+                    <actionsToWaitForList>
+                        <item>14466</item>
+                        <item>14467</item>
+                    </actionsToWaitForList>
+                    <waitForAllActions>true</waitForAllActions>
+                </ws:defaultForkGroup>
+            </privateProperties>
+            <action-list>
+                <action id="0" successPathId="1" failurePathId="1">
+                    <registeredName>Custom</registeredName>
+                    <name>Custom</name>
+                    <uniqueName/>
+                    <description>This is Custom action</description>
+                    <timeToExecute>0</timeToExecute>
+                    <recurrence>0</recurrence>
+                    <actionFailureEvent/>
+                    <userInputEvent severity="INFO"/>
+                    <userInputOnFailureEvent severity="CRITICAL"/>
+                    <privateProperties>
+                        <ws:scriptAction type="cmd" etcComputationType="userDefined" componentType="dynamic">
+                            <serverName>DR Server</serverName>
+                            <command/>
+                            <timeout>180</timeout>
+                            <sudoUsername/>
+                            <execDir>date</execDir>
+                            <logFilePath/>
+                            <CustomActionDryrunConfig>
+                                <commandPath>null</commandPath>
+                                <dryrunexecType>2</dryrunexecType>
+                            </CustomActionDryrunConfig>
+                        </ws:scriptAction>
+                    </privateProperties>
+                    <joinId>14466</joinId>
+                    <version>7.1 35316</version>
+                </action>
+                <action id="1" final="true">
+                    <registeredName>GroupSiteHealthCheck</registeredName>
+                    <name>GroupSiteHealthCheck</name>
+                    <description>GroupSiteHealthCheck action</description>
+                    <deletable>false</deletable>
+                    <actionFailureEvent severity="INFO"/>
+                    <userInputEvent severity="INFO"/>
+                    <userInputOnFailureEvent severity="CRITICAL"/>
+                    <privateProperties>
+                        <ws:groupSiteHealthCheck site="SECONDARY"/>
+                    </privateProperties>
+                    <joinId>14467</joinId>
+                    <version>7.1 35316</version>
+                </action>
+            </action-list>
+        </fork-group>
+        <action id="8" successPathId="9" failurePathId="9">
+            <registeredName>Custom</registeredName>
+            <name>Custom</name>
+            <uniqueName/>
+            <description>This is Custom action</description>
+            <timeToExecute>0</timeToExecute>
+            <recurrence>0</recurrence>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction type="cmd" etcComputationType="userDefined" componentType="dynamic">
+                    <serverName>DR Server</serverName>
+                    <command/>
+                    <timeout>180</timeout>
+                    <sudoUsername/>
+                    <execDir>date</execDir>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                        <dryrunexecType>2</dryrunexecType>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>14468</joinId>
+            <version>7.1 35316</version>
+        </action>
+        <fork-group id="9" successPathId="10">
+            <registeredName>DefaultForkGroup</registeredName>
+            <name>DefaultForkGroup</name>
+            <uniqueName/>
+            <description>DefaultForkGroup action</description>
+            <deletable>false</deletable>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:defaultForkGroup>
+                    <actionsToWaitForList>
+                        <item>14470</item>
+                    </actionsToWaitForList>
+                    <waitForAllActions>true</waitForAllActions>
+                </ws:defaultForkGroup>
+            </privateProperties>
+            <action-list>
+                <action id="0" final="true">
+                    <registeredName>Custom</registeredName>
+                    <name>Custom</name>
+                    <uniqueName/>
+                    <description>This is Custom action</description>
+                    <timeToExecute>0</timeToExecute>
+                    <recurrence>0</recurrence>
+                    <actionFailureEvent/>
+                    <userInputEvent severity="INFO"/>
+                    <userInputOnFailureEvent severity="CRITICAL"/>
+                    <privateProperties>
+                        <ws:scriptAction type="cmd" etcComputationType="userDefined" componentType="dynamic">
+                            <serverName>DR Server</serverName>
+                            <command/>
+                            <timeout>180</timeout>
+                            <sudoUsername/>
+                            <execDir>date</execDir>
+                            <logFilePath/>
+                            <CustomActionDryrunConfig>
+                                <commandPath>null</commandPath>
+                                <dryrunexecType>2</dryrunexecType>
+                            </CustomActionDryrunConfig>
+                        </ws:scriptAction>
+                    </privateProperties>
+                    <joinId>14470</joinId>
+                    <version>7.1 35316</version>
+                </action>
+            </action-list>
+        </fork-group>
+        <action id="10" successPathId="11" failurePathId="11">
+            <registeredName>Custom</registeredName>
+            <name>Custom</name>
+            <uniqueName/>
+            <description>This is Custom action</description>
+            <timeToExecute>0</timeToExecute>
+            <recurrence>0</recurrence>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction type="cmd" etcComputationType="userDefined" componentType="dynamic">
+                    <serverName>DR Server</serverName>
+                    <command/>
+                    <timeout>180</timeout>
+                    <sudoUsername/>
+                    <execDir>date</execDir>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                        <dryrunexecType>2</dryrunexecType>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>14471</joinId>
+            <version>7.1 35316</version>
+        </action>
+        <fork-group id="11" successPathId="12">
+            <registeredName>DefaultForkGroup</registeredName>
+            <name>DefaultForkGroup</name>
+            <uniqueName/>
+            <description>DefaultForkGroup action</description>
+            <deletable>false</deletable>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:defaultForkGroup>
+                    <actionsToWaitForList>
+                        <item>14473</item>
+                    </actionsToWaitForList>
+                    <waitForAllActions>true</waitForAllActions>
+                </ws:defaultForkGroup>
+            </privateProperties>
+            <action-list>
+                <action id="0" final="true">
+                    <registeredName>Custom</registeredName>
+                    <name>Custom</name>
+                    <uniqueName/>
+                    <description>This is Custom action</description>
+                    <timeToExecute>0</timeToExecute>
+                    <recurrence>0</recurrence>
+                    <actionFailureEvent/>
+                    <userInputEvent severity="INFO"/>
+                    <userInputOnFailureEvent severity="CRITICAL"/>
+                    <privateProperties>
+                        <ws:scriptAction type="cmd" etcComputationType="userDefined" componentType="dynamic">
+                            <serverName>DR Server</serverName>
+                            <command/>
+                            <timeout>180</timeout>
+                            <sudoUsername/>
+                            <execDir>date</execDir>
+                            <logFilePath/>
+                            <CustomActionDryrunConfig>
+                                <commandPath>null</commandPath>
+                                <dryrunexecType>2</dryrunexecType>
+                            </CustomActionDryrunConfig>
+                        </ws:scriptAction>
+                    </privateProperties>
+                    <joinId>14473</joinId>
+                    <version>7.1 35316</version>
+                </action>
+            </action-list>
+        </fork-group>
+        <action id="12" successPathId="13" failurePathId="13">
+            <registeredName>Custom</registeredName>
+            <name>Custom</name>
+            <uniqueName/>
+            <description>Custom action</description>
+            <deletable>false</deletable>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction etcComputationType="userDefined">
+                    <serverName/>
+                    <command/>
+                    <sudoUsername/>
+                    <execDir/>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>14474</joinId>
+            <version>7.1 35316</version>
+        </action>
+        <fork-group id="13" successPathId="14">
+            <registeredName>DefaultForkGroup</registeredName>
+            <name>DefaultForkGroup</name>
+            <uniqueName/>
+            <description>DefaultForkGroup action</description>
+            <deletable>false</deletable>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:defaultForkGroup>
+                    <actionsToWaitForList>
+                        <item>14476</item>
+                    </actionsToWaitForList>
+                    <waitForAllActions>true</waitForAllActions>
+                </ws:defaultForkGroup>
+            </privateProperties>
+            <action-list>
+                <action id="0" final="true">
+                    <registeredName>Custom</registeredName>
+                    <name>Custom</name>
+                    <uniqueName/>
+                    <description>This is Custom action</description>
+                    <timeToExecute>0</timeToExecute>
+                    <recurrence>0</recurrence>
+                    <actionFailureEvent/>
+                    <userInputEvent severity="INFO"/>
+                    <userInputOnFailureEvent severity="CRITICAL"/>
+                    <privateProperties>
+                        <ws:scriptAction type="cmd" etcComputationType="userDefined" componentType="dynamic">
+                            <serverName>DR Server</serverName>
+                            <command/>
+                            <timeout>180</timeout>
+                            <sudoUsername/>
+                            <execDir>date</execDir>
+                            <logFilePath/>
+                            <CustomActionDryrunConfig>
+                                <commandPath>null</commandPath>
+                                <dryrunexecType>2</dryrunexecType>
+                            </CustomActionDryrunConfig>
+                        </ws:scriptAction>
+                    </privateProperties>
+                    <joinId>14476</joinId>
+                    <version>7.1 35316</version>
+                </action>
+            </action-list>
+        </fork-group>
+        <action id="14" successPathId="15" failurePathId="15">
+            <registeredName>Custom</registeredName>
+            <name>Custom</name>
+            <uniqueName/>
+            <description>This is Custom action</description>
+            <timeToExecute>0</timeToExecute>
+            <recurrence>0</recurrence>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction type="cmd" etcComputationType="userDefined" componentType="dynamic">
+                    <serverName>DR Server</serverName>
+                    <command/>
+                    <timeout>180</timeout>
+                    <sudoUsername/>
+                    <execDir>date</execDir>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                        <dryrunexecType>2</dryrunexecType>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>14477</joinId>
+            <version>7.1 35316</version>
+        </action>
+        <fork-group id="15" successPathId="16">
+            <registeredName>DefaultForkGroup</registeredName>
+            <name>DefaultForkGroup</name>
+            <uniqueName/>
+            <description>DefaultForkGroup action</description>
+            <deletable>false</deletable>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:defaultForkGroup>
+                    <actionsToWaitForList>
+                        <item>14479</item>
+                    </actionsToWaitForList>
+                    <waitForAllActions>true</waitForAllActions>
+                </ws:defaultForkGroup>
+            </privateProperties>
+            <action-list>
+                <action id="0" final="true">
+                    <registeredName>Custom</registeredName>
+                    <name>Custom</name>
+                    <uniqueName/>
+                    <description>This is Custom action</description>
+                    <timeToExecute>0</timeToExecute>
+                    <recurrence>0</recurrence>
+                    <actionFailureEvent/>
+                    <userInputEvent severity="INFO"/>
+                    <userInputOnFailureEvent severity="CRITICAL"/>
+                    <privateProperties>
+                        <ws:scriptAction type="cmd" etcComputationType="userDefined" componentType="dynamic">
+                            <serverName>DR Server</serverName>
+                            <command/>
+                            <timeout>180</timeout>
+                            <sudoUsername/>
+                            <execDir>date</execDir>
+                            <logFilePath/>
+                            <CustomActionDryrunConfig>
+                                <commandPath>null</commandPath>
+                                <dryrunexecType>2</dryrunexecType>
+                            </CustomActionDryrunConfig>
+                        </ws:scriptAction>
+                    </privateProperties>
+                    <joinId>14479</joinId>
+                    <version>7.1 35316</version>
+                </action>
+            </action-list>
+        </fork-group>
+        <action id="16" successPathId="17" failurePathId="17">
+            <registeredName>Custom</registeredName>
+            <name>Custom</name>
+            <uniqueName/>
+            <description>This is Custom action</description>
+            <timeToExecute>0</timeToExecute>
+            <recurrence>0</recurrence>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction type="cmd" etcComputationType="userDefined" componentType="dynamic">
+                    <serverName>DR Server</serverName>
+                    <command/>
+                    <timeout>180</timeout>
+                    <sudoUsername/>
+                    <execDir>date</execDir>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                        <dryrunexecType>2</dryrunexecType>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>14480</joinId>
+            <version>7.1 35316</version>
+        </action>
+        <fork-group id="17" successPathId="18">
+            <registeredName>DefaultForkGroup</registeredName>
+            <name>DefaultForkGroup</name>
+            <uniqueName/>
+            <description>DefaultForkGroup action</description>
+            <deletable>false</deletable>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:defaultForkGroup>
+                    <actionsToWaitForList>
+                        <item>14482</item>
+                    </actionsToWaitForList>
+                    <waitForAllActions>true</waitForAllActions>
+                </ws:defaultForkGroup>
+            </privateProperties>
+            <action-list>
+                <action id="0" final="true">
+                    <registeredName>Custom</registeredName>
+                    <name>Custom</name>
+                    <uniqueName/>
+                    <description>This is Custom action</description>
+                    <timeToExecute>0</timeToExecute>
+                    <recurrence>0</recurrence>
+                    <actionFailureEvent/>
+                    <userInputEvent severity="INFO"/>
+                    <userInputOnFailureEvent severity="CRITICAL"/>
+                    <privateProperties>
+                        <ws:scriptAction type="cmd" etcComputationType="userDefined" componentType="dynamic">
+                            <serverName>DR Server</serverName>
+                            <command/>
+                            <timeout>180</timeout>
+                            <sudoUsername/>
+                            <execDir>date</execDir>
+                            <logFilePath/>
+                            <CustomActionDryrunConfig>
+                                <commandPath>null</commandPath>
+                                <dryrunexecType>2</dryrunexecType>
+                            </CustomActionDryrunConfig>
+                        </ws:scriptAction>
+                    </privateProperties>
+                    <joinId>14482</joinId>
+                    <version>7.1 35316</version>
+                </action>
+            </action-list>
+        </fork-group>
+        <action id="18" successPathId="19" failurePathId="19">
+            <registeredName>Custom</registeredName>
+            <name>Custom</name>
+            <uniqueName/>
+            <description>This is Custom action</description>
+            <timeToExecute>0</timeToExecute>
+            <recurrence>0</recurrence>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction type="cmd" etcComputationType="userDefined" componentType="dynamic">
+                    <serverName>DR Server</serverName>
+                    <command/>
+                    <timeout>180</timeout>
+                    <sudoUsername/>
+                    <execDir>date</execDir>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                        <dryrunexecType>2</dryrunexecType>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>14483</joinId>
+            <version>7.1 35316</version>
+        </action>
+        <fork-group id="19" successPathId="20">
+            <registeredName>DefaultForkGroup</registeredName>
+            <name>DefaultForkGroup</name>
+            <uniqueName/>
+            <description>DefaultForkGroup action</description>
+            <deletable>false</deletable>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:defaultForkGroup>
+                    <actionsToWaitForList>
+                        <item>14485</item>
+                    </actionsToWaitForList>
+                    <waitForAllActions>true</waitForAllActions>
+                </ws:defaultForkGroup>
+            </privateProperties>
+            <action-list>
+                <action id="0" final="true">
+                    <registeredName>Custom</registeredName>
+                    <name>Custom</name>
+                    <uniqueName/>
+                    <description>This is Custom action</description>
+                    <timeToExecute>0</timeToExecute>
+                    <recurrence>0</recurrence>
+                    <actionFailureEvent/>
+                    <userInputEvent severity="INFO"/>
+                    <userInputOnFailureEvent severity="CRITICAL"/>
+                    <privateProperties>
+                        <ws:scriptAction type="cmd" etcComputationType="userDefined" componentType="dynamic">
+                            <serverName>DR Server</serverName>
+                            <command/>
+                            <timeout>180</timeout>
+                            <sudoUsername/>
+                            <execDir>date</execDir>
+                            <logFilePath/>
+                            <CustomActionDryrunConfig>
+                                <commandPath>null</commandPath>
+                                <dryrunexecType>2</dryrunexecType>
+                            </CustomActionDryrunConfig>
+                        </ws:scriptAction>
+                    </privateProperties>
+                    <joinId>14485</joinId>
+                    <version>7.1 35316</version>
+                </action>
+            </action-list>
+        </fork-group>
+        <action id="20" successPathId="21" failurePathId="21">
+            <registeredName>Custom</registeredName>
+            <name>Custom</name>
+            <uniqueName/>
+            <description>This is Custom action</description>
+            <timeToExecute>0</timeToExecute>
+            <recurrence>0</recurrence>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction type="cmd" etcComputationType="userDefined" componentType="dynamic">
+                    <serverName>DR Server</serverName>
+                    <command/>
+                    <timeout>180</timeout>
+                    <sudoUsername/>
+                    <execDir>date</execDir>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                        <dryrunexecType>2</dryrunexecType>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>14486</joinId>
+            <version>7.1 35316</version>
+        </action>
+        <fork-group id="21" successPathId="22">
+            <registeredName>DefaultForkGroup</registeredName>
+            <name>DefaultForkGroup</name>
+            <uniqueName/>
+            <description>DefaultForkGroup action</description>
+            <deletable>false</deletable>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:defaultForkGroup>
+                    <actionsToWaitForList>
+                        <item>14488</item>
+                    </actionsToWaitForList>
+                    <waitForAllActions>true</waitForAllActions>
+                </ws:defaultForkGroup>
+            </privateProperties>
+            <action-list>
+                <action id="0" final="true">
+                    <registeredName>Custom</registeredName>
+                    <name>Custom</name>
+                    <uniqueName/>
+                    <description>This is Custom action</description>
+                    <timeToExecute>0</timeToExecute>
+                    <recurrence>0</recurrence>
+                    <actionFailureEvent/>
+                    <userInputEvent severity="INFO"/>
+                    <userInputOnFailureEvent severity="CRITICAL"/>
+                    <privateProperties>
+                        <ws:scriptAction type="cmd" etcComputationType="userDefined" componentType="dynamic">
+                            <serverName>DR Server</serverName>
+                            <command/>
+                            <timeout>180</timeout>
+                            <sudoUsername/>
+                            <execDir>date</execDir>
+                            <logFilePath/>
+                            <CustomActionDryrunConfig>
+                                <commandPath>null</commandPath>
+                                <dryrunexecType>2</dryrunexecType>
+                            </CustomActionDryrunConfig>
+                        </ws:scriptAction>
+                    </privateProperties>
+                    <joinId>14488</joinId>
+                    <version>7.1 35316</version>
+                </action>
+            </action-list>
+        </fork-group>
+        <action id="22" successPathId="23" failurePathId="23">
+            <registeredName>Custom</registeredName>
+            <name>Custom</name>
+            <uniqueName/>
+            <description>This is Custom action</description>
+            <timeToExecute>0</timeToExecute>
+            <recurrence>0</recurrence>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction type="cmd" etcComputationType="userDefined" componentType="dynamic">
+                    <serverName>DR Server</serverName>
+                    <command/>
+                    <timeout>180</timeout>
+                    <sudoUsername/>
+                    <execDir>date</execDir>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                        <dryrunexecType>2</dryrunexecType>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>14489</joinId>
+            <version>7.1 35316</version>
+        </action>
+        <fork-group id="23" successPathId="24">
+            <registeredName>DefaultForkGroup</registeredName>
+            <name>DefaultForkGroup</name>
+            <uniqueName/>
+            <description>DefaultForkGroup action</description>
+            <deletable>false</deletable>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:defaultForkGroup>
+                    <actionsToWaitForList>
+                        <item>14491</item>
+                    </actionsToWaitForList>
+                    <waitForAllActions>true</waitForAllActions>
+                </ws:defaultForkGroup>
+            </privateProperties>
+            <action-list>
+                <action id="0" final="true">
+                    <registeredName>Custom</registeredName>
+                    <name>Custom</name>
+                    <uniqueName/>
+                    <description>This is Custom action</description>
+                    <timeToExecute>0</timeToExecute>
+                    <recurrence>0</recurrence>
+                    <actionFailureEvent/>
+                    <userInputEvent severity="INFO"/>
+                    <userInputOnFailureEvent severity="CRITICAL"/>
+                    <privateProperties>
+                        <ws:scriptAction type="cmd" etcComputationType="userDefined" componentType="dynamic">
+                            <serverName>DR Server</serverName>
+                            <command/>
+                            <timeout>180</timeout>
+                            <sudoUsername/>
+                            <execDir>date</execDir>
+                            <logFilePath/>
+                            <CustomActionDryrunConfig>
+                                <commandPath>null</commandPath>
+                                <dryrunexecType>2</dryrunexecType>
+                            </CustomActionDryrunConfig>
+                        </ws:scriptAction>
+                    </privateProperties>
+                    <joinId>14491</joinId>
+                    <version>7.1 35316</version>
+                </action>
+            </action-list>
+        </fork-group>
+        <action id="24" final="true">
+            <registeredName>Custom</registeredName>
+            <name>Custom</name>
+            <uniqueName/>
+            <description>Custom action</description>
+            <deletable>false</deletable>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction type="cmd" etcComputationType="userDefined">
+                    <serverName/>
+                    <command/>
+                    <sudoUsername/>
+                    <execDir/>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                        <dryrunexecType>2</dryrunexecType>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>14492</joinId>
+            <version>7.1 35316</version>
+        </action>
+    </action-list>
+</ws:workflow>

@@ -1,0 +1,105 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the common test cases functions which are the part of SystemEvents
+**  @AuthorName : Anita 
+ ** Created Date : Dec 2016
+ ************************************************************************/
+
+/**
+ * Function is used to Verify System Events page for SuperAdmin, Admin,Operator, NotificationMember
+ * @param :$userName_super,$userName_admin,$userName_oper,$userName_notif
+ * @param :$userPswd_super,$userPswd_admin,$userPswd_oper,$userPswd_notif
+ * @return : null
+ * @Author:Anita
+ * 
+ */
+
+function System_Events_001(){
+  try{
+		Login_As_User($userName_super,$userPswd_super);
+		Verify_SystemEvents_UserType($userName_super);
+		
+		Login_As_User($userName_admin,$userPswd_admin);
+		Verify_SystemEvents_UserType($userName_admin);
+
+		Login_As_User($userName_oper,$userPswd_oper);
+		Verify_SystemEvents_UserType($userName_oper);
+
+		Login_As_User($userName_notif,$userPswd_notif);
+		
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_fail("System_Events_001 failed.So that stopping execution.");
+	}
+}
+
+// System_Events_002()  //super admin
+
+function System_Events_002(){
+	try{
+		Login_As_User($userName_super,$userPswd_super);
+		Verify_WarnigMessage_BeforeConfig($userName_super);
+		Config_WarnigMessage_SystemEvents($userName_super,$groupName,$notifLstName,$snmpFWDLstName,$trapdestIP,$udpPort1);
+		Verify_WarnigMessage_AfterConfig_NotifList($userName_super,$notifLstName);
+		Verify_WarnigMessage_AfterConfig_SNMPTrapList($userName_super,$notifLstName,$snmpFWDLstName);
+
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_fail("System_Events_002 failed.So that stopping execution.");
+	}
+}
+
+// System_Events_003() //admin
+
+function System_Events_003(){
+	try{
+		Login_As_User($userName_admin,$userPswd_admin);
+		Verify_WarnigMessage_BeforeConfig($userName_admin);
+		Config_WarnigMessage_SystemEvents($userName_admin,$groupName,$notifLstadmn,$snmpFWDLstadmn,$trapdestIP,$udpPort2);
+		Verify_WarnigMessage_AfterConfig_NotifList($userName_admin,$notifLstadmn);
+		Verify_WarnigMessage_AfterConfig_SNMPTrapList($userName_admin,$notifLstadmn,$snmpFWDLstadmn);
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_fail("System_Events_003 failed.So that stopping execution.");
+	}
+}
+
+//System_Events_004() //super admin
+
+function System_Events_004(){
+	try{
+		Login_As_User($userName_super,$userPswd_super);
+		Verify_NotifyUpdateSelection($userName_super,$notifLstName,$snmpFWDLstName);
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_fail("System_Events_004 failed.So that stopping execution.");
+	}
+}
+
+//System_Events_005() //admin
+
+function System_Events_005(){
+	try{
+		Login_As_User($userName_admin,$userPswd_super);
+		Verify_NotifyUpdateSelection($userName_admin,$notifLstadmn,$snmpFWDLstadmn);
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_fail("System_Events_005 failed.So that stopping execution.");
+	}
+}
+
+//System_Events_006() //metadata backup
+
+function System_Events_006(){
+	try{
+		Login_As_User($userName_super,$userPswd_super);
+		Verify_ErrorMsg_WrongPath($WEEKLY);
+		Config_MetadataBackup($metabackupPath,$WEEKLY);
+		Verify_Take_BackupNow($metabackupPath,$drmServer, $drmUserName, $drmPassword);
+		Delete_BackupFile_DRM($metabackupPath,$drmServer, $drmUserName, $drmPassword);
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_fail("System_Events_006 failed.So that stopping execution.");
+	}
+}

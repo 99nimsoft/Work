@@ -1,0 +1,98 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the remote agent test cases which are the part of  APP_PFR solution. 
+ ** AuthorName : Govinda Mengji
+ ** Created Date : June 2013
+ ************************************************************************/
+
+_log("=================================Pre-Condition===================================","Custom1");
+
+//don't change the below line.
+_include("../../Library/Solution_Signature/Include/Oracle_Low_Touch_Include.sah");
+_include("../../conf/DRMInstallation_Parameter.sah");
+_include("../../conf/LowTouch/Oracle_Low_Touch_Parameter.sah");
+_include("../../Library/Common/Common_Function.sah");
+
+_include("../../Library/Solution_Signature/Oracle_Low_Touch/Oracle_Low_Touch_Solution.sah");
+
+Login_001();
+
+
+
+
+_log("=================================Test========================================","Custom1");
+
+
+
+/*
+var $test0 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_003", "verify the command execution in custom action Ral");
+$test0.start();
+Site_0003();
+$test0.end();
+*/
+
+var $test1 = _testcase("AWS_Management_Service");
+$test1.start();
+AWS_Management_Service_001();
+$test1.end();
+
+
+var $test2 = _testcase("Create_Primary_Server_Details_PR");
+$test2.start();
+Create_Primary_Server_Details_PR_002();
+$test2.end();
+
+
+
+
+var $test3 = _testcase("Create_Primary_Database_Details_PR");
+$test3.start();
+Create_Primary_Database_Details_PR_003();
+$test3.end();
+
+
+var $test4 = _testcase("Oracle_Low_Component_Status");
+$test4.start();
+Oracle_Low_Component_Status_0005();
+$test4.end();
+
+
+var $test5 = _testcase("Oracle_Low_Dataset_status");
+$test5.start();
+Oracle_Low_Dataset_status_0006();
+$test5.end();
+
+var $test6 = _testcase("Create_AWS_Information");
+$test6.start();
+Create_AWS_Information_004();
+$test6.end();
+
+var $test7 = _testcase("Verify_Oracle_Low_Touch_Provisioning");
+$test7.start();
+Verify_Oracle_Low_Touch_Provisioning_0007();
+$test7.end();
+
+
+var $test8 = _testcase("Verify_Oracle_Low_AWS_Comp_Dataset");
+$test8.start();
+Verify_Oracle_Low_AWS_Comp_Dataset_0008();
+$test8.end();
+
+var $test9 = _testcase("Oracle_Low_Touch_Provisioning_Execution");
+$test9.start();
+Oracle_Low_Touch_Provisioning_Execution_0009();
+$test9.end();
+
+
+
+var $test10 = _testcase("Oracle_Low_Verfiy_Protection_Schemes_status");
+$test10.start();
+Oracle_Low_Verfiy_Protection_Schemes_status_0010();
+$test10.end();
+
+
+var $test11 = _testcase("Oracle_Low_Group_verification");
+$test11.start();
+Oracle_Low_Group_verification_0011();
+$test11.end();

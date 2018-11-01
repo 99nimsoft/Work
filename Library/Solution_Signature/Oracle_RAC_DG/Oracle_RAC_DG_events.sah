@@ -1,0 +1,174 @@
+
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are the part of  Oracle DG solution generating events.
+ ** AuthorName : Aditi Jain 
+ ** Created Date : April 2013
+ ************************************************************************/
+
+
+/**
+ *Function is for remote agent stop the oracle agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Aditi Jain
+ */
+function OracleDG_Remote_PR_OracleDG_Agent_Stop_Event() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "DataGuardAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent021", "Protection agent on primary server is down. ", "Critical");
+}// End of Remote_PR_oracle_Agent_Stop_Event()
+
+/**
+ *Function is for remote agent stop the oracle agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :Aditi Jain
+ */
+function OracleDG_Remote_DR_OracleDG_Agent_Stop_Event() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "DataGuardAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent022", "Protection agent on DR server is down. ", "Critical");
+}// Remote_DR_oracle_Agent_Stop_Event
+
+/**
+ *Function is for remote agent start the oracle agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Aditi Jain
+ */
+function OracleDG_Remote_PR_OracleDG_Agent_Start_Event() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "DataGuardAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent023", "Protection agent on primary server is up. ", "Information");
+}// End of Remote_PR_oracle_Agent_Start_Event
+
+/**
+ *Function is for remote agent start the oracle agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :Aditi Jain
+ */
+function OracleDG_Remote_DR_OracleDG_Agent_Start_Event() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "DataGuardAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent024", "Protection agent on the DR server is up. ", "Information");
+}// End of Remote_DR_oracle_Agent_Start_Event
+
+/**
+ *Function is for local agent stop the oracle agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Aditi Jain
+ */
+function OracleDG_Local_PR_OracleDG_Agent_Stop_Event_OS_Auth() {
+	var $server = Get_Local_Agent_Event($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "su -c \""+$localAgentPathPR+"DataGuardAgent.sh stop\" - "+$osUserName,"Y");
+	var $action = $status.get("output");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent021", "Protection agent on primary server is down. ", "Critical");
+}// End of oracle_Local_PR_Mysq_Agent_Stop_Event
+
+/**
+ *Function is for local agent stop the oracle agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :Aditi Jain
+ */
+function OracleDG_Local_DR_OracleDG_Agent_Stop_Event_OS_Auth() {
+	var $server = Get_Local_Agent_Event($compIPDR, $remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "su -c \""+$localAgentPathPR+"DataGuardAgent.sh stop\" - "+$osUserName,"Y");
+	var $action = $status.get("output");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent022", "Protection agent on DR server is down. ", "Critical");
+}// End of Remote_PR_LinuxAgent_Stop
+
+/**
+ *Function is for local agent start the oracle agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Aditi Jain
+ */
+function OracleDG_Local_PR_OracleDG_Agent_Start_Event_OS_Auth() {
+	var $server = Get_Local_Agent_Event($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "su -c \""+$localAgentPathPR+"DataGuardAgent.sh start\" - "+$osUserName,"Y");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent023", "Protection agent on primary server is up. ", "Information");
+}// End of Remote_PR_oracle_Agent_Start_Event
+
+
+/**
+ *Function is for local agent start the oracle agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :Aditi Jain
+ */
+function OracleDG_Local_DR_OracleDG_Agent_Start_Event_OS_Auth() {
+	var $server = Get_Local_Agent_Event($compIPDR, $remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "su -c \""+$localAgentPathPR+"DataGuardAgent.sh start\" - "+$osUserName,"Y");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent024", "Protection agent on the DR server is up. ", "Information");
+}// End of Remote_DR_oracle_Agent_Start_Event
+
+
+/**
+ *Function is for local agent stop the Oracle agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Aditi Jain
+ *@Anita  : updated the spelling mistake in sshcmd and removed unwanted $action = $status.get("output");
+ */
+function OracleDG_Local_PR_OracleDG_Agent_Stop_Event() {
+	
+	var $server = Get_Local_Agent_Event($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "DataGuardAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent021", "Protection agent on primary server is down. ", "WARNING");
+}// End of Oracle_Local_PR_OracleDG_Agent_Stop_Event
+
+/**
+ *Function is for local agent stop the Oracle agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :Aditi Jain
+ */
+function OracleDG_Local_DR_OracleDG_Agent_Stop_Event() {
+	var $server = Get_Local_Agent_Event($compIPDR, $remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "DataGuardAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent022", "Protection agent on DR server is down. ", "WARNING");
+}// End of Remote_PR_LinuxAgent_Stop
+
+/**
+ *Function is for local agent start the Oracle agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Aditi Jain
+ */
+function OracleDG_Local_PR_OracleDG_Agent_Start_Event() {
+	var $server = Get_Local_Agent_Event($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "DataGuardAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent023", "Protection agent on primary server is up. ", "Information");
+}// End of OracleDG_Local_PR_OracleDG_Agent_Start_Event
+
+
+/**
+ *Function is for local agent start the Oracle agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :Aditi Jain
+ */
+function OracleDG_Local_DR_OracleDG_Agent_Start_Event() {
+	var $server = Get_Local_Agent_Event($compIPDR, $remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "DataGuardAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleLogEvent024", "Protection agent on the DR server is up. ", "Information");
+}// End of OracleDG_Local_DR_OracleDG_Agent_Start_Event
+
+
+
+/**
+ *Function is called after Stop the replication verify the event
+ *@param :  null
+ *@return : null
+ *@Author :Aditi Jain
+ */
+function OracleDG_Stop_Replication_event() {
+	var $server = Stop_Replication();
+	_wait(40000);
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleArLogDG100", "Replication(Log Transport Service) is OFF/Stopped. ", "Serious");
+}
+
+/**
+ *Function is called after Start the replication verify the event
+ *@param :  null
+ *@return : null
+ *@Author :Aditi Jain
+ */
+function OracleDG_Start_Replication_event() {
+	var $server = Start_Replication();
+	Event_Verification($server.get("Server Time"), $groupName, "BCSOracleArLogDG101", "Replication(Log Transport Service) is ON. ", "Information");
+}
+

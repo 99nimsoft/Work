@@ -1,0 +1,32 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains APP PFR Solution specific
+ ** AuthorName : Anita Gaded
+ ** Created Date : Mar 2017
+ ***********************************************************************************************/
+
+var $l_AlwaysOnEvent=_readExcelFile($SAHI_HOME + "\\Library\\Solution_Signature\\MSSQL_ALWAYS_ON\\ObjectRepository\\MSSQL_ALWAYS_ON_ObjectRepository.xls","Events");
+
+//APP PFR Event.sah web objects
+if($BrowserLang == "N"){
+	var $colno = 2;
+}
+else if($BrowserLang == "Y-JA"){
+	var $colno = 3;
+	}
+
+else if($BrowserLang == "Y-EN"){
+	var $colno = 3;
+	}
+
+
+
+var $MssqlPRDBDown= $l_AlwaysOnEvent[4][$colno];
+var $MssqlPRDBup= $l_AlwaysOnEvent[5][$colno];
+var $MssqlDRDBDown= $l_AlwaysOnEvent[6][$colno];
+var $MssqlDRDBup= $l_AlwaysOnEvent[7][$colno];
+var $WinOSPRDown= $l_AlwaysOnEvent[8][$colno];
+var $WinOSPRup= $l_AlwaysOnEvent[9][$colno];
+var $WinOSDRDown= $l_AlwaysOnEvent[10][$colno];
+var $WinOSDRup= $l_AlwaysOnEvent[11][$colno];

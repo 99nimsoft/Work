@@ -1,0 +1,38 @@
+
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This user Input required to create the AWSManagement_Service
+ ** AuthorName : Sujata Rani Choudhury
+ ** Created Date : Dec 2015
+ ***********************************************************************************************/
+
+
+ $l_AgentUpgarde=_readExcelFile($SAHI_HOME + "\\conf\\Agent_Upgrade\\Agent_Upgrade_Parameter.xls","Agent_Upload");
+
+
+//This user Input required to Login the DRM server
+var $username = $l_AgentUpgarde[3][2]; // DRM server GUI user name 
+var $password = $l_AgentUpgarde[4][2]; // DRM server GUI pwd
+
+//This user Input required to create the Site
+var $locationPR = "PR"; // PR Site Location
+var $incharge = "drmadmin"; // Site Incharge
+var $addressPR = "Mumbai"; // PR site Address
+var $locationDR = "DR"; // DR Site Location
+var $addressDR = "Bangalore";// DR site Address
+
+
+//This user Input required to upgarde the agent
+
+function UpgradeComponentName($a_index){
+	 $compName=$l_AgentUpgarde[$a_index][1];
+	 $AgentVersion=$l_AgentUpgarde[$a_index][2];	
+}
+
+//var $compName=$l_AgentUpgarde[10][1];
+//var $AgentVersion=$l_AgentUpgarde[10][2];
+
+var $RG_grp_name=$l_AgentUpgarde[3][1];
+
+

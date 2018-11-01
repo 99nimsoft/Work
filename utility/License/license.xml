@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<license xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <orderId>1234</orderId>
+    <customer name="HDFC" id="12345" />
+    <product name="Sanovi DRM Server" version="6.0" />
+    <configlist>
+        <config licenseModuleType="COMMON" licensed="true">
+            <type name="EVAL" expiration="2014-08-18" />
+            <modules>
+                <module name="AdvancedReporter" licensed="true" />
+                <module name="SanoviHA" licensed="true" />
+                <module name="AuditLogging" licensed="true" />
+            </modules>
+        </config>
+        <config licenseModuleType="ENTERPRISE" licensed="true">
+            <type name="REGULAR" expiration="2014-08-18" />
+            <modules>
+                <module name="Test" servers="2" databases="2" replications="2" licensed="true" />
+                <module name="Recovery" servers="2" databases="2" replications="2" licensed="true" />
+                <module name="ReverseRecovery" licensed="true" />
+                <module name="BankingModule" licensed="true"/>
+            </modules>
+        </config>
+        <config licenseModuleType="CI_VIRTUAL_FLEXPOD" licensed="true">
+            <type name="EVAL" expiration="2014-08-18" />
+            <modules>
+                <module name="Test" servers="2" licensed="true" />
+                <module name="Recovery" servers="2" licensed="true" />
+                <module name="ReverseRecovery" licensed="true" />
+            </modules>
+        </config>
+        <config licenseModuleType="CI_PHYSICAL_FLEXPOD" licensed="true">
+            <type name="REGULAR" expiration="2014-08-18" />
+            <modules>
+                <module name="Test" servers="2" licensed="true" />
+                <module name="Recovery" servers="2" licensed="true" />
+                <module name="ReverseRecovery" licensed="true" />
+            </modules>
+        </config>
+    </configlist>
+    <signature>qtCoGze7h+Jf5j/kh635oYx+FiA=</signature>
+</license>

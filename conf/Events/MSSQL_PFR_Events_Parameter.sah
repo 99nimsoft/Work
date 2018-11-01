@@ -1,0 +1,12 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the Remote Agents parameters for APP PFR Events
+ ** AuthorName : Govinda Mengji
+ ** Created Date : April 2015
+ ***********************************************************************************************/
+
+
+
+var $l_APP_PFR=_readExcelFile($SAHI_HOME + "\\conf\\Events\\APP_PFR.xls","Remote");
+

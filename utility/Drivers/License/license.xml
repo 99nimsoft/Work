@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<license>
+    <type name="REGULAR"/>
+    <orderId>CRIS0001</orderId>
+    <customer name="CRIS" id="CRIS0001"/>
+    <product version="5.0" name="Sanovi DRM Server"/>
+    <modules>
+        <module licensed="true" replications="8" databases="8" servers="29" name="Test"/>
+        <module licensed="true" replications="8" databases="8" servers="29" name="Recovery"/>
+        <module licensed="true" name="ReverseRecovery"/>
+        <module licensed="true" name="SanoviHA"/>
+        <module licensed="true" name="AdvancedReporter"/>
+        <module licensed="true" name="AuditLogging"/>
+        <module licensed="true" name="BankingModule"/>
+    </modules>
+    <signature>hIkd6rUvUWUPNig64xWagvRme8Y=</signature>
+</license>

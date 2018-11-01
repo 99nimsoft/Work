@@ -1,0 +1,117 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the common test cases functions which are the part of SFR RAL( Recovery automation library). 
+ **@AuthorName : Anantha Sakthi
+ ** Created Date : July 2015
+ ************************************************************************/
+
+
+/**
+ * Function is used to add the custom action for command execution with sudo and dry run option. 
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+
+function StartProcessRAL_RemCompWith_Command_001(){
+	StartProcessRAL_DynamicCompWith_Command();
+	StartProcessRAL_StaticCompWith_Command();
+	}
+
+function StartProcessRAL_LocalCompWith_Command_002(){	
+	//LocalAgentComponentCreation();
+	StartProcessRAL_commandCategory($LocalCompIP,$LocalCompName,$command1,$Spattern,$Fpattern ,$waitTime);
+	ValidateTheBackendServer($command1,$LocalCompIP,$LocalCompUserName,$LocalCompPassword);
+	ValidateTheWorkflowListingPage($WorkflowName);
+	}
+
+function StartProcessRAL_RemCompWith_script_003(){
+	StartProcessRAL_DynamicCompWith_Script();
+	StartProcessRAL_StaticCompWith_Script();
+}
+
+function StartProcessRAL_LocalCompWith_script_004(){
+	//LocalAgentComponentCreation();
+	StartProcessRAL_LocalComp_Script();
+}
+
+
+function StartProcessRAL_CommandWithSingleQuote_005(){
+	StartProcessRAL_DynamicCompWith_CommandWithSingleQuote();
+	StartProcessRAL_LocalCompWith_CommandWithSingleQuote();
+}
+
+function StartProcessRAL_CommandWithDoubleQuote_006(){
+	StartProcessRAL_DynamicCompWith_CommandWithDoubleQuote();
+	StartProcessRAL_LocalCompWith_CommandWithDoubleQuote();
+}
+
+function StartProcessRAL_CommandWithPipe_007(){
+	StartProcessRAL_DynamicCompWith_CommandWithPipe();
+	StartProcessRAL_LocalCompWith_CommandWithPipe();
+}
+
+function StartProcessRAL_ScriptWithSingleQuote_008(){
+	StartProcessRAL_DynamicCompWith_ScriptWithSingleQuote();
+	StartProcessRAL_LocalCompWith_ScriptWithSingleQuote();
+}
+
+function StartProcessRAL_ScriptWithDoubleQuote_009(){
+	StartProcessRAL_DynamicCompWith_ScriptWithDoubleQuote();
+	StartProcessRAL_LocalCompWith_ScriptWithDoubleQuote();
+}
+
+function StartProcessRAL_ScriptWithPipe_010(){
+	StartProcessRAL_DynamicCompWith_ScriptWithPipe();
+	//StartProcessRAL_LocalCompWith_ScriptWithPipe();
+}
+
+
+
+function StartProcessRAL_RemCompWith_Command_Linux_successFailurePatternScenario_011(){
+	StartProcessRAL_DynamicCompWith_Command_Linux_successFailurePatternScenario_011_01();
+	StartProcessRAL_StaticCompWith_Command_Linux_successFailurePatternScenario_011_02();
+}
+function StartProcessRAL_RemCompWith_Command_Linux_successFailurePatternScenario_012(){
+	StartProcessRAL_DynamicCompWith_Command_Linux_successFailurePatternScenario_012_01();
+	StartProcessRAL_StaticCompWith_Command_Linux_successFailurePatternScenario_012_02();
+}
+function StartProcessRAL_RemCompWith_Command_Linux_successFailurePatternScenario_013(){
+	StartProcessRAL_DynamicCompWith_Command_Linux_successFailurePatternScenario_013_01();
+	StartProcessRAL_StaticCompWith_Command_Linux_successFailurePatternScenario_013_02();
+}
+function StartProcessRAL_RemCompWith_Command_Linux_successFailurePatternScenario_014(){
+	StartProcessRAL_DynamicCompWith_Command_Linux_successFailurePatternScenario_014_01();
+	StartProcessRAL_StaticCompWith_Command_Linux_successFailurePatternScenario_014_02();
+}
+
+function StartProcessRAL_RemCompWith_Command_Linux_successFailurePatternScenario_015(){
+	StartProcessRAL_DynamicCompWith_Command_Linux_successFailurePatternScenario_015_01();
+	StartProcessRAL_StaticCompWith_Command_Linux_successFailurePatternScenario_015_02();
+}
+function StartProcessRAL_RemCompWith_Command_Linux_successFailurePatternScenario_016(){
+	StartProcessRAL_DynamicCompWith_Command_Linux_successFailurePatternScenario_016_01();
+	StartProcessRAL_StaticCompWith_Command_Linux_successFailurePatternScenario_016_02();
+}
+
+function StartProcessRAL_RemCompWith_Command_Linux_successFailurePatternScenario_017(){
+	StartProcessRAL_DynamicCompWith_Command_Linux_successFailurePatternScenario_017_01();
+	StartProcessRAL_StaticCompWith_Command_Linux_successFailurePatternScenario_017_02();
+}
+
+function StartProcessRAL_RemCompWith_Command_Linux_successFailurePatternScenario_018(){
+	StartProcessRAL_DynamicCompWith_Command_Linux_successFailurePatternScenario_018_01();
+	StartProcessRAL_StaticCompWith_Command_Linux_successFailurePatternScenario_018_02();
+}
+
+
+function StartProcessRAL_RemCompWith_Command_in_Solaris011(){
+	//StartProcessRAL_DynamicCompWith_Command_in_Solaris();
+	StartProcessRAL_StaticCompWith_Command_in_Solaris();
+	}
+
+

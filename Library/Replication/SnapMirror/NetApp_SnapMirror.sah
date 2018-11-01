@@ -1,0 +1,159 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains Creation of Protection Scheme for both remote agents. 
+ ** AuthorName : Padmavathi
+ ** Created Date : May 2014
+ ************************************************************************/
+//Description:create Protection Schemes in NetAppSnapMirror solution for PR
+
+/**
+* Function is for Creating Protection Schemes in NetAppSnapMirror solution for PR.
+*@param :  null
+*@return: null
+* Author: Padmavathi
+*
+*/
+
+function Create_NetApp_ProtectionschemePR() {
+	//_log("Success");
+	Create_NetApp_Protectionscheme($systemTypeProtection, $NetApp_Protection_PR, $mgmtHostNetPR, $volumeNamePR);
+}// end of Create_NetApp_ProtectionschemePR()
+
+
+/**
+* Function is for Creating Protection Schemes in NetAppSnapMirror solution for DR.
+*@param :  null
+*@return : null
+* Author: Padmavathi
+*s
+*/
+
+function Create_NetApp_ProtectionschemeDR() {
+	_log("Success");
+	Create_NetApp_Protectionscheme($systemTypeProtection, $NetApp_Protection_DR, $mgmtHostNetDR, $volumeNameDR);
+}
+// End of Create_NetApp_ProtectionschemeDR()
+
+
+/**
+* Function is for Creating Protection Schemes in NetAppSnapMirror solution.
+*@param :  $systemTypeProtection, $sernamePR, $mgmtHost_NetAppPR, $volumeNamePR, $lunPathPR
+*@return : null
+* Author: Padmavathi
+*
+*/
+
+function Create_NetApp_Protectionscheme($systemTypeProtection, $NetAppcompName, $mgmtHostPFR, $volumeName) {
+	Popup_Handler();
+	_wait(6000);
+   navigateToDiscovery();
+	_click(_link("Subsystems"));
+	_click(_link("Protection Schemes"));
+	if (_exists(_link($NetAppcompName))) {
+		_log("Protectionscheme already exists");
+	} else {
+		_setSelected(_select("systemType"), $systemTypeProtection);
+		_click(_button("/Go/"));
+		_setSelected(_select("mgmtHost_NetApp"), $mgmtHostPFR);
+		_setValue(_textbox("sername"), $NetAppcompName);
+		var $i = 0;
+		// Looping till Register Agent link appears
+		while ($i < 10) {
+			// Pause for 30 seconds
+			_log($i);
+			_wait(30000);
+
+			if (_exists(_link("Register Agent"))) {
+				_click(_link("Register Agent"));
+				_wait(30000);
+			} else if (_exists(_cell("CONNECTED", _near(_cell("Status :"))))) {
+				_log("Agent is CONNECTED");
+				break;
+			}
+			$i = $i + 1;
+		}// While loop ended
+		_setSelected(_select("volumeName"), $volumeName);
+		//_setSelected(_select("lunPath"), $lunPath);
+		_click(_button("Save"));
+}	
+}
+// end Of Create_NetApp_Protectionscheme()
+
+
+/**
+* Function is for get Protection Schemes Status in Application Subsystem with NetApp SnapMirror  solution.
+*@param : $drmServer, $drmUserName, $drmPassword,$NetAppcompIP, $remoteUserNameVal, $remotePwdVal,$NetApp_Protection
+*@return : null
+* Author: Padmavathi
+*
+*/
+function Get_NetApp_SnapMirror_Protection_Scheme_status($drmServer, $drmUserName, $drmPassword,$NetAppcompIP, $remoteUserNameVal, $remotePwdVal,$NetApp_Protection) {
+	navigateToDiscovery();
+	_click(_link("Subsystems"));
+	_click(_link("Protection Schemes"));
+	if($agentType=="Remote"){
+		var $sshCommand = '../.' + $EAMSROOT + 'bin/'+"NetAppAgent.sh status" + " " + $NetAppcompIP + ' LINUXSERVER';
+		var $status = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+		var $action = $status.get("output");
+		var $actionStatus = $action.toString();
+		var $actionTime = $status.split("[");
+		var $year = currentYear();
+		var $actionStatus1 = $actionTime[0].split($year);
+		var $actionStatus = $actionStatus1.pop();
+		_assertExists("actionStatus",$actionStatus);
+		if ($actionStatus == "NetAppAgent running") {
+			var $protectionSchemeStatus = "ACTIVE";
+		} else if ($actionStatus == "There is no NetAppAgent running") {
+			 $protectionSchemeStatus = "UNKNOWN";
+		} else {
+			 $protectionSchemeStatus = "INACTIVE";
+		}
+		_assertExists("protection scheme Status DB:", $protectionSchemeStatus);
+	}
+	else if($agentType=="Local"){
+	var $sshCommand = '../.' + $localAgentPath + "NetAppAgent.sh status";
+	var $status = SecuredShellConnection($NetAppcompIPPR, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+
+	var $action = $status.get("output");
+	var $actionStatus1 = $action.toString();
+	var $actionStatus = $actionStatus1.split(",");
+	_assertExists("actionStatus is:", $actionStatus[1]);
+	if ($actionStatus[1] == " NetAppAgent running.") {
+		 $protectionSchemeStatus = "ACTIVE";
+	} else if ($actionStatus == " There is no NetAppAgent running") {
+		 $protectionSchemeStatus = "UNKNOWN";
+	} else {
+		 $protectionSchemeStatus = "INACTIVE";
+	}
+	_assertExists("protection scheme Status DB:", $protectionSchemeStatus);
+}
+	var $protectionSchemeStatusDb=new java.util.Properties();
+	$protectionSchemeStatusDb.put("protection scheme Status DB:", $protectionSchemeStatus);
+	return $protectionSchemeStatusDb;
+}
+
+/**
+* Function is for Verify Protection Schemes Status in Application Subsystem with NetApp SnapMirror  solution from PR.
+*@param : null
+*@return : null
+* Author: Padmavathi
+*
+*/
+function Verify_NetApp_SnapMirror_Protection_Scheme_Status_PR(){
+	Get_NetApp_SnapMirror_Protection_Scheme_status($drmServer, $drmUserName, $drmPassword,$NetAppcompIPPR, $remoteUserNameValPR, $remotePwdValPR,$NetApp_Protection_PR);
+}
+
+/**
+* Function is for Verify Protection Schemes Status in Application Subsystem with NetApp SnapMirror  solution from DR.
+*@param : null
+*@return : null
+* Author: padmavathi
+*
+*/
+function Verify_NetApp_SnapMirror_Protection_Scheme_Status_DR(){
+	Get_NetApp_SnapMirror_Protection_Scheme_status($drmServer, $drmUserName, $drmPassword,$NetAppcompIPDR, $remoteUserNameValDR, $remotePwdValDR,$NetApp_Protection_DR);
+}
+
+		
+		

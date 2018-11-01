@@ -1,0 +1,398 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the common test cases functions which are the part of SFR RAL( Recovery automation library). 
+ **@AuthorName : Anantha Sakthi
+ ** Created Date : July 2015
+ ************************************************************************/
+
+/**
+ * Function is used to add the custom action for command execution with sudo and dry run option. 
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+function customAction_commandCategory_Satic_Linux_001(){
+	
+		try {
+			customAction_commandCategory($osType_Linux,$lnxCmd,$lnxDirPath,$lnxStCompNm,$lnxSerIP,$lnxSerUserNm,$lnxSerPassWord," "," "," "," ");
+		} catch ($e) {
+			_assertTrue(false);
+			_log($e.toString(),"Custom1");
+			_log("for test Case ID:commandCategory_Satic_Linux_001(),Function: execution got failed.kindly check the log for more details");
+			
+		}
+	}
+
+function customAction_commandCategory_Dynamic_Linux_002(){
+	
+try {
+	customAction_commandCategory($osType_Linux,$lnxCmd,$lnxDirPath,$lnxDynCompNm,$lnxSerIP,$lnxSerUserNm,$lnxSerPassWord," "," "," ","");
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:commandCategory_Dynamic_Linux_002(),Function: execution got failed.kindly check the log for more details");
+		
+	}
+}
+
+function customAction_commandCategory_Satic_KV_Linux_003(){
+try {
+	customAction_commandCategory($osType_Linux,$lnxCmd,$lnxDirPath,$compName1,$lnxSerIP,$lnxSerUserNm,$lnxSerPassWord,
+			$lnxCustNmKV,$lnxCustKVal,$lnxCusTypNm,$lnxCusTypStVal);
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:commandCategory_Satic_KV_Linux_003(),Function: execution got failed.kindly check the log for more details");
+		
+	}
+	
+}
+
+
+function customAction_commandCategory_Dynamic_KV_Linux_004(){
+try {
+	customAction_commandCategory($osType_Linux,$lnxCmd,$lnxDirPath,$compName1,$lnxSerIP,$lnxSerUserNm,$lnxSerPassWord,$lnxCustNmKV,$lnxCustDynKVal,$lnxCusTypNm,$lnxCusTypDynKVal);
+
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:commandCategory_Dynamic_KV_Linux_004(),Function:execution got failed.kindly check the log for more details");
+		
+	}
+}
+
+function customAction_commandCategory_Satic_Solaris_005(){
+try {
+	customAction_commandCategory($osType_Solaris,$solCmd,$solDirPath,$solStCompNm,$solSerIP,$solSerUserNm,$solSerPassWord," "," "," "," ");
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:customAction_commandCategory_Satic_Solaris_005(),Function:execution got failed.kindly check the log for more details");
+		
+	}
+	
+}
+
+function customAction_commandCategory_Satic_KV_Solaris_006(){
+	
+try {
+	customAction_commandCategory($osType_Solaris,$solCmd,$solDirPath,$compName1,$solSerIP,$solSerUserNm,$solSerPassWord,
+			$solCustNmKV,$solCustKVal,$solCusTypNm,$solCusTypStVal);
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:commandCategory_Satic_KV_Solaris_006(),Function: Create_Local_ComponentPR or Create_Local_ComponentDR ,execution got failed.kindly check the log for more details");
+		
+	}
+	
+}
+
+function customAction_commandCategory_Satic_Hpux_007(){
+try {
+	customAction_commandCategory($osType_Hpux,$hpxCmd,$hpxDirPath,$hpxStCompNm,$hpxSerIP,$hpxSerUserNm,$hpxSerPassWord," "," "," "," ");
+		
+} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:commandCategory_Satic_Hpux_007(),Function: Create_Local_ComponentPR or Create_Local_ComponentDR ,execution got failed.kindly check the log for more details");
+		
+	}
+}
+
+function customAction_commandCategory_Satic_KV_Hpux_008(){
+	
+try {
+	customAction_commandCategory($osType_Hpux,$hpxCmd,$hpxDirPath,$compName1,$hpxSerIP,$hpxSerUserNm,$hpxSerPassWord,
+			$hpxCustNmKV,$hpxCustKVal,$hpxCusTypNm,$hpxCusTypStVal);
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:commandCategory_Satic_KV_Hpux_008(),Function: execution got failed.kindly check the log for more details");
+		
+	}
+	
+}
+function customAction_commandCategory_Satic_AIX_009(){
+try {
+	customAction_commandCategory($osType_Aix,$aixCmd,$aixDirPath,$aixStCompNm,$aixSerIP,$aixSerUserNm,$aixSerPassWord," "," "," "," ");
+
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:commandCategory_Satic_AIX_009(),Function: execution got failed.kindly check the log for more details");
+		
+	}
+}
+
+
+function customAction_commandCategory_Satic_KV_AIX_010(){
+try {
+	customAction_commandCategory($osType_Aix,$aixCmd,$aixDirPath,$compName1,$aixSerIP,$aixSerUserNm,$aixSerPassWord,
+			$aixCustNmKV,$aixCustKVal,$aixCusTypNm,$aixCusTypStVal);
+	} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:commandCategory_Satic_KV_AIX_010(),Function: execution got failed.kindly check the log for more details");
+		
+	}
+	
+	
+}
+
+
+function customAction_commandCategory_Satic_Windows_011(){
+	
+	try {
+		customAction_commandCategory($osType_Windows,$winCmd,$winDirPath,$winStCompNm,$winSerIP,$winSerUserNm,$winSerPassWord," "," "," "," ");
+		} catch ($e) {
+			_assertTrue(false);
+			_log($e.toString(),"Custom1");
+			_log("for test Case ID:commandCategory_Satic_Windows_011(),Function: execution got failed.kindly check the log for more details");
+			
+		}
+}
+
+function customAction_commandCategory_Satic_KV_Windows_012(){
+	try {
+		customAction_commandCategory($osType_Windows,$winCmd,$winDirPath,null,$winSerIP,$winSerUserNm,$winSerPassWord,
+				$winCustNmKV,$winCustKVal,$winCusTypNm,$winCusTypStVal);
+		} catch ($e) {
+			_assertTrue(false);
+			_log($e.toString(),"Custom1");
+			_log("for test Case ID:commandCategory_Satic_Windows_011(),Function: execution got failed.kindly check the log for more details");
+			
+		}
+	
+}
+
+
+
+
+
+
+
+
+
+
+/**
+ * Function is used to add the custom action for command execution with sudo and dry run option. 
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+
+
+
+
+		
+
+function CustomRAL_Script_Execution_Linux_Remote() {
+	try {
+		Execute_CustomAction_Script();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "verify the directory ");
+	}
+}
+
+function CustomRAL_Script_Execution_Linux_Local() {
+	try {
+		Execute_CustomAction_Script();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "verify the directory ");
+	}
+}
+
+function CustomRAL_Script_Execution_WithKV_Linux_Remote() {
+	try {
+		Execute_CustomAction_Script_KVValues();
+			} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "verify the directory ");
+	}
+}
+
+function CustomRAL_Script_Execution_WithKV_Linux_Local() {
+	try {
+		Execute_CustomAction_Script_KVValues();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "verify the directory ");
+	}
+}
+
+
+function CustomRAL_Script_Execution_WithSudo() {
+	try {
+		Execute_CustomAction_Script_Sudo();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "verify the directory ");
+	}
+}
+
+
+
+function CustomRAL_Script_Execution_Solaris_Remote() {
+	try {
+		Execute_CustomAction_Script_Solaris();
+		} catch ($e) { 
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "verify the directory ");
+	}
+}
+
+function CustomRAL_Script_Execution_Solaris_Local() {
+	try {
+		Execute_CustomAction_Script_Solaris();
+		} catch ($e) {
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "verify the directory ");
+	}
+}
+
+function CustomRAL_Script_Execution_WithKV_Solaris_Remote() {
+	try {
+		Execute_CustomAction_Script_KVValues_Solaris();
+		} catch ($e) { 
+		_assertTrue(false);	
+ 		_log($e.toString(),"Custom1");
+		_log("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "verify the directory ");
+	}
+}
+
+function CustomRAL_Script_Execution_WithKV_Solaris_Local() {
+	try {
+		Execute_CustomAction_Script_KVValues_Solaris();
+		} catch ($e) { 
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "verify the directory ");
+	}
+}
+
+
+function CustomRAL_Script_Execution_AIX_Remote() {
+	try {
+		Execute_CustomAction_Script_AIX();
+		} catch ($e) {
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "verify the directory ");
+	}
+}
+
+function CustomRAL_Script_Execution_AIX_Local() {
+	try {
+		//Create_Local_Component($os_Type, $AIXPRCompIP, $AIXPRCompName, $AIXPRCompSite);
+		Execute_CustomAction_Script_AIX();
+		} catch ($e) { 
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "verify the directory ");
+	}
+}
+
+function CustomRAL_Script_Execution_WithKV_AIX_Remote() {
+	try {
+		Execute_CustomAction_Script_KVValues_AIX();
+		} catch ($e) { 
+		_assertTrue(false);	
+ 		_log($e.toString(),"Custom1");
+		_log("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "verify the directory ");
+	}
+}
+
+function CustomRAL_Script_Execution_WithKV_AIX_Local() {
+	try {
+		Execute_CustomAction_Script_KVValues_AIX();
+		} catch ($e) { 
+		_assertTrue(false);	
+ 		_log($e.toString(),"Custom1");
+		_log("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "verify the directory ");
+	}
+}
+
+
+function CustomRAL_Script_Execution_HPUX_Remote() {
+	try {
+		Execute_CustomAction_Script_HPUX();
+		} catch ($e) { 
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "verify the directory ");
+	}
+}
+
+function CustomRAL_Script_Execution_HPUX_Local() {
+	try {
+		//Create_Local_Component($systemType, $PRCompIP, $PRCompName, $PRCompSite);
+		Execute_CustomAction_Script_HPUX();
+		} catch ($e) { 
+		_assertTrue(false);	
+ 		_log($e.toString(),"Custom1");
+		_log("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "verify the directory ");
+	}
+}
+
+function CustomRAL_Script_Execution_WithKV_HPUX_Remote() {
+	try {
+		Execute_CustomAction_Script_KVValues_HPUX();
+		} catch ($e) { 
+		_assertTrue(false);	
+ 		_log($e.toString(),"Custom1");
+		_log("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "verify the directory ");
+	}
+}
+
+function CustomRAL_Script_Execution_WithKV_HPUX_Local() {
+	try {
+		Execute_CustomAction_Script_KVValues_HPUX();
+		} catch ($e) { 
+		_assertTrue(false);	
+ 		_log($e.toString(),"Custom1");
+		_log("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "verify the directory ");
+	}
+}
+
+
+function CustomRAL_Script_Execution_Windows_Remote() {
+	try {
+		Execute_CustomAction_Script_Windows();
+		} catch ($e) { 
+		_assertTrue(false);	
+ 		_log($e.toString(),"Custom1");
+		_log("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "verify the directory ");
+	}
+}
+
+
+function CustomRAL_Script_Execution_WithKV_Windows_Remote() {
+	try {
+		Execute_CustomAction_Script_KVValues_Windows();
+		} catch ($e) { 
+		_assertTrue(false);	
+ 		_log($e.toString(),"Custom1");
+		_log("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "verify the directory ");
+	}
+}
+
+
+function Group_Status_Based_Events() {
+	try {
+		Group_Status_BasedONEvents($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "Verify Group status based on Events ");
+		}
+}

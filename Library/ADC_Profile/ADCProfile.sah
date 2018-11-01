@@ -1,0 +1,490 @@
+//ADCProfile_01:Verify MySQL DB Table & fields
+function verify_ADC_Profile_Table() {
+
+	$props = Get_Mysql_Db_Connection_URL($hostUserNamePR, $hostPasswordPR,
+			$hostIPPR, $hostPortPR, "panaces");
+
+	var db = _getDB("com.mysql.jdbc.Driver", $props.get("databaseconnection"),
+			$props);
+
+	var $masterStatus = db.select("Desc ADCProfile");
+
+	_log($masterStatus);
+
+}
+// ADCProfile_02: Verify ADCProfile Tab
+function verify_ADC_Profile_Tab() {
+
+	
+	navigateToDiscovery();
+	_assertExists(_link("ADC Profile"));
+	
+
+}
+// ADCProfile_03
+// Verify columns in ADC Profile page
+function verify_Columns_Of_ADC_Profile_Page() {
+
+	
+	ADCProfile();
+	if (_exists(_table("pts"))) {
+		_assertExists("Name",
+				_getText(_tableHeader("Name", _in(_table("pts")))));
+		_assertExists("Allocation Type", _getText(_tableHeader(
+				"Allocation Type", _in(_table("pts")))));
+		_assertExists("Allocation Percentage", _getText(_tableHeader(
+				"Allocation Percentage", _in(_table("pts")))));
+		_assertExists(_tableHeader("RPO (Minutes)", _in(_table("pts"))));
+		_assertExists(_tableHeader("Storage", _in(_table("pts"))));
+		_assertExists(_tableHeader("Network", _in(_table("pts"))));
+		
+	} else {
+
+		_fail();
+	}
+	
+
+}
+// ADCProfile_04
+// Verify data in the ADC Profile page before creating ADC Profile
+function verify_ADC_Profile_Witout_Any_Record($ADCprofile,$ADCprofile1) {
+
+	
+	ADCProfile();
+
+	if (_exists(_table("pts"))) {
+		_set($rowCount, _table("pts").rows.length - 1);
+		_log($rowCount);
+		_assertEqual(2, $rowCount);
+		_assertExists(_link($ADCprofile, _near(_tableHeader("Name"))));
+		_assertExists(_link($ADCprofile1, _near(_tableHeader("Name"))));
+		_assertEqual(2, $rowCount);
+		
+
+	} else {
+
+		_fail();
+	}
+	
+
+}
+// ADCProfile_05
+// Verify the existance of ' Add ADC Profile' link in ADC Profile page
+function verify_ADD_ADC_Profile_Link() {
+
+
+	ADCProfile();
+	_assertExists(_link("Add ADC Profile",
+			_near(_cell("Application Defined Continuity Profile"))));
+	
+}
+// ADCProfile_07
+// Adding ADC Profile
+function verify_ADD_ADC_Profile($profileName, $profiledesc, $profileAllocType,
+		$profileAllocPercent, $profileRpo, $profileNetwork, $profileStorage) {
+	
+	ADCProfile();
+	if (_exists(_link($profileName))) {
+		_log("profile already Exists");
+	}
+
+	else {
+
+		_click(_link("Add ADC Profile"));
+		_setValue(_textbox("profileName"), $profileName);
+		_setValue(_textbox("profiledesc"), $profiledesc);
+		_setSelected(_select("profileAllocType"), $profileAllocType);
+		_setValue(_textbox("profileAllocPercent"), $profileAllocPercent);
+
+		_setValue(_textbox("profileRpo"), $profileRpo);
+		_setSelected(_select("profileNetwork"), $profileNetwork);
+		_setSelected(_select("profileStorage"), $profileStorage);
+		// _setSelected(_select("profileSolName"), $profileSolName);
+		_click(_submit("Save"));
+		if (_exists(_link($profileName, _in(_table("pts"))))) {
+
+			_assertExists(_link($profileName, _near(_tableHeader("Name"))));
+
+			_assertExists(_cell($profileAllocTypeGUI, _near(
+					_link($profileName),
+					_under(_tableHeader("Allocation Type")))));
+			_assertExists(_cell($profileAllocPercent, _near(
+					_link($profileName),
+					_under(_tableHeader("Allocation Percentage")))));
+			_assertExists(_cell($profileRpo, _near(_link($profileName),
+					_under(_tableHeader("RPO (Minutes)")))));
+			_assertExists(_cell($profileNetwork, _near(_link($profileName),
+					_under(_tableHeader("Network")))));
+			_assertExists(_cell($profileStorage, _near(_link($profileName),
+					_under(_tableHeader("Storage")))));
+
+			
+		}
+
+		else {
+
+			_log("ADC Profile not created");
+		}
+
+	}
+	
+
+}
+// ADCProfile_08
+// Verify the ADC Profile details in DB After creating a ADC Profile A/C
+function verify_ADC_Profile_InDB($profileName, $profiledesc, $profileAllocType,
+		$profileAllocPercent, $profileRpo, $profileNetwork, $profileStorage) {
+	$props = Get_Mysql_Db_Connection_URL($hostUserNamePR, $hostPasswordPR,
+			$hostIPPR, $hostPortPR, "panaces");
+
+	var db = _getDB("com.mysql.jdbc.Driver", $props.get("databaseconnection"),
+			$props);
+
+	var $q = "Select * from ServiceProfile where name=" + "'" + $profileName + "'";
+	// _log($q);
+	var $ADCProfile = db.select($q);
+	// _log($ADCProfile);
+
+	for ( var $i = 0; $i < $ADCProfile.length; $i++) {
+		var $row = $ADCProfile[$i];
+		var $name = $row["name"];
+		var $allocationPercentage = $row["allocationPercentage"];
+		var $allocationType = $row["allocationType"];
+		var $description = $row["description"];
+		var $rpo = $row["rpo"];
+		var $storagePolicy = $row["storagePolicy"];
+		var $networkPolicy = $row["networkPolicy"];
+		if ($name == $profileName) {
+			_assertEqual($profileAllocPercent, $allocationPercentage);
+			_assertEqual($profileAllocType, $allocationType);
+			_assertEqual($profileName, $name);
+
+			_assertEqual($profiledesc, $description);
+			_assertEqual($profileRpo, $rpo);
+			_assertEqual($profileNetwork, $networkPolicy);
+			_assertEqual($profileStorage, $storagePolicy);
+		
+         }
+
+	}
+
+}
+// ADCProfile_09
+// Verify the options present in Allocation Type drop-down in 'Create ADC
+// Profile' page
+function verify_Drop_Allocation_Type_down_List_Options() {
+
+	ADCProfile();
+	_click(_link("Add ADC Profile"));
+	// _assertEqual("Pay As You Go",
+	// _select("profileAllocType").options[1].text);
+	_assertEqual("Allocated", _select("profileAllocType").options[1].text);
+	_assertEqual("Reserved", _select("profileAllocType").options[2].text);
+
+	}
+
+// ADCProfile_11
+// Verify the availability of Edit Icon in 'ADC Profile' page
+function verify_AvailabilityOfEdit() {
+
+	ADCProfile();
+	if (_exists(_table("pts"))) {
+		_set($rowCount, _table("pts").rows.length - 1);
+		_log($rowCount);
+		if ($rowCount != 0) {
+			for ( var $k = 1; $k <= $rowCount; $k++) {
+
+				_assertExists(_image("Edit", _in(_table("pts").rows[$k])));
+
+			}
+		} else {
+			_assertNotExists(_image("Edit", _in(_table("pts"))));
+		}
+	} else {
+		_fail();
+	}
+	
+}
+// ADCProfile_12
+// Verify the availability of Delete Icon in 'ADC Profile' page
+
+function verify_AvailabilityOfDeleteIcon() {
+
+	ADCProfile();
+	if (_exists(_table("pts"))) {
+		_set($rowCount, _table("pts").rows.length - 1);
+		_log($rowCount);
+		if ($rowCount != 0) {
+			for ( var $k = 1; $k <= $rowCount; $k++) {
+
+				_assertExists(_image("Delete", _in(_table("pts").rows[$k])));
+
+			}
+		} else {
+			_assertNotExists(_image("Delete", _in(_table("pts"))));
+		}
+	} else {
+		_fail();
+	}
+	
+}
+// ADCProfile_13
+// Deleting ADC Profile
+
+function delete_ADC_Profile($profileName) {
+
+	ADCProfile();
+	var $p_name = _link($profileName, _near(_tableHeader("Name")));
+	if (_exists($p_name)) {
+		_expectConfirm("Would you like to delete  " + $profileName + " ?", true);
+		_click(_image("Delete", _near(_link($profileName))));
+
+		_assertNotExists(_link($profileName, _near(_tableHeader("Name"))));
+
+	} else {
+		_fail();
+	}
+	
+
+}
+// ADCProfile_14
+// Verify the database after deleteing the ADC Profile
+
+function verify_Db_after_delete_ADC_Profile($profileName) {
+
+	$props = Get_Mysql_Db_Connection_URL($hostUserNamePR, $hostPasswordPR,
+			$hostIPPR, $hostPortPR, "panaces");
+	var db = _getDB("com.mysql.jdbc.Driver", $props.get("databaseconnection"),
+			$props);
+	var $q = "Select * from ServiceProfile where name=" + "'" + $profileName + "'";
+	var $ADCProfile = db.select($q);
+	_log($ADCProfile);
+	_assertEqual([],$ADCProfile);
+
+}
+// ADCProfile_15
+// Verify the Name field in Edit ADC Profile Page
+function verify_Fields_In_EditADC_Profile($profileName) {
+
+	ADCProfile();
+	if (_exists(_link($profileName))) {
+		_click(_image("Edit", _near(_link($profileName))));
+		_assertContainsText("Edit ADC Profile ", _table("report"));
+
+		_assertExists(_textbox("profileName", _near(_cell("Name:"))));
+		_assertExists(_textbox("profiledesc", _near(_cell("Description:"))));
+		_assertExists(_select("profileAllocType",
+				_near(_cell("Allocation Type:"))));
+		_assertExists(_textbox("profileAllocPercent",
+				_near(_cell("Allocation Percentage (25 - 100):"))));
+		_assertExists(_textbox("profileRpo", _near(_cell("RPO (> 5 Minutes):"))));
+		// _assertExists(_select("profileSolName", _near(_cell("Solution
+		// Name:"))));
+		_assertExists(_select("profileNetwork", _near(_cell("Network:"))));
+		_assertExists(_select("profileStorage", _near(_cell("Storage:"))));
+
+		_assertExists(_button("« Go Back"));
+
+		_assertExists(_submit("Save"));
+		_assert(_isVisible(_submit("Save")));
+
+	}
+
+	else {
+
+		_fail();
+	}
+	
+}
+// ADCProfile_16
+// Verify the Name field in Edit ADC Profile Page
+function verify_Name_In_EditADC_Profile($profileName) {
+
+	ADCProfile();
+	if (_exists(_link($profileName))) {
+		_click(_image("Edit", _near(_link($profileName))));
+
+		_assertEqual(
+				false,
+				_textbox("profileName", _near(_cell("Name:"))).isContentEditable);
+	}
+
+	else {
+
+		_fail();
+	}
+	
+}
+// ADCProfile_17
+// Verify the navigation after clicking on '<<G Back' button in 'Edit ADC
+// Profile' page
+function verify_GoBack_Button_In_EditADC_Profile($profileName) {
+
+	
+	ADCProfile();
+	if (_exists(_link($profileName))) {
+		_click(_image("Edit", _near(_link($profileName))));
+
+		_click(_button("« Go Back"));
+		_assertContainsText(
+				"ADC Profile Name Allocation Type Allocation Percentage RPO (Minutes) Network Storage",
+				_table("pts"));
+
+	}
+
+	else {
+
+		_fail();
+	}
+	
+}
+// ADCProfile_18
+// Verify the navigation after clicking on Edit icon
+function verify_Navigation_OnClick_EditADC_Profile($profileName) {
+
+	
+	ADCProfile();
+	if (_exists(_link($profileName))) {
+		_click(_image("Edit", _near(_link($profileName))));
+		__assertEqual("Edit ADC Profile Name:", _getText(_table("report")));
+	} else {
+
+		_log("profile name doesn't exists");
+	}
+	
+}
+// ADCProfile_19
+// Editing ADC Profile
+function verify_Editing_ADC_Profile($profileName, $changeDesc,
+		$profileAllocType2, $changeAllocPercent, $changeRpo,
+		$changeProfileNetwork, $changeStorage) {
+
+	
+	ADCProfile();
+	if (_exists(_link($profileName))) {
+		_click(_image("Edit", _near(_link($profileName))));
+		_setValue(_textbox("profiledesc"), $changeDesc);
+		_setSelected(_select("profileAllocType"), $profileAllocType2);
+		_setValue(_textbox("profileAllocPercent"), $changeAllocPercent);
+		_setValue(_textbox("profileRpo"), $changeRpo);
+		_setValue(_textbox("profileRpo"), $changeRpo);
+		_setValue(_textbox("profileRpo"), $changeRpo);
+		_setSelected(_select("profileNetwork"), $changeProfileNetwork);
+		_setSelected(_select("profileStorage"), $changeStorage);
+		// _setSelected(_select("profileSolName"), $changeSolName);
+		_click(_submit("Save"));
+		if (_exists(_cell("ADC Profile"))) {
+			_assertExists(_link($profileName, _near(_tableHeader("Name"))));
+			_assertExists(_cell($profileAllocTypeGUI2,
+					_near(_link($profileName)),
+					_under(_tableHeader("Allocation Type"))));
+			_assertExists(_cell($changeAllocPercent,
+					_near(_link($profileName)),
+					_under(_tableHeader("Allocation Percentage"))));
+			_assertExists(_cell($changeRpo, _near(_link($profileName)),
+					_under(_tableHeader("RPO"))));
+			/*
+			 * _assertExists(_cell($changeSolName, _near(_link($profileName)),
+			 * _under(_tableHeader("Solution Name"))));
+			 */
+		}
+	} else {
+
+		_log("not ");
+	}
+	
+}
+// ADCProfile_20
+// Verify the database after Editing the ADC Profile
+function verify_EditData_ADC_Profile_In_Db($profileName, $changeDesc, $profileAllocTypeInDb2,
+		$changeAllocPercent, $changeRpo, $changeProfileNetwork, $changeStorage){
+
+	$props = Get_Mysql_Db_Connection_URL($hostUserNamePR, $hostPasswordPR,
+			$hostIPPR, $hostPortPR, "panaces");
+
+	var db = _getDB("com.mysql.jdbc.Driver", $props.get("databaseconnection"),
+			$props);
+	var $q = "Select * from ServiceProfile where name=" + "'" + $profileName + "'";
+	_log($q);
+	var $ADCProfile = db.select($q);
+	for ( var $i = 0; $i < $ADCProfile.length; $i++) {
+		var $row = $ADCProfile[$i];
+		var $name = $row["name"];
+		var $allocationPercentage = $row["allocationPercentage"];
+		var $allocationType = $row["allocationType"];
+		var $description = $row["description"];
+		var $rpo = $row["rpo"];
+		// var $solutionName = $row["solutionName"];
+		var $storagePolicy = $row["storagePolicy"];
+		var $networkPolicy = $row["networkPolicy"];
+		
+		if ($name == $profileName) {
+			_assertEqual($changeAllocPercent, $allocationPercentage);
+			_assertEqual($profileAllocTypeInDb2, $allocationType);
+			_assertEqual($profileName, $name);
+
+			_assertEqual($changeDesc, $description);
+			_assertEqual($changeRpo, $rpo);
+			_assertEqual($changeProfileNetwork, $networkPolicy);
+			_assertEqual($changeStorage, $storagePolicy);
+
+			// _assertEqual($changeSolName, $solutionName);
+
+		}
+
+	}
+	{
+	}
+}
+// ADCProfile_21
+// Verify the creation of ADC Profile with already exists ADC Profile
+// name
+function verify_ADD_ADC_ProfileWithExistingADC($profileName, $profiledesc2,
+		$profileAllocType2, $profileAllocPercent, $profileRpo, $profileNetwork,
+		$profileStorage) {
+	
+	ADCProfile();
+	_click(_link("Add ADC Profile"));
+	_setValue(_textbox("profileName"), $profileName);
+	_setValue(_textbox("profiledesc"), $profiledesc2);
+	_setSelected(_select("profileAllocType"), $profileAllocType2);
+	_setValue(_textbox("profileAllocPercent"), $profileAllocPercent);
+
+	_setValue(_textbox("profileRpo"), $profileRpo);
+	_setSelected(_select("profileNetwork"), $profileNetwork);
+	_setSelected(_select("profileStorage"), $profileStorage);
+	// _setSelected(_select("profileSolName"), $profileSolName2);
+	_click(_submit("Save"));
+	_assertEqual("ADC Profile name already exists", _lastAlert());
+
+	
+
+}
+// ADCProfile_22
+// Check the existance of 'View ADC Profile List' link in 'Edit ADC
+// profile' page
+function verify_View_ADC_ProfileLinkAvailability($profileName) {
+
+	ADCProfile();
+	_assertExists(_link($profileName, _near(_tableHeader("Name"))));
+
+	
+
+}
+// ADCProfile_23
+// Check the existance of 'View ADC Profile List' link in 'Edit ADC
+// profile' page
+function verify_View_ADC_Profile($profileName) {
+	
+	ADCProfile();
+	if (_exists(_link($profileName, _near(_tableHeader("Name"))))) {
+		_click(_link($profileName, _near(_tableHeader("Name"))));
+		_assertExists("ADC Profile Details ", _table("report"));
+
+	} else {
+
+		_log("View ADC Profile doesn't exists");
+	}
+	
+
+}

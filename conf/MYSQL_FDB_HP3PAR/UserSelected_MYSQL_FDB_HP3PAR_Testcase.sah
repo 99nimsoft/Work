@@ -1,0 +1,124 @@
+var $l_userInputsDataMysqlFDB = _readExcelFile($SAHI_HOME + "\\conf\\MYSQL_FDB_HP3PAR\\MYSQL_FDB_HP3PAR_Parameter.xls","User Selected Case");
+var $userDataLengthMysqlFDBFDB  = $l_userInputsDataMysqlFDB.length-1;
+
+var $flag = 0;
+for($i = 3 ; $i <= $userDataLengthMysqlFDBFDB ; $i++){
+	if($l_userInputsDataMysqlFDB[$i][4] == "Y"){	
+		$flag=$flag+1;	
+	}
+}
+
+//-----------Execution of Individual Testcase------------------------------
+
+var $g_siteMysqlFDB = $l_userInputsDataMysqlFDB[16][4];
+var $g_agentNodeMysqlFDB = $l_userInputsDataMysqlFDB[17][4];
+var $g_componentRemoteMysqlFDB = $l_userInputsDataMysqlFDB[18][4];
+var $g_componentLocalMysqlFDB= $l_userInputsDataMysqlFDB[19][4];
+var $g_datasetMysqlFDB = $l_userInputsDataMysqlFDB[20][4];;
+var $g_datasetStatusMysqlFDB = $l_userInputsDataMysqlFDB[21][4];
+var $g_protectionSchemeMysqlFDB = $l_userInputsDataMysqlFDB[22][4];;
+var $g_protectionSchemeStatusMysqlFDB = $l_userInputsDataMysqlFDB[23][4];
+var $g_groupCreationMysqlFDB = $l_userInputsDataMysqlFDB[24][4];
+var $g_moveToManageMysqlFDB = $l_userInputsDataMysqlFDB[25][4];
+
+var $g_changeContinuityStateMysqlFDB = $l_userInputsDataMysqlFDB[26][4];
+var $g_componentStatusMysqlFDB = $l_userInputsDataMysqlFDB[27][4];
+var $g_continuityStateMysqlFDB=$l_userInputsDataMysqlFDB[28][4];
+var $g_continuityManagementMysqlFDB = $l_userInputsDataMysqlFDB[29][4];
+var $g_PublishBPworkflowMysqlFDB = $l_userInputsDataMysqlFDB[30][4];
+var $g_DropMySQLFDBDRDB = $l_userInputsDataMysqlFDB[31][4];
+var $g_replicationMysqlFDB = $l_userInputsDataMysqlFDB[32][4];
+var $g_VerifyRepStatusDataLagMysqlFDB = $l_userInputsDataMysqlFDB[33][4];
+var $g_StartReplicationButtonMysqlFDB = $l_userInputsDataMysqlFDB[34][4];;
+var $g_StopReplicationButtonMysqlFDB = $l_userInputsDataMysqlFDB[35][4];;
+var $g_VerifyProtectionStatusMysqlFDB = $l_userInputsDataMysqlFDB[36][4];
+var $g_VerifyEventsMysqlFDB = $l_userInputsDataMysqlFDB[37][4];
+var $g_VerifydatalagEventsMysqlFDB = $l_userInputsDataMysqlFDB[38][4];
+
+
+
+//---------------For Executing All the Testcases------------------------
+var $g_executeMysqlFDBAll = $l_userInputsDataMysqlFDB[4][4];
+var $g_groupCreationMysqlFDB = $l_userInputsDataMysqlFDB[8][4];
+var $g_executeNCMysqlFDB = $l_userInputsDataMysqlFDB[9][4];
+var $g_executeSOSBMysqlFDB = $l_userInputsDataMysqlFDB[10][4];
+var $g_eventExecutionMysqlFDB = $l_userInputsDataMysqlFDB[11][4];
+var $g_executeFOMysqlFDB = $l_userInputsDataMysqlFDB[12][4];
+
+//--------------For Group Creation--------------------------------------
+
+if ($g_groupCreationMysqlFDB == "Y"){
+var $g_siteMysqlFDB = "Y";
+var $g_agentNodeMysqlFDB = "Y";
+if($agentType == "Remote"){
+var $g_componentRemoteMysqlFDB = "Y";
+}else{
+var $g_componentLocalMysqlFDB= "Y";
+}
+var $g_datasetMysqlFDB = "Y";
+var $g_datasetStatusMysqlFDB = "Y";
+var $g_protectionSchemeMysqlFDB  = "Y";
+var $g_protectionSchemeStatusMysqlFDB = "Y";
+var $g_groupCreationMysqlFDB = "Y";
+var $g_moveToManageMysqlFDB= "Y";
+var $g_changeContinuityStateMysqlFDB= "Y";
+var $g_componentStatusMysqlFDB= "Y";
+var $g_continuityStateMysqlFDB="Y";
+var $g_continuityManagementMysqlFDB= "Y";
+}
+//-----------Start NC ,Import FO WorkFlow and Verify Screens During NC---------------
+
+if ($g_executeNCMysqlFDB == "Y"){
+
+var $g_importFOMysqlFDB= "Y";
+var $g_startNCMysqlFDB= "Y";
+var $g_monitorRelationshipMysqlFDB= "Y";
+var $g_manageDRSolutionMysqlFDB= "Y";
+var $g_groupInformationNCMysqlFDB= "Y";
+var $g_groupSnapshotNCMysqlFDB= "Y";
+var $g_replicationNCMysqlFDB= "Y";
+var $g_rpoNCMysqlFDB= "Y";
+var $g_rtoNCMysqlFDB= "Y";
+}
+//------------Import SO and SB Workflow,stop NC and start SO,RNC and SB------------------------
+
+if ($g_executeSOSBMysqlFDB == "Y"){
+var $g_importSOSBMysqlFDB= "Y";
+var $g_stopNCMysqlFDB= "Y";
+var $g_startSOMysqlFDB= "Y";
+var $g_SOExecutionMysqlFDB= "Y";
+var $g_replicationSOMysqlFDB= "Y";
+//var $g_importRNCMysqlFDB= "Y";
+var $g_startRNCMysqlFDB= "Y";
+var $g_groupInformationRNCMysqlFDB= "Y";
+var $g_groupSnapshotRNCMysqlFDB= "Y";
+var $g_rpoRNCMysqlFDB= "Y";
+var $g_replicationRNCMysqlFDB= "Y";
+var $g_stopRNCMysqlFDB= "Y";
+var $g_startSBMysqlFDB= "Y";
+var $g_SBExecutionMysqlFDB= "Y";
+var $g_monitorSBMysqlFDB= "Y";
+}
+//------------Event for Agent and Replication start and Stop-------------------------
+if ($g_eventExecutionMysqlFDB == "Y"){	
+	if($agentType == "Local"){
+var $g_localStopMysqlAgentMysqlFDB= "Y";
+var $g_localStartMysqlAgentMysqlFDB= "Y";
+	}
+var $g_stopReplicationMysqlFDB= "Y";
+var $g_startReplicationMysqlFDB= "Y";
+}
+//--------------FO Execution-----------------------------------------------
+if($g_executeFOMysqlFDB == "Y"){
+var $g_startFOMysqlFDB= "Y";
+var $g_FOExecutionMysqlFDB= "Y";
+var $g_continuityStatusFOMysqlFDB= "Y";
+var $g_rpoFOMysqlFDB= "Y";
+var $g_monitorManageFOMysqlFDB= "Y";
+}
+
+
+
+if($flag == 0){
+	$g_executeMysqlFDBAll = "Y";
+}

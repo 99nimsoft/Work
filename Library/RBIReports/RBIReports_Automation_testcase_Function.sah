@@ -1,0 +1,98 @@
+
+function BankingReport_TC_001(){
+	try {
+		 Verify_BankingReport_Types();
+	} catch ($e) {
+		 _log($e.toString(),"Custom1");
+		_log("for test Case ID:BankingReport_TC_001(),execution got failed.kindly check the log for more details");
+		_fail("So that stopping execution.");
+	}
+}
+
+function BankingReport_TC_002(){
+	try {
+		 var $grp1 = PreConditionGroupCheckOne();
+		 Verify_BankingTestReport_Selected_Group($bcpTestRep,$grp1);
+		 Verify_BackToViewReport($bcpReadyRep);
+	} catch ($e) {
+		 _log($e.toString(),"Custom1");
+		_log("for test Case ID:BankingReport_TC_002(),execution got failed.kindly check the log for more details");
+		_fail("So that stopping execution.");
+	}
+}
+
+function BankingReport_TC_003(){
+	try {
+		 var $grp1 = PreConditionGroupCheckOne();
+		 Verify_BankingTestReport_Selected_Group($bcpReadyRep,$grp1);
+		 Verify_BackToViewReport($bcpReadyRep);
+	} catch ($e) {
+		 _log($e.toString(),"Custom1");
+		_log("for test Case ID:BankingReport_TC_003(),execution got failed.kindly check the log for more details");
+		_fail("So that stopping execution.");
+	}
+}
+function BankingReport_TC_004(){
+	try {
+		var $grp2 = PreConditionGroupCheckTwo();
+		 Verify_BankingTestReport_Selected_Group($majFailRep,$grp2);
+		 Verify_NewFlag_FailureReport($majFailRep,$grp2);
+	} catch ($e) {
+		 _log($e.toString(),"Custom1");
+		_log("for test Case ID:BankingReport_TC_004(),execution got failed.kindly check the log for more details");
+		_fail("So that stopping execution.");
+	}
+}
+
+function BankingReport_TC_005(){
+	try {
+		 var $grp1 = PreConditionGroupCheckOne();
+		 Verify_IntegrityTestReport_Selected_Group($bcpIntChkRep,$grp1);
+		 
+	} catch ($e) {
+		 _log($e.toString(),"Custom1");
+		_log("for test Case ID:BankingReport_TC_005(),execution got failed.kindly check the log for more details");
+		_fail("So that stopping execution.");
+	}
+}
+
+function BankingReport_TC_006(){
+	try {
+		var $grp1 = PreConditionGroupCheckOne();
+		 Delete_Exported_Report_BeforeExecute("pdf");
+		 Verify_IntegrityTestReport_Selected_Group($bcpIntChkRep,$grp1);
+		 var $expReportFile = Verify_Export_BankingReport("PDF");
+		 _log($expReportFile);
+		 } catch ($e) {
+		 _log($e.toString(),"Custom1");
+		_log("for test Case ID:BankingReport_TC_006(),execution got failed.kindly check the log for more details");
+		_fail("So that stopping execution.");
+	}
+}
+
+function BankingReport_TC_007(){
+	try {
+		var $grp1 = PreConditionGroupCheckOne();
+		 Delete_Exported_Report_BeforeExecute("rtf");
+		 Verify_BankingTestReport_Selected_Group($majFailRep,$grp1);
+		 var $expReportFile = Verify_Export_BankingReport("RTF");
+		 _log($expReportFile);
+		 } catch ($e) {
+		 _log($e.toString(),"Custom1");
+		_log("for test Case ID:BankingReport_TC_007(),execution got failed.kindly check the log for more details");
+		_fail("So that stopping execution.");
+	}
+}
+
+function BankingReport_TC_008(){
+	try {
+		 var $grp1 = PreConditionGroupCheckOne();
+		 Import_NewRal_Drill($grp1,"Integrity_RAL_WF.xml");
+		 Execute_NewRal_Drill($grp1);	 
+		 Verify_NewRAL_ExecReport($majFailRep,$grp1);
+		 } catch ($e) {
+		 _log($e.toString(),"Custom1");
+		_log("for test Case ID:BankingReport_TC_008(),execution got failed.kindly check the log for more details");
+		_fail("So that stopping execution.");
+	}
+}

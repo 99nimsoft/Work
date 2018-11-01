@@ -1,0 +1,153 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : IBM RO
+ ** Objective : This script contains all the common test cases Common functions
+**  @AuthorName : Anita 
+ ** Created Date : OCT 2017
+ ************************************************************************/
+
+//wait Till Save Now button exists
+
+function waitTillSaveNowBtnExists(){
+	var $i =0;
+	while($i<30){
+		_wait(5000);
+		if(_exists(_link("Save Now"))){			
+			break;
+		}
+		$i++;
+	}
+}
+
+//wait till Navigate publish page
+
+function waitTillPublishpage(){
+	var $i =0;
+	while($i<30){
+		_wait(5000);
+		if(_exists(_heading4("Key-Value List"))){
+			break;
+		}
+		$i++;
+	}
+}
+
+// verify WF Publish button enabled then click clickPublishButton
+
+function clickPublishButton(){
+	if(_exists(_div("Publish Workflow"))){
+		_click(_div("Publish Workflow"));
+		_log("Workflow Imported/Saved successfully");
+	}
+	else{
+		_fail("Workflow is not Imported/Saved properly..hence failing ..please check log");
+	}
+}
+
+// wait till published success
+
+function waitTillBCOWFpage(){
+	var $i =0;
+	while($i<20){
+		_wait(5000);
+		if(_exists(_heading4("BCO Workflows"))){
+			break;
+		}
+		if(_exists(_heading4("BP Workflows"))){
+			break;
+		}
+		$i++;
+	}
+}
+//publishWorkflowAndVerify
+function  publishWorkflowAndVerify($workflowType){
+	_wait(5000);
+	//_call(top.location.reload()); // reload via Javascript
+	_click(_link("Next"));
+	waitTillPublishpage();
+	clickPublishButton();
+	waitTillBCOWFpage();
+	var $wfpubchk= _getText(_strong(0, _near(_link($workflowType))));
+	_log($wfpubchk);
+	if ($wfpubchk =="PUBLISHED"){
+		_assertExists("Workflow published successfully");
+	}
+	else{
+		_fail("Workflow is not published");
+	}
+}
+
+//create new workflow ral  for workflow type
+
+function createNewBPWorkflow($groupName,$ralName,$workflowType){
+	navigateBPworkflows($groupName);
+	_click(_link("Create New"));
+	_setValue(_textbox("name"), $ralName);
+	_setSelected(_select("type"), $workflowType);
+	_wait(3000);
+	_click(_button("Create New"));
+	_wait(5000);
+}
+
+//navigate to navigateBPworkflows 
+function navigateBPworkflows($groupName){
+	navigateToGroups();
+	_click(_link($groupName));
+	_click(_image("Manage Group"));
+	_click(_link("View all workflows"));
+	_wait(3000);
+	_click(_heading4("BP Workflows"));
+}
+
+
+
+function installSanoviFileReplicator(){
+	try{		
+		downloadWindowsBinaries();
+		extractZipFile($SAHI_HOME+ "utility\\Sfr\\Windows64_DRMAgent_7.2.zip",$SAHI_HOME+ "utility\\Sfr\\Agent");
+		extractZipFile($SAHI_HOME+ "utility\\Sfr\\Windows64_PFR_7.2.zip",$SAHI_HOME+ "utility\\Sfr");
+		extractZipFile($SAHI_HOME+ "utility\\Sfr\\rsync3.0.7-Windows-32bit.zip",$SAHI_HOME+ "utility\\Sfr\\rsync");
+		extractZipFile($SAHI_HOME+ "utility\\Sfr\\tar1.16-Windows-32bit.zip",$SAHI_HOME+ "utility\\Sfr\\tar");
+		fireWindowsCommandAndReadResponse("cd "+$SAHI_HOME+ "utility\\Sfr"+" && del *.zip && del *.zip.* && del *.properties && del *.bat && del *.vbs && del *.zip");
+		copySFRInstallationHelperFiles();
+		editPropertiesFileForSFR();
+		Copy_WindowsBinaries_To_RemoteMachine_PR();
+		Copy_WindowsBinaries_To_RemoteMachine_DR();
+
+		create_batFile_For_SFR_UnInstallation_DR();
+		_execute($SAHI_HOME + "utility\\Sfr\\UnInstall_SFR.bat","true");
+		batFileSFRInstallation_DR();
+		_execute($SAHI_HOME + "utility\\Sfr\\Install_SFR.bat","true");
+		var $cmdCheckStatus = $SAHI_HOME+"\\tools\\PsExec\\psexec \\\\"+$compIPDR+" -u "+$remoteUserNameValDR+" -p "+$remotePwdValDR+" sc query SFR";
+		$val = fireWindowsCommandAndReadResponse($cmdCheckStatus);
+		if($val.indexOf("STOPPED") >= 0 || $val.indexOf("does not exist")>=0){
+			_fail("Could not install SFR on "+$compIPDR+" ,check logs for more details");
+		}
+		else{
+			_log("Successfully installed SFR on "+$compIPDR,"CUSTOM4");
+		}
+		
+		create_batFile_For_SFR_UnInstallation_PR();
+		_execute($SAHI_HOME + "utility\\Sfr\\UnInstall_SFR.bat","true");
+		batFileSFRInstallation_PR();
+		_execute($SAHI_HOME + "utility\\Sfr\\Install_SFR.bat","true");
+		var $cmdCheckStatus = $SAHI_HOME+"\\tools\\PsExec\\psservice \\\\"+$compIPPR+" -u "+$remoteUserNameValPR+" -p "+$remotePwdValPR+" query SFR";
+		$val = fireWindowsCommandAndReadResponse($cmdCheckStatus);
+		_log("qwerty"+$val);
+		if($val.indexOf("STOPPED") >= 0 || $val.indexOf("does not exist")>= 0){
+			_fail("Could not install SFR on "+$compIPPR+" ,check logs for more details");
+		}
+		else{
+			_log("Successfully installed SFR on "+$compIPPR,"CUSTOM4");
+		}
+	}
+	catch (e) {
+		_fail("Could not install SFR , please check logs");
+	}
+}
+
+
+
+
+
+

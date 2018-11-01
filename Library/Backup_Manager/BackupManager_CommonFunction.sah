@@ -1,0 +1,104 @@
+/////////////////Backup Manager///////////////////////////////////////////////
+/**
+* Function is to Creating Backup folder.
+*@param :null
+*@Author: Omprakash.v
+*
+*/
+
+function Backup_Folder_creation($despath)
+{
+var $sshCommand="mkdir "+$despath;
+var $file=SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand, "Y");
+_log($file);
+var $file2 = "";
+if($file != null){        
+var $file1 = $file.split(":");
+$file2 = $file1.pop().trim();
+ _log($file2);
+}
+if($file2==$Nofiledirectory)
+{ 
+_log("Directory not Exists");
+	}
+else
+{
+ _log("Directory Exists");
+ }	
+}
+
+/**
+* Function is to configure backup from GUI.
+*@param :null
+*@Author: Omprakash.v
+*
+*/
+
+function ConfigureBackup($despath)
+{
+NavigateToBackup();
+_setValue(_textbox("despath"), $despath);
+var $backuptime1=$backuptime.split(".");
+$backuptime2=$backuptime1[0];
+_setSelected(_select("backuptime"),$backuptime2+":00");
+_setSelected(_select("region"), $region);
+if($region=="WEEKLY")
+{	
+	_setSelected(_select("country"), $country);
+}
+_setSelected(_select("copies"), $copies);
+_click(_button($Save));
+_assertEqual($BackupConfigdone, _lastAlert());
+}
+
+function Backup_Now()
+{
+_click(_button($BackupNow));
+_assertEqual($Backupsuccestaken, _lastAlert());
+}
+
+/**
+* Function is to verifying backup.
+*@param :null
+*@Author: Omprakash.v
+*
+*/
+
+function Verify_Backup($despath)
+{
+var $backupFileGUI=_getText(_cell(1,_near(_strong($BackupFileName))));
+_log($backupFileGUI);
+var $sshCommand="test -f "+$despath+$backupFileGUI+";echo $?";
+ var $msg=SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand, "N");
+_log($msg);
+if($msg=="0")
+{
+_log("Backup file created");
+}
+else
+{
+_log("Backup file not created");
+_assertTrue(false);
+}
+}
+
+function Remove_Folder()
+{
+	var $sshCommand = "rm -rf /boot/backupFail";
+	var $rmvFile=SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand, "Y");
+	_log($rmvFile);
+	var $rmvFile2 = "";
+	if($rmvFile != null){        
+	var $rmvFile1 = $rmvFile.split(":");
+	$rmvFile2 = $rmvFile1.pop().trim();
+	 _log($rmvFile2);
+	}
+	if($rmvFile2==$Nofiledirectory)
+	{ 
+	_log("File not Exists");
+		}
+	else
+	{
+	 _log("File Exists");
+	 }	
+}

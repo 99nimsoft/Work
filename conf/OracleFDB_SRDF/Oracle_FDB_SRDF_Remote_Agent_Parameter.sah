@@ -1,0 +1,120 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the Remote Agents parameters for Oracle FullDB SRDF
+ ** AuthorName : Aditi Jain
+ ** Created Date : Oct 2013
+ ***********************************************************************************************/
+
+ var $l_OracleSRDF=_readExcelFile($SAHI_HOME + "\\conf\\OracleFDB_SRDF\\OracleSRDF_Parameter.xlsx","Remote");
+ 
+//This user Input required to Login the DRM server
+var $username = "aditi"; // DRM server GUI user name e.g. "aditi"
+var $password = "Sanovi123$"; // DRM server GUI pwd
+var $systemTypeAgent = "Linux";
+//For OS AUTHENTICATION
+
+//Agent Node
+var $systemTypeAgent = "Linux";
+
+//var $OS_Authentication = "N";
+
+//This user Input required to create the Site
+var $locationPR = "PR"; // PR Site Location
+var $incharge = "drmadmin"; // Site Incharge
+var $addressPR = "Mumbai"; // PR site Address
+var $locationDR = "DR"; // DR Site Location
+var $addressDR = "Bangalore";// DR site Address
+
+//This user Input required to create the Component for Local or remote
+var $agentType = "Remote"; // This if for agent type always enter as e.g. Local or Remote.Note Here first letter is upper case and remaining lower case.
+var $compIPPR = $l_OracleSRDF[7][2];
+var $compIPDR = $l_OracleSRDF[8][2];
+var $remoteUserNameValPR = $l_OracleSRDF[9][2]; // PR Machine user name. this information required for both local and remote
+var $remotePwdValPR = $l_OracleSRDF[10][2]; // PR Machine Pwd name. this information required for both local and remote
+var $remoteUserNameValDR = $l_OracleSRDF[11][2];// DR Machine user name. this information required for both local and remote
+var $remotePwdValDR = $l_OracleSRDF[12][2];// PR Machine Pwd name. this information required for both local and remote
+var $compNamePR = $l_OracleSRDF[13][2];// PR Componenet Name
+var $compNameDR = $l_OracleSRDF[14][2]; // DR Componenet Name
+var $compIPSrdfPR = $l_OracleSRDF[15][2];
+var $compIPSrdfDR = $l_OracleSRDF[16][2];
+var $remoteUserNameValSrdfPR=$l_OracleSRDF[17][2];
+var $remotePwdValSrdfPR=$l_OracleSRDF[18][2];
+var $remoteUserNameValSrdfDR=$l_OracleSRDF[19][2];
+var $remotePwdValSrdfDR=$l_OracleSRDF[20][2];
+var $compNameSrdfPR = $l_OracleSRDF[21][2];
+var $compNameSrdfDR = $l_OracleSRDF[22][2];
+
+
+var $internalLogon = "sysdba";
+
+var $systemTypeDataset = "Oracle"; // database subsystem
+var $datasetType = "Oracle";// database Type
+var $systemType = "Linux";
+var $userNameVal = "oracle";
+var $pwdVal = "oracle";
+
+//-------Dataset Delatils------------
+var $dbSidSelect =$l_OracleSRDF[3][5];
+var $userPR = $l_OracleSRDF[4][5]; ;// for oracle db connection
+var $pwdPR = $l_OracleSRDF[5][5]; ;// for oracle db connection
+var $userDR = $l_OracleSRDF[6][5]; // for oracle db connection
+var $pwdDR = $l_OracleSRDF[7][5];
+var $datasetNamePR=$l_OracleSRDF[8][5];
+var $datasetNameDR=$l_OracleSRDF[9][5];
+var $internalLogon = "sysdba";
+
+//---Protection Schema Details------
+var $sernamePR=$l_OracleSRDF[12][5];
+var $sernameDR=$l_OracleSRDF[13][5];
+var $opt_emc_SYMCLI_bin=$l_OracleSRDF[14][5];
+var $DBgroupName=$l_OracleSRDF[15][5];
+
+//group creation
+var $groupName=$l_OracleSRDF[18][5];
+var $devicePath_RDF1_ctrl=$l_OracleSRDF[19][5];
+var $devicePath_RDF1_data=$l_OracleSRDF[20][5];
+var $devicePath_RDF1_redo=$l_OracleSRDF[21][5];
+var $mountPoint_RDF1_ctrl=$l_OracleSRDF[22][5];
+var $mountPoint_RDF1_data=$l_OracleSRDF[23][5];
+var $mountPoint_RDF1_redo=$l_OracleSRDF[24][5];
+
+var $devicePath_RDF2_ctrl=$l_OracleSRDF[25][5];
+var $devicePath_RDF2_data=$l_OracleSRDF[26][5];
+var $devicePath_RDF2_redo=$l_OracleSRDF[27][5];
+var $mountPoint_RDF2_ctrl=$l_OracleSRDF[28][5];
+var $mountPoint_RDF2_data=$l_OracleSRDF[29][5];
+var $mountPoint_RDF2_redo=$l_OracleSRDF[30][5];
+
+var $devicePath_BCV_ctrl=$l_OracleSRDF[31][5];
+var $devicePath_BCV_data=$l_OracleSRDF[32][5];
+var $devicePath_BCV_redo=$l_OracleSRDF[33][5];
+var $mountPoint_BCV_ctrl=$l_OracleSRDF[34][5];
+var $mountPoint_BCV_data=$l_OracleSRDF[35][5];
+var $mountPoint_BCV_redo=$l_OracleSRDF[36][5];
+
+var $systemTypeProtection="EMC SRDF Replication";
+var $SolutionSignature="Oracle Full Database with EMC SRDF Replication";
+var $groupDescription="ORACLE_FDB_SRDF";
+var $WFPath = "/Oracle/OracleFullDBSRDF"; // Location of SO/SB/FO xml file
+var $filePreRPO="BCS-OracleFullDBSRDF-PreRPO.xml";
+var $filePostRPO="BCS-OracleFullDBSRDF-PostRPO.xml";
+var $fileSO = "BCS-OracleFullDBSRDF-SO.xml"; // Location of SO xml file
+var $fileSB = "BCS-OracleFullDBSRDF-SB.xml"; // Location of SB xml file
+var $fileFO = "BCS-OracleFullDBSRDF-FO.xml"; // Location of FO xml file
+
+
+var $mgmtHostSRDFPR=$compNameSrdfPR+' ('+$compIPSrdfPR+')';
+var $mgmtHostSRDFDR=$compNameSrdfDR+' ('+$compIPSrdfDR+')';
+var $compsitePR = $locationPR;
+var $compsiteDR = $locationDR;
+var $primaryComponents = $compNamePR;
+var $remoteComponents = $compNameDR;
+var $dgDiscoveryHostIPPR = $compIPPR;
+var $dgDiscoveryHostIPDR = $compIPDR;
+var $primaryDatasets = $datasetNamePR;
+var $remoteDatasets = $datasetNameDR;
+var $primaryProtections = $sernamePR;
+var $remoteProtections = $sernameDR;
+var $oracleListenerIPPR = $dgDiscoveryHostIPPR;
+var $oracleListenerIPDR = $dgDiscoveryHostIPDR;

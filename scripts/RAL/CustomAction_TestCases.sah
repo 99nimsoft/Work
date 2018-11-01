@@ -1,0 +1,231 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the Custom action test cases. 
+ ** AuthorName : Anantha Sakthi
+ ** Created Date : Aug 2014
+ ************************************************************************/
+
+
+_log("=================================Pre-Condition===================================", "Custom1");
+
+_include("../../Library/Solution_Signature/Include/APP_PFR_Include.sah");
+_include("../../Library/Common/Common_Function.sah");
+_include("../../conf/DRMInstallation_Parameter.sah");
+_include("../Library/Common/CommonRepository/CommonDRM_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/CommonGUINavigation_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/GroupOperation_ObjRepository.sah");
+_include("../Library/RAL/CustomAction/ObjectRepository/CustomAction_ObjectRepository.sah"); 
+_include("../../conf/RAL/CustomAction/CustomActionParameter_Script.sah");
+_include("../../conf/RAL/CustomAction/CustomActionRALParameter.sah");
+
+_include("../../Library/Component/Component_Common.sah");
+_include("../../Library/Solution_Signature/Include/Common_Automation_testcase_Function.sah");
+_include("../../Library/RAL/RAL_CommonFunction.sah");
+_include("../../Library/RAL/CustomAction/CustomAction_RAL.sah");
+_include("../../Library/RAL/CustomAction/CustomAction_TestCaseFunctions.sah");
+_include("../../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+
+
+
+
+
+Login_001();
+
+preConditionForRAL_GroupCreation();
+
+
+Create_Remote_Component($os_Sol, $solCompNm, $solSerIP, $solSite, $solSerUserNm, $solSerPassWord);
+//Create_Remote_Component($os_Hpux, $hpxCompNm, $hpxSerIP, $hpxSite, $hpxSerUserNm, $hpxSerPassWord);
+Create_Remote_Component($os_Aix, $aixCompNm, $aixSerIP, $aixSite, $aixSerUserNm, $aixSerPassWord);
+Create_Remote_Component($systemType, $DRCompName, $DRCompIP, $DRCompSite, $DRCompUsername, $DRCompPwd);
+Create_Local_Component($systemType, $DRCompName, $DRCompIP, $DRCompSite);
+//Create_Remote_Component($solrisOSType, $solarisCompName, $solarisCompIP, $solarisCompSite, $solarisCompUserName, $solarisCompPwd);
+//Create_Local_Component($solrisOSType, $solarisCompName, $solarisCompIP, $solarisCompSite);
+Create_Remote_Component($AIXOSType, $AIXCompName, $AIXCompIP, $AIXCompSite, $AIXCompUserName, $AIXCompPwd);
+Create_Local_Component($AIXOSType, $AIXCompName, $AIXCompIP, $AIXCompSite);
+//Create_Remote_Component($HPUXOSType, $HPUXCompName, $HPUXCompIP, $HPUXCompSite, $HPUXCompUserName, $HPUXCompPwd);
+//Create_Local_Component($HPUXOSType, $HPUXCompName, $HPUXCompIP, $HPUXCompSite);
+Create_Remote_Component($cust_os_Win, $WindowsCompName, $cust_WinSerIP, $cust_WinSite, $WindowsCompUserName, $WindowsCompPwd);
+
+
+
+
+
+
+
+
+_log("=================================Test========================================", "Custom1");
+
+
+var $test1 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_001", "verify the command execution in custom action Ral");
+$test1.start();
+customAction_commandCategory_Satic_Linux_001();
+$test1.end();
+
+var $test2 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_002", "verify the command execution in custom action Ral");
+$test2.start();
+customAction_commandCategory_Dynamic_Linux_002();
+$test2.end();
+
+
+var $test3 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_003", "verify the command execution in custom action Ral");
+$test3.start();
+customAction_commandCategory_Satic_KV_Linux_003();
+$test3.end();
+
+var $test4 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_004", "verify the command execution in custom action Ral");
+$test4.start();
+customAction_commandCategory_Dynamic_KV_Linux_004();
+$test4.end();
+
+/*
+var $test5 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "verify the command execution in custom action Ral");
+$test5.start();
+customAction_commandCategory_Satic_Solaris_005();
+$test5.end();
+
+var $test6 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_006", "verify the command execution in custom action Ral");
+$test6.start();
+customAction_commandCategory_Satic_KV_Solaris_006();
+$test6.end();
+*/
+/*
+var $test7 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_007", "verify the command execution in custom action Ral");
+$test7.start();
+customAction_commandCategory_Satic_Hpux_007();
+$test7.end();
+
+var $test8 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_008", "verify the command execution in custom action Ral");
+$test8.start();
+customAction_commandCategory_Satic_KV_Hpux_008();
+$test8.end();
+*/
+
+var $test9 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_009", "verify the command execution in custom action Ral");
+$test9.start();
+customAction_commandCategory_Satic_AIX_009();
+$test9.end();
+
+var $test10 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_010", "verify the command execution in custom action Ral");
+$test10.start();
+customAction_commandCategory_Satic_KV_AIX_010();
+$test10.end();
+
+ 
+var $test11 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "Execute Script on Remote AIX Component ");
+$test11.start();
+CustomRAL_Script_Execution_Linux_Remote();
+$test11.end();
+
+var $test12 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "Execute Script on Remote AIX Component ");
+$test12.start();
+CustomRAL_Script_Execution_Solaris_Remote();
+$test12.end();
+
+var $test13 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "Execute Script on Remote AIX Component ");
+$test13.start();
+CustomRAL_Script_Execution_AIX_Remote();
+$test13.end();
+/*
+var $test14 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "Execute Script on Remote HPUX Component ");
+$test14.start();
+CustomRAL_Script_Execution_HPUX_Remote();
+$test14.end();
+*/
+
+var $test15 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "Execute Script on Local Linux Component ");
+$test15.start();
+CustomRAL_Script_Execution_Linux_Local();
+$test15.end();
+/*
+var $test16 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "Execute Script on Local Solaris Component ");
+$test16.start();
+CustomRAL_Script_Execution_Solaris_Local();
+$test16.end();
+*/
+
+var $test17 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "Execute Script on Local AIX Component");
+$test17.start();
+CustomRAL_Script_Execution_AIX_Local();
+$test17.end();
+
+/*
+var $test18 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "Execute Script on Local HPUX Component ");
+$test18.start();
+CustomRAL_Script_Execution_HPUX_Local();
+$test18.end();
+*/
+var $test19 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "Execute Script with KV on Remote Linux Component ");
+$test19.start();
+CustomRAL_Script_Execution_WithKV_Linux_Remote();
+$test19.end();
+/*
+var $test20 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "Execute Script with KV on Remote Solaris Component ");
+$test20.start();
+CustomRAL_Script_Execution_WithKV_Solaris_Remote();
+$test20.end();
+*/
+
+var $test21 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "Execute Script with KV on Remote AIX Component ");
+$test21.start();
+CustomRAL_Script_Execution_WithKV_AIX_Remote();
+$test21.end();
+
+/*var $test22 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "Execute Script with KV on Remote HPUX Component ");
+$test22.start();
+CustomRAL_Script_Execution_WithKV_HPUX_Remote();
+$test22.end();
+*/
+var $test23 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "Execute Script with KV on Local Linux Component ");
+$test23.start();
+CustomRAL_Script_Execution_WithKV_Linux_Local();
+$test23.end();
+/*
+var $test24 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "Execute Script with KV on Local Solaris Component ");
+$test24.start();
+CustomRAL_Script_Execution_WithKV_Solaris_Local();
+$test24.end();
+*/
+
+var $test25 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "Execute Script with KV on Local AIX Component ");
+$test25.start();
+CustomRAL_Script_Execution_WithKV_AIX_Local();
+$test25.end();
+/*
+var $test26 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "Execute Script with KV on Local HPUX Component");
+$test26.start();
+CustomRAL_Script_Execution_WithKV_HPUX_Local();
+$test26.end();
+*/
+
+var $test27 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_003", "verify the command execution in custom action Ral");
+$test27.start();
+customAction_commandCategory_Satic_Windows_011();
+$test27.end();
+
+var $test28 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_003", "verify the command execution in custom action Ral");
+$test28.start();
+customAction_commandCategory_Satic_KV_Windows_012();
+$test28.end();
+
+var $test29 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "Execute Script on Remote Winodws Component ");
+$test29.start();
+CustomRAL_Script_Execution_WithKV_Windows_Remote();
+$test29.end();
+
+var $test30 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Custom_CD_005", "Execute Script on Remote Winodws Component ");
+$test30.start();
+CustomRAL_Script_Execution_Windows_Remote();
+$test30.end();
+
+
+
+
+
+
+
+
+_log("================================Post-Condition================================== ", "Custom1");
+
+Logout_001();

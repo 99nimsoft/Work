@@ -1,0 +1,136 @@
+
+function Create_Site_PR(){
+	try {
+		Create_site($locationPR, $siteInchargePR, $siteAddressPR);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("Create_Site_PR() execution got failed.kindly check the log for more details");
+		_fail("Create Site failed.So that stopping execution.");
+	}
+}
+
+function Create_Site_DR(){
+	try {
+		Create_site($locationDR, $siteInchargeDR, $siteAddressDR);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("Create_Site_DR() execution got failed.kindly check the log for more details");
+		_fail("Create Site failed.So that stopping execution.");
+	}
+}
+
+function ManagementService_Vcenter_EDIT_DELETE(){
+	try {		
+		var $vcenterNamePR = "VC_"+$vCenterServerIP_crud;
+		ManagementService_Vcenter_CRUD($locationPR,$msTypeInputVcenter,$vcenterNamePR,$vCenterServerIP_crud,$vcenterusernamePR,$vcenterpasswordPR); //vcenter DR,
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:ManagementService_Vcenter_EDIT_DELETE,execution got failed.kindly check the log for more details");
+		_log("ManagementService_Vcenter_EDIT_DELETE failed.So that stopping execution.");
+	}
+}
+
+function ManagementServiceDiscovery_Vcenter(){
+	try {
+		CreateManagementService($locationPR,$msTypeInputVcenter,$vcenterNamePR,$vCenterServerIPPR,$vcenterusernamePR,$vcenterpasswordPR); //vcenter PR,
+		CreateManagementService($locationDR,$msTypeInputVcenter,$vcenterNameDR,$vCenterServerIPDR,$vcenterusernameDR,$vcenterpasswordDR); //vcenter DR,
+		VerifyManagementServiceAgentStatus($vcenterNamePR,$vcenterNameDR);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:ManagementServiceDiscovery_Vcenter,execution got failed.kindly check the log for more details");
+		_fail("Create Management Service failed.So that stopping execution.");
+	}
+}
+
+function ApplicationDiscovery_VM(){
+	try {
+		ApplicationDiscovery($locationPR,$appStackName,$vcenterNamePR,$mserviceipPR,$vmIP,$tierNum,$VMsNum);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:ApplicationDiscovery_VM(),Function: login ,execution got failed.kindly check the log for more details");
+		_fail("ApplicationDiscoveryOnAWS failed.So that stopping execution.");
+	}
+}
+
+function ManagementService_Zerto_EDIT_DELETE(){
+	try {		
+		ManagementService_Zerto_CRUD($locationPR,$msTypeInputZerto,$zertoMSNamePR,$vcenterNamePR,$zertoMSIPPR);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:ManagementService_Zerto_EDIT_DELETE,execution got failed.kindly check the log for more details");
+		_log("ManagementService_Zerto_EDIT_DELETE failed.So that stopping execution.");
+	}
+}
+
+function ManagementServiceDiscovery_Zerto(){
+	try {		
+		ManagementService_Zerto($locationPR,$msTypeInputZerto,$zertoMSNamePR,$vcenterNamePR,$zertoMSIPPR);
+		ManagementService_Zerto($locationDR,$msTypeInputZerto,$zertoMSNameDR,$vcenterNameDR,$zertoMSIPDR);
+		VerifyManagementServiceAgentStatus($zertoMSNamePR,$zertoMSNameDR);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:ManagementServiceDiscovery_Zerto,execution got failed.kindly check the log for more details");
+		_fail("ManagementServiceDiscovery_Zerto failed.So that stopping execution.");
+	}
+}
+
+function DiscoveryAppstack_VM2ZertoSoln(){
+	try {		
+		DiscoveryAppstack_VM2Zerto($vpgCount,$noOfAGs,$tierNum,$appstackName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:DiscoveryAppstack_VM2ZertoSoln,execution got failed.kindly check the log for more details");
+		_fail("DiscoveryAppstack_VM2ZertoSoln failed.So that stopping execution.");
+	}
+}
+
+function VerifyAGRG_VM2ZertoGroup(){
+	try {		
+		VerifyAGRG_VM2Zerto($vpgCount,$noOfAGs,$appstackName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:VerifyAGRG_VM2ZertoGroup,execution got failed.kindly check the log for more details");
+		_fail("VerifyAGRG_VM2ZertoGroup failed.So that stopping execution.");
+	}
+}
+
+function SubsystemStatus_PostGroupCreation(){
+	try {		
+		SubsystemStatus_Verify($vpgCount,$vpgName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:SubsystemStatus_PostGroupCreation,execution got failed.kindly check the log for more details");
+		_fail("SubsystemStatus_PostGroupCreation failed.So that stopping execution.");
+	}
+}
+
+function GroupStatus_PostGroupCreation(){
+	try {		
+		GroupStatus_PostGroup($noOfAGs);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:GroupStatus_PostGroupCreation,execution got failed.kindly check the log for more details");
+		_fail("GroupStatus_PostGroupCreation failed.So that stopping execution.");
+	}
+}
+
+function RG_ReplicationPageValidation(){
+	try {		
+		 RG_ReplicationStatus($noOfAGs);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:RG_ReplicationPageValidation,execution got failed.kindly check the log for more details");
+		_fail("RG_ReplicationPageValidation failed.So that stopping execution.");
+	}
+}
+
+
+
+
+
+
+
+
+
+
+

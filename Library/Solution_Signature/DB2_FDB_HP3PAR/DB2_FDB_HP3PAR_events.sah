@@ -1,0 +1,115 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are the part of DB2_HP3PAR solution generating events.
+ ** AuthorName : Saiteja M
+ ** Created Date : September 2016
+ ************************************************************************/
+
+
+/**
+* Function is for Verifying the event when datalag is deviated. (PR) and (DR)
+*@param : null
+*@return : null
+*@Author: Saiteja M
+*
+*/
+
+function DB2_HP3PAR_Datalag_Deviated_Event_PR() {
+	edit_replicationInfotcl_HP3PAR_PR_INACTIVE_RepInfo_DL();
+	_wait(10000);
+	
+	var $sshCommand = "date";
+	$date = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	var $serverTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse($date));
+	_assertExists("Server Time", $serverTime);
+	
+	RefeshDetails_Replication($groupName);
+	
+	Event_Verification($serverTime, $groupName, "BCSMGR_DATALAG1", $DataLagDev, "SERIOUS");
+	
+	
+} 
+
+
+function DB2_HP3PAR_Datalag_Deviated_Event_DR() {
+	
+	edit_replicationInfotcl_HP3PAR_DR_INACTIVE_RepInfo_DL();
+	_wait(10000);
+	
+	var $sshCommand = "date";
+	$date = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	var $serverTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse($date));
+	_assertExists("Server Time", $serverTime);
+	
+	RefeshDetails_Replication($groupName);
+	
+	Event_Verification($serverTime, $groupName, "BCSMGR_DATALAG1", $DataLagDev, "SERIOUS");
+	
+}
+
+
+
+/**
+* Function is for verifying Protection scheme is UNKNOWN event. (PR) and (DR)
+*@param : null
+*@return : null
+*@Author: Saiteja M
+*
+*/
+function DB2_HP3PAR_ProtectionScheme_UNKNOWN_Event_PR() {
+	edit_getStatusTcl_HP3PAR_PR_Unknown_GetStatus_rep();
+	var $sshCommand = "date";
+	$date = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	var $serverTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse($date));
+	_assertExists("Server Time", $serverTime);
+	
+	Event_Verification($serverTime, $groupName, "BCSDB2FullDBHP3PAR005", $RepUnknown, "SERIOUS");
+	
+}
+
+
+function DB2_HP3PAR_ProtectionScheme_UNKNOWN_Event_DR() {
+	edit_getStatusTcl_HP3PAR_DR_Unknown_GetStatus_rep();
+	var $sshCommand = "date";
+	$date = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	var $serverTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse($date));
+	_assertExists("Server Time", $serverTime);
+	
+	Event_Verification($serverTime, $groupName, "BCSDB2FullDBHP3PAR005", $RepUnknown, "SERIOUS");
+	
+}
+
+/**
+* Function is for verifying Protection scheme is INACTIVE event.(PR) AND (DR)
+*@param : null
+*@return : null
+*@Author: Saiteja M
+*
+*/
+
+function DB2_HP3PAR_ProtectionScheme_INACTIVE_Event_PR() {
+	edit_getStatusTcl_HP3PAR_PR_Inactive_GetStatus_rep();
+	var $sshCommand = "date";
+	$date = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	var $serverTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse($date));
+	_assertExists("Server Time", $serverTime);
+	
+	Event_Verification($serverTime, $groupName, "BCSDB2FullDBHP3PAR001", $RepStop, "SERIOUS");
+	
+}
+
+
+function DB2_HP3PAR_ProtectionScheme_INACTIVE_Event_DR() {
+	edit_getStatusTcl_HP3PAR_DR_Inactive_GetStatus_rep();
+	var $sshCommand = "date";
+	$date = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	var $serverTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse($date));
+	_assertExists("Server Time", $serverTime);
+	
+	Event_Verification($serverTime, $groupName, "BCSDB2FullDBHP3PAR001", $RepStop, "SERIOUS");
+	
+}
+
+
+

@@ -1,0 +1,88 @@
+_include("../Library/Solution_Signature/Include/Application_Group_Include.sah");
+_include("../Library/Common/Common_Function.sah");
+_include("../Library/RAL/RAL_CommonFunction.sah");
+_include("../conf/DRMInstallation_Parameter.sah");
+_include("../Library/Solution_Signature/AG/ObjectRepository/AG_Creation_ObjectRepository.sah");
+_include("../Library/Common/CommonRepository/CommonDRM_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/CommonGUINavigation_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/GroupOperation_ObjRepository.sah");
+_include("../Library/RAL/CustomAction/ObjectRepository/CustomAction_ObjectRepository.sah"); 
+_include("../conf/Application_Group/AG_Paramter.sah");
+_include("../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+
+
+
+Login_001();
+
+preConditionFor_AGGroupCreation();
+_log("=================================Test========================================", "Custom1");
+
+var $test1 = _testcase("Application Group_0001", "Create  Application Group");
+$test1.start();
+Create_AG_0001();
+$test1.end();
+
+
+ var $test1 = _testcase("Application Group_0001", "Move the AG to Managemode");
+ $test1.start();
+AG_Move_Group_Manage_0002();
+ $test1.end();
+ 
+
+
+ var $test2 = _testcase("Application Group_0002", "verify the AG Normal Full Copy");
+ $test2.start();
+ AG_Initiate_NormalFullcopy_0002();
+ $test2.end();
+
+
+ var $test3 = _testcase("Application Group_0003", "verify the Initiate Normal Copy");
+ $test3.start();
+ AG_Initiate_Normalcopy_0003();
+ $test3.end();
+
+ var $test4 = _testcase("Application Group_0004", "verify the Stop Normal Copy");
+ $test4.start();
+ AG_Stop_Normalcopy_0004();
+ $test4.end();
+
+
+ var $test5 = _testcase("Application Group_0005", "verify the Switch over");
+ $test5.start();
+ AG_Start_SO_0005();
+ $test5.end();
+
+
+ var $test6 = _testcase("Application Group_0006", "verify the Initiate Reverse Normal Copy");
+ $test6.start();
+ AG_ReverseNormalcopy_0006();
+ $test6.end();
+
+
+ var $test7 = _testcase("Application Group_0007", "verify the Stop Reverse Normal Copy");
+ $test7.start();
+ AG_Stop_ReverseNormalcopy_0007();
+ $test7.end();
+ 
+
+ var $test8 = _testcase("Application Group_0008", "verify the Switchback");
+ $test8.start();
+ AG_Start_SB_0008();
+ $test8.end();
+ /*
+ var $test9 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Trigger_Ral_0009", "verify the Initiate Failover");
+ $test9.start();
+ Trigger_Ral_Initiate_Failover_0009();
+ $test9.end();
+ 
+ var $test10 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Trigger_Ral_0010", "verify the command execution in custom action Ral");
+ $test10.start();
+ TriggerRal_Move_Group_Failover_Active_0010();
+ $test10.end();
+ 
+
+ var $test11 = _testcase("DRM_Frame_Work/WFM_NewUI/Workflow_Manager/Change_Directory/Trigger_Ral_0010", "verify the Initiate Fall back");
+ $test11.start();
+ Trigger_Ral_Initiate_Fallback_0011();
+ $test11.end();
+*/

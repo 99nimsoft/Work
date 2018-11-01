@@ -1,0 +1,571 @@
+
+function MYSQL_FDB_HP3PAR_Component_Local_Discovery_0002() {
+	try {
+		Create_Local_ComponentPR();
+		Create_Local_ComponentDR();
+		} catch ($e) {
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Component_Local_Discovery_0002(),Function: Create_Local_ComponentPR or Create_Local_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("component not created succesfully.So that stopping execution.");
+	}
+}
+
+function MYSQL_FDB_HP3PAR_Component_Remote_Discovery_0018() {
+	try {
+		Create_Remote_ComponentPR();
+		Create_Remote_ComponentDR();
+		} catch ($e) {
+		_assertTrue(false);	
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Component_Remore_Discovery_0018(),Function: Create_Remote_ComponentPR or Create_Remote_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("component not created succesfully.So that stopping execution.");
+	}
+}
+
+function MYSQL_FDB_HP3PAR_Dataset_Discovery_0007() {
+	try {
+		Create_Mysql_DatasetPR();
+		Create_Mysql_DatasetDR();
+		} catch ($e) { 
+		_assertTrue(false);	
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:MYSQL_FDB_HP3PAR_Dataset_Discovery_0007(),Function: Create_MYSQL_FDB_HP3PAR_DatasetPR or Create_MYSQL_FDB_HP3PAR_DatasetPR ,execution got failed.kindly check the log for more details");
+		_fail("dataset not created succesfully.So that stopping execution.");
+	}
+
+}
+
+function MYSQL_FDB_HP3PAR_Dataset_status_0011() {
+	try {
+		Get_Dataset_Status_Gui_PR();
+		} catch ($e) { 
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:MYSQL_FDB_HP3PAR_Dataset_status_0011(),Function: Get_Dataset_Status_Gui_PR ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		Get_Dataset_Status_Gui_DR();
+		} catch ($e) {
+		_assertTrue(false);	
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:MYSQL_FDB_HP3PAR_Dataset_status_0011(),Function: Get_Dataset_Status_Gui_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MYSQL_FDB_HP3PAR_Protectionscheme_Discovery_0018() {
+	try {
+		Create_Mysql_ProtectionschemePR();
+		Create_Mysql_ProtectionschemeDR();
+		} catch ($e) {
+		_assertTrue(false);	
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MYSQL_FDB_HP3PAR_Protectionscheme_Discovery_0018(),Function: Create_MYSQL_FDB_HP3PAR_ProtectionschemePR or Create_MYSQL_FDB_HP3PAR_ProtectionschemeDR ,execution got failed.kindly check the log for more details");
+		_fail("Protection Schemes not created succesfully.So that stopping execution.");
+	}
+}
+
+function MYSQL_FDB_HP3PAR_Protectionscheme_status_0021() {
+	try {
+		Get_Protectionscheme_Status_Gui_PR();
+		} catch ($e) { 
+		_assertTrue(false);	
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MYSQL_FDB_HP3PAR_Protectionscheme_status_0021(),Function: Get_Protectionscheme_Status_Gui_PR ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		Get_Protectionscheme_Status_Gui_DR();
+		} catch ($e) { 
+		_assertTrue(false);	
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MYSQL_FDB_HP3PAR_Protectionscheme_status_0021(),Function: Get_Protectionscheme_Status_Gui_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MYSQL_FDB_HP3PAR_GroupCreation_0022() {
+	try {
+		MYSQL_FDB_HP3PAR_Create_FG();
+		} catch ($e) { 
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MYSQL_FDB_HP3PAR_GroupCreation_0022(),Function: MYSQL_FDB_HP3PAR_Create_FG ,execution got failed.kindly check the log for more details");
+		_fail("Group not created succesfully.So that stopping execution.");
+	}
+
+}
+
+function MYSQL_FDB_HP3PAR_Move_Group_Manage_0006() {
+	try {
+		Move_To_Manage_Group($groupName);
+		} catch ($e) {
+		_assertTrue(false);	
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Move_Group_Manage_0006(),Function: Move_To_Manage_Group ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+
+}
+
+function MYSQL_FDB_HP3PAR_Component_Status_0001() {
+	try {
+		Verify_Component_Status_PR($agentType);
+		Verify_Component_Status_DR($agentType);
+		} catch ($e) {
+		_assertTrue(false);	
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Component_Status_0001(),Function: Verify_Component_Status_PR or Verify_Component_Status_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+
+function Verify_Events_GetStatustclTo_UNKNOWN_PR_Remote() {
+	try {
+		Events_GetStatustclTo_UNKNOWN_PR_Remote();
+	     } catch ($e) { 
+	    _assertTrue(false);	 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Verify_Events_GetStatustclTo_UNKNOWN_PR_DR(),execution got failed.kindly check the log for more details");
+	}
+}
+function Verify_Events_GetStatustclTo_INACTIVE_PR_Remote() {
+	try {
+		Events_GetStatustclTo_INACTIVE_PR_Remote();
+		} catch ($e) { 
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Verify_Events_GetStatustclTo_INACTIVE_PR_DR() ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Verify_Events_GetStatustclTo_UNKNOWN_DR_Remote() {
+	try {
+		Events_GetStatustclTo_UNKNOWN_DR_Remote();
+		} catch ($e) {
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Verify_Events_GetStatustclTo_UNKNOWN_PR_DR(),execution got failed.kindly check the log for more details");
+	}
+}
+function Verify_Events_GetStatustclTo_INACTIVE_DR_Remote() {
+	try {
+		Events_GetStatustclTo_INACTIVE_DR_Remote();
+		} catch ($e) { 
+		_assertTrue(false);	
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Verify_Events_GetStatustclTo_INACTIVE_PR_DR() ,execution got failed.kindly check the log for more details");
+	}
+}
+function Verify_Events_GetStatustclTo_UNKNOWN_PR_Local() {
+	try {
+		Events_GetStatustclTo_UNKNOWN_PR_Local();
+		} catch ($e) { 
+		_assertTrue(false);	
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MYSQL_FDB_HP3PAR_Stop_replication_0051(),Function: MYSQL_FDB_HP3PAR_Stop_Replication_event ,execution got failed.kindly check the log for more details");
+	}
+}
+function Verify_Events_GetStatustclTo_INACTIVE_PR_Local() {
+	try {
+		Events_GetStatustclTo_INACTIVE_PR_Local();
+		} catch ($e) { 
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MYSQL_FDB_HP3PAR_Stop_replication_0051(),Function: MYSQL_FDB_HP3PAR_Stop_Replication_event ,execution got failed.kindly check the log for more details");
+	}
+}
+function Verify_Events_GetStatustclTo_UNKNOWN_DR_Local() {
+	try {
+		Events_GetStatustclTo_UNKNOWN_DR_Local();
+		} catch ($e) {
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MYSQL_FDB_HP3PAR_Start_replication_0052(),Function: MYSQL_FDB_HP3PAR_Start_Replication_event ,execution got failed.kindly check the log for more details");
+	}
+}
+		
+function Verify_Events_GetStatustclTo_INACTIVE_DR_Local() {
+	try {
+		Events_GetStatustclTo_INACTIVE_DR_Local();
+		} catch ($e) {
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MYSQL_FDB_HP3PAR_Start_replication_0052(),Function: MYSQL_FDB_HP3PAR_Start_Replication_event ,execution got failed.kindly check the log for more details");
+	}
+}
+		
+
+function Create_MySQL_FDB_PR() {
+	try {
+		Create_MysqlDatabase($mysqldbusername, $mysqldbpswd, $compIPPR, $databaseNamePR);
+		} catch ($e) { 
+		_log("Database already exist");
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Create_MySQL_FDB_PR(),Function: Create_MySQL_FDB_PR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Create_MySQL_FDB_DR() {
+	try {
+		Create_MysqlDatabase($mysqldbusername, $mysqldbpswd, $compIPDR, $databaseNameDR);
+		} catch ($e) { 
+		_log("Database already exist");
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Create_MySQL_FDB_DR() ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Drop_MySQL_FDB_DR_DB() {
+	try {
+		Drop_MysqlDatabase($mysqldbusername, $mysqldbpswd, $compIPDR, $databaseNameDR);
+		} catch ($e) {
+		_log("Database already exist");	
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Drop_MySQL_FDB_DR() ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Drop_MySQL_FDB_PR_DB() {
+	try {
+		Drop_MysqlDatabase($mysqldbusername, $mysqldbpswd, $compIPPR, $databaseNamePR);
+		} catch ($e) {
+		_log("Database already exist");
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Drop_MySQL_FDB_PR_DB() ,execution got failed.kindly check the log for more details");
+	}
+}
+function ADD_HP3PAR_TCL_Remote() {
+	try {
+		add_HP3PAR_RepInfo_getStatusTcl($drmServer, $drmUserName, $drmPassword,$EAMSROOT);
+		add_HP3PAR_StopTcl($drmServer, $drmUserName, $drmPassword,$EAMSROOT);
+		add_HP3PAR_StartTcl($drmServer, $drmUserName, $drmPassword,$EAMSROOT);
+		} catch ($e) { 
+		_assertTrue(false);	
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: ADD_HP3PAR_TCL_Remote() ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function ADD_HP3PAR_TCL_PR_LOCAL() {
+    try {
+           add_HP3PAR_RepInfo_getStatusTcl($compIPPR, $remoteUserNameValPR, $remotePwdValPR,$localAgentPathtcleditPR);
+           add_HP3PAR_StopTcl($compIPPR, $remoteUserNameValPR, $remotePwdValPR,$localAgentPathtcleditPR);
+           add_HP3PAR_StartTcl($compIPPR, $remoteUserNameValPR, $remotePwdValPR,$localAgentPathtcleditPR);
+           } catch ($e) {
+        	 _assertTrue(false);
+           _log($e.toString(),"Custom1");
+           _log("for test Case ID: ADD_HP3PAR_TCL_PR_LOCAL() ,execution got failed.kindly check the log for more details");
+    }
+}
+
+function ADD_HP3PAR_TCL_DR_LOCAL() {
+    try {
+           add_HP3PAR_RepInfo_getStatusTcl($compIPDR, $remoteUserNameValDR, $remotePwdValDR,$localAgentPathtcleditDR);
+           add_HP3PAR_StopTcl($compIPDR, $remoteUserNameValDR, $remotePwdValDR,$localAgentPathtcleditDR);
+           add_HP3PAR_StartTcl($compIPDR, $remoteUserNameValDR, $remotePwdValDR,$localAgentPathtcleditDR);
+           } catch ($e) {
+        	 _assertTrue(false);   
+           _log($e.toString(),"Custom1");
+           _log("for test Case ID: ADD_HP3PAR_TCL_DR_LOCAL() ,execution got failed.kindly check the log for more details");
+    }
+}
+function Publish_BP_workflow_MySQL_FDB_HP3PAR_Remote() {
+	try {
+		Publish_BP_workflow($tclpath,$agentnode);
+		} catch ($e) { 
+		_assertTrue(false);	
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Publish_BP_workflow_MySQL_FDB_HPRPAR() ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Publish_BP_workflow_MySQL_FDB_HP3PAR_PR() {
+	try {
+		var $tclpath = $localAgentPathPR+$refInfoTclPathPRDR;
+		var $agentnode =$compNamePR;
+		Publish_BP_workflow($tclpath,$agentnode);
+		} catch ($e) {
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Publish_BP_workflow_MySQL_FDB_HP3PAR_PR() ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Publish_BP_workflow_MySQL_FDB_HP3PAR_DR() {
+	try {
+		var $tclpath = $localAgentPathDR+$refInfoTclPathPRDR;
+		var $agentnode =$compNameDR;
+		Publish_BP_workflow_DR($tclpath,$agentnode);
+		} catch ($e) { 
+		_assertTrue(false);	
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Publish_BP_workflow_MySQL_FDB_HP3PAR_DR() ,execution got failed.kindly check the log for more details");
+	}
+}
+function MYSQL_FDB_HP3PAR_Replication_0028() {
+	try {
+		RefeshDetails_Replication($groupName);
+		} catch ($e) { 
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MYSQL_FDB_HP3PAR_Replication_0028 ,Function: execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+function Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_Remote_Deviated() {
+	try {
+		
+		RefeshDetails_Replication($groupName);
+		edit_replicationInfotcl_HP3PAR($drmServer, $drmUserName, $drmPassword," ", $datalag ,$EAMSROOT);
+		Datalag_Threshold_Deviation();
+		edit_replicationInfotcl_HP3PAR($drmServer, $drmUserName, $drmPassword," ", $datalag1 ,$EAMSROOT);
+		RefeshDetails_Replication($groupName);
+		} catch ($e) {
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_PR_Deviated() ,execution got failed.kindly check the log for more details");
+	}
+}
+ 
+
+
+function Verify_ProtectionStatus_GetSatatusTCL_RepState_Unknown_RemotePRDR() {
+    try { 
+    	ProtectionStatus_GetSatatusTCL_RepState_Unknown_Remote_PR();
+    	 ProtectionStatus_GetSatatusTCL_RepState_Unknown_Remote_DR();
+		} catch ($e) {
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Verify_ProtectionStatus_GetSatatusTCL_RepState_Unknown_RemotePRDR() ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Verify_ProtectionStatus_GetSatatusTCL_RepState_Active_RemotePRDR() {
+    try { 
+    	ProtectionStatus_GetSatatusTCL_RepState_Active_Remote_PR();
+    	ProtectionStatus_GetSatatusTCL_RepState_Active_Remote_DR();
+		} catch ($e) { 
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Verify_ProtectionStatus_GetSatatusTCL_RepState_Active_RemotePRDR() ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Verify_ProtectionStatus_GetSatatusTCL_RepState_INActive_RemotePRDR() {
+    try { 
+    	ProtectionStatus_GetSatatusTCL_RepState_INActive_Remote_PR();
+    	 ProtectionStatus_GetSatatusTCL_RepState_INActive_Remote_DR();
+		} catch ($e) { 
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Verify_ProtectionStatus_GetSatatusTCL_RepState_INActive_RemotePRDR() ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Verify_DatalagEvents_refinfotclTo_INACTIVE_Remote(){
+	 try { 
+		 DatalagEvents_refinfotclTo_INACTIVE_Remote();
+			} catch ($e) { 
+			_assertTrue(false);
+	 		_log($e.toString(),"Custom1");
+			_log("for test Case ID: Verify_DatalagEvents_refinfotclTo_INACTIVE_Remote() ,execution got failed.kindly check the log for more details");
+		}	
+}
+
+function Verify_DatalagEvents_refinfotclTo_INACTIVE_Local_PR(){
+	try { 
+		DatalagEvents_refinfotclTo_INACTIVE_Local_PR();
+		} catch ($e) { 
+	_assertTrue(false);
+	_log($e.toString(),"Custom1");
+	_log("for test Case ID: Verify_DatalagEvents_refinfotclTo_INACTIVE_Local_PR() ,execution got failed.kindly check the log for more details");
+		}	
+}	
+
+function Verify_DatalagEvents_refinfotclTo_INACTIVE_Local_DR(){
+	try { 
+		DatalagEvents_refinfotclTo_INACTIVE_Local_DR();
+		} catch ($e) {
+		_assertTrue(false);
+	_log($e.toString(),"Custom1");
+	_log("for test Case ID: Verify_DatalagEvents_refinfotclTo_INACTIVE_Local_DR() ,execution got failed.kindly check the log for more details");
+		}	
+}		
+
+//for local agent*********************************Normal inactive
+//verify dl & replication status
+function Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_PR_UNKNOWN() {
+	try {
+		edit_replicationInfotcl_HP3PAR($compIPPR, $remoteUserNameValPR, $remotePwdValPR,"rep_state","UNKNOWN",$localAgentPathtcleditPR);
+		RepStatus_DataLag_MySQLFDBHP3PAR_UNKNOWN();
+		} catch ($e) { 
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_PR_UNKNOWN() ,execution got failed.kindly check the log for more details");
+	}
+}
+function Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_PR_ACTIVE() {
+	try {
+		
+		edit_replicationInfotcl_HP3PAR($compIPPR, $remoteUserNameValPR, $remotePwdValPR,"rep_state","ACTIVE",$localAgentPathtcleditPR);
+		RepStatus_DataLag_MySQLFDBHP3PAR_ACTIVE();
+		} catch ($e) {
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_PR_ACTIVE() ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_PR_INACTIVE() {
+	try {
+		edit_replicationInfotcl_HP3PAR($compIPPR, $remoteUserNameValPR, $remotePwdValPR,"rep_state","INACTIVE",$localAgentPathtcleditPR);
+		RepStatus_DataLag_MySQLFDBHP3PAR_INACTIVE();
+		} catch ($e) { 
+		_assertTrue(false);	
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_PR_INACTIVE() ,execution got failed.kindly check the log for more details");
+	}
+}
+//datalag deviation
+function Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_PR_Deviated() {
+	try {
+		edit_replicationInfotcl_HP3PAR($compIPPR, $remoteUserNameValPR, $remotePwdValPR," ",$datalag,$localAgentPathtcleditPR);
+		Datalag_Threshold_Deviation();
+		edit_replicationInfotcl_HP3PAR($compIPPR, $remoteUserNameValPR, $remotePwdValPR," ",$datalag1,$localAgentPathtcleditPR);
+		RefeshDetails_Replication($groupName);
+		} catch ($e) {
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_PR_Deviated() ,execution got failed.kindly check the log for more details");
+	}
+}
+
+//protection schema verification
+
+function Verify_ProtectionSchemeStatus_PR_UNKNOWN() {
+	try {
+		edit_getStatusTcl_HP3PAR($compIPPR, $remoteUserNameValPR, $remotePwdValPR,"rep_state","UNKNOWN",$localAgentPathtcleditPR);
+		$sername=$sernamePR;
+		check_ProtectionStatus_GetSatatusTCL_RepState_Unknown($sername);
+		
+		} catch ($e) { 
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Verify_ProtectionSchemeStatus_PR_UNKNOWN() ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Verify_ProtectionSchemeStatus_PR_ACTIVE() {
+	try {
+		edit_getStatusTcl_HP3PAR($compIPPR, $remoteUserNameValPR, $remotePwdValPR,"rep_state","ACTIVE",$localAgentPathtcleditPR);
+		$sername=$sernamePR;
+		check_ProtectionStatus_GetSatatusTCL_RepState_Active($sername);
+		} catch ($e) {
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Verify_ProtectionSchemeStatus_PR_ACTIVE() ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Verify_ProtectionSchemeStatus_PR_INACTIVE() {
+	try {
+		edit_getStatusTcl_HP3PAR($compIPPR, $remoteUserNameValPR, $remotePwdValPR,"rep_state","INACTIVE",$localAgentPathtcleditPR);
+		$sername=$sernamePR;
+		check_ProtectionStatus_GetSatatusTCL_RepState_INActive($sername);
+		
+		} catch ($e) { 
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Verify_ProtectionSchemeStatus_PR_INACTIVE() ,execution got failed.kindly check the log for more details");
+	}
+}
+
+//for local agent*********************************Switch over inactive
+
+
+function Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_DR_UNKNOWN() {
+	try {
+		edit_replicationInfotcl_HP3PAR($compIPDR, $remoteUserNameValDR, $remotePwdValDR,"rep_state","UNKNOWN",$localAgentPathtcleditDR);
+		RepStatus_DataLag_MySQLFDBHP3PAR_UNKNOWN();
+		} catch ($e) { 
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_DR_UNKNOWN() ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_DR_ACTIVE() {
+	try {
+		
+		edit_replicationInfotcl_HP3PAR($compIPDR, $remoteUserNameValDR, $remotePwdValDR,"rep_state","ACTIVE",$localAgentPathtcleditDR);
+		RepStatus_DataLag_MySQLFDBHP3PAR_ACTIVE();
+		} catch ($e) { 
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_DR_ACTIVE() ,execution got failed.kindly check the log for more details");
+	}
+}
+function Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_DR_INACTIVE() {
+	try {
+		edit_replicationInfotcl_HP3PAR($compIPDR, $remoteUserNameValDR, $remotePwdValDR,"rep_state","INACTIVE",$localAgentPathtcleditDR);
+		RepStatus_DataLag_MySQLFDBHP3PAR_INACTIVE();
+		} catch ($e) { 
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_DR_INACTIVE() ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+function Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_DR_Deviated() {
+	try {
+		edit_replicationInfotcl_HP3PAR($compIPDR, $remoteUserNameValDR, $remotePwdValDR," ",$datalag,$localAgentPathtcleditDR);
+		Datalag_Threshold_Deviation();
+		edit_replicationInfotcl_HP3PAR($compIPDR, $remoteUserNameValDR, $remotePwdValDR," ",$datalag1,$localAgentPathtcleditDR);
+		RefeshDetails_Replication($groupName);
+		} catch ($e) { 
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_DR_Deviated() ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Verify_ProtectionSchemeStatus_DR_UNKNOWN(){
+	try {
+		edit_replicationInfotcl_HP3PAR($compIPDR, $remoteUserNameValDR, $remotePwdValDR,"rep_state","UNKNOWN",$localAgentPathtcleditDR);
+		$sername=$sernameDR;
+		check_ProtectionStatus_GetSatatusTCL_RepState_Unknown($sername);
+		} catch ($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Verify_RepStatus_DataLag_MySQL_FDB_HP3PAR_DR_UNKNOWN() ,execution got failed.kindly check the log for more details");
+	}
+	}
+function Verify_ProtectionSchemeStatus_DR_ACTIVE() {
+	try {
+		edit_getStatusTcl_HP3PAR($compIPDR, $remoteUserNameValDR, $remotePwdValDR,"rep_state","ACTIVE",$localAgentPathtcleditDR);
+		$sername=$sernameDR;
+		check_ProtectionStatus_GetSatatusTCL_RepState_Active($sername);
+		} catch ($e) { 
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Verify_ProtectionSchemeStatus_DR_ACTIVE() ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Verify_ProtectionSchemeStatus_DR_INACTIVE() {
+	try {
+		edit_getStatusTcl_HP3PAR($compIPDR, $remoteUserNameValDR, $remotePwdValDR,"rep_state","INACTIVE",$localAgentPathtcleditDR);
+		$sername=$sernameDR;
+		check_ProtectionStatus_GetSatatusTCL_RepState_INActive($sername);
+		} catch ($e) { 
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Verify_ProtectionSchemeStatus_DR_INACTIVE() ,execution got failed.kindly check the log for more details");
+	}
+}
+

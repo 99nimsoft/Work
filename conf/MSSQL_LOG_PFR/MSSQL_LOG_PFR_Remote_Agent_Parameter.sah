@@ -1,0 +1,121 @@
+var $l_MssqllogpfrInputs = _readExcelFile($SAHI_HOME + "\\conf\\MSSQL_LOG_PFR\\MSSQL_LOG_PFR_Parameter.xls","Remote");
+
+// DRM GUI Details
+var $username = $l_MssqllogpfrInputs[2][2]; // DRM server GUI user name e.g. "abc"
+var $password = $l_MssqllogpfrInputs[3][2]; // DRM server GUI pwd
+
+
+//Connectivity of mssql
+var $database= $l_MssqllogpfrInputs[6][2];
+var $userPR = $l_MssqllogpfrInputs[7][2]; // for mssql db connection
+var $pwdPR = $l_MssqllogpfrInputs[8][2];  // for mssql db connection
+var $userDR = $l_MssqllogpfrInputs[9][2];  // for mssql db connection
+var $pwdDR = $l_MssqllogpfrInputs[10][2];  // for mssqldb connection
+
+//This user Input required to create the Site
+var $locationPR = "PR"; // PR Site Location
+var $incharge = "drmadmin"; // Site Incharge
+var $addressPR = "Mumbai"; // PR site Address
+var $locationDR = "DR"; // DR Site Location
+var $addressDR = "Bangalore";// DR site Address
+ 
+// This user Input required to create the Component for Local or remote 
+var $systemType= "Windows";
+var $osType = "Windows";
+var $compNamePR= $l_MssqllogpfrInputs[2][5]; //"WIN_67_PR";   
+var $compNameDR= $l_MssqllogpfrInputs[3][5]; //"win_50_DR";    
+var $compIPPR= $l_MssqllogpfrInputs[4][5];
+var $compIPDR= $l_MssqllogpfrInputs[5][5];
+
+var $credList= "Add new credential";
+var $remoteUserNameValPR= $l_MssqllogpfrInputs[6][5];
+var $remotePwdValPR= $l_MssqllogpfrInputs[8][5];
+var $remoteUserNameValDR= $l_MssqllogpfrInputs[7][5];
+var $remotePwdValDR= $l_MssqllogpfrInputs[9][5];
+var $agentType = "Remote";
+
+// This user Input required to create the dataset 
+var $systemTypeDataset= "MSSQL";
+var $datasetNamePR= $l_MssqllogpfrInputs[13][2]; //"MSSQL_PR_67";      
+var $datasetNameDR= $l_MssqllogpfrInputs[14][2]; //"MSSQL_DR_50";      
+var $instanceName= $l_MssqllogpfrInputs[15][2];  
+var $usernamedb= $l_MssqllogpfrInputs[16][2];       
+var $port= $l_MssqllogpfrInputs[17][2];         
+
+// This user Input required to create the protection Scheme
+var $systemTypeProtection = "PFR";
+var $sernamePR =  $l_MssqllogpfrInputs[20][2];  //"MSSQL_PFR_PR";  
+var $sernameDR =  $l_MssqllogpfrInputs[21][2]; //"MSSQL_PFR_DR";
+var $mgmtHostPFRPR = $compNamePR + " (" + $compIPPR + ")"; //"Win_67_PR (192.168.20.67)"; 
+var $mgmtHostPFRDR = $compNameDR + " (" + $compIPDR + ")"; //"win_50_DR (172.168.20.50)";
+
+// This user Input required to create the Group
+var $groupName = $l_MssqllogpfrInputs[24][2];
+var $groupDescription = "MSSQL";
+var $SolutionSignature ="MSSQL Logs with PFR";
+var $undoPR=$l_MssqllogpfrInputs[25][2];
+var $undoDR=$l_MssqllogpfrInputs[26][2];
+var $backupPR=$l_MssqllogpfrInputs[27][2];
+var $backupDR=$l_MssqllogpfrInputs[28][2];
+
+//workflow path
+var $WFPath = "MSSQL\\MSSQLLogPFR"; // Location of SO/SB/FO xml file
+var $fileSO = "BCS-MSSQLLogPFR-SO.xml"; // Location of SO xml file
+var $fileSB = "BCS-MSSQLLogPFR-SB.xml"; // Location of SB xml file
+var $pstoolPath = $SAHI_HOME + "\\tools\\PsExec"; //pstool file path
+
+
+//for Panaces agent property file for remote agents
+
+var $UserInstallDirforRemote=$l_MssqllogpfrInputs[12][5];
+var $AgentStartYes=$l_MssqllogpfrInputs[13][5];
+
+
+//for installing agents
+var $fileName=$l_MssqllogpfrInputs[16][5];//Panaces agent property file path
+var $installexepath=$l_MssqllogpfrInputs[17][5];//keep the path of install.exe same in pr and dr
+var $pfrexepath=$l_MssqllogpfrInputs[18][5];//keep the path of PFR.exe same in pr and dr
+
+//Edit work flow  File 
+var $backupPathPR=$l_MssqllogpfrInputs[24][5];
+var $backupPathDR=$l_MssqllogpfrInputs[25][5];
+
+//Edit work flow  File for Trans log path
+var $transPathPR=$l_MssqllogpfrInputs[26][5];
+var $transPathDR=$l_MssqllogpfrInputs[27][5];
+
+var $undoPathPR=$l_MssqllogpfrInputs[25][2];
+var $undoPathDR=$l_MssqllogpfrInputs[26][2];   
+
+//Create file set
+
+var $installexepathPR=$l_MssqllogpfrInputs[24][5];
+	
+var $installexepathDR=$l_MssqllogpfrInputs[25][5];
+	
+	
+//Common
+var $compsitePR = $locationPR;  
+var $compsiteDR = $locationDR; 
+var $dependentComponentNamePR= $compNamePR;
+var $dependentComponentNameDR= $compNameDR;
+var $primaryComponents=$compNamePR;
+var $remoteComponents=$compNameDR;
+var $primaryDatasets=$datasetNamePR;
+var $remoteDatasets=$datasetNameDR;
+var $primaryProtections=$sernamePR;
+var $remoteProtections=$sernameDR;
+var $databaseName= $database;
+var $datasetType=$systemTypeDataset;
+var $ipPR= $compIPPR;
+var $ipDR=$compIPDR;
+var $installbinpath=$fileName;
+var $sourcePath = $SAHI_HOME +"\\tools\\sed";
+
+
+var $PfrServicePath=$l_MssqllogpfrInputs[30][2]; 
+var $agentBuildPR=$l_MssqllogpfrInputs[31][2]; 
+var $agentBuildDR=$l_MssqllogpfrInputs[32][2]; 
+
+
+

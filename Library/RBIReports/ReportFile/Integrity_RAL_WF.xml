@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?><ws:workflow xmlns:ws="http://www.sanovi.com/panaces/workflow/">
+    <userDef size="0"/>
+    <name>IntegrityCheck</name>
+    <version>7.1 SP136058</version>
+    <description>null</description>
+    <approverList/>
+    <action-list>
+        <action id="0" successPathId="1" failurePathId="1">
+            <registeredName>Custom</registeredName>
+            <name>Custom</name>
+            <uniqueName/>
+            <description>This is Custom action</description>
+            <timeToExecute>0</timeToExecute>
+            <recurrence>0</recurrence>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction etcComputationType="userDefined">
+                    <serverName/>
+                    <command/>
+                    <timeout>180</timeout>
+                    <sudoUsername/>
+                    <execDir/>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>8812</joinId>
+            <version>7.1 SP136058</version>
+        </action>
+        <action id="1" successPathId="2" failurePathId="2">
+            <registeredName>PFROperation</registeredName>
+            <name>PFROperation</name>
+            <description>PFROperation action</description>
+            <deletable>false</deletable>
+            <operationType>10</operationType>
+            <actionFailureEvent severity="INFO"/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:pfrOperationAction operation="create_fs" serviceName="Current Production Service" configuration="dynamic">
+                    <fileset>
+                        <name/>
+                        <sourceHost>Current Production Component</sourceHost>
+                        <targetHost>Current DR Component</targetHost>
+                        <replicationInterval>150</replicationInterval>
+                        <replicationState>DISABLED</replicationState>
+                        <targetDirectory>/opt/drill</targetDirectory>
+                        <sourceDirectory>/opt/drill</sourceDirectory>
+                        <initialSynchronization/>
+                        <filters/>
+                        <largeFileSupport enableLargeFileSupport="false" largeFileSize="1024"/>
+                        <compression enableCompression="false" compressionLevel="8"/>
+                        <staging enableStaging="false"/>
+                    </fileset>
+                </ws:pfrOperationAction>
+            </privateProperties>
+            <joinId>8813</joinId>
+            <version>7.1 SP136058</version>
+        </action>
+        <action id="2" final="true">
+            <registeredName>Custom</registeredName>
+            <name>Custom</name>
+            <uniqueName/>
+            <description>This is Custom action</description>
+            <timeToExecute>0</timeToExecute>
+            <recurrence>0</recurrence>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction etcComputationType="userDefined">
+                    <serverName/>
+                    <command/>
+                    <timeout>180</timeout>
+                    <sudoUsername/>
+                    <execDir/>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>8814</joinId>
+            <version>7.1 SP136058</version>
+        </action>
+    </action-list>
+</ws:workflow>

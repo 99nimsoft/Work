@@ -1,0 +1,76 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the Remote Agents parameters for APP PFR
+ ** AuthorName : Govinda Mengji
+ ** Created Date : Nov 2013
+ ***********************************************************************************************/
+
+var $thread = _sessionInfo().threadNumber;
+
+//------------------------------------------------------------------------------------------------------------------------//
+
+var $GC = _readExcelFile($SAHI_HOME+ "\\conf\\GlobalConsole\\GlobalConsole.xls","RG_Details");
+
+var $drmServer = $GC[$thread+9][1];
+var $username = $GC[$thread+9][2];
+var $password = $GC[$thread+9][3];
+var $compIPPR = $GC[$thread+9][4];
+var $compIPDR = $GC[$thread+9][5];
+var $remoteUserNameValPR = $GC[$thread+9][6];
+var $remotePwdValPR = $GC[$thread+9][7];
+var $remoteUserNameValDR = $GC[$thread+9][8];
+var $remotePwdValDR = $GC[$thread+9][9];
+var $compNamePR = $GC[$thread+9][10];
+var $compNameDR = $GC[$thread+9][11];
+var $datasetNamePR = $GC[$thread+9][12];
+var $datasetNameDR = $GC[$thread+9][13];
+var $fileNameTextPathPR = $GC[$thread+9][14];
+var $fileNameTextPathDR = $GC[$thread+9][15];
+var $sernamePR = $GC[$thread+9][16];
+var $sernameDR = $GC[$thread+9][17];
+var $groupName = $GC[$thread+9][18];
+var $osType = $GC[$thread+9][19];
+var $systemType = $GC[$thread+9][20];
+
+var $primaryDatasets = $datasetNamePR;
+var $remoteDatasets = $datasetNameDR;
+
+var $primaryProtections = $sernamePR;
+var $remoteProtections = $sernameDR;
+
+//------------------------------------------------------------------------------------------------------------------------//
+
+var $GC_DATA = _readExcelFile($SAHI_HOME+ "\\conf\\GlobalConsole\\GlobalConsole.xls","GC_DATA");
+var $numberOfROToRemove = $GC_DATA[0][2];
+var $AddedROServer = $GC_DATA[1][2];
+var $AddedROServerUserName = $GC_DATA[2][2];
+var $AddedROServerPassword = $GC_DATA[3][2];
+var $isAddedROServerSecured = $GC_DATA[4][2];
+var $portAddedROServer = $GC_DATA[5][2];
+
+
+var $dependentComponentNamePR = $compNamePR;
+var $dependentComponentNameDR = $compNameDR;
+
+var $tmpCompIP = "";
+var $userPassword = "Cloud123456789$";
+
+var $nameColumnsTableTC16 = $GC_DATA[7][2];
+
+//------------------------------------------------------------------------------------------------------------------------//
+
+var $GC_inst = _readExcelFile($SAHI_HOME+ "\\conf\\GlobalConsole\\GlobalConsole.xls","Installation");
+
+var $ROServer = $GC_inst[$thread+7][1];
+var $UserName = $GC_inst[$thread+7][2];
+var $PassWord = $GC_inst[$thread+7][3];
+var $SecuredURL = $GC_inst[$thread+7][4];
+var $UrlPortNO = $GC_inst[$thread+7][5];
+
+
+
+
+
+
+

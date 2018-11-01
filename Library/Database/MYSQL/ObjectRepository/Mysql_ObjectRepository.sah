@@ -1,0 +1,44 @@
+
+/****************************** MSSQL_PFR ******************************/
+
+var $Excel1=_getExcel($SAHI_HOME + "\\Library\\Database\\Sybase\\ObjectRepository\\Mysql_ObjectRepository.xls","Mysql");
+
+
+var $Excel=$Excel1.getData();
+
+if($BrowserLang == "N"){
+
+	var $j = 2;
+}
+else if($BrowserLang == "Y-JA"){
+	
+	var $j = 3;
+	}
+
+else if($BrowserLang == "Y-EN"){
+		
+		var $j = 3;
+	}
+
+var $Subsystems=$Excel[2][$j];
+var $Datasets=$Excel[3][$j];
+var $systemType=$Excel[4][$j];
+var $Go=$Excel[5][$j];
+var $dependentComponentName=$Excel[6][$j];
+var $datasetType=$Excel[7][$j];
+var $RegisterAgent=$Excel[8][$j];
+var $datasetName=$Excel[9][$j];
+var $mysqlData=$Excel[10][$j];
+var $adddatadir=$Excel[11][$j];
+var $ip=$Excel[12][$j];
+var $port=$Excel[13][$j];
+var $username=$Excel[14][$j];
+var $password=$Excel[15][$j];
+var $binLogdirectory=$Excel[16][$j];
+var $dbName=$Excel[17][$j];
+var $TestCredentials1=$Excel[18][$j];
+var $Discover=$Excel[19][$j];
+var $Socket=$Excel[20][$j];
+var $Save=$Excel[21][$j];
+
+

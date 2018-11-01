@@ -1,0 +1,313 @@
+
+
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Sybaselication Name : DRM 
+ ** Objective : This script contains all the Local agent test cases which are the part of  Sybase_PFR solution. 
+ ** AuthorName : Govinda Mengji
+ ** Created Date : June 2013
+ ************************************************************************/
+
+_log("=================================Pre-Condition===================================","Custom1");
+
+//don't change the below line.
+//_include("../Library/Solution_Signature/Include/Sybase_PFR_Include.sah");
+_include("../Library/Solution_Signature/Include/Sybase_FullDB_HP3PAR_Include.sah");
+_include("../Library/Replication/HP3PAR/HP3PAR_Common.sah");
+_include("../conf/DRMInstallation_Parameter.sah");
+//_include("../conf/DRMInstallation_Parameter_New.sah");
+_include("../conf/Sybase_FullDB_HP3PAR/Sybase_FullDB_HP3PAR_Local_Agent_Parameter.sah");
+_include("../conf/Sybase_FullDB_HP3PAR/UserSelected_Sybase_FullDB_HP3PAR_Testcase.sah");
+_include("../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+
+_include("../Library/Database/Sybase/ObjectRepository/Sybase_ObjectRepository.sah");
+
+// *************************************************************************************************************************************************
+// Notes: below test cases for Local agent
+
+
+StopSybaseServices($compIPPR,$remoteUserNameValPR, $remotePwdValPR);
+StopSybaseServices($compIPDR,$remoteUserNameValDR, $remotePwdValDR);
+
+
+SetDateForSybase($compIPPR,$remoteUserNameValPR, $remotePwdValPR);
+SetDateForSybase($compIPDR,$remoteUserNameValPR, $remotePwdValDR);
+
+StartSybaseServicesPR($compIPPR,$remoteUserNameValPR, $remotePwdValPR);
+StartSybaseServicesDR($compIPDR,$remoteUserNameValDR, $remotePwdValDR);
+
+
+Delete_Backup_logs_PR($compIPPR,$remoteUserNameValPR, $remotePwdValPR);
+Delete_Backup_logs_DR($compIPDR,$remoteUserNameValDR, $remotePwdValDR);
+
+
+Agent_UnInstllation_001();
+
+AgentBuild_Copy_into_AgentHost_PR(); 
+AgentBuild_Copy_into_AgentHost_DR(); 
+Copy_Property_file();
+Update_SybasePropertyFile_LocalAgent_PR();
+Update_SybasePropertyFile_LocalAgent_DR();  
+Install_Local_Agent_SilentMode_PR();
+Install_Local_Agent_SilentMode_DR(); 
+
+//WorkFlow_copy_001();
+
+
+add_Start_Stop_Tclfiles();
+add_RepInfo_Tclfile();
+
+Login_001();
+
+_log("=================================Test========================================","Custom1");
+
+
+
+if($g_executeSybase_PFRAll == "Y" || $g_siteSybase_PFR == "Y"){
+var $test0 = _testcase("Site_0003","Create New Site");
+$test0.start(); 
+Site_0003();
+$test0.end();
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+var $test1 = _testcase("AgentNodeCreation_001","Create Agent Node");
+$test1.start();
+Agent_node_001();
+$test1.end();
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+var $test2 = _testcase("Creation of Component_0002","Create New Component");
+$test2.start();
+Sybase_FullDB_HP3PAR_Component_Local_Discovery_0002();      
+$test2.end();
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+var $test3 = _testcase("Creation of Dataset_003 ","Dataset Discovery");
+$test3.start();
+Sybase_FullDB_HP3PAR_Dataset_Discovery_0003();
+$test3.end();
+}
+
+ if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+var $test4 = _testcase("Object_Manager/Dataset/Sybase/Ora_Auto_DatasetDiscovery0002","Sybase Auto Dataset Discovery");
+$test4.start();
+Sybase_FullDB_HP3PAR_Auto_DatasetDiscovery0004();
+$test4.end();
+}
+
+
+
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+var $test5 = _testcase("Protection Scheme Discovery_0005","Protection Scheme Discovery");
+$test5.start();
+  Sybase_FullDB_HP3PAR_Protectionscheme_Discovery_0005();
+$test5.end();
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+var $test6 = _testcase("Sybase_HP3PAR Group Creation_0006","Sybase_HP3PAR Group Creation");
+$test6.start();
+Sybase_HP3PAR_GroupCreation_0006();
+$test6.end();
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+var $test7 = _testcase("Move Group to Manage_0007","Move Group to Manage");
+$test7.start();
+Sybase_HP3PAR_Move_Group_Manage_0007();
+$test7.end();
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+var $test9 = _testcase("Post Group Creation_0009","Post Group Creation");
+$test9.start();
+  Sybase_HP3_Post_Group_Creation_0009();
+$test9.end();
+}
+
+
+//Linux
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+var $test10 = _testcase("Component Status_0010","Component Status");
+$test10.start();
+	Sybase_HP3PAR_Component_Status_0010();
+$test10.end();
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+var $test11 = _testcase("Dataset Status_0011","Dataset Status");
+$test11.start();
+  Sybase_HP3PAR_Dataset_status_0011();
+$test11.end();
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+var $test12 = _testcase("Continuity Status_0012","Continuity Status");
+$test12.start();
+ 	Sybase_HP3PAR_Contiunity_Status_0012();
+$test12.end(); 
+}
+
+
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+	var $test13 = _testcase("Edit Replication Workflow_0013","Edit Replication Workflow");
+	$test13.start();
+	Add_BP_RepInfoWorkflw_PR();
+	$test13.end(); 
+	}
+
+
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+var $test13 = _testcase("Edit Replication Workflow_0013","Edit Replication Workflow");
+$test13.start();
+   Edit_Replication_WorkflowTcl_PR_0013();
+$test13.end(); 
+}
+
+
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+	var $test13 = _testcase("Edit Replication Workflow_0013","Datalag got updated  in  the RepInfoTCL");
+	$test13.start();
+	DatalagRepStateUpdted_PR_0028();
+	$test13.end(); 
+	}
+
+
+
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+	var $test15 = _testcase("Sybase Start Replication Workflow Status_0015","Sybase Start Replication Workflow Status");
+	$test15.start();
+	Sybase_Start_Replication_Workflow_PR_0015();
+	$test15.end(); 
+}
+
+
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+	var $test14 = _testcase("Sybase Stop Replication Workflow Status_0014","Sybase Stop Replication Workflow Status");
+	$test14.start();
+	Sybase_Stop_Replication_Workflow_PR_0014();
+	$test14.end(); 
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+	var $test17 = _testcase("Sybase Protection Schema Status UnKnown_0017","Sybase Protection Schema Status UnKnown");
+	$test17.start();
+	Status_UnKnown_ProtectionSchema_0017();
+	$test17.end(); 
+}
+	
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+	var $test16 = _testcase("Sybase Protection Schema Status InActive _0016","Sybase Protection Schema Status InActive ");
+	$test16.start();
+	Status_InActive_ProtectionSchema_PR_0016();
+	$test13.end(); 
+}
+
+
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+	var $test29 = _testcase("Sybase Protection Schema Status InActive _0016","Sybase Protection Schema Status InActive ");
+	$test29.start();
+	Status_Active_ProtectionSchema_PR_0029();
+	$test29.end(); 
+}
+/*
+if($g_executeSybase_PFRAll == "Y" || $g_continuityStatusSybase_PFR == "Y"){
+	var $test13 = _testcase("Continuity_Manager/Common/FG/Monitor/MON_0002","Continuity Status");
+	$test13.start();
+	Sybase_EventVerification_RepInfo_PR();
+	$test13.end(); 
+	}
+*/
+
+
+
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+	var $test18 = _testcase("Status InActive Event Verification_0018","Status InActive Event Verification");
+	$test18.start();
+	State_Inactive_EventVerification_0018();
+	$test18.end(); 
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+	var $test19 = _testcase("Status Unknown Event Verification_0019","Status Unknown Event Verification");
+	$test19.start();
+	State_Unknown_EventVerification_0019();
+	$test19.end(); 
+}	
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+	var $test20 = _testcase("Change Continuity StateGroup_0020","Change Continuity StateGroup During SO");
+	$test20.start();
+	Change_ContinuityStatus_Group_SO_0020();
+	$test20.end(); 
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+	var $test13 = _testcase("Edit Replication Workflow_0013","Edit Replication Workflow");
+	$test13.start();
+    Add_BP_RepInfoWorkflw_DR();  
+	$test13.end(); 
+	}
+
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+	var $test21 = _testcase("Edit Replication WorkflowTickle DR_0021","Edit Replication Workflow");
+	$test21.start();
+	Edit_Replication_WorkflowTickle_DR_0021();
+	$test21.end(); 
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+	var $test22 = _testcase("Stop_Replication_Workflow_DR_0022","Sybase Stop Replication Workflow Status");
+	$test22.start();
+	Sybase_Stop_Replication_Workflow_DR_0022();
+	$test22.end(); 
+}
+	
+
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+	var $test23 = _testcase("Sybase_Start_Replication_Workflow_DR_0023","Sybase Start Replication Workflow Status");
+	$test23.start();
+	Sybase_Start_Replication_Workflow_DR_0023();
+	$test23.end(); 
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+	var $test24 = _testcase("Status_InActive_ProtectionSchema_DR_0024","Status InActive Protection Schema");
+	$test24.start();
+	Status_InActive_ProtectionSchema_DR_0024();
+	$test24.end(); 
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+	var $test25 = _testcase("Status_UnKnown_ProtectionSchema_0025","Status UnKnown Protection Schema");
+	$test25.start();
+	Status_UnKnown_ProtectionSchema_0025();
+	$test25.end(); 
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+	var $test26 = _testcase("State_Inactive_EventVerification_0026","Status InActive Event Verification");
+	$test26.start();
+	State_Inactive_EventVerification_0026();
+	$test26.end(); 
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+	var $test27 = _testcase("State_Unknown_EventVerification_0027","Status Unknown Event Verification");
+	$test27.start();
+	State_Unknown_EventVerification_0027();
+	$test27.end(); 
+}
+if($g_executeSybase_PFRAll == "Y" || $g_Validation_Manager_Execution == "Y"){
+	var $test50 = _testcase("APP_PFR/APP_PFR_Group_Health_Status_0101","Validation Manager Execution");
+	$test50.start();
+	Validation_Manager_Execution();
+	$test50.end();
+	}
+
+
+_log("================================Post-Condition================================== ","Custom1");
+
+Logout_001(); 

@@ -1,0 +1,119 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains APP PFR Solution specific
+ ** AuthorName : 
+ ** Created Date : 
+ ***********************************************************************************************/
+
+var $Excel1=_getExcel($SAHI_HOME + "\\Library\\RBIReports\\ObjectRepository\\RBI_Banking_Report_ObjectRepository.xls","Param");
+
+var $Excel=$Excel1.getData();
+
+if($BrowserLang == "N"){
+
+	var $j = 2;
+}
+else if($BrowserLang == "Y-JA"){
+	
+	var $j = 3;
+	}
+
+else if($BrowserLang == "Y-EN"){
+		
+		var $j = 3;
+	}
+////////////////////Solution\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+var $IntegrityCheckReport=$Excel[2][$j];
+var $Summary=$Excel[3][$j];
+var $executiveSummary=$Excel[4][$j];
+var $ApplicationDRIntegrityDetail=$Excel[5][$j];
+var $executiveSummaryConternt1=$Excel[6][$j];
+var $executiveSummaryConternt=$Excel[7][$j];
+var $groupsRBIReports=$Excel[8][$j];
+var $Introduction=$Excel[9][$j];
+var $Edit=$Excel[10][$j];
+var $ClickonEditlinktoupdateIntroductionEdit=$Excel[11][$j];
+var $drSetupTextEdit=$Excel[12][$j];
+var $Save=$Excel[13][$j];
+var $drSetupDescContent=$Excel[14][$j];
+var $ReportIntroductiondetailsentry=$Excel[15][$j];
+var $DRSetupandscopeofDrill=$Excel[16][$j];
+var $ThebankhasaBCPandITDRpolicythatisgenerated=$Excel[17][$j];
+var $Drsetupdetailsentry=$Excel[18][$j];
+var $ClickonEditlinktoupdateDRSetDescriptionEdit=$Excel[19][$j];
+var $drSetupScopeTextEdit=$Excel[20][$j];
+var $Save1=$Excel[21][$j];
+var $drSetupDescScopeContent=$Excel[22][$j];
+var $ScenarioTested=$Excel[23][$j];
+var $ApplicationRecoveryGroup=$Excel[24][$j];
+var $Statuscomments=$Excel[25][$j];
+var $DRDrillDetails=$Excel[26][$j];
+var $DRSolutionSignature=$Excel[27][$j];
+var $ComponentDetails=$Excel[28][$j];
+var $ReplicationDetail=$Excel[29][$j];
+var $WorkflowExecutionReport=$Excel[30][$j];
+var $report1=$Excel[31][$j];
+var $WorkflowExecutionReport1=$Excel[32][$j];
+var $report2=$Excel[33][$j];
+var $Conclusion=$Excel[34][$j];
+var $ClickonEditlinktoupdateConclusionEdit=$Excel[35][$j];
+var $VerifiedtheBCPTESTReport=$Excel[36][$j];
+var $drSetupScopeTextEdit=$Excel[37][$j];
+var $Save2=$Excel[38][$j];
+var $drSetupDescContentConclusion=$Excel[39][$j];
+var $FailureDetailByApplication=$Excel[40][$j];
+var $groupHeadLine=$Excel[41][$j];
+var $ApplicationDRReadinessDetail=$Excel[42][$j];
+var $View3=$Excel[43][$j];
+var $RemarkSeriousEventUpdatedRBIReport0024=$Excel[44][$j];
+var $reportContainer=$Excel[45][$j];
+var $ExporttoPDF=$Excel[46][$j];
+var $ExporttoRTF=$Excel[47][$j];
+var $Execute=$Excel[48][$j];
+var $FailureTypeOccurredAtCorrectedAt=$Excel[49][$j];
+var $Systemisawaitinginput=$Excel[50][$j];
+var $NewRalActionRalsExecutionstatusupdatedinRBIFailuretestreports=$Excel[51][$j];
+var $ExecuteWorkflow=$Excel[52][$j];
+var $Drills=$Excel[53][$j];
+var $IntegrityCheck=$Excel[54][$j];
+var $Admin=$Excel[55][$j];
+var $Reports=$Excel[56][$j];
+var $GroupNamenotpreserntinRGList=$Excel[57][$j];
+var $reportTypeRBI=$Excel[58][$j];
+var $imageFromDateDrillRBI=$Excel[59][$j];
+var $Today=$Excel[60][$j];
+var $imageToDateDrillRBI=$Excel[61][$j];
+var $Today1=$Excel[62][$j];
+var $CurrentEvents=$Excel[63][$j];
+var $AdvancedFilter=$Excel[64][$j];
+var $userInputRequired1=$Excel[65][$j];
+var $severity2=$Excel[66][$j];
+var $severity3=$Excel[67][$j];
+var $groups=$Excel[68][$j];
+var $Apply=$Excel[69][$j];
+var $drSetupTextEdit=$Excel[70][$j];
+var $Save=$Excel[71][$j];
+var $BacktoViewReports=$Excel[72][$j];
+var $BacktoViewReportspagesuccessfull=$Excel[73][$j];
+var $BacktoViewReportspageunsuccessful=$Excel[74][$j];
+var $AwaitingInput=$Excel[75][$j];
+var $QuitABORTuserInputButtonbtnbtnprimarybtnxsbtnbtninfo=$Excel[76][$j];
+var $Eventswaitingforuserinput=$Excel[77][$j];
+var $Eventswaitingforuserinput=$Excel[78][$j];
+var $UserInputRequired001=$Excel[79][$j];
+var $UserInputRequired001=$Excel[80][$j];
+var $actionSelect=$Excel[81][$j];
+var $CloudResiliencyOrchestrationWorkflowExecution=$Excel[82][$j];
+var $AwaitingInput=$Excel[83][$j];
+var $QuitABORTuserInputButtonbtnbtnprimarybtnxsbtnbtninfo=$Excel[84][$j];
+var $Comment=$Excel[85][$j];
+var $Serious=$Excel[86][$j];
+var $SeriousEventUpdatedRBIReport0024=$Excel[87][$j];
+var $Provideinput=$Excel[88][$j];
+var $SelectReport_BCP=$Excel[89][$j];
+var $BCP_Rep=$Excel[90][$j];
+var $BCP_Ready=$Excel[91][$j];
+var $Major_Rep=$Excel[92][$j];
+var $Workflw_export_msg=$Excel[93][$j];
+

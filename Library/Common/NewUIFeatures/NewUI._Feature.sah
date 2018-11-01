@@ -1,0 +1,463 @@
+
+/**
+* Function is to create WF.
+*@param : Null
+*@return : Null
+*@Author: Aditi Jain
+*
+*/
+
+
+function Create_WF(){
+	navigateToDiscovery();
+	_click(_link("Groups"));
+	_click(_link($groupName));
+	_click(_image("Tests"));
+	if(_exists(_link($WFName))){
+		_click(_link("Go back"));
+		Delete_WF();
+		navigateToDiscovery();
+		_click(_link("Groups"));
+		_click(_link($groupName));
+		_click(_image("Tests"));
+		
+	}
+	_click(_link("Create New"));
+	_setValue(_textbox("name"),$WFName);
+	_setSelected(_select("type"), "Test");
+	_click(_button("Create New"));
+	
+}
+
+
+/**
+* Function is to delete WF.
+*@param : Null
+*@return : Null
+*@Author: Aditi Jain
+*
+*/
+
+function Delete_WF(){
+	navigateToDiscovery();
+	_click(_link("Groups"));
+	_click(_link($groupName));
+	_click(_image("Tests"));
+	_click(_link($WFName));
+	_click(_submit("Delete Workflow"));
+	_click(_button("Ok"));
+	_click(_link("Go back"));
+	
+}
+
+
+
+
+
+
+/**
+* Function is to test smart copy feature.
+*@param : Null
+*@return : Null
+*@Author: Aditi Jain
+*
+*/
+
+function Smart_Copy(){
+	Create_WF();
+	_click(_span("glyphIon"));
+	_click(_link("Workflows"));
+	_click(_span("Select Solution Signature"));
+	_setValue(_textbox(10),($SolSignature));
+	_click(_div($SolSignature));
+	_click(_span("glyphicon glyphicon-chevron-right pull-right workflowsArrow padding-one cursorPointer"));
+	_click(_span("glyphicon glyphicon-plus col-md-1", _near(_span($WFToCopy))));
+	_click(_button("Copy Workflow"));
+	_click(_link("Publish"));
+	_click(_div("Publish Workflow"));
+	_click(_link("Go back"));
+	Delete_WF();
+}
+
+/**
+* Function is to test Approver functionality
+*@param : Null
+*@return : Null
+*@Author: Aditi Jain
+*
+*/
+
+function Approver_Chk(){
+
+	Create_WF();
+	
+	_click(_link("Publish"));
+	_click(_label("venkat"));
+	_click(_label("govinda"));
+	_click(_div("Publish Workflow"));
+	_click(_link("Go back"));
+	_click(_link($groupName));
+	_click(_link($approverWF));
+	_click(_italic("executeSingleWorkflow"));
+	_wait(2000);
+	_click(_radio("approve"));
+	_setValue(_password("password"), "Sanovi123$");
+	_click(_button("Submit"));
+	_click(_div("Workflow Execution Go back"));
+	_click(_link("Go back"));
+	
+	// REJECT 
+	
+	_click(_link($groupName));
+	_click(_link($approverWF));
+	_click(_italic("executeSingleWorkflow"));
+	_wait(2000);
+	_setSelected(_select("approvername"), "govinda");
+	_click(_radio("reject"));
+	_setValue(_password("password"), "Sanovi123$");
+	_click(_button("Submit"));
+	_click(_div("Workflow Execution Go back"));
+	_click(_link("Go back"));
+	
+	Delete_WF();
+
+	
+}
+
+/**
+* Function is to execute Single step feature.
+*@param : Null
+*@return : Null
+*@Author: Aditi Jain
+*
+*/
+
+function SingleStep(){
+	Create_WF();
+	_click(_span("glyphIon"));
+	_click(_link("Actions"));
+
+	_click(_span("Add"));
+	_click(_link("AWS"));
+	_setValue(_textbox(10), "workflow");
+	_click(_div("Workflow"));
+	_click(_span("glyphicon icon-blue-plus plusIconRals[5]"));
+	_click(_span("glyphIon"));
+	_dragDrop(_image("notifications_green.png[1]"),_image("notifications_yellow.png[1]"));
+	_wait(10000);
+	
+	_click(_span("Save Now"));
+	_click(_link("Publish"));
+	_click(_label("Enable Single Step"));
+	_wait(5000);
+	_click(_div("Publish Workflow"));
+	_click(_link("Go back"));
+	//For Continue
+	navigateToDiscovery();
+	_click(_link("Groups"));
+	_click(_link($groupName));
+	_click(_image("Tests"));
+	_click(_link($WFName));
+	_click(_italic("executeSingleWorkflow"));
+	_call(top.location.reload());
+	_click(_submit("Continue=true userInputButton btn btn-primary btn-xs btn btn-info"));
+	_wait(2000);
+	_call(top.location.reload());
+	_click(_submit("Continue=true userInputButton btn btn-primary btn-xs btn btn-info"));
+	_wait(5000);
+	_call(top.location.reload());
+	_assertExists(_span("SUCCESS"));
+	_click(_link("Go back"));
+	//For Quit
+	navigateToDiscovery();
+	_click(_link("Groups"));
+	_click(_link($groupName));
+	_click(_image("Tests"));
+	_click(_link($WFName));
+	_click(_italic("executeSingleWorkflow"));
+	_click(_submit("Quit=false userInputButton btn btn-primary btn-xs btn btn-info"));
+	_wait(5000);
+	_call(top.location.reload());
+	_assertExists(_span("ABORTED"));
+	_click(_link("Go back"));
+		
+	Delete_WF();
+}
+
+/**
+* Function is to get Import and export the workflows
+*@param : Null
+*@return : Null
+*@Author: Aditi Jain
+*
+*/
+
+function Export_Import(){
+ navigateToDiscovery()
+	_click(_link("Groups"));
+	_click(_link($groupName));
+	_click(_image("Tests"));
+	_click(_link("Recovery"));
+	_click(_link("Edit Workflow"));
+	_click(_link("Export"));
+	_click(_button("Yes"));
+	_wait(5000);
+	_saveDownloadedAs("/MSSQL/Dummy.xml");
+	_click(_heading4(5));
+	_click(_link("Go back"));
+	navigateToDiscovery();
+	_click(_link("Groups"));
+	_click(_link($groupName));
+	_click(_link("Group Configuration"));
+	_click(_image("Tests"));
+	_click(_link("Recovery"));
+	_click(_link("Edit Workflow"));
+	_click(_span("glyphIon"));
+	_click(_link("Workflows"));
+	_wait(5000);
+	_click(_button("Import Workflow"));
+	//_click(_paragraph("addbtnb"));
+    _wait(1000);
+    _log($SAHI_HOME+"MSSQL\Dummy.xml");
+	_execute($SAHI_HOME+"MSSQL\Dummy.xml");
+	_wait(10000);
+	_click(_span("Save Now"));
+	_click(_link("Publish"));
+	_click(_div("Publish Workflow"));
+	_click(_link("Go back"));
+	
+	
+	
+}
+/**
+* Function is to get continue as success and continue as failure
+*@param : Null
+*@return : Null
+*@Author: Aditi Jain
+*
+*/
+
+
+function Continue_Success_Failure()
+{
+	Create_WF();
+	_click(_span("glyphIon"));
+	_click(_link("Actions"));
+
+	_click(_span("Add"));
+	_click(_link("AWS"));
+	_setValue(_textbox(10), "workflow");
+	_click(_div("Workflow"));
+	_click(_span("glyphicon icon-blue-plus plusIconRals[5]"));
+	_click(_span("glyphIon"));
+	_dragDrop(_image("notifications_green.png[1]"),_image("notifications_yellow.png[1]"));
+	_wait(10000);
+	_doubleClick(_div("Custom Workflow"));
+	_setValue(_textbox("timeToWait"), "100");
+	_click(_div("myModal"));
+	
+	_doubleClick(_div("Custom Workflow[1]"));
+	_setValue(_textbox("timeToWait"), "100");
+	_click(_div("myModal"));
+	
+	_click(_span("Save Now"));
+	_click(_link("Publish"));
+	_click(_div("Publish Workflow"));
+	_click(_link("Go back"));
+	
+	
+	_click(_link($groupName));
+	//_click(_image("Tests"));
+	_click(_link($WFName));
+	_click(_italic("executeSingleWorkflow"));
+	
+	_click(_link("EXECUTING"));
+	_setValue(_textarea(0), "success");
+	_click(_button("Continue as Success"));
+	_wait(2000);
+	_call(top.location.reload());
+	_click(_link("EXECUTING"));
+	_setValue(_textarea(0), "fail");
+	_click(_button("Continue as Failure"));
+	_click(_link("Go back"));
+	Delete_WF();
+}
+
+/**
+* Function is to test Rollback  feature.
+*@param : Null
+*@return : Null
+*@Author: Aditi Jain
+*
+*/
+
+function Rollback(){
+	Create_WF();
+	_click(_span("glyphIon"));
+	_click(_link("Actions"));
+	
+	_click(_span("Save Now"));
+	_click(_link("Publish"));
+	_click(_div("Publish Workflow"));
+	_click(_link("Go back"));
+	
+	navigateToDiscovery();
+	_click(_link("Groups"));
+	_click(_link($groupName));
+	_click(_image("Tests"));
+	_click(_link($WFName));
+	_click(_link("Edit Workflow"));
+	
+	
+	_click(_span("Add"));
+	_click(_link("AWS"));
+	_setValue(_textbox(10), "workflow");
+	_click(_div("Workflow"));
+	_click(_span("glyphicon icon-blue-plus plusIconRals[5]"));
+	_click(_span("glyphIon"));
+	_dragDrop(_image("notifications_green.png[1]"),_image("notifications_yellow.png[1]"));
+	_wait(5000);
+	_doubleClick(_div("Custom Workflow"));
+	_setValue(_textbox("name"), "Test1");
+	_click(_div("myModal"));
+	_wait(3000);
+	_doubleClick(_div("Custom Workflow"));
+	_setValue(_textbox("name"), "Test2");
+	_click(_div("myModal"));
+	
+
+	_click(_div("Workflow"));
+	_click(_span("glyphicon icon-blue-plus plusIconRals[5]"));
+	_click(_span("glyphIon"));
+	_dragDrop(_image("notifications_green.png[2]"),_image("notifications_yellow.png[2]"));
+	_wait(5000);
+	_doubleClick(_div("Custom Workflow"));
+	_setValue(_textbox("name"), "Test3");
+	_click(_div("myModal"));
+	
+	
+
+	_click(_div("Workflow"));
+	_click(_span("glyphicon icon-blue-plus plusIconRals[5]"));
+	_click(_span("glyphIon"));
+	_dragDrop(_image("notifications_green.png[3]"),_image("notifications_yellow.png[3]"));
+	_doubleClick(_div("Custom Workflow"));
+	_setValue(_textbox("name"), "Test4");
+	_click(_div("myModal"));
+	
+	
+	_click(_span("Save Now"));
+	_click(_link("Publish"));
+	_click(_div("Publish Workflow"));
+	_click(_link("Go back"));
+
+	_click(_link($groupName));
+	//_click(_image("Tests"));
+	_click(_link($WFName));
+	_click(_link("Edit Workflow"));
+	
+	_assertExists(_span("Test1"));
+	_assertExists(_span("Test2"));
+	_assertExists(_span("Test3"));
+	_assertExists(_span("Test4"));
+	_getCellText(_div("/Version: /"));
+	_click(_link("Rollback", _near(_div("Version 1"))));
+	_assertExists(_div("Rollback to version 1 successful"));
+	_assertExists(_div("Custom Workflow"));
+	_click(_span("Save Now"));
+	_click(_link("Publish"));
+	_click(_div("Publish Workflow"));
+	_click(_link("Go back"));
+	
+}
+/**
+* Function is to get continue as success and continue as failure
+*@param : Null
+*@return : Null
+*@Author: Aditi Jain
+*
+*/
+function Scheduler(){
+	Create_WF();
+	_click(_span("Save Now"));
+	_click(_link("Publish"));
+	_click(_textbox("startDate"));
+	_setValue(_textbox("startDate"), "2014-09-26");
+	
+	
+	
+	
+}
+
+
+/**
+* Function is for executing start process RAL 
+*@param : $compIP
+*@return :Null
+*@Author: Venkat 
+*
+*/
+
+function StartProcessPub($name, $success, $failure, $waitFor,$check){
+	_click(_image("Tests"));
+	_click(_link("Create New"));
+	_setValue(_textbox("name"), $name);
+	_click(_select("type"));
+	_setSelected(_select("type"), "Test");
+	_click(_button("Create New"));
+	_click(_span("Add"));
+	_click(_span("select2-arrow"));
+	_click(_div("select2-result-label[14]"));
+	_click(_span("glyphicon icon-blue-plus plusIconRals", _near(_span("StartProcess"))));
+	_click(_span("glyphIon"));
+	_dragDrop(_image("notifications_green.png[1]"),_image("notifications_yellow.png[1]"));
+	_doubleClick(_span("Process[1]"));
+	_click(_link("Run-time settings"));
+	_click(_image("insert.png", _near(_label($success))));
+	_setValue(_textbox("success"), $success);
+	_click(_image("insert.png", _near(_label($failure))));
+	_setValue(_textbox("failure"), $failure);
+	_setValue(_textbox("waitFor", _near(_label("Execution Wait Time"))), $waitFor);
+	_click(_button("×", _near(_heading4("StartProcess"))));
+	
+	if($check == "Y"){
+	_click(_span("Save Now"));
+	_click(_link("Publish"));
+	_click(_div("Publish Workflow"));
+	}
+}
+
+//StartProcessPub("FnJ12", "Success Pattern", "Failure Pattern", "180");
+
+//StartProcessactiong("AcJ1234", "Success Pattern", "Failure Pattern", "180");
+
+function StartProcessactiong($name, $success, $failure, $waitFor){
+	
+	//StartProcessPub($name, $success, $failure, $waitFor,"N")
+	
+	_click(_button("addActionGroup"));
+	_dragDrop(_image("notifications_green.png[2]"),_image("notifications_yellow.png[2]"));
+	_doubleClick(_span("DefaultActionGroup[1]"));
+	_setValue(_textbox("name"), "VenkatActionGrp");
+	_setValue(_textarea("description"), "This is for Automation Testing");
+	_click(_span("Edit"));
+	_click(_span("Add"));
+	_click(_span("select2-arrow"));
+	_click(_div("select2-result-label[14]"));
+	_click(_span("glyphicon icon-blue-plus plusIconRals", _near(_span("StartProcess"))));
+	_click(_span("glyphIon"));
+	_dragDrop(_image("notifications_green.png[4]"),_image("notifications_yellow.png[3]"));
+	_doubleClick(_span("Process[1]"));
+	_click(_link("Action Properties"));
+	_click(_image("insert.png", _near(_label($success))));
+	_setValue(_textbox("success"), $success);
+	_click(_image("insert.png", _near(_label($failure))));
+	_setValue(_textbox("failure"), $failure);
+	_setValue(_textbox("waitFor", _near(_label("Execution Wait Time"))), $waitFor);
+	_click(_button("×", _near(_heading4("StartProcess"))));
+	_click(_span("Save Now"));
+	_click(_submit("Close"));
+	_span("Save Now")
+	_click(_link("Publish"));
+	_click(_div("Publish Workflow"));
+}

@@ -1,0 +1,32 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains APP PFR Solution specific
+ ** AuthorName : Anita Gaded
+ ** Created Date : Mar 2017
+ ***********************************************************************************************/
+
+var $l_DGEvent=_readExcelFile($SAHI_HOME + "\\Library\\Solution_Signature\\Oracle_DG\\ObjectRepository\\OracleDG_ObjectRepository.xls","Events");
+
+//APP PFR Event.sah web objects
+
+var $g_selLangComp = $l_appPfrEvent[1][2];
+if($BrowserLang == "N"){
+
+	var $colno = 2;
+}
+else if($BrowserLang == "Y-JA"){
+	
+	var $colno = 3;
+	}
+
+else if($BrowserLang == "Y-EN"){
+		
+		var $colno = 3;
+	}
+var $obj_PRDgDown = $l_DGEvent[4][$colno]; 
+var $obj_DRDgDown = $l_DGEvent[5][$colno]; 
+var $obj_PRDgUp = $l_DGEvent[6][$colno];
+var $obj_DRDgUp = $l_DGEvent[7][$colno];
+var $obj_RepStop = $l_DGEvent[8][$colno];
+var $obj_RepStart = $l_DGEvent[9][$colno];

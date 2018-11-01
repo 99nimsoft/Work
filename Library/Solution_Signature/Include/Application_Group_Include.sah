@@ -1,0 +1,15 @@
+_include("../../../Library/Common/Common_Function.sah");
+_include("../../../Library/Component/Component_Common.sah");
+_include("../../../Library/Solution_Signature/Include/Common_Automation_testcase_Function.sah");
+_include("../../../Library/Common/Operation_On_FG/Group_Operation.sah");
+_include("../../../Library/Solution_Signature/AG/AG_Function.sah");
+_include("../../../Library/Solution_Signature/AG/AG_TestCase.sah");
+_include("../../../Library/Solution_Signature/AG/AG_CommonFunction.sah");
+//_include("../../../Library/FetchLog/Fetchlog_CommonFunction.sah");
+//_include("../../../conf/Application_Group/AG_Paramter.sah");
+_include("../../../Library/RAL/RAL_CommonFunction.sah");
+//_include("../../../Library/RAL/TriggerRal/TriggerRal_CommonFunction.sah");
+_include("../../../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+_include("../../../conf/Application_Group/AG_Paramter.sah");
+
+

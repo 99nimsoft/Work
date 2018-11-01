@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?><ws:workflow xmlns:ws="http://www.sanovi.com/panaces/workflow/">
+    <userDef size="5">
+        <entry key="EVENT_KEY" value="STORAGE_VMOTION_PERFORMED"/>
+        <entry key="CUSTOM_ACTION_COMPONENT_TYPE" value="STATIC"/>
+        <entry key="OBJECT_CLASS" value="MANAGEMENT_SERVICE"/>
+        <entry key="OBJECT_TYPE" value="VCENTER"/>
+        <entry key="CUSTOM_ACTION_COMPONENT_NAME" value="AgentNode"/>
+    </userDef>
+    <name>PreFailoverTestExercise</name>
+    <version>7.2 43941</version>
+    <description>null</description>
+    <approverList/>
+    <action-list>
+        <action id="0" successPathId="1" failurePathId="1">
+            <registeredName>AssignAction</registeredName>
+            <name>AssignAction</name>
+            <uniqueName/>
+            <description>AssignAction action</description>
+            <deletable>false</deletable>
+            <actionFailureEvent severity="INFO"/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:AssignAction>
+                    <assignment leftOperand="OBJECT_NAME" rightOperand="DR_MANAGEMENT_SERVICE"/>
+                    <assignment leftOperand="RECOVERY_GROUP_NAME" rightOperand="RECOVERY_GROUP_NAME"/>
+                </ws:AssignAction>
+            </privateProperties>
+            <joinId>7745</joinId>
+            <version>7.2 43941</version>
+        </action>
+        <action id="1" successPathId="2" failurePathId="2">
+            <registeredName>Custom</registeredName>
+            <name>DRMAgentHealthCheck</name>
+            <uniqueName/>
+            <description>Management Service Check</description>
+            <deletable>false</deletable>
+            <actionFailureEvent severity="INFO"/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction type="tcl" etcComputationType="userDefined">
+                    <serverName/>
+                    <command>scripts/commons/DRMAgentHealthCheck.tcl</command>
+                    <timeout>180</timeout>
+                    <sudoUsername/>
+                    <execDir/>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>7746</joinId>
+            <version>7.2 43941</version>
+        </action>
+        <action id="2" successPathId="3" failurePathId="3">
+            <registeredName>Custom</registeredName>
+            <name>StorageVmotionPerformed</name>
+            <uniqueName/>
+            <description>Storage Vmotion Performed</description>
+            <deletable>false</deletable>
+            <actionFailureEvent severity="INFO"/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction type="tcl" etcComputationType="userDefined">
+                    <serverName/>
+                    <command>scripts/commons/GetKeyValue.tcl</command>
+                    <timeout>180</timeout>
+                    <sudoUsername/>
+                    <execDir/>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>7747</joinId>
+            <version>7.2 43941</version>
+        </action>
+        <action id="3" successPathId="4" failurePathId="4">
+            <registeredName>NetAppLunUnmap</registeredName>
+            <name>NetApp LunUnmap</name>
+            <description>Lununmap-removes a previously-configured mapping</description>
+            <deletable>false</deletable>
+            <operationType>27</operationType>
+            <actionFailureEvent severity="INFO"/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:NetAppAction operOnService="TEST_DR-QAESXi-CG2" operOnValueType="STATIC" lunPath="/vol/PS_DR_ESXi_172_1_205_vol/PS_PR_ESXi_172.7.103" iGroupID="PS_DR-ESXi_172.1.205"/>
+            </privateProperties>
+            <joinId>7748</joinId>
+            <version>7.2 43941</version>
+        </action>
+        <action id="4" successPathId="5" failurePathId="5">
+            <registeredName>ChooseReplicationVolume</registeredName>
+            <name>Choose Replication Volume</name>
+            <uniqueName/>
+            <description>Choose Replication volume to operate on for further actions</description>
+            <deletable>false</deletable>
+            <operationType>14</operationType>
+            <actionFailureEvent severity="INFO"/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:ChooseReplicationVolume chooseSvcType="ChooseAtRunTime" volName="" cloneSelection="Volume Clones"/>
+            </privateProperties>
+            <joinId>7749</joinId>
+            <version>7.2 43941</version>
+        </action>
+        <action id="5" successPathId="6" failurePathId="6">
+            <registeredName>NetAppCloneLunOnline</registeredName>
+            <name>NetApp Clone LunOn line</name>
+            <description>Brings clone lun online</description>
+            <deletable>false</deletable>
+            <operationType>27</operationType>
+            <actionFailureEvent severity="INFO"/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:NetAppAction operOnService="TEST_DR-QAESXi-CG2" operOnValueType="STATIC" cloneLunPath=""/>
+            </privateProperties>
+            <joinId>7750</joinId>
+            <version>7.2 43941</version>
+        </action>
+        <action id="6" successPathId="7" failurePathId="7">
+            <registeredName>NetAppCloneMap</registeredName>
+            <name>NetAppCloneMap</name>
+            <description>Make a Clone accessible to initiators in the specified group</description>
+            <deletable>false</deletable>
+            <operationType>27</operationType>
+            <actionFailureEvent severity="INFO"/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:NetAppAction operOnService="TEST_DR-QAESXi-CG2" operOnValueType="STATIC"/>
+            </privateProperties>
+            <joinId>7751</joinId>
+            <version>7.2 43941</version>
+        </action>
+        <action id="7" successPathId="8" failurePathId="8">
+            <registeredName>Custom</registeredName>
+            <name>PLACEHOLDER_createClone</name>
+            <uniqueName/>
+            <description>Create clone on the DR</description>
+            <timeToExecute>0</timeToExecute>
+            <recurrence>0</recurrence>
+            <syncName>TEST_DR-QAESXi-CG2.CloneDR</syncName>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction type="cmd" etcComputationType="userDefined">
+                    <serverName/>
+                    <command/>
+                    <timeout>180</timeout>
+                    <sudoUsername/>
+                    <execDir/>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>7752</joinId>
+            <version>7.2 43941</version>
+        </action>
+        <action id="8" successPathId="9" failurePathId="9">
+            <registeredName>Custom</registeredName>
+            <name>PLACEHOLDER_unmapDR</name>
+            <uniqueName/>
+            <description>Unmap the DR</description>
+            <timeToExecute>0</timeToExecute>
+            <recurrence>0</recurrence>
+            <syncName>TEST_DR-QAESXi-CG2.UnmapDR</syncName>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction type="cmd" etcComputationType="userDefined">
+                    <serverName/>
+                    <command/>
+                    <timeout>180</timeout>
+                    <sudoUsername/>
+                    <execDir/>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>7753</joinId>
+            <version>7.2 43941</version>
+        </action>
+        <action id="9" successPathId="10" failurePathId="10">
+            <registeredName>Custom</registeredName>
+            <name>PLACEHOLDER_mapAllCloneToESX</name>
+            <uniqueName/>
+            <description>Map the clone to all ESXi in cluster</description>
+            <timeToExecute>0</timeToExecute>
+            <recurrence>0</recurrence>
+            <syncName>TEST_DR-QAESXi-CG2.MapClone</syncName>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction type="cmd" etcComputationType="userDefined">
+                    <serverName/>
+                    <command/>
+                    <timeout>180</timeout>
+                    <sudoUsername/>
+                    <execDir/>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>7754</joinId>
+            <version>7.2 43941</version>
+        </action>
+        <action id="10" successPathId="11" failurePathId="11">
+            <registeredName>VmwareVcReScanHbaCluster</registeredName>
+            <name>Rescan All HBAs</name>
+            <description>Rescan All HBAs</description>
+            <deletable>false</deletable>
+            <operationType>26</operationType>
+            <syncName>TEST_DR-QAESXi-SQADRCluster.RescanHBA</syncName>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:VmwareVcReScanHbaCluster mgmtServiceName="DR_MANAGEMENT_SERVICE" datacenter="DR_DATACENTER_NAME" clusterName="DR_CLUSTER_NAME"/>
+            </privateProperties>
+            <joinId>7755</joinId>
+            <version>7.2 43941</version>
+        </action>
+        <action id="11" successPathId="12" failurePathId="12">
+            <registeredName>VmwareVcExecuteClusterOps</registeredName>
+            <name>MountSnapshot Datastore</name>
+            <description>MountSnapshot Datastore</description>
+            <deletable>false</deletable>
+            <operationType>26</operationType>
+            <syncName>TEST_DR-QAESXi-DR_Templates|Data_Datastore_For_VMs.MountSnapshotDatastore</syncName>
+            <actionFailureEvent severity="INFO"/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:VmwareVcExecuteClusterOps mgmtServiceName="DR_MANAGEMENT_SERVICE" clusterName="DR_CLUSTER_NAME" dcName="DR_DATACENTER_NAME" datastoreName="DR_DATASTORE_NAME" vmfsLabel="DR_DATASTORE_NAME"/>
+            </privateProperties>
+            <joinId>7756</joinId>
+            <version>7.2 43941</version>
+        </action>
+        <action id="12" successPathId="13" failurePathId="13">
+            <registeredName>VmwareVcRemoveVMFromInventory</registeredName>
+            <name>RemoveVMFromInventory</name>
+            <description>VmwareVcRemoveVMFromInventory action</description>
+            <deletable>false</deletable>
+            <operationType>26</operationType>
+            <actionFailureEvent severity="INFO"/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:VmwareVcRemoveVMFromInventory mgmtServiceName="DR_MANAGEMENT_SERVICE" dcName="DR_DATACENTER_NAME" vmName="DR_VM_NAME"/>
+            </privateProperties>
+            <joinId>7757</joinId>
+            <version>7.2 43941</version>
+        </action>
+        <action id="13" successPathId="14" failurePathId="14">
+            <registeredName>VmwareVcAddVMToCluster</registeredName>
+            <name>Add VM To Cluster</name>
+            <description>VmwareVcAddVMToCluster action</description>
+            <deletable>false</deletable>
+            <operationType>26</operationType>
+            <actionFailureEvent severity="INFO"/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:VmwareVcAddVMToCluster mgmtServiceName="DR_MANAGEMENT_SERVICE" datacenter="DR_DATACENTER_NAME" clusterName="DR_CLUSTER_NAME" resourcePoolName="DR_RESOURCE_POOL_NAME" datastore="DR_DATASTORE_NAME" vmxPath="DR_VM_VMX_PATH" vmxFileName="DR_VM_NAME"/>
+            </privateProperties>
+            <joinId>7758</joinId>
+            <version>7.2 43941</version>
+        </action>
+        <action id="14" successPathId="15" failurePathId="15">
+            <registeredName>VmwareChangePortgroupsMapping</registeredName>
+            <name>Customize the VM Network</name>
+            <description>Customize the VM Network</description>
+            <timeToExecute>30</timeToExecute>
+            <deletable>false</deletable>
+            <operationType>26</operationType>
+            <actionFailureEvent severity="INFO"/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:VmwareChangePortgroupsMapping mgmtServiceName="DR_MANAGEMENT_SERVICE" dcName="DR_DATACENTER_NAME" vmName="DR_VM_NAME" portGroup="" availablePgs=""/>
+            </privateProperties>
+            <joinId>7759</joinId>
+            <version>7.2 43941</version>
+        </action>
+        <action id="15" successPathId="16" failurePathId="16">
+            <registeredName>Custom</registeredName>
+            <name>PLACEHOLDER_opearation1</name>
+            <uniqueName/>
+            <description>Placeholder for opeartion</description>
+            <deletable>false</deletable>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction type="cmd" etcComputationType="userDefined">
+                    <serverName/>
+                    <command/>
+                    <sudoUsername/>
+                    <execDir/>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>7760</joinId>
+            <version>7.2 43941</version>
+        </action>
+        <action id="16" final="true">
+            <registeredName>Custom</registeredName>
+            <name>PLACEHOLDER_opearation2</name>
+            <uniqueName/>
+            <description>Placeholder for operation 2</description>
+            <deletable>false</deletable>
+            <actionFailureEvent severity="INFO"/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction type="cmd" etcComputationType="userDefined">
+                    <serverName/>
+                    <command/>
+                    <timeout>180</timeout>
+                    <sudoUsername/>
+                    <execDir/>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>7761</joinId>
+            <version>7.2 43941</version>
+        </action>
+    </action-list>
+</ws:workflow>

@@ -1,0 +1,190 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the test case functions which are the part of   MSSQL FullDB Hitachi solution. 
+ ** AuthorName : Aditi Jain
+ ** Created Date : April 2015
+ ************************************************************************/
+
+
+
+
+function MssqlFdbHUR_Agent_Instllation_001(){
+	try {
+		Install_Local_Agent_SilentMode_OS_Authentication_PR();
+		Install_Local_Agent_SilentMode_OS_Authentication_DR();
+	} catch ($e) {
+		 _log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0003(),Function: Create_Site_PR or Create_Site_DR ,execution got failed.kindly check the log for more details");
+		_fail("site not created succesfully.So that stopping execution.");
+	}
+}
+
+
+function MssqlFdbHUR_Component_Local_Discovery_0002() {
+	try {
+		Create_Local_ComponentPR("Y");
+		Create_Local_ComponentDR("Y");
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Component_Local_Discovery_0002(),Function: Create_Local_ComponentPR or Create_Local_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("component not created succesfully.So that stopping execution.");
+	}
+}
+
+function MssqlFdbHUR_Component_Remote_Discovery_0018() {
+	try {
+		
+		Create_Remote_Component($systemType, $compNamePR, $compIPPR, $compsitePR, $remoteUserNameValPR, $remotePwdValPR);
+		
+		Create_Remote_Component($systemType, $compNameDR, $compIPDR, $compsiteDR, $remoteUserNameValDR, $remotePwdValDR);
+		
+		if($compIPPR!=$compIPstoragePR) {
+			Create_Remote_Component($systemTypeCCI, $compNamestoragePR, $compIPstoragePR, $compsitePR, $remoteUserNameValSrdfPR, $remotePwdValSrdfPR);
+
+			Create_Remote_Component($systemTypeCCI, $compNamestorageDR, $compIPstorageDR, $compsiteDR, $remoteUserNameValSrdfDR, $remotePwdValSrdfDR);
+		}
+		
+		
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Component_Remote_Discovery_0018(),Function: Create_Remote_ComponentPR or Create_Remote_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("component not created succesfully.So that stopping execution.");
+	}
+}
+
+function MssqlFdbHUR_Dataset_Discovery_0007() {
+	try {
+		Create_Mssql_DatasetPR();// In Database > MSSQL.sah
+		datasetdetails();
+		Create_Mssql_DatasetDR();// In Database > MSSQL.sah
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:MSSQLDG_Dataset_Discovery_0007(),Function: Create_MSSQLDG_Dataset_PR or Create_MSSQLDG_Dataset_DR ,execution got failed.kindly check the log for more details");
+		_fail("dataset not created succesfully.So that stopping execution.");
+	}
+
+}
+
+function MssqlFdbHUR_Auto_DatasetDiscovery0009() {
+	try {
+		Verify_Dataset_Details_PR();
+		Verify_Dataset_Details_DR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:MssqlFdbHUR_Auto_DatasetDiscovery0009(),Function: Verify_Dataset_Details_PR or Verify_Dataset_Details_DR,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MssqlFdbHUR_Dataset_status_0011() {
+	try {
+		Verify_Dataset_Status_PR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:MssqlFdbHUR_Dataset_status_0011(),Function: Verify_Dataset_Status_PR ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		Verify_Dataset_Status_DR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:MssqlFdbHUR_Dataset_status_0011(),Function: Verify_Dataset_Status_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MssqlFdbHUR_Protectionscheme_Discovery_0018() {
+	try {
+		Create_Hitachi_ProtectionSchemePR();
+		Create_Hitachi_ProtectionSchemeDR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MSSQLFDB_SRDF_Protectionscheme_Discovery_0018(),Function: MSSQL_FullDB_SRDF_ProtectionScheme_PR or MSSQL_FullDB_SRDF_ProtectionScheme_DR ,execution got failed.kindly check the log for more details");
+		_fail("Protection Schemes not created succesfully.So that stopping execution.");
+	}
+}
+
+function MssqlFdbHUR_Configured_information0003() {
+	try {
+		Verify_Protection_Scheme_Details_PR();
+		Verify_Protection_Scheme_Details_DR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:MSSQLDG_DataGuard_Configured_information0003(),Function: Verify_Protection_Scheme_Details_PR or Verify_Protection_Scheme_Details_DR,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MssqlFdbHUR_Protectionscheme_status_0021() {
+	try {
+		Verify_Protection_Scheme_Status_PR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MSSQLDG_Protectionscheme_status_0021(),Function: Verify_Protection_Scheme_Status_PR ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		Verify_Protection_Scheme_Status_DR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MSSQLDG_Protectionscheme_status_0021(),Function: Verify_Protection_Scheme_Status_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+function MssqlFdbHUR_GroupCreation_0022() {
+	try {
+		MssqlFdbHUR_Group_Creation();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MSSQLFDB_SRDF_GroupCreation_0022(),Function: MSSQL_FG_SRDF_Group_Creation ,execution got failed.kindly check the log for more details");
+		_fail("Group not created succesfully.So that stopping execution.");
+	}
+
+}
+
+function MssqlFdbHUR_Move_Group_Manage_0006(){
+	try {
+		Move_To_Manage_Group($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Move_Group_Manage_0006(),Function: Move_To_Manage_Group ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+
+}
+	
+
+	function MssqlFdbHUR_Change_Continuity_State_0001() {
+		try {
+			Change_ContinuityStatus_Group($groupName, "Normal Inactive");
+		} catch ($e) {
+			_log($e.toString(),"Custom1");
+			_log("for test Case ID: Change_Continuity_State_0001(),Function: Change_ContinuityStatus_Group ,execution got failed.kindly check the log for more details");
+			_fail("Current group state is not correct,so that stopping execution");
+		}
+	}
+
+
+
+	function MssqlFdbHUR_Component_Status_0001() {
+		try {
+			Verify_Component_Status_PR($agentType);
+			Verify_Component_Status_DR($agentType);
+		} catch ($e) {
+			_log($e.toString(),"Custom1");
+			_log("for test Case ID: Component_Status_0001(),Function: Verify_Component_Status_PR or Verify_Component_Status_DR ,execution got failed.kindly check the log for more details");
+		}
+	}
+
+	function MssqlFdbHUR_Contiunity_Status_0002() {
+		try {
+			Verify_Continuitystatus_Before_NC();
+		} catch ($e) {
+			_log($e.toString(),"Custom1");
+			_log("for test Case ID: Contiunity_Status_0002(),Function: Verify_Continuitystatus_Before_NC ,execution got failed.kindly check the log for more details");
+		}
+	}
+	function MssqlFdbHUR_Continuity_Management_0015() {
+		try {
+			Group_Managedrsolution();
+		} catch ($e) {
+			_log($e.toString(),"Custom1");
+			_log("for test Case ID: Continuity_Management_0015(),Function: Group_Managedrsolution ,execution got failed.kindly check the log for more details");
+		}
+	}
+	

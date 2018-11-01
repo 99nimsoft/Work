@@ -1,0 +1,2152 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are the part of  Oracle DG solution screen wise fetching and comparing data from Db and GUI. 
+ ** @AuthorName : Aditi Jain,Swati Choudhary
+ ** Created Date : April 2013
+ ************************************************************************/
+
+/**
+* Function is for Functional Group creation for OracleDG solution.
+*@param :  $groupName, $groupDescription, $SolutionSignature, $primaryComponents, $remoteComponents,
+*          $primaryDatasets, $remoteDatasets, $primaryProtections, $remoteProtections,Oracle_FG_DG_Group_Creation
+*@return:  null
+*@Author:  Aditi Jain
+*/
+function Oracle_FG_DG_Group_Creation() {
+	$groupCreation = Create_FG($groupName, $groupDescription, $SolutionSignature, $primaryComponents, $remoteComponents, $primaryDatasets, $remoteDatasets, $primaryProtections, $remoteProtections);
+	if ($groupCreation.get("flag") == 0) {
+		_log("Same group name already exists");
+	} else {
+		//_wait(60000,_submit("/Submit/"));
+		//_click(_submit("/Submit/"));
+		_wait(600000,_button($Submit));
+		_click(_button($Submit));
+		_wait(10000);
+		_click(_link($License));
+		_wait(5000);
+		_click(_checkbox("Recovery"));
+		_click(_checkbox("Test"));
+		_wait(1000);
+		_click(_button("licensebutton"));
+		_wait(1000);
+		_click(_link($obj_RPORTO));
+		_wait(5000);
+		_setValue(_textbox("desrpo1"), $desiredRpo);
+		_setValue(_textbox("rpoint1"), $rpoCompute);
+		_click(_button($Save));
+		_wait(5000);
+		_click(_button($Finish));
+		_wait(5000);
+		navigateToGroups();
+		if (_exists(_link($groupName))) {
+			_assertExists("Group created succesfully");
+		} else {
+			_fail("Group not created succesfully.So that stopping execution.");
+		}
+	}
+}// End Of Oracle__FG_DG_Group_Creation
+
+/**
+* Function is for Post Group Creation Discovery > Groups > Solution Details > Show Advanced Configuration Post SO.
+*@param : null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+
+function Post_Group_Creation_Post_SO(){
+	var $archivePathPR = get_archive_path_PR($ArchiveLogsLocationPR);
+	var $archivePathDR = get_archive_path_DR($ArchiveLogsLocationDR);
+	Post_Group_Creation_Details($groupName,$archivePathDR,$compIPDR, $remoteUserNameValDR, $remotePwdValDR,$archivePathPR,$compIPPR, $remoteUserNameValPR, $remotePwdValPR);
+}
+
+/**
+* Function is for Post Group Creation Discovery > Groups > Solution Details > Show Advanced Configuration before SO.
+*@param : null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+function Post_Group_Creation(){
+	var $archivePathPR = get_archive_path_PR($ArchiveLogsLocationPR);
+	var $archivePathDR = get_archive_path_DR($ArchiveLogsLocationDR);
+	Post_Group_Creation_Details($groupName,$archivePathPR,$compIPPR, $remoteUserNameValPR, $remotePwdValPR,$archivePathDR,$compIPDR, $remoteUserNameValDR, $remotePwdValDR);
+}
+
+/**
+* Function is for Post Group Creation Discovery > Groups > Solution Details > Show Advanced Configuration.
+*@param : $groupName,$archivePathPR,$compIPPR, $remoteUserNameValPR, $remotePwdValPR,$archivePathDR,$compIPDR, $remoteUserNameValDR, $remotePwdValDR
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+function Post_Group_Creation_Details($groupName,$archivePathPR,$compIPPR, $remoteUserNameValPR, $remotePwdValPR,$archivePathDR,$compIPDR, $remoteUserNameValDR, $remotePwdValDR){
+	navigateToGroups();
+	_click(_link($groupName));
+	_click(_link($SolutionDetails));
+	_wait(5000);
+	_click(_link($ShowAdvancedConfiguration));
+	
+	var $archivePathPRGui=_getCellText(_textbox("PrimaryDevice0"));
+	_assertExists("Archive Path PR GUI:",$archivePathPRGui);
+	_assertEqual($archivePathPR,$archivePathPRGui,"Comparing Archive path of PR from DB and GUI");
+	
+	// Disk Space
+	var $diskSpacePRGui=_getCellText(_strong(24));
+	_assertExists("Disk Space in PR GUI",$diskSpacePRGui);
+	
+	var $diskSpace=Disk_Space_utilization($compIPPR, $remoteUserNameValPR, $remotePwdValPR);
+	var $diskSpaceDB=$diskSpace.get("Disk Space");
+	_assertExists("Disk Space PR DB",$diskSpaceDB);
+	
+	// Secondary
+	var $archivePathDRGui=_getCellText(_textbox("SecondaryDevice1"));
+	_assertExists("Archive Path DR GUI:",$archivePathDRGui);
+	_assertEqual($archivePathDR,$archivePathDRGui,"Comparing Archive path of DR from DB and GUI");
+	
+	// Disk Space
+	var $diskSpaceDRGui=_getCellText(_strong(28));
+	_assertExists("Disk Space in DR GUI",$diskSpaceDRGui);
+	
+	var $diskSpace=Disk_Space_utilization($compIPDR, $remoteUserNameValDR, $remotePwdValDR);
+	var $diskSpaceDB=$diskSpace.get("Disk Space");
+	_assertExists("Disk Space DR DB",$diskSpaceDB);
+	// _assertEqual($diskSpace.get("Disk Space"),$diskSpaceDRGui,"Disk Space is not correct in GUI and Db");
+	
+	// Threshold
+
+	var $thresholdPRGui=_getCellText(_textbox("PrimarySize0"));
+	_assertExists("Threshhold at GUI",$thresholdPRGui);
+	
+	var $thresholdDRGui=_getCellText(_textbox("SecondarySize1"));
+	_assertExists("Threshhold at GUI",$thresholdDRGui);
+		
+}
+/**
+* Function is for Post Group Creation Discovery to find Disk Utilization
+*@param : $compIPPR, $remoteUserNameValPR, $remotePwdValPR
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+function Disk_Space_utilization($compIP, $remoteUserNameVal, $remotePwdVal){
+	
+	var $sshCommand = "df -h|grep app";
+	var $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+//	var $action = $status.get("output");
+//	var $actionStatus1 = $action.toString();
+	var $diskSpaceDB = $status.split(" ");	
+	var $diskSpace=new java.util.Properties();
+	$diskSpace.put("Disk Space", $diskSpaceDB[21]);
+	return $diskSpace;
+}	// End Of Post Group Creation
+
+
+/**
+* Function is for Verification of replication status in replication page after SO
+*@param : null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+function OracleDG_Replication_Post_SO() {
+	OracleDG_Replication_Status($userDR, $pwdDR, $internalLogon, $oracleListenerIPDR, $dbSidSelect, $compIPDR, $remoteUserNameValDR, $remotePwdValDR, $userPR, $pwdPR, $internalLogon, $oracleListenerIPPR, $dbSidSelect,
+			$compIPPR, $remoteUserNameValPR, $remotePwdValPR);
+}
+
+/**
+* Function is for Verification of replication status in replication page before SO
+*@param : null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+function OracleDG_Replication() {
+	OracleDG_Replication_Status($userPR, $pwdPR, $internalLogon, $oracleListenerIPPR, $dbSidSelect, $compIPPR, $remoteUserNameValPR, $remotePwdValPR, $userDR, $pwdDR, $internalLogon, $oracleListenerIPDR, $dbSidSelect,
+			$compIPDR, $remoteUserNameValDR, $remotePwdValDR);
+}
+
+
+/**
+* Function is for Verification of replication status in replication page .
+*@param : $userPR, $pwdPR, $internalLogon, $oracleListenerIPPR, $dbSidSelect, $compIP,
+*         $remoteUserNameVal, $remotePwdVal, $userDR, $pwdDR, $internalLogon, $oracleListenerIPDR, 
+*         $dbSidSelect,$compIP, $remoteUserNameVal, $remotePwdVal
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+function OracleDG_Replication_Status($userPR, $pwdPR, $internalLogon, $oracleListenerIPPR, $dbSidSelect, $compIP, $remoteUserNameVal, $remotePwdVal, $userDR, $pwdDR, $internalLogon, $oracleListenerIPDR, $dbSidSelect,
+		$compIP, $remoteUserNameVal, $remotePwdVal) {
+	navigateToReplication($groupName);
+	_wait(4000);
+	var $replicationStatus = _getText(_span(0, _rightOf(_span($ReplicationStatus))));
+	//_highlight($replicationStatus);
+	_assertExists("Replication Status", $replicationStatus);
+	var $i = 0;
+	while ($i < 10) {
+		_log($i);
+		if ($replicationStatus == $ACTIVE) {
+			break;
+		} else {
+			_wait(30000);
+			Popup_Handler();
+			navigateToReplication($groupName);
+			_wait(4000);
+			var $replicationStatus = _getText(_span(0, _rightOf(_span($ReplicationStatus))));
+			_highlight(_span($replicationStatus));
+		}
+		$i = $i + 1;
+	} // while ended
+	if ($replicationStatus != $ACTIVE) {
+		_assertExists("Replication status is not valid after 20 mins please check the logs");
+	}
+
+	// PR CONNECTION
+	var $props = Get_User_Properties_for_OracleDb_Connection($userPR, $pwdPR, $internalLogon);
+	var $conn = Get_Oracle_Db_Connection_URL($oracleListenerIPPR, $dbSidSelect);
+	var $db = _getDB("oracle.jdbc.driver.OracleDriver", $conn, $props);
+
+	// Getting value of Pair name from DRM protection schema screen
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_wait(2000);
+	_click(_link($ProtectionSchemes));
+	_wait(3000);
+	_click(_link($sernamePR, _near(_cell($systemTypeProtection))));
+	_wait(3000);
+	var $protectionSchemaGui = _getCellText(_cell(1, _near(_cell($ReplicationPairVerify))));
+	_assertExists("Pair name from protection schema screen:", $protectionSchemaGui);
+
+	// Getting value of Pair name from GUI
+	navigateToReplication($groupName);
+
+	var $summaryPairNameGui = _getText(_span(0, _rightOf(_span($PairName))));
+	_assertExists("Pair name from Replication page GUI:", $summaryPairNameGui);
+
+	// Validating DB and GUI value of Pair name
+	_assertEqual($protectionSchemaGui, $summaryPairNameGui, "Comparing Pair name from protection schema screen  and replication screen");
+
+	// Role PR
+	Oracle_Replication_Role($userPR, $pwdPR, $internalLogon, $oracleListenerIPPR, $dbSidSelect);
+
+	// Getting value of Protection Mode from DB
+	var $protectionModeDB = $db.select("select PROTECTION_MODE from v$database");
+	_assertExists("Protection Mode DB", $protectionModeDB);
+
+	// Getting value of Protection Mode from GUI
+	var $protectionModeGui = _getText(_span(0, _rightOf(_span($ProtectionModeRep))));
+	_assertExists("Protection Mode GUI", $protectionModeGui);
+
+	// Validating DB and GUI value of Protection Mode
+	_assertEqual($protectionModeDB, $protectionModeGui, "Comparing Protection Mode from DB and GUI");
+
+
+	// Getting value of DG Broker PR DB
+	var $dgBrokerPRDB = $db.select("select DATAGUARD_BROKER from v$database");
+	_assertExists("DG Broker PR DB", $dgBrokerPRDB);
+
+	// Getting value of DG Broker PR GUI
+	var $dgBrokerPRGui1 = _getText(_span(0, _rightOf(_span($DGBroker))));
+	var $dgbrokerPRGui2 = $dgBrokerPRGui1.split(":");
+	var $dgbrokerPRGui3 = $dgbrokerPRGui2[1].split(",");
+	var $dgbrokerPRGui = $dgbrokerPRGui3[0].toUpperCase();
+	_assertExists("DG Broker PR GUI", $dgbrokerPRGui);
+
+	// Validating DB and GUI of DG broker
+	if($BrowserLang == "Y-JA"){
+		_assertExists($dgBrokerPRDB, $dgbrokerPRGui, "Comparing DG Broker from DB and GUI");
+	}
+	else{
+		_assertEqual($dgBrokerPRDB, $dgbrokerPRGui, "Comparing DG Broker from DB and GUI");
+	}
+	
+
+
+	// Getting value of Sync Status from DB
+	var $syncStatusDB = $db.select("select synchronized from v$archive_dest_status where dest_id = 2");
+	_assertExists("Sync Status DB", $syncStatusDB);
+
+	// Getting value of Sync Status from GUI
+	var $syncStatusGui = _getText(_span(0, _rightOf(_span($SyncStatus))));
+	_assertExists("Sync Status GUI", $syncStatusGui);
+
+	// Validating DB and GUI of Sync Status
+	if($BrowserLang == "Y-JA"){
+		_assertExists($syncStatusDB, $syncStatusGui, "Comparing Sync Status from DB and GUI");
+	}
+	else{
+		_assertEqual($syncStatusDB, $syncStatusGui, "Comparing Sync Status from DB and GUI");
+	}
+	
+
+	
+	// Getting value of Stdby Redo from DB
+	var $stdbyRedoDB1 = $db.select("select srl from v$archive_dest_status where dest_id=2");
+	var $srl = $stdbyRedoDB1;
+	if ($srl == "NO") {
+		var $stdbyRedoDB = "Disabled";
+	} else {
+		$stdbyRedoDB = "Enabled";
+	}
+	_assertExists("Stdby Redo from DB", $stdbyRedoDB);
+
+	// Getting value of Stdby Redo from GUI
+	var $stdbyRedoGui = _getText(_span(0, _rightOf(_span($StandbyRedo))));
+	_assertExists("Stdby Redo from GUI", $stdbyRedoGui);
+
+	// Validating value of Stdby Redo from DB and GUI
+	if($BrowserLang == "Y-JA"){
+		_assertExists($stdbyRedoDB, $stdbyRedoGui, "Comparing Stdby Redo from DB and GUI");
+	}
+	else{
+		_assertEqual($stdbyRedoDB, $stdbyRedoGui, "Comparing Stdby Redo from DB and GUI");
+	}
+	
+
+
+    // Repliaction details
+	navigateToReplication($groupName);
+	// ******************Getting Replication Status ****************************
+	if ($agentType == "Local") {
+		var $replStatus = Get_Oracle_DG_Local_Agent_status($compIP, $remoteUserNameVal, $remotePwdVal);
+		var $replicationStatusDB = $replStatus.get("replicationStatus");
+		_assertExists("Replication Status DB", $replicationStatusDB);
+	} else if ($agentType = "Remote") {
+		var $replStatus = Get_Oracle_DG_Remote_Agent_status($compIP);
+		var $replicationStatusDB = $replStatus.get("replicationStatus");
+		_assertExists("Replication Status DB", $replicationStatusDB);
+	}
+	// Getting Replication Status from GUI
+	
+	var $replicationStatusGUI =_getText(_span(0, _rightOf(_span($ReplicationStatus))));
+	_assertExists("Replication Status from GUI", $replicationStatusGUI);
+	var $i = 0;
+	while ($i < 5) {
+		if ($replicationStatusGUI == $replicationStatusDB) {
+			// validating Replication Status
+			if($BrowserLang == "Y-JA"){
+				_assertExists($replicationStatusDB, $replicationStatusGUI, "Comparing Replication Status from Db and GUI");
+			}
+			else{
+				_assertEqual($replicationStatusDB, $replicationStatusGUI, "Comparing Replication Status from Db and GUI");
+			}
+			
+			break;
+		} else if ($replicationStatusGUI != $replicationStatusDB) {
+			_wait(30000);
+			navigateToReplication($groupName);
+			var $replicationStatusGUI = _getText(_span(0, _rightOf(_span($ReplicationStatus))));
+			_assertExists("Replication Status from GUI", $replicationStatusGUI);
+		}
+		$i = $i + 1;
+	}
+
+	// Getting value of Data not archived from DB
+	var $dataNotArchivedDB = $db.select("select round((cp.cpodr_bno * (select max(lebsz) from x$kccle))/1024) from x$kcccp cp , x$kccle le where LE.leseq =CP.cpodr_seq and bitand(le.leflg,24)=8");
+	_assertExists("Data Not Archived DB", $dataNotArchivedDB);
+
+	// Getting value of Data not archived from GUI
+	var $dataNotArchivedGui = _getText(_span(0, _rightOf(_span($DataNotArchivedKB))));
+	_assertExists("Data Not Archived GUI", $dataNotArchivedGui);
+	var $j = 0;
+	while ($j < 5) {
+		_log($j);
+		if ($dataNotArchivedGui == $dataNotArchivedDB) {
+			// Validating value of data not archived from DB and GUI
+			if($BrowserLang == "Y-JA"){
+				_assertExists($dataNotArchivedDB, $dataNotArchivedGui, "Comparing Data not Archived from DB and GUI");
+			}
+			else{
+				_assertEqual($dataNotArchivedDB, $dataNotArchivedGui, "Comparing Data not Archived from DB and GUI");
+			}
+			
+			break;
+		} else if ($dataNotArchivedGui < $dataNotArchivedDB) {
+			_wait(30000);
+			navigateToReplication($groupName);
+			// Getting value of Data not archived from GUI
+			var $dataNotArchivedGui = _getText(_span(0, _rightOf(_span($DataNotArchivedKB))));
+			_assertExists("Data Not Archived GUI", $dataNotArchivedGui);
+		} else if ($dataNotArchivedGui > $dataNotArchivedDB) {
+			// Getting value of Data not archived from DB
+			var $dataNotArchivedDB = $db.select("select round((cp.cpodr_bno * (select max(lebsz) from x$kccle))/1024) from x$kcccp cp , x$kccle le where LE.leseq =CP.cpodr_seq and bitand(le.leflg,24)=8");
+			_assertExists("Data Not Archived DB", $dataNotArchivedDB);
+
+			// Getting value of Data not archived from GUI
+			var $dataNotArchivedGui = _getText(_span(0, _rightOf(_span($DataNotArchivedKB))));
+			_assertExists("Data Not Archived GUI", $dataNotArchivedGui);
+		}
+		$j = $j + 1;
+	}
+
+	// Getting value of Current log Sequence from DB
+	var $currentLogSeqDB = $db.select("select le.leseq from x$kcccp cp , x$kccle le where LE.leseq =CP.cpodr_seq and bitand(le.leflg,24)=8");
+	_assertExists("Current log sequence DB", $currentLogSeqDB);
+
+	// Getting value of Current log Sequence from GUI
+	var $currentLogSeqGui1 = _getText(_span(0, _rightOf(_span($CurrentLog))));
+	var $currentLogSeqGui2 = $currentLogSeqGui1.split(":");
+	var $currentLogSeqGui3 = $currentLogSeqGui2[0].split("#");
+	var $currentLogSeqGui = $currentLogSeqGui3[1];
+	_assertExists("Current log sequence GUI", $currentLogSeqGui);
+
+	// Validating value of Current log Sequence from DB and GUI
+	_assertTrue($currentLogSeqDB >= $currentLogSeqGui, "Comparing Current Log Sequence from DB and GUI");
+
+		// Getting value of Current log Block from DB
+	var $currentLogBlkDB = $db.select("select cp.cpodr_bno from x$kcccp cp , x$kccle le where LE.leseq =CP.cpodr_seq and bitand(le.leflg,24)=8");
+	_assertExists("Current log Block DB", $currentLogBlkDB);
+
+	// Getting value of Current log Block from GUI
+	var $currentLogBlkGui1 = $currentLogSeqGui2[1].split("#");
+	var $currentLogBlkGui = $currentLogBlkGui1[1];
+	_assertExists("Current log Block GUI", $currentLogBlkGui);
+	
+	var $j = 0;
+	while ($j < 5) {
+		_log($j);
+		if ($currentLogBlkGui == $currentLogBlkDB) {
+			// Validating value of current log block from DB and GUI
+			if($BrowserLang == "Y-JA"){
+				_assertExists($currentLogBlkDB, $currentLogBlkGui, "Comparing Current log Block from DB and GUI");
+			}
+			else{
+				_assertEqual($currentLogBlkDB, $currentLogBlkGui, "Comparing Current log Block from DB and GUI");
+			}
+			
+			break;
+		} else if ($currentLogBlkGui < $currentLogBlkDB) {
+			_wait(10000);
+			navigateToReplication($groupName);
+			// Getting value of Current log Block from GUI
+			var $currentLogSeqGui1 = _getText(_span(0, _rightOf(_span($CurrentLog))));
+			var $currentLogBlkGui1 = $currentLogSeqGui2[1].split("#");
+			var $currentLogBlkGui = $currentLogBlkGui1[1];
+			_assertExists("Current log Block GUI", $currentLogBlkGui);
+		} else if ($currentLogBlkGui > $currentLogBlkDB) {
+			// Getting value of Current log Block from DB
+			var $currentLogBlkDB = $db.select("select cp.cpodr_bno from x$kcccp cp , x$kccle le where LE.leseq =CP.cpodr_seq and bitand(le.leflg,24)=8");
+			_assertExists("Current log Block DB", $currentLogBlkDB);
+
+			// Getting value of Current log Block from GUI
+			var $currentLogBlkGui1 = $currentLogSeqGui2[1].split("#");
+			var $currentLogBlkGui = $currentLogBlkGui1[1];
+			_assertExists("Current log Block GUI", $currentLogBlkGui);
+		}
+		$j = $j + 1;
+	}
+
+	
+	// Getting value of last log received from DB
+	var $lastLogReceivedDB = $db.select("select max(sequence#) from v$log_history");
+	_assertExists("Last log Recieved", $lastLogReceivedDB);
+
+	// Getting value of Last log received from GUI
+	var $lastLogReceivedGui1 = _getText(_span(0, _rightOf(_span($LastReceivedLog))));
+	var $lastLogReceivedGui2 = $lastLogReceivedGui1.split("#");
+	var $lastLogReceivedGui = $lastLogReceivedGui2[1];
+	_assertExists("Last log received in GUI", $lastLogReceivedGui);
+
+	// Validating DB and GUI for Last log received
+	if($BrowserLang == "Y-JA"){
+		_assertExists($lastLogReceivedDB, $lastLogReceivedGui, "Comparing Last received log from DB and GUI");
+	}
+	else{
+		_assertEqual($lastLogReceivedDB, $lastLogReceivedGui, "Comparing Last received log from DB and GUI");
+	}
+	
+
+
+	// Getting Fal Client from DB
+	var $falClientDB = $db.select("select DB_UNIQUE_NAME from v$archive_dest where dest_id=2");
+	_assertExists("Fal Client in DB is :", $falClientDB);
+
+	// Getting Fal Client from GUI
+	var $falClientGui = _getText(_span(0, _rightOf(_span($FALClient))));
+	_assertExists("Fal Client in GUI is :", $falClientGui);
+
+	// Validating Fal Client from DB and GUI
+	if($BrowserLang == "Y-JA"){
+		_assertExists($falClientDB, $falClientGui, "Comparing Fal Client from DB and GUI");
+	}
+	else{
+		_assertEqual($falClientDB, $falClientGui, "Comparing Fal Client from DB and GUI");
+	}
+	
+
+
+	// Getting Destination ID from DB
+	var $destIDDB = $db.select("select DEST_ID from v$archive_dest where dest_id=2");
+	_assertExists("Destination ID DB", $destIDDB);
+
+	// Getting Destination ID from GUI
+	var $destIDGui = _getText(_span(0, _rightOf(_span($DestinationId))));
+	_assertExists("Destination ID GUI", $destIDGui);
+
+	// Validating Destination ID from DB and GUI
+	if($BrowserLang == "Y-JA"){
+		_assertExists($destIDDB, $destIDGui, "Comparing Destination ID from DB and GUI");
+	}
+	else{
+		_assertEqual($destIDDB, $destIDGui, "Comparing Destination ID from DB and GUI");
+	}
+	
+
+	
+	// Getting Mode from DB
+	var $modeDB = $db.select("select TRANSMIT_MODE from v$archive_dest where dest_id=2");
+	_assertExists("Mode from DB", $modeDB);
+
+	// Getting Mode from GUI
+	var $modeGui = _getText(_span(0, _rightOf(_span($Mode))));
+	_assertExists("Mode from GUI", $modeGui);
+
+	// Validating Mode from DB and GUI
+	if($BrowserLang == "Y-JA"){
+		_assertExists($modeDB, $modeGui, "Comparing Mode from DB and GUI");
+	}
+	else{
+		_assertEqual($modeDB, $modeGui, "Comparing Mode from DB and GUI");
+	}
+	
+
+	// Getting Type from DB
+	var $typeDB = $db.select("select PROCESS from v$archive_dest where dest_id=2");
+	_assertExists("Type from DB", $typeDB);
+
+	// Getting Type from GUI
+	var $typeGui = _getText(_span(0, _rightOf(_span($Type))));
+	_assertExists("Type from GUI", $typeGui);
+
+	// Validating Type from DB and GUI
+	if($BrowserLang == "Y-JA"){
+		_assertExists($typeDB, $typeGui, "Comparing Type from DB and GUI");
+	}
+	else{
+		_assertEqual($typeDB, $typeGui, "Comparing Type from DB and GUI");
+	}
+	
+
+	// Getting Status from DB in Transport service
+	var $statusPRDB = $db.select("select STATUS from v$archive_dest where dest_id=2");
+	_assertExists("Status from DB", $statusPRDB);
+
+	// Getting Status from GUI in Transport service
+	var $statusDRGui = _getText(_span(0, _rightOf(_span($Status1))));
+	_assertExists("Status from GUI", $statusDRGui);
+
+	// Validating Status from DB and GUI in Transport service
+	if($BrowserLang == "Y-JA"){
+		_assertExists($statusPRDB, $statusDRGui, "Comparing Status from DB and GUI");
+	}
+	else{
+		_assertEqual($statusPRDB, $statusDRGui, "Comparing Status from DB and GUI");
+	}
+	
+
+	// DR CONNECTION
+	var $props = Get_User_Properties_for_OracleDb_Connection($userDR, $pwdDR, $internalLogon);
+	var $conn = Get_Oracle_Db_Connection_URL($oracleListenerIPDR, $dbSidSelect);
+	var $db = _getDB("oracle.jdbc.driver.OracleDriver", $conn, $props);
+
+	// Getting value of Data not Received from DB
+	var $dataNotRecievedDB = $db.select("select (ag.high_sequence#-ag.low_sequence#+1) from v$archive_gap ag, v$instance i where ag.thread# = i.thread#");
+	if ($dataNotRecievedDB = "[]") {
+		$dataNotRecievedDB = "0";
+	}
+	_assertExists("Data Not Recieved DB", $dataNotRecievedDB);
+	// Getting value of Data not Received from GUI
+	//_getText(_span(0, _rightOf(_span($DataNotReceivedKB))));
+	var $dataNotReceivedGui = _getText(_span(0, _rightOf(_span($DataNotReceivedKB))));
+	_assertExists("Data Not Recieved GUI", $dataNotReceivedGui);
+
+	// Validating value of Data not Received from DB and GUI
+	if($BrowserLang == "Y-JA"){
+		_assertExists($dataNotRecievedDB, $dataNotReceivedGui, "Comparing Data not Received from DB and GUI");
+	}
+	else{
+		_assertEqual($dataNotRecievedDB, $dataNotReceivedGui, "Comparing Data not Received from DB and GUI");
+	}
+	
+
+
+	// Getting value of Data not Applied from DB
+	var $dataNotAppliedDB = $db
+			.select("select round(sum(a.blocks*a.block_size)/1024)from v$archived_log a, v$log_history h, v$instance i, v$database d where applied='NO' and registrar='RFS' and a.sequence# = h.sequence#(+) and h.recid is null and i.thread# = a.thread# and a.resetlogs_change#=d.resetlogs_change# group by a.sequence#");
+	if ($dataNotAppliedDB = "[]") {
+		$dataNotAppliedDB = "0";
+	}
+	_assertExists("Data Not Applied DB", $dataNotAppliedDB);
+
+	// Getting value of Data not Applied from GUI
+		var $dataNotAppliedGui = _getText(_span(0, _rightOf(_span($DataNotAppliedKB))));
+	_assertExists("Data Not Applied GUI", $dataNotAppliedGui);
+
+	// Validating value of Data not Applied from DB and GUI
+	if($BrowserLang == "Y-JA"){
+		_assertExists($dataNotAppliedDB, $dataNotAppliedGui, "Comparing Data not Applied from DB and GUI");
+	}
+	else{
+		_assertEqual($dataNotAppliedDB, $dataNotAppliedGui, "Comparing Data not Applied from DB and GUI");
+	}
+
+
+	// **************************************
+	// Getting value of Last log applied from DB
+	var $lastLogAppliedDB = $db.select("select max(sequence#) from v$log_history");
+	_assertExists("Last log applied in DB", $lastLogAppliedDB);
+
+	// Getting value of Last log applied from GUI
+	
+	var $lastLogAppliedGui1 =_getText(_span(0, _rightOf(_span($LastAppliedLog))));
+	var $lastLogAppliedGui2 = $lastLogAppliedGui1.split("#");
+	var $lastLogAppliedGui = $lastLogAppliedGui2[1];
+	_assertExists("Last log applied in GUI", $lastLogAppliedGui);
+
+	// Validating DB and GUI for Last log applied
+	if($BrowserLang == "Y-JA"){
+		_assertExists($lastLogAppliedDB, $lastLogAppliedGui, "Comparing Last applied log from DB and GUI");
+	}
+	else{
+		_assertEqual($lastLogAppliedDB, $lastLogAppliedGui, "Comparing Last applied log from DB and GUI");
+	}
+	
+
+	// **************************************
+	// Getting value of Fal Server from DB
+	var $falServerDB = $db.select("select DB_UNIQUE_NAME from v$archive_dest where dest_id=2");
+	_assertExists("Fal Server in DB is :", $falServerDB);
+
+	// Getting value of Fal Server from GUI
+	
+	var $falServerGui = _getText(_span(0, _rightOf(_span($FALServer))));
+	_assertExists("Fal Server in GUI is :", $falServerGui);
+
+	// Validating Fal Server from DB and GUI
+	if($BrowserLang == "Y-JA"){
+		_assertExists($falServerDB, $falServerGui, "Comparing Fal Server from DB and GUI");
+	}
+	else{
+		_assertEqual($falServerDB, $falServerGui, "Comparing Fal Server from DB and GUI");
+	}
+	
+
+	// **************************************
+	// Getting value of Apply service Process from DB
+	var $processDB = $db.select("select PROCESS FROM V$MANAGED_STANDBY");
+	var $a = $processDB.toString();
+	_assertExists("Process in Apply service from DB is :", $a); 
+			
+
+	// Getting value of Apply service Process from GUI
+	
+	var $processGui = _getText(_paragraph("text-overflow-ellipses margin-0", _near(_div($ApplyServiceOn))));
+	var $c = $processGui.replace(/\s/g, "");
+	_assertExists("Process in Apply service from GUI is :", $c);
+
+	// Validating Process from DB and GUI
+	if($BrowserLang == "Y-JA"){
+		_assertExists($a, $c, "Comparing Process from DB and GUI");
+	}
+	else{
+		_assertEqual($a, $c, "Comparing Process from DB and GUI");
+	}
+	
+
+	// **************************************
+	// Getting value of Apply service Client from DB
+	var $clientDB = $db.select("select  CLIENT_PROCESS from  V$MANAGED_STANDBY");
+	var $b=	$clientDB.toString();
+	_assertExists("Client in Apply service from DB is :",$b);
+		
+
+	// Getting value of Apply service Client from GUI
+	
+	var $clientGui = _getText(_paragraph("text-overflow-ellipses margin-0[21]"));
+	var $d = $clientGui.replace(/\s/g, "");
+		_assertExists("Client in Apply service from GUI is :", $d);
+	
+
+	// Validating Client from DB and GUI
+		if($BrowserLang == "Y-JA"){
+			_assertExists($b, $d, "Comparing Client from DB and GUI");
+		}
+		else{
+			_assertEqual($b, $d, "Comparing Client from DB and GUI");
+		}
+	
+
+	// **************************************
+	// Getting value of Apply delay from DB
+	var $applyDelayDB1 = $db.select("select DELAY_MINS from v$managed_standby where thread#=1");
+	var $applyDelayDB = $applyDelayDB1.pop();
+	_assertExists("Apply delay in Apply service from DB is :", $applyDelayDB);
+
+	// Getting value of Apply delay from GUI
+	
+	var $applyDelayGui = _getText(_span(0, _rightOf(_span($ApplyDelayMin))));
+	_assertExists("Apply delay in Apply service from GUI is :", $applyDelayGui);
+
+	// Validating Apply delay from DB and GUI
+	if($BrowserLang == "Y-JA"){
+		_assertExists($applyDelayDB, $applyDelayGui, "Comparing Apply delay from DB and GUI");
+	}
+	else{
+		_assertEqual($applyDelayDB, $applyDelayGui, "Comparing Apply delay from DB and GUI");
+	}
+	
+
+	// **************************************
+	// Getting Status from DB in apply service
+	var $statusDRDB = $db.select("select STATUS from v$archive_dest where dest_id=2");
+	_assertExists("Status from DB", $statusDRDB);
+
+	// Getting Status from GUI in apply service
+	//_getText(_span(1,_rightOf(_span("Data Not Archived(KB):", _near(_span("Data Lag Details"))))));
+	var $statusDRGui = _getText(_span(0, _rightOf(_span($Status1))));
+	_assertExists("Status from GUI", $statusDRGui);
+
+	// Validating Status from DB and GUI in apply service
+	if($BrowserLang == "Y-JA"){
+		_assertExists($statusDRDB, $statusDRGui, "Comparing Status from and GUI");
+	}
+	else{
+		_assertEqual($statusDRDB, $statusDRGui, "Comparing Status from and GUI");
+	}
+	
+
+}
+// Replication Status for LOCAL and REMOTE
+
+/**
+* Function is for get of replication status in replication page for Local agents
+*@param : $compIP, $remoteUserNameVal, $remotePwdVal
+*@return : $replStatus
+*@Author: Aditi Jain
+*
+*/
+
+function Get_Oracle_DG_Local_Agent_status($compIP, $remoteUserNameVal, $remotePwdVal) {
+	var $sshCommand = '../.' + $localAgentPath + "DataGuardAgent.sh status";
+	var $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+
+	
+	var $actionStatus = $status.split(",");
+	_assertExists("actionStatus is:", $actionStatus[1]);
+	if ($actionStatus[1] == "DataGuardAgent is running.") {
+		var $replicationStatus = "ACTIVE";
+	} else if ($actionStatus == " There is no DataGuardAgent running") {
+		$replicationStatus = "UNKNOWN";
+	} else {
+		$replicationStatus = "INACTIVE";
+	}
+	_assertExists("Replication Status DB:", $replicationStatus);
+	_wait(1000);
+	var $replStatus = new java.util.Properties();
+	$replStatus.put("replicationStatus", $replicationStatus);
+	return $replStatus;
+}
+
+/**
+* Function is for get of replication status in replication page for Remote agents
+*@param : $compIP
+*@return : $replStatus
+*@Author: Aditi Jain
+*
+*/
+function Get_Oracle_DG_Remote_Agent_status($compIP) {
+	var $sshCommand = '../.' + $EAMSROOT + 'bin/' + "DataGuardAgent.sh status" + " " + $compIP + ' LINUXSERVER';
+	var $status = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+
+	var $actionTime = $status.split("[");
+	var $year = currentYear();
+	var $actionStatus1 = $actionTime[0].split($year);
+	var $actionStatus = $actionStatus1.pop();
+	_assertExists("actionStatus",$actionStatus);
+	if ($actionStatus == " DataGuardAgent running") {
+		var $replicationStatus = "ACTIVE";
+	} else if ($actionStatus == " There is no DataGuardAgent running") {
+		$replicationStatus = "UNKNOWN";
+	} else {
+		$replicationStatus = "INACTIVE";
+	}
+	_assertExists("Replication Status DB:", $replicationStatus);
+	_wait(1000);
+	var $replStatus = new java.util.Properties();
+	$replStatus.put("replicationStatus", $replicationStatus);
+	return $replStatus;
+}
+
+/**
+* Function is for get Role of PR and DR in Replication Screen
+*@param : $user, $pwd, $internalLogon, $oracleListenerIP, $dbSidSelect
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+function Oracle_Replication_Role($user, $pwd, $internalLogon, $oracleListenerIP, $dbSidSelect) {
+	// PR CONNECTION
+	var $props = Get_User_Properties_for_OracleDb_Connection($userPR, $pwdPR, $internalLogon);
+	var $conn = Get_Oracle_Db_Connection_URL($oracleListenerIPPR, $dbSidSelect);
+	var $db = _getDB("oracle.jdbc.driver.OracleDriver", $conn, $props);
+
+	// Primary Role from DB
+	var $rolePRDB = $db.select("select DATABASE_ROLE from v$database");
+	_assertExists("Sync Status DB", $rolePRDB);
+
+	
+	
+	// Primary Role from GUI
+	var $rolePRGui = _getCellText(_cell(2, _near(_tableHeader($Role, _near(_tableHeader($PrimaryTH))))));
+	_assertExists("Sync Status GUI", $rolePRGui);
+	
+	
+	
+	// Validating DB and GUI for Role PR
+	_assertEqual($rolePRDB, $rolePRGui, "Comparing Role from DB and GUI");
+
+	// DR CONNECTION
+	var $props = Get_User_Properties_for_OracleDb_Connection($userDR, $pwdDR, $internalLogon);
+	var $conn = Get_Oracle_Db_Connection_URL($oracleListenerIPDR, $dbSidSelect);
+	var $db = _getDB("oracle.jdbc.driver.OracleDriver", $conn, $props);
+
+	// Stand By Role from DB
+	var $roleDRDB = $db.select("select DATABASE_ROLE from v$database");
+	_assertExists("Sync Status DB", $roleDRDB);
+
+	
+	
+	// Stand By Role from GUI
+	var $roleDRGui = _getCellText(_cell(5, _near(_tableHeader($StandbyTH))));
+	_assertExists("Sync Status GUI", $roleDRGui);
+	
+
+	
+	// Validating DB and GUI for Role DR
+	_assertEqual($roleDRDB, $roleDRGui, "Comparing Role from DB and GUI");
+
+}// End Of Replication Screen	
+
+/**
+* Function is for Verification of the all RPO detail from RPO/RTO screen for oracle DG solution Post SO
+*@param : null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+function OracleDG_Rpo_Post_SO() {
+	var $archivePathPR = get_archive_path_PR($ArchiveLogsLocationPR);
+	var $archivePathDR = get_archive_path_DR($ArchiveLogsLocationDR);
+	return OracleDG_Rpo_Status($userDR, $pwdDR, $internalLogon, $oracleListenerIPDR, $dbSidSelect);
+
+} // End of Oracle_Rpo_Post_SO()
+
+/**
+* Function is for Verification of the all RPO detail from RPO/RTO screen for oracle DG solution before SO
+*@param : null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+function OracleDG_Rpo() {
+	var $archivePathPR = get_archive_path_PR($ArchiveLogsLocationPR);
+	var $archivePathDR = get_archive_path_DR($ArchiveLogsLocationDR);
+	return OracleDG_Rpo_Status($userPR, $pwdPR, $internalLogon, $oracleListenerIPPR, $dbSidSelect);
+
+}// End of Oracle_Rpo()
+
+/**
+* Function is for Verification of the all RPO detail from RPO/RTO screen for oracle DG solution.
+*@param : $userPR, $pwdPR, $internalLogon, $oracleListenerIPPR, $dbSidSelect,$archivePathPR, $userDR, $pwdDR, $internalLogon, $oracleListenerIPDR, $dbSidSelect,$archivePathDR
+*@return : $dbRecoveryPoint
+*@Author: Aditi Jain
+*
+*/
+function OracleDG_Rpo_Status($user, $pwd, $internalLogon, $oracleListenerIP, $dbSidSelect) {
+
+	navigateToRPO($groupName);
+	_wait(15000);
+	// Transaction ID PR 
+	var $transactionIDPRGui = _getText(_div(1, _near(_div($TransactionID))));
+	_assertExists("Transaction ID from GUI PR", $transactionIDPRGui);
+	
+	// Transaction Time PR 
+	var $transactionTimePRGui1 = _getText(_div(1, _near(_div($TransactionTime))));
+	_assertExists("Transaction Time from GUI PR", $transactionTimePRGui1); 
+	
+	// Transaction ID DR
+	var $transactionIDDRGui = _getText(_div(1, _near(_div($TransactionID1))));
+	_assertExists("Transaction ID from GUI DR", $transactionIDDRGui); //
+	
+	// Transaction Time DR
+	var $transactionTimeDRGui = _getText(_div(1,_near(_div($TransactionTime1))));
+	_assertExists("Transaction time from GUI DR", $transactionTimeDRGui);
+	
+	
+	  //CONNECTION PR
+    	
+    	// calling function to connect the PR machine from back end
+	
+	    var $props = Get_User_Properties_for_OracleDb_Connection($user, $pwd, $internalLogon);
+	    var $conn = Get_Oracle_Db_Connection_URL($oracleListenerIP, $dbSidSelect);
+	     var $db = _getDB("oracle.jdbc.driver.OracleDriver", $conn, $props);
+	    $timestamp = currentTime();
+	    try{
+	    	 var $tableCreationDBPR = $db.update("CREATE TABLE RPO(PersonID int,LastName varchar(255),FirstName varchar(255),Address varchar(255),City varchar(255))");
+	    }
+	    catch (e) {
+			_log("Table with name RPO has been already created","CUSTOM4");
+		}
+	    
+	     var $TimeStampdbPR = $db.select("select to_char(completion_time,'DD Mon, YYYY HH24:MI:SS') MY_DATE, (blocks * block_size)  as ctime  from v$archived_log where sequence#=(select max(sequence#) from v$archived_log al, v$instance i, v$database d where al.thread# = i.thread#  and al.resetlogs_change# = d.resetlogs_change# and al.resetlogs_time = d.resetlogs_time)  and thread# = (select thread# from v$instance) order by thread#");
+	     _assertExists("TimeStamp",$TimeStampdbPR);
+    
+    	
+       var $date = $TimeStampdbPR;
+       var $dateString = $date.toString();
+       var $timeStampdb = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+       _assertExists("Time Stamp db", $timeStampdb);
+    	
+       $count = 0;
+     	while($count<10){
+     		_wait(30000);
+     		$count++;
+     		}
+		
+	// Transaction ID PR 
+     var $varPrimary=_isVisible(_strong($PrimaryTH, _near(_div($TransactionID))));
+    _log($varPrimary); //primary
+    _wait(10000);
+	var $transactionIDPR = _getText(_div(1, _near(_div($TransactionID))));
+	_assertExists("Transaction ID from GUI PR", $transactionIDPR);
+	
+	// Transaction Time PR 
+	var $transactionTimePR1 = _getText(_div(1, _near(_div($TransactionTime))));
+	_wait(10000);
+	_assertExists("Transaction Time from GUI PR", $transactionTimePR1); 
+	var $date = $transactionTimePR1;
+    var $dateString = $date.toString();
+    var $transactionTimePR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+    _assertExists("Transaction Time from GUI PR", $transactionTimePR); 
+	
+	// Transaction ID DR
+	var $transactionIDDR =_getText(_div(1, _near(_div($TransactionID1))));
+	_wait(10000);
+	_assertExists("Transaction ID from GUI DR", $transactionIDDR);
+	
+	// Transaction Time DR
+	var $transactionTimeDR1 =_getText(_div(1,_near(_div($TransactionTime1))));
+	_wait(10000);	
+	_assertExists("Transaction time from GUI DR", $transactionTimeDR1);	
+	var $date = $transactionTimeDR1;
+    var $dateString = $date.toString();
+    var $transactionTimeDR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+	_assertExists("Transaction time from GUI DR", $transactionTimeDR);	
+	
+	_assertTrue($transactionIDPRGui<=$transactionIDPR,"TransactionID PR Equal in GUI and db");
+
+	_assertTrue($timeStampdb<=$transactionTimePR,"TimeStamp PR is Equal in GUI and db");
+	
+    _assertTrue($transactionIDDRGui<=$transactionIDDR,"TransactionID DR Equal in GUI and db");
+	
+  // _assertTrue($timeStampdb<= $transactionTimeDR,"TimeStamp DR is Equal in GUI and db");
+ 	
+	var $droptable=$db.update("drop table RPO");
+// Calling Calulate_Rpo function to verify RPO calculation from gui
+	$dbRpo = Calulate_Rpo($transactionTimePR1, $transactionTimeDR1);
+    $recoveryPointinDB = $dbRpo.get("recoveryPointDB");
+
+ 	return $dbRpo;
+	return $recoveryPointinDB;
+}// End Of Oracle DG RPO
+
+
+
+/**
+* Function is for Verification of the all RTO detail from RPO/RTO screen for oracle DG solution
+*@param : null
+*@return : $dbRto
+*@Author: Aditi Jain
+*
+*/
+
+function OracleDG_Rto() {
+
+	navigateToRTO($groupName);
+	// verification of current RTO :
+	//wait added 
+	_wait(30000);
+			
+	var $step1 = _getText(_svg_tspan(33, _near(_svg_tspan($RemotePre))));
+	_assertExists("$step1", $step1);
+	var $stp1=$step1.split(" ");
+	var $stepName1= parseInt($stp1[0]);
+	var $step2 = (_getText(_svg_tspan(34, _near(_svg_tspan($CheckArchive)))));
+	_assertExists("$step2", $step2);
+	var $stp2=$step2.split(" ");
+	var $stepName2= parseInt($stp2[0]);
+	var $step3 = (_getText(_svg_tspan(35, _near(_svg_tspan($IsGapPresent)))));
+	_assertExists("$step3", $step3);
+	var $stp3=$step3.split(" ");
+	var $stepName3= parseInt($stp3[0]);
+	var $step4 = (_getText(_svg_tspan(36, _near(_svg_tspan($Listing)))));
+	_assertExists("$step4", $step4);
+	var $stp4=$step4.split(" ");
+	var $stepName4= parseInt($stp4[0]);
+
+	var $step5 = (_getText(_svg_tspan(37, _near(_svg_tspan($ApplyPending)))));
+	_assertExists("$step5", $step5);
+	var $stp5=$step5.split(" ");
+	var $stepName5= parseInt($stp5[0]);
+
+	var $step6 = (_getText(_svg_tspan(38, _near(_svg_tspan($StopManaged)))));
+	_assertExists("$step6", $step6);
+	var $stp6=$step6.split(" ");
+	var $stepName6= parseInt($stp6[0]);
+
+	var $step7 = _getText(_svg_tspan(39, _near(_svg_tspan($Activate))));
+	_wait(3000);
+	_assertExists("$step7", $step7);
+	var $stp7=$step7.split(" ");
+	var $stepName7= parseInt($stp7[0]);
+	var $step8 = (_getText(_svg_tspan(40, _near(_svg_tspan($Shutdown)))));
+	_wait(3000);
+	_assertExists("$step8", $step8);
+	var $stp8=$step8.split(" ");
+	var $stepName8= parseInt($stp8[0]);
+	var $step9 = (_getText(_svg_tspan(41, _near(_svg_tspan($StartDatabase)))));
+	_wait(3000);
+	_assertExists("$step9", $step9);
+	var $stp9=$step9.split(" ");
+	var $stepName9= parseInt($stp9[0]);
+	var $step10 = (_getText(_svg_tspan(42, _near(_svg_tspan($Open))))); //open database
+	_wait(3000);
+	_assertExists("$step10", $step10);
+	var $stp10=$step10.split(" ");
+	var $stepName10= parseInt($stp10[0]);
+	var $step11 = (_getText(_svg_tspan(43, _near(_svg_tspan($Switch)))));
+	_wait(3000);
+	_assertExists("$step11", $step11);
+	_wait(3000);
+	var $stp11=$step11.split(" ");
+	var $stepName11= parseInt($stp11[0]);
+	var $step12 = (_getText(_svg_tspan(44, _near(_svg_tspan($Verify)))));
+	_wait(3000);
+	_assertExists("$step12", $step12);
+	var $stp12=$step12.split(" ");
+	var $stepName12= parseInt($stp12[0]);
+
+	var $expectedCompletionTime = Math.floor($stepName1 + $stepName2 + $stepName3 + $stepName4 + $stepName5 + $stepName6 + $stepName7+$stepName8+$stepName9+$stepName10+$stepName11+$stepName12);
+	_assertExists("Expected completion time", $expectedCompletionTime);
+	// Calling function Calculate_Rto from Group_manager.sah
+	$dbRto = Calculate_Rto($expectedCompletionTime);
+	return $dbRto;
+
+
+} // End of OracleDG RTO
+
+/**
+* Function is for Verification of details in Manage-Manage DR Solution screen for OracleDG solution Post SO
+*@param : null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function OracleDG_Managedrsolution_PostSO() {
+	OracleDG_Managedrsolution_Status($groupName,$userDR, $pwdDR, $internalLogon,$oracleListenerIPDR, $dbSidSelect,"SO" );
+} // End of OracleDG_Managedrsolution_PostSO()
+
+/**
+* Function is for Verification of details in Manage-Manage DR Solution screen for OracleDG solution before SO
+*@param : null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+function OracleDG_Managedrsolution() {
+	OracleDG_Managedrsolution_Status($groupName,$userPR, $pwdPR, $internalLogon,$oracleListenerIPPR, $dbSidSelect );
+}// End of OracleDG_Managedrsolution()
+
+
+/**
+* Function is for Verification of details in Manage-Manage DR Solution screen for OracleDG solution.
+*@param : $groupName,$user, $pwd, $internalLogon,$oracleListenerIP, $dbSidSelect,$WFType 
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+function OracleDG_Managedrsolution_Status($groupName,$user, $pwd, $internalLogon,$oracleListenerIP, $dbSidSelect,$WFType ){
+	_click(_link($Manage));
+	_click(_link($GroupsListView));
+	_click(_link($groupName));
+	_click(_link($ManageDRSolution));
+
+	// calling Group_ManageGroupInformation to verify the PR and DR site status
+	Group_Managedrsolution($WFType);
+
+	navigateToDiscovery();
+	_click(_link($Groups));
+	_click(_link($Subsystems));
+	_click(_link($ProtectionSchemes));
+	_wait(1000);
+	_click(_link($sernamePR, _near(_cell($systemTypeProtection))));
+	var $protectionSchemaGui = _getCellText(_cell(1, _near(_cell($ReplicationPairVerify))));
+	_assertExists("Pair name from protection schema screen:", $protectionSchemaGui);
+
+	// Getting value of Pair name from GUI
+	_click(_link($Manage));
+	_click(_link($GroupsListView));
+	_click(_link($groupName));
+	_click(_link($ManageDRSolution));
+
+	var $pairNameGui = _getCellText(_cell(1, _near(_cell($PairName))));
+	_assertExists("Pair name from Replication page GUI:", $pairNameGui);
+	_assertEqual($protectionSchemaGui, $pairNameGui, "Comparing Pair name from protection schema screen  and replication screen");
+
+
+	var $protectionMechanism = _getCellText(_cell(1, _near(_cell($ProtectionMechanism))));
+	_assertExists("Protection Mechanism is:", $protectionMechanism);
+	_assertEqual($systemTypeProtection, $protectionMechanism, "Validating Protection Mechanism in GUI");
+	
+	var $replicationStatusGui = _getText(_cell(1, _near(_cell($ReplicationStatus))));
+	_assertExists($ReplicationStatus, $replicationStatusGui);
+	
+	if  ($replicationStatusGui == "DEFERRED") {
+		_assertExists("Replication Status in GUI is :",$replicationStatusGui);
+		_log("Replication is stopped");
+		Start_Replication();
+		var $i = 0;
+		// Looping till Initiate NormalCopy button appears
+		while ($i < 10) {
+			_log($i);
+			_wait(30000);
+			 $replicationStatusGui = _getText(_cell(1, _near(_cell($ReplicationStatus))));
+			_assertExists("Replication Status:", $replicationStatusGui);
+			if (($replicationStatusGui == "VALID") || ($replicationStatusGui == "ERROR")) {
+				break;
+			} else
+				_log("Replication Status in GUI is Deefered");
+			$i = $i + 1;
+		} // End of while
+	} 
+	
+	// calling function to connect the PR machine from back end
+	var $props = Get_User_Properties_for_OracleDb_Connection($user, $pwd, $internalLogon);
+	var $conn = Get_Oracle_Db_Connection_URL($oracleListenerIP, $dbSidSelect);
+	var $db = _getDB("oracle.jdbc.driver.OracleDriver", $conn, $props);
+	
+	var $statusPRDB = $db.select("select STATUS from v$archive_dest where dest_id=2");
+	_assertExists("Status from DB", $statusPRDB);
+	
+	
+	if ($statusPRDB == "ERROR"){
+		_assertExists("Replication Status in backend is :",$statusPRDB);
+		_log("Replication is not working properly status is Error.");
+		_fail("Replication status is ERROR and can not proceed for further.So that stopping execution.");		
+	} else if ($statusPRDB == "VALID") {
+		_assertExists("Replication Status in backend is :",$statusPRDB);
+		_log("Replication is Active");
+		
+	} else if ($statusPRDB == "DEFERRED") {
+		_assertExists("Replication Status in backend is :",$statusPRDB);
+		_log("Replication is stopped");
+			} else {
+				_assertExists("Replication Status in backend is :",$statusPRDB);
+				_log("some other state");
+				_fail("Replication status is other the VALID,DEFFERE,ERROR and with this state we can proceed for sfurther.So that stopping execution.");		
+			}
+	
+	if ($replicationStatusGui == "ERROR") {
+		var $i = 0;
+		// Looping till Initiate NormalCopy button appears
+		while ($i < 15) {
+			_log($i);
+			_wait(30000);
+			Popup_Handler();
+			_wait(10000);
+			 $replicationStatusGui = _getText(_cell(1, _near(_cell("Replication Status:"))));
+			_assertExists("Replication Status:", $replicationStatusGui);
+			if ($replicationStatusGui == "VALID" ){
+				break;
+			} else {
+				_log("Replication Status in GUI is Error");
+			}
+			$i = $i + 1;
+			
+		} // End of while
+		
+	}
+	if ($replicationStatusGui == "ERROR"){
+	_fail("Replication status is ERROR and wait till 15 min still status not changed. and can not proceed for further.So that stopping execution.");
+	}
+ _assertEqual($statusPRDB, $replicationStatusGui, "Comparing Replication status from GUI and DB");
+}// end Of OracleDG_Managedrsolution_Status()
+
+/**
+* Function is for Validation of logs in Monitor > GroupSnapshot screen for oracleDG solution post SO.
+*@param : null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function OracleDG_Groupsnapshot_Post_SO() {
+	var $archivePathPR = get_archive_path_PR($ArchiveLogsLocationPR);
+	_log("etstes");
+	var $archivePathDR = get_archive_path_DR($ArchiveLogsLocationDR);
+	OracleDG_Groupsnapshot_Status($groupName,$archivePathDR,$userDR, $pwdDR, $internalLogon,$oracleListenerIPDR, $dbSidSelect,$userPR, $pwdPR, $internalLogon,$oracleListenerIPPR, $dbSidSelect,"SO");
+
+} // End of Mysql_Groupsnapshot_Post_SO()
+
+
+/**
+* Function is for Validation of logs in Monitor > GroupSnapshot screen for oracleDG solution before SO.
+*@param : null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+function OracleDG_Continuity($WFType) {
+	var $archivePathPR = get_archive_path_PR($ArchiveLogsLocationPR);
+	var $archivePathDR = get_archive_path_DR($ArchiveLogsLocationDR);
+	OracleDG_Continuity_details($groupName,$archivePathPR,$userPR, $pwdPR, $internalLogon,$oracleListenerIPPR, $dbSidSelect,$userDR, $pwdDR, $internalLogon,$oracleListenerIPDR, $dbSidSelect,$WFType,$portdataset);
+}// End of Mysql_Groupsnapshot()
+
+/**
+* Function is for Validation of logs in Monitor > GroupSnapshot screen for oracleDG solution.
+*@param : $groupName,$archivePathPR,$userPR, $pwdPR, $internalLogon,$oracleListenerIPPR, $dbSidSelect,$userDR, $pwdDR, $internalLogon,$oracleListenerIPDR, $dbSidSelect,$WFType
+*@return : null
+*@Author: Swati Choudhary
+*@Modified by : Srinivas Pulamarasetti
+*Updated by: Anita portno added to db connection
+*/
+function OracleDG_Continuity_details($groupName,$archivePathPR,$userPR, $pwdPR, $internalLogon,$oracleListenerIPPR, $dbSidSelect,$userDR, $pwdDR, $internalLogon,$oracleListenerIPDR, $dbSidSelect,$WFType,$portdataset) {
+	Popup_Handler();
+
+   var $primary = Get_OracleDG_Primary_Continuity_Details_DB($userPR, $pwdPR, $internalLogon,$oracleListenerIPPR, $dbSidSelect,$portdataset);
+	
+   var $secondary = Get_OracleDG_Secondary_Continuity_Details_DB($userDR, $pwdDR, $internalLogon,$oracleListenerIPDR, $dbSidSelect,$portdataset);
+
+	NavigateToRGDetailsPage($groupName);
+	_click(_link("icon-right-arrow ex-col-arrow collapsed", _near(_link($WFType))));
+	
+	//PR Side
+	
+// Last Log File dumped at primary Detail from Gui
+	
+	var $i=0;
+	while($i<10){
+		
+		var $lastLogFileDump=_getText(_heading5($LastLogFiledumpedatprimary));
+		var $logFileDumpatPrimary=$lastLogFileDump.split($primary);
+		var $lastLogFileDumpedatPrimaryGui=$logFileDumpatPrimary[1];
+		_assertExists("last Log File Dumped at Primary",$lastLogFileDumpedatPrimaryGui);
+	if($lastLogFileDumpedatPrimaryGui =="N/A"){
+		_wait(30000);
+	}
+	else
+		{
+		break;
+		_log("Go Ahead");
+		}
+	$i++;
+	}
+  
+	var $lastLogFileDumpedatPrimaryDb=$primary.get($lastLogFileDumpatPrimarydb);
+	_assertExists("$last Log File Dumped at Primary DB",$lastLogFileDumpedatPrimaryDb);
+	_assertTrue($lastLogFileDumpedatPrimaryGui<=$lastLogFileDumpedatPrimaryDb,"Comparing Last Log File dumped at PR from GUI and backend");
+		
+
+	// Dump Log File Time Stamp Detail from Gui
+	
+	var $dumpLogFileTimeStamp=_getText(_heading5($DumpLogFileTimestamp));
+	var $dumpLogFileTimeStampval=$dumpLogFileTimeStamp.split($Timestamp);
+	var $dumpLogFileTimeStampGui1=$dumpLogFileTimeStampval[1];
+	_assertExists("dump Log File Time Stamp",$dumpLogFileTimeStampGui1);
+	 var $date = $dumpLogFileTimeStampGui1;
+     var $dateString = $date.toString();
+     var $dumpLogFileTimeStampGui = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+     _assertExists("dump Log File Time Stamp",$dumpLogFileTimeStampGui);
+	
+	
+	
+	 var $dumpLogFileTimeStampDb1=$primary.get("dumpLogFileTimeStampdb");
+	_assertExists("dump Log File Time Stamp DB",$dumpLogFileTimeStampDb1);
+	 var $date = $dumpLogFileTimeStampDb1;
+     var $dateString = $date.toString();
+     var $dumpLogFileTimeStampDb = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+ 	_assertExists("dump Log File Time Stamp DB",$dumpLogFileTimeStampDb);
+
+ 	_assertTrue($dumpLogFileTimeStampGui <= $dumpLogFileTimeStampDb,"Comparing Dump Log File Timestamp from PR in GUI and backend");
+    
+    // Last Dump Log Sequence Number Detail from Gui
+     
+	var $lastDumpLogSequenceNumber=_getText(_heading5($LastDumpLogsequencenumber));
+	var $lastDumpLogSequenceNumberVal=$lastDumpLogSequenceNumber.split($number);
+	var $lastDumpLogSequenceNumberinGui=$lastDumpLogSequenceNumberVal[1];
+	_assertExists("last Dump Log Sequence Number",$lastDumpLogSequenceNumberinGui);
+	var $lastDumpLogSequenceNumberinDb=$primary.get("lastDumpLogSequenceNumberdb");
+	_assertExists("last Dump Log Sequence Number DB",$lastDumpLogSequenceNumberinDb);
+
+	_assertTrue($lastDumpLogSequenceNumberinGui <= $lastDumpLogSequenceNumberinDb,"Comparing Last Dump Log sequence number from PR in GUI and backend");
+			
+	
+	//DR Side
+	
+	// Last Apply Log Sequence Number Detail from Gui
+	var $lastApplyLogSequenceNumber=_getText(_heading5($LastApplyLogsequencenumber));
+	var $lastApplyLogSequenceNumberVal=$lastApplyLogSequenceNumber.split($number);
+	var $lastApplyLogSequenceNumberGui=$lastApplyLogSequenceNumberVal[1];
+	_assertExists("last Apply Log Sequence Number",$lastApplyLogSequenceNumberGui);
+	var $lastApplyLogSequenceNumberDB=$secondary.get("lastApplyLogSequenceNumberdb");
+	_assertExists("last Apply Log Sequence Number DB",$lastApplyLogSequenceNumberDB);
+	
+	_assertTrue($lastApplyLogSequenceNumberGui <= $lastApplyLogSequenceNumberDB,"Comparing Log File Applied Timestamp on DR from GUI and backend");
+	
+		
+	// Next Log File to be Applied at Secondary Detail from Gui
+	var $nextLogFiletobeatSecondary=_getText(_heading5($NextLogFiletobeAppliedatsecondary));
+	var $nextLogFiletobeAppliedatSecondary=$nextLogFiletobeatSecondary.split($secondary);
+	var $nextLogFiletobeAppliedatSecondaryGui=$nextLogFiletobeAppliedatSecondary[1];
+	_assertExists("next Log File to be Applied at Secondary",$nextLogFiletobeAppliedatSecondaryGui);
+	var $nextLogFiletobeAppliedatSecondaryDB=$secondary.get("nextLogFiletobeAppliedatsecondarydb");
+	_assertExists("next Log File to be Applied at Secondary DB",$nextLogFiletobeAppliedatSecondaryDB);
+	//_assertTrue($nextLogFiletobeAppliedatSecondaryGui <= $nextLogFiletobeAppliedatSecondaryDB,"Comparing Log File Applied Timestamp on DR from GUI and backend");
+	
+	
+	// Log File Applied Time Stamp Detail from Gui
+	var $logFileAppliedTimeStamp=_getText(_heading5($LogFileAppliedTimestamp));
+	var $logFileAppliedTimeStampVal=$logFileAppliedTimeStamp.split($Timestamp);
+	var $logFileAppliedTimeStampGui1=$logFileAppliedTimeStampVal[1];
+	 _assertExists("log File Applied TimeStamp",$logFileAppliedTimeStampGui1);
+	 var $date = $logFileAppliedTimeStampGui1;
+     var $dateString = $date.toString();
+     var $logFileAppliedTimeStampGui = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+     _assertExists("log File Applied TimeStamp",$logFileAppliedTimeStampGui);
+	
+	var $logFileAppliedTimeStampDB1=$primary.get("logFileTimeAppliedStampdb");
+	
+	 _assertExists("log File Applied TimeStamp DB",$logFileAppliedTimeStampDB1);
+	 var $date = $logFileAppliedTimeStampDB1;
+     var $dateString = $date.toString();
+     var $logFileAppliedTimeStampDB = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+     _assertExists("log File Applied TimeStamp DB",$logFileAppliedTimeStampDB);
+
+    //_assertTrue($logFileAppliedTimeStampGui <= $logFileAppliedTimeStampDB, "Comparing Log File Applied Timestamp on DR from GUI and backend");	////delay updating in GUI
+	
+}// End Of Mysql_Groupsnapshot()
+
+
+
+
+/**
+* Function is for verification of details in Manage-Group Information screen for OracleDG solution Post SO
+*@param : null
+*@return : null
+*@Author: Swati Chowdhary
+*
+*/
+
+function OracleDG_Groupinformation_Post_SO() {
+	var $archivePathPR = get_archive_path_PR($ArchiveLogsLocationPR);
+	var $archivePathDR = get_archive_path_DR($ArchiveLogsLocationDR);
+	OracleDG_Groupinformation_Details($groupName,$userDR, $pwdDR, $internalLogon,$oracleListenerIPDR, $dbSidSelect,$userPR, $pwdPR, $internalLogon,$oracleListenerIPPR, $dbSidSelect,"SO");
+}// End of Mysql_Groupinformation_Post_SO()
+
+/**
+* Function is for verification of details in Manage-Group Information screen for OracleDG solution Before SO
+*@param : null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+function OracleDG_Groupinformation() {
+	var $archivePathPR = get_archive_path_PR($ArchiveLogsLocationPR);
+	_log("PR",$archivePathPR);
+	var $archivePathDR = get_archive_path_DR($ArchiveLogsLocationDR);
+	_log("DR",$archivePathDR);
+	OracleDG_Groupinformation_Details($groupName,$userPR, $pwdPR, $internalLogon,$oracleListenerIPPR, $dbSidSelect,$userDR, $pwdDR, $internalLogon,$oracleListenerIPDR, $dbSidSelect);
+}// End of Mysql_Groupinformation()
+
+
+
+
+/**
+* Function is get Continuity Primary details from DB 
+*@param :$user, $pwd, $internalLogon,$oracleListenerIP, $dbSidSelect
+*@return : $primary
+*@Author: Aditi Jain
+*
+*/
+
+
+function Get_OracleDG_Primary_Continuity_Details_DB($user, $pwd, $internalLogon,$oracleListenerIP, $dbSidSelect,$portdataset) {
+	var $archivePathPR = get_archive_path_PR($ArchiveLogsLocationPR);
+	var $archivePathDR = get_archive_path_DR($ArchiveLogsLocationDR);
+	// calling function to connect the PR machine from back end
+	var $props = Get_User_Properties_for_OracleDb_Connection($user, $pwd, $internalLogon,$oracleListenerIP);
+	var $conn = Get_Oracle_Db_Connection_URL($oracleListenerIP, $dbSidSelect);
+	var $db = _getDB("oracle.jdbc.driver.OracleDriver", $conn, $props);
+	
+	// Execute query on PR back end to get the Last Log File dumped at primary Detail
+	var $lastLogFilePrimary = $db.select("select  name from v$archived_log where sequence#=(select max(sequence#) from v$archived_log al, v$instance i, v$database d where al.thread# = i.thread# and upper(al.name) like upper "+ "('" + $archivePathPR + "%')"+ " and al.resetlogs_change# = d.resetlogs_change# and al.resetlogs_time = d.resetlogs_time) and upper(name) like upper "+ "('" + $archivePathPR + "%')"+ " and thread# = (select thread# from v$instance) order by thread#");
+	
+	var $lastLogFileDumpatPrimarydb = $lastLogFilePrimary.toString();
+	_log("lastLogFileDumpatPrimarydb");
+	
+	// Execute query on PR back end to get the Dump Log File Time stamp Detail
+	var $dumpLogFileTimeStampPR = $db.select("select to_char(completion_time,'DD Mon, YYYY HH24:MI:SS') MY_DATE from v$archived_log where sequence#=(select max(sequence#) from v$archived_log al, v$instance i, v$database d where al.thread# = i.thread#  and al.resetlogs_change# = d.resetlogs_change# and al.resetlogs_time = d.resetlogs_time)  and thread# = (select thread# from v$instance) order by thread#");
+
+	
+	var $a=$dumpLogFileTimeStampPR.toString();
+	var $LogFileTimeStampPR=$a.split("\n");
+	var $dumpLogFileTimeStampdb=$LogFileTimeStampPR[0];
+	_log("dumpLogFileTimeStampdb");
+	
+	
+
+	
+	// Execute query on PR back end to get the Last Dump Log sequence number Detail
+	var $lastDumpLogSequencePR = $db.select("select sequence# from v$archived_log where sequence#=(select max(sequence#) from v$archived_log al, v$instance i, v$database d where al.thread# = i.thread# and upper(al.name) like upper "+ "('" + $archivePathPR + "%')"+ " and al.resetlogs_change# = d.resetlogs_change# and al.resetlogs_time = d.resetlogs_time) and upper(name) like upper "+ "('" + $archivePathPR + "%')"+ " and thread# = (select thread# from v$instance) order by thread#");
+	var $lastDumpLogSequenceNumber = $lastDumpLogSequencePR.toString();
+	var $lastDumpLogSequenceNumberdb = $lastDumpLogSequenceNumber.split("]]");
+	_log("lastDumpLogSequenceNumberdb");
+	
+	
+	// Execute query on PR back end to get the Log File Applied Time stamp Detail
+	
+	
+	var $logFileTimeAppliedStamp = $db.select("select to_char(completion_time,'DD Mon, YYYY HH24:MI:SS') MY_DATE from v$archived_log where sequence#=(select max(sequence#) from v$archived_log al, v$instance i, v$database d where al.thread# = i.thread#  and al.resetlogs_change# = d.resetlogs_change# and al.resetlogs_time = d.resetlogs_time)  and thread# = (select thread# from v$instance) order by thread#");
+    var $b=$logFileTimeAppliedStamp.toString();
+	var $logFileTimeAppliedStamp1=$b.split("\n");
+	var $logFileTimeAppliedStampdb=$logFileTimeAppliedStamp1[0];
+	_log("logFileTimeAppliedStampdb");
+
+	var $primary = new java.util.Properties();
+	$primary.put("lastLogFileDumpatPrimarydb", $lastLogFileDumpatPrimarydb);
+	$primary.put("dumpLogFileTimeStampdb", $dumpLogFileTimeStampdb);
+	$primary.put("lastDumpLogSequenceNumberdb", $lastDumpLogSequenceNumberdb);
+	$primary.put("logFileTimeAppliedStampdb", $logFileTimeAppliedStampdb);
+	
+	return $primary;
+
+}
+
+/**
+* Function is to connect Oracle Database to get properties
+*@param : $user, $pwd, $internalLogon,$portdataset
+*@return : $props
+*@Author: Aditi Jain
+*Modifiedby:Anita
+*/
+function Get_User_Properties_for_OracleDb_Connection($user, $pwd, $internalLogon,$oracleListenerIP) {
+	_log("Port No:="+$portdataset);
+	var $databaseConnection = 'jdbc:oracle:thin:@' + $oracleListenerIP + ":" + $portdataset + ":" + $dbSidSelect;
+	_log("databaseconnection"+$databaseConnection);
+	var $props = new java.util.Properties();
+	$props.put("user", $userPR);
+	$props.put("password", $pwdPR);
+	$props.put("internal_logon", $internalLogon);
+	return $props;
+}// End of Get_User_Properties_for_OracleDb_Connection
+
+/**
+* Function is to connect Oracle Database updated with portno
+*@param : $ip, $dbSidSelect,$portdataset
+*@return : $databaseConnection
+*Author:Anita
+*/
+function Get_Oracle_Db_Connection_URL($ip, $dbSidSelect) {
+	// Connecting to the database using JDBC connectivity
+	_log("Port No:="+$portdataset);
+	var $databaseConnection = 'jdbc:oracle:thin:@' + $ip + ":" + $portdataset + ":" + $dbSidSelect;
+	_log("databaseconnection", $databaseConnection);
+	var $databaseConnectivityStatus = $DatabaseConnectionEstablished;
+	_log("Database Connection Established");
+	return $databaseConnection;
+}
+
+
+/**
+* Function is get Continuity Secondary details from DB 
+*@param :$user, $pwd, $internalLogon,$oracleListenerIP, $dbSidSelect
+*@return : $secondary
+*@Author: Aditi Jain
+*
+*/
+function Get_OracleDG_Secondary_Continuity_Details_DB($user, $pwd, $internalLogon,$oracleListenerIP, $dbSidSelect){
+	// calling function to connect the DR machine from back end
+	var $props = Get_User_Properties_for_OracleDb_Connection($user, $pwd, $internalLogon);
+	var $conn = Get_Oracle_Db_Connection_URL($oracleListenerIP, $dbSidSelect);
+	var $db = _getDB("oracle.jdbc.driver.OracleDriver", $conn, $props);
+
+	// Execute query on DR back end to get the Next Log File to be Applied at secondary Detail
+	var $nextLogFiletbeAppliedatsecondary= $db.select("select  name from v$archived_log where sequence#=(select max(sequence#) from v$archived_log al, v$instance i, v$database d where al.thread# = i.thread#  and al.resetlogs_change# = d.resetlogs_change# and al.resetlogs_time = d.resetlogs_time) and thread# = (select thread# from v$instance) order by thread#");
+    var $c = $nextLogFiletbeAppliedatsecondary.toString();
+    var $nextLogFiletobeAppliedatsecondary1=$c.split(",");
+    var $nextLogFiletobeAppliedatsecondarydb=$nextLogFiletobeAppliedatsecondary1[0];
+    _log($nextLogFiletobeAppliedatsecondarydb);
+	//var $lastLogFileDumpatSecondarydb = $lastLogFilePR.split("[");
+	//var $nextLogFile=$lastLogFileDumpatSecondarydb.toString();
+	//var $nextLogFileDumpatSecondary=$nextLogFile.split("_");
+    //var $nextLogFiletbeAppliedatDR=parseInt ($nextLogFileDumpatSecondary[1]) + parseInt(1);
+    //var $nextLogFiletobeAppliedatsecondarydb=($nextLogFileDumpatSecondary[0]+"_"+$nextLogFiletbeAppliedatDR+"_"+$nextLogFileDumpatSecondary[2]);
+    
+    
+    
+    // Execute query on DR back end to get the Last Apply Log sequence number Detail
+    var $lastApplyLogSequence = $db.select("select sequence# from v$archived_log where sequence#=(select max(sequence#) from v$archived_log al, v$instance i, v$database d where al.thread# = i.thread#  and al.resetlogs_change# = d.resetlogs_change# and al.resetlogs_time = d.resetlogs_time)  and thread# = (select thread# from v$instance) order by thread#");
+	var $lastApplyLogSequenceNumber = $lastApplyLogSequence.toString();
+	var $lastApplyLogSequenceNumberdb = $lastApplyLogSequenceNumber.split("]]");
+	_log($lastApplyLogSequenceNumberdb);
+	
+    var $secondary = new java.util.Properties();
+	$secondary.put("nextLogFiletobeAppliedatsecondarydb", $nextLogFiletobeAppliedatsecondarydb);
+    $secondary.put("lastApplyLogSequenceNumberdb", $lastApplyLogSequenceNumberdb);
+    
+	return $secondary;	
+}
+
+/**
+* Function is for Modification of OracleDg XML workflow for SO
+*@param :null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function SO_Modify_WorkflowXML_OracleDg(){
+	Modify_Test_WorkflowXML_OracleDg($fileSO);
+}
+
+/**
+* Function is for Modification of OracleDg XML workflow for SB
+*@param :null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+function SB_Modify_WorkflowXML_OracleDg(){
+	Modify_Test_WorkflowXML_OracleDg($fileSB);
+}
+
+/**
+* Function is for Modification of OracleDg XML workflow.
+*@param :$file
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+function Modify_Test_WorkflowXML_OracleDg($file){
+	var $fileread= _userDataDir() + "\\" + $WFPath + '\\' + $file;
+	var $xmlStr =_readFile($fileread); 
+	var $newXmlStr = $xmlStr.replace('<?xml version="1.0" encoding="UTF-8"?>',"");
+	var $xml = new XML($newXmlStr); 
+	var $backupFile = "/tmp/backed_up_control_file.ctl";
+    $xml..userDef..entry.(@key=="PANORA_BACKUP_CTL_FILE").(@value=$backupFile);
+   _writeFile($xml.toString(),$fileread, true); 
+}
+
+/**
+* Function is for Modification of OracleDg XML workflow for NC
+*@param :null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function NC_Modify_WorkflowXML_OracleDg(){
+	Modify_BCO_WorkflowXML_OracleDg($fileSB);
+}
+
+/**
+* Function is for Modifying BCO Worklow XML of OracleDg
+*@param :null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function Modify_BCO_WorkflowXML_OracleDg(){
+	
+	var $l_workflowSource =  $SAHI_HOME + "Library\\Solution_Signature\\Oracle_DG\\BCS-OracleArLogDG-NC.xml";
+	$l_workflowPath = $WFPath.replace(/\//g,"\\");
+	var $l_workflowDestination =  $SAHI_USERDATA + $l_workflowPath + "\\";		
+	
+	Create_Batch_File_ToCopyLocal($l_workflowSource,$l_workflowDestination);
+
+	_execute($SAHI_HOME + "utility\\localCopy.bat","true");
+
+	var $check = validateLocalCopy();
+	
+	if ($check == true) {
+		_log("BCS-OracleArLogDG-NC.xml are copied successfully");
+	} else {
+		_fail("BCS-OracleArLogDG-NC.xml are not copied successfully,so that stopping execution");
+	}
+
+
+	var $fileread= _userDataDir() + "\\" + $l_workflowPath + '\\' + "BCS-OracleArLogDG-NC.xml";
+	var $xmlStr =_readFile($fileread); 
+	var $newXmlStr = $xmlStr.replace('<?xml version="1.0" encoding="UTF-8"?>',"");
+	var $anotherXmlStr = $newXmlStr.replace(/ws:scriptAction/g,"scriptAction");
+	var $xml = new XML($anotherXmlStr); 
+	$xml..action.(@id=="0").privateProperties.scriptAction.serverName=$compNamePR;
+	$xml..action.(@id=="1").privateProperties.scriptAction.serverName=$compNameDR;
+	var $newoneXmlStr = $xml.toString().replace(/scriptAction/g,"ws:scriptAction");
+    _writeFile($newoneXmlStr.toString(),$fileread, true); 
+}
+
+/**
+* Function is to Get archive path from PR
+*@param :null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+function get_archive_path_PR(){
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($Datasets));
+	_wait(5000);
+	_click(_link($datasetNamePR, _near(_cell($datasetType)))); //$dataType-Oracle
+	var $archiveLogsLocationPR = _getCellText(_cell(1, _near(_cell($ArchiveLogsLocation))));
+	_assertExists("Archive Logs Location PR:", $archiveLogsLocationPR);
+	//_setGlobal("Archive Logs Location PR", $archiveLogsLocationPR);
+	return $archiveLogsLocationPR;
+}
+
+
+/**
+* Function is to Get archive path from DR
+*@param :null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+function get_archive_path_DR(){
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($Datasets));
+	_wait(5000);
+	_click(_link($datasetNameDR, _near(_cell($datasetType))));
+	var $archiveLogsLocationDR = _getCellText(_cell(1, _near(_cell($ArchiveLogsLocation))));
+	_assertExists("Archive Logs Location DR:", $archiveLogsLocationDR);
+	//_setGlobal("Archive Logs Location DR", $archiveLogsLocationDR);
+	return $archiveLogsLocationDR;
+}
+
+
+
+/**
+* Function is for Installation of Local agent in silent Mode at PR.
+*@param : null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+
+function Oracle_DG_Install_Local_Agent_SilentMode_PR() {
+	if($OS_Authentication == "Y"){
+		Install_Local_Agent_SilentMode_OS_Authentication($agentBuildPR, $compIPPR, $remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR);
+	}else{
+	Install_Local_Agent_SilentMode($agentBuildPR, $compIPPR, $remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR);
+	}	
+}
+
+/**
+* Function is for Installation of Local agent in silent Mode at DR.
+*@param :null
+*@return : null
+*@Author: Aditi Jain
+*/
+function Oracle_DG_Install_Local_Agent_SilentMode_DR() {
+	if($OS_Authentication == "Y"){
+		Install_Local_Agent_SilentMode_OS_Authentication($agentBuildDR, $compIPDR, $remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR);
+	}else{
+	Install_Local_Agent_SilentMode($agentBuildDR, $compIPDR, $remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR);
+
+	}
+}
+
+
+//Add_RAL_OracleDG_NC() -- updated by anita
+
+function Add_RAL_OracleDG_NC($groupName){
+	//_click(_link("Test"));
+	//_click(_link("Test List View"));
+	//_click(_link($groupName));
+	NavigateToViewAllWorkflowsPage($groupName);
+	 editWorkflowType($NormalCopy);
+	//_click(_link("NormalCopy"));
+	//_click(_link("Edit Workflow"));
+	_click(_span("glyphIon"));
+	_click(_link("select2-choice"));
+	_setValue(_textbox(10), "Oracle");
+	_click(_span("Oracle"));
+	_wait(3000);
+	
+	//_click(_span("glyphicon icon-blue-plus plusIconRals", _near(_span($OracleSwitchLogOperationOracle)))); //oracle switchLog
+	_click(_span("/plusIconRals/", _near(_span($OracleSwitchLogOperation))));   //oracle switchLog
+	_click(_span("glyphIon"));
+	_click(_paragraph("text_ellipsis[3]"));
+	_dragDrop(_image("notifications_green.png[3]"), _image("notifications_yellow.png[3]"));
+	 _wait(5000);
+	 _dragDrop( _image("notifications_red.png[2]"), _image("notifications_yellow.png[3]"));
+	 _wait(5000);
+	 if($BrowserLang == "N"){
+		 _doubleClick(_div($OracleSwitchLogOperationOracle));
+			}
+			else{
+				_doubleClick(_span($OracleSwitchLogOperationOracle+"[1]"));
+			}
+	 
+	 _wait(2000);
+	 _setValue(_textbox("recurrenceInterval"), "600"); //added recurrence interval 10min
+	 _wait(2000);
+	 _click(_link($ActionProperties));
+	// _setSelected(_select($datasetName), $datasetNamePR);
+	 _setSelected(_select("datasetName"), "Production Dataset"); //updated with $datasetNamePR
+	_click(_div("myModal"));
+	_click(_link($SaveNow));
+	_wait(10000);
+	_click(_link($Next));	
+	_wait(10000);
+	_click(_div($PublishWorkflow));
+	_wait(10000);
+}
+//_click(_span("Oracle"));
+
+/**
+* Function is to Start Switch over from Tests List View .
+*@param : $groupName
+*@return : null
+*@Author: anita
+*
+*
+*/
+function Start_ODG_SO($groupName){
+	//publishDrill($groupName,"Switchover");
+	navigateToGroups();
+	
+		//var $continuity1 = _getText(_cell(1, _near(_cell($groupName), _under(_tableHeader("Status")))));
+	    //var $continuity1 = _getText(_div("/Oracle_DG_Remote .*/")); 
+
+	 //_log($continuity1);
+	 
+		// Looping till Continuity status is "DR Ready Synchronization stopped";
+		var $i = 0;
+		// Looping till SO execution Complete
+		/*
+		while ($i < 2) {
+			_log($i);
+			var $continuity1= $continuity1.match(/DR Sync is Aborted/);
+			var $continuity2= $continuity1.match(/DR Sync In Progress/);
+			var $continuity3= $continuity1.match(/DR Sync Paused/);
+			if (($continuity1 == "DR Sync is Aborted") || ($continuity2 == "DR Sync In Progress") || ($continuity3 == "DR Sync Paused") || ($continuity1 == "DR Sync is not started")) {
+				break;
+			} else {
+				_wait(30000);
+				navigateToGroups();
+				// _log($continuity1);
+				//_assertExists("continuity", $continuity);	
+			}
+			$i++;
+		} // while ended
+		*/
+		_click(_link($groupName));
+		_click(_image($Drills));
+		_wait(3000);
+		_click(_image($obj_ExecuteWorkflow, _near(_link($Switchover))));
+		_wait(3000);
+		_click(_link($obj_Execute));
+		_wait(10000);
+		var $i = 0;
+		// Looping till Stop Test button appears
+		while ($i < 5) {
+			_log($i);
+			
+		if (_exists(_link($obj_EXECUTING))) {
+			_log("Switchover Started");
+				
+					break;
+				} else {
+				    _log("SO not started.");
+				    //awaitingInput();
+				}
+				$i = $i + 1;
+				_wait(5000);
+				
+			} // End of while loop
+		
+			_log("Switch over already Inprogress");
+		_assertExists((_link($obj_EXECUTING)));
+	
+		navigateDrillExecutingPage();			
+		var $workflowType=_getText(_link(1, _near(_link($groupName))));
+	
+		_assertEqual("Switchover", $workflowType, "Validating workflow Type");
+
+}//End_of Start SO
+
+/**
+* Function is to Initiate switch back from Tests List View .
+*@param : $groupName
+*@return : null
+*@Author: anita
+*
+*/
+
+function Start_ODG_SB($groupName) {
+	//publishDrill($groupName,"Switchback");
+	
+	navigateToGroups();
+	var $continuityStatus;
+	//var $continuity = _getText(_cell(1, _near(_cell($groupName), _under(_tableHeader("Status")))));
+	//var $continuity = _getText(_div("/Oracle_DG_Remote .*/"));
+
+	//_log($continuity);
+
+	// Looping till Continuity status is "DR Ready or DR Active Reverse
+	var $i = 0;
+	// Looping till SB execution Complete
+	/*
+	while ($i < 20) {
+		_log($i);
+		if (($continuity == "DR Resync is Aborted") || ($continuity == "DR Resync is not started") || ($continuity == "DR Resync In Progress") || ($continuity == "DR Resync Paused"))  {
+			break;
+		} else {
+			_wait(30000);
+			navigateToGroups();
+			//var $continuity = _getText(_cell(1, _near(_cell($groupName), _under(_tableHeader("Status")))));
+
+			// _log($continuity1);
+		}
+		$i++;
+		
+	} */ // while ended
+  
+	_click(_link($groupName));
+	_click(_image($Drills));
+	_wait(3000);
+	_click(_image($obj_ExecuteWorkflow, _near(_link("Switchback"))));
+	_wait(3000);
+	_click(_link($obj_Execute));
+	_wait(10000);
+	// _wait(5000);
+	var $i = 0;
+	// Looping till Stop Test button appears
+	while ($i < 10) {
+		_log($i);
+		
+	if (_exists(_span($obj_EXECUTING))) {
+	_log("Switchback Started");
+	
+		break;
+	} else {
+	    _log("SB not started.");
+	}
+	$i = $i + 1;
+	_wait(5000);
+    } // End of while loop
+
+	_log("SwitchBack already Inprogress");
+	_assertExists((_span($obj_EXECUTING)));
+	_wait(2000);
+
+	navigateDrillExecutingPage();
+	var $workflowType= _getText(_link(1, _near(_link($groupName))));
+
+	_assertEqual("Switchback", $workflowType, "Validating workflow Type");
+} // End of Start_SB ()
+
+//////
+/**
+* Function is for Verification of the all RTO detail from RPO/RTO screen for oracle DG solution
+*@param : null
+*@return : $dbRto
+*@Author: Anita
+*
+*/
+
+function OracleDG_Rto_new() {
+
+	navigateToRTO($groupName);
+	// verification of current RTO :
+	//wait added 
+	_wait(30000);
+	
+	_mouseOver(_svg_rect(19));
+	var $step1 =RTO_Calculate();
+	
+	_mouseOver(_svg_rect(20));
+	var $step2 = RTO_Calculate();
+	
+	_mouseOver(_svg_rect(21));
+	var $step3 = RTO_Calculate();
+	
+	
+	_mouseOver(_svg_rect(22));
+	var $step4 = RTO_Calculate();
+	
+     
+	_mouseOver(_svg_rect(23)); 
+	var $step5 = RTO_Calculate();
+	
+    
+	_mouseOver(_svg_rect(24));
+	var $step6 = RTO_Calculate();
+	
+	_mouseOver(_svg_rect(25));
+	var $step7 = RTO_Calculate();
+	
+	_mouseOver(_svg_rect(26));
+	var $step8 = RTO_Calculate();
+	
+	
+	_mouseOver(_svg_rect(27));
+	var $step9 = RTO_Calculate();
+	
+	
+	_mouseOver(_svg_rect(28));
+	var $step10 = RTO_Calculate();
+	
+	_mouseOver(_svg_rect(29));
+	var $step11 = RTO_Calculate();	
+
+	
+	_mouseOver(_svg_rect(30));
+	var $step12 = RTO_Calculate();
+	
+
+	var $expectedCompletionTime = Math.floor($step1 + $step2 + $step3 + $step4 + $step5 + $step6 + $step7 + $step8 + $step9 + $step10 + $step11 + $step12);
+	_assertExists("Expected completion time", $expectedCompletionTime);
+	// Calling function Calculate_Rto from Group_manager.sah
+	$dbRto = Calculate_Rto($expectedCompletionTime);
+	return $dbRto;
+
+
+} // End of OracleDG RTO
+
+/**
+* Function is for Verification of  in RTO
+*@param : 
+*@return : 
+*@Author: Govinda Mengji
+*@Reaseon: RTO Calulation for converting Hours and miniuts in sec
+*/
+
+function RTO_Calculate() {
+     
+$RalHMS = _getText(_span("fusioncharts-tooltip-element"));
+    _log($RalHMS, "Value");
+      $RalHMSsplit = $RalHMS.split(" ");
+    _log($RalHMSsplit , "RalHMSsplit");
+     $RalLength =$RalHMSsplit.length;
+    _log($RalLength, "Lenght");
+
+	if($RalLength=="6"){
+	        
+	        var $hours = parseInt($RalHMSsplit[0] * 3600);
+	        _log($hours , "Hours into sec");
+	        
+	        var $Minutes = parseInt($RalHMSsplit[2] * 60);
+	        _log($Minutes , "Minutes into sec");
+	        
+	        var $Seconds = parseInt($RalHMSsplit[4]);
+	        _log($Seconds , "Seconds");
+	        
+	        $RalHMSTotal= parseInt($hours+$Minutes+$Seconds);
+	        return $RalHMSTotal;
+	        
+	}
+
+	else if($RalLength=="4"){
+	
+	        var $hoursorMinutesnum  = $RalHMSsplit[0];
+	        _log($hoursorMinutesnum , "Hours or Minutes in number");
+	        
+	        var $hoursorMinutesstr = $RalHMSsplit[1];
+	        _log($hoursorMinutesstr , "Hours or Minutes in Character");
+	        
+	        var $Minutesorsecondsnum =$RalHMSsplit[2];
+	        _log($Minutesorsecondsnum , "Minutes or seconds in number");
+	        
+	        var $Minutesorsecondsstr =$RalHMSsplit[3];
+	        _log($Minutesorsecondsstr , "Minutes or seconds in Character");
+	        
+	           if($hoursorMinutesstr == "Hours")
+	           {
+	              var $hoursorINsecMin = parseInt($hoursorMinutesnum * 3600);
+	             _log($hoursorINsecMin , "Hours into sec"); 
+	             }
+	              else {
+	                  var $hoursorINsecMin = parseInt($hoursorMinutesnum * 60);
+	                  _log($hoursorINsecMin , "Minutes into sec");
+	              }
+	           
+	            if($Minutesorsecondsstr=="Minutes"){
+	
+	               var $Minutesinsec = parseInt($Minutesorsecondsnum * 60);
+	               _log($Minutesinsec , "Minutes into sec");
+	               
+	           } 
+	           else{
+	               var $Minutesinsec = parseInt($Minutesorsecondsnum);
+	               _log($Minutesinsec , "Seconds");
+	           }
+	          
+	       $hoursorMinutesoesecTotal =  parseInt($hoursorINsecMin+$Minutesinsec);
+	        return $hoursorMinutesoesecTotal;
+	          
+	    }
+
+		else if ($RalLength=="2"){
+	        var $HoursorMintorSecnum = ($RalHMSsplit[0]);
+	        var $HoursorMintorSecstr =  ($RalHMSsplit[1]);
+	        
+	        if($HoursorMintorSecstr == "Hours"){
+	            var $HoursorMintorSec = parseInt($HoursorMintorSecnum * 3600);
+	             _log($HoursorMintorSec , "Hours into sec"); 
+	        
+	        }
+	        else if ($HoursorMintorSecstr == "Minutes"){
+	            var $HoursorMintorSec = parseInt($HoursorMintorSecnum * 60);
+	            _log($HoursorMintorSec , "Minutes into seconds");
+	        } 
+	        else {
+	            var $HoursorMintorSec = parseInt($HoursorMintorSecnum);
+	            _log($HoursorMintorSec , "Seconds");
+	        }
+	        
+	        $HoursorMintorSecnumsingleTotal = parseInt($HoursorMintorSec);
+	         return $HoursorMintorSecnumsingleTotal;
+	    
+	    }
+
+  }
+
+ //END_RTO_Calculate
+
+/**
+ * Function is used to add the custom action for script execution for oracle DG
+ * 
+ * @param : null
+ * @return: null
+ * @Author: anita
+ */
+
+function Group_Status_BasedONEvents_odg($groupName,$grpStatus){
+    _click(_link($Admin));
+    _click(_link($CurrentEvents));
+    _click(_link($AdvancedFilter));
+    _check(_checkbox("severity[2]"));
+    _check(_checkbox("severity[3]"));
+    _check(_checkbox("severity[4]"));
+    _check(_checkbox($NEW));
+    _check(_checkbox($WIP));
+    _setSelected(_select("groups"), [ $groupName ]);
+    _click(_button($Apply));
+    _wait(3000);
+    var $criticalEvents = _isVisible(_image($Critical));
+    _assertExists("Critical Events: "+ $criticalEvents);
+     
+    var $seriousEvents = _isVisible(_image($Serious));
+    _assertExists("Serious Events: "+ $seriousEvents);
+     
+    var $warningEvents = _isVisible(_image($Warning));
+    _assertExists("Warning Events: "+ $warningEvents);
+    
+    if($criticalEvents == true){
+    NavigateToRGDetailsPage($groupName);
+    _assertExists(_heading4("bold", _near(_italic("dot-red"))));
+    $grpStatus="Red Color";
+    _log($grpStatus);
+    _log("Inactive - Production services are unavailable");
+    }
+    else if($seriousEvents == true && $warningEvents == true){
+    NavigateToRGDetailsPage($groupName);
+    _assertExists(_heading4("bold", _near(_italic("dot-orange"))));
+    $grpStatus="Orange Color";
+    _log($grpStatus);
+    _log("Degraded - One or more subsystems of the DR solution are down");
+    }
+    else if($warningEvents == true){
+    NavigateToRGDetailsPage($groupName);
+    _assertExists(_heading4("bold", _near(_italic("dot-orange"))));
+    $grpStatus="Orange Color";
+    _log($grpStatus);
+    _log("Degraded - One or more subsystems of the DR solution are down");
+    }
+    else{
+    NavigateToRGDetailsPage($groupName);
+    _assertExists(_heading4("bold", _near(_italic("dot-green"))));
+    $grpStatus="Green Color";
+    _log($grpStatus);
+    _log("Active - Production services are up and available");
+    }
+}//End of Group Status Based on Events function.
+
+
+function Skip_RAL_SO_SB($workflowType) {
+	if($SkipRalSoSB="Y"){
+		navigateDrillListing($groupName);
+		editWorkflowType($workflowType);
+		_wait(3000);
+		_doubleClick(_span($PrShutDownRal));
+		_click(_checkbox("skip"));
+		_wait(2000);
+		_click(_button("close", _near(_heading4($OracleShutdownDb))));
+       publishWorkflow();
+	}
+	else{
+		_log("Not Skipping the Shutdown database RAL in SO/SB as per user input");
+	}
+	
+		
+}
+
+
+
+function verify_Setup_PR()
+{
+	var $sshCommand = "rm -rf "+" "+"/opt/prerequisiteOracleDGPR.sh;echo $?";
+	var $deleteBackup=SecuredShellConnection($compIPPR,$remoteUserNameValPR,$remotePwdValPR, $sshCommand);
+		_log($deleteBackup);
+		var $sshCommand = "wget -r -nd -P "+"/opt/ "+"http://172.168.20.43/jenkins/job/DRM_Automation/ws/prerequisiteOracleDGPR.sh;echo $?";
+	var $deleteBackup=SecuredShellConnection($compIPPR,$remoteUserNameValPR,$remotePwdValPR, $sshCommand);
+	_log($deleteBackup);
+	var $sshCommand = "chmod 777"+" "+"/opt/prerequisiteOracleDGPR.sh;echo $?";
+	var $deleteBackup=SecuredShellConnection($compIPPR,$remoteUserNameValPR,$remotePwdValPR, $sshCommand);
+	
+	var $string=$userPR+'/'+$pwdPR+'@';
+	var $sshCommand = "sed -i 's|sqlplus.*|sqlplus "+'"'+$string +$dgDiscoverySID+" as sysdba"+'";'+"|' "+" /opt/prerequisiteOracleDGPR.sh;echo $?";
+	SecuredShellConnection($compIPPR,$remoteUserNameValPR,$remotePwdValPR, $sshCommand);
+	
+	var $sshCommand = "sh"+" "+"/opt/prerequisiteOracleDGPR.sh;echo $?";
+	var $deleteBackup=SecuredShellConnection($compIPPR,$remoteUserNameValPR,$remotePwdValPR, $sshCommand);
+	_log($deleteBackup);
+}
+
+function verify_Setup_DR()
+{
+	var $sshCommand = "rm -rf "+" "+"/opt/prerequisiteOracleDGDR.sh;echo $?";
+	var $deleteBackup=SecuredShellConnection($compIPDR,$remoteUserNameValDR,$remotePwdValDR, $sshCommand);
+	_log($deleteBackup);
+		var $sshCommand = "wget -r -nd -P "+"/opt/ "+"http://172.168.20.43/jenkins/job/DRM_Automation/ws/prerequisiteOracleDGDR.sh;echo $?";
+	var $deleteBackup=SecuredShellConnection($compIPDR,$remoteUserNameValDR,$remotePwdValDR, $sshCommand);
+	_log($deleteBackup);
+	var $sshCommand = "chmod 777"+" "+"/opt/prerequisiteOracleDGDR.sh;echo $?";
+	var $deleteBackup=SecuredShellConnection($compIPDR,$remoteUserNameValDR,$remotePwdValDR, $sshCommand);
+	
+	var $string=$userDR+'/'+$pwdDR+'@';
+	var $sshCommand = "sed -i 's|sqlplus.*|sqlplus "+'"'+$string +$dgDiscoverySID+" as sysdba"+'";'+"|' "+" /opt/prerequisiteOracleDGDR.sh;echo $?";
+	SecuredShellConnection($compIPDR,$remoteUserNameValDR,$remotePwdValDR, $sshCommand);
+	
+	var $sshCommand = "sh"+" "+"/opt/prerequisiteOracleDGDR.sh;echo $?";
+	var $deleteBackup=SecuredShellConnection($compIPDR,$remoteUserNameValDR,$remotePwdValDR, $sshCommand);
+	_log($deleteBackup);
+}

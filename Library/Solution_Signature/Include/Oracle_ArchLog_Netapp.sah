@@ -1,0 +1,12 @@
+_include("../../../Library/Common/Common_Function.sah");
+_include("../../../Library/Solution_Signature/Include/Common_Automation_testcase_Function.sah");
+_include("../../../Library/Component/Component_Common.sah");
+_include("../../../Library/Common/Operation_On_FG/Group_Operation.sah");
+_include("../../../Library/Database/Oracle/Oracle.sah");
+_include("../../../Library/Solution_Signature/Oracle_DG/Oracle_DG_Solution.sah");
+_include("../../../Library/Replication/SnapMirror/NetApp_SnapMirror.sah");
+_include("../../../Library/Solution_Signature/NetApp_SnapMirror/NetApp_SnapMirror_Solution.sah");
+_include("../../../Library/Solution_Signature/Oracle_ArchLog_Netapp/Oracle_ArchLog_Netapp_Solution.sah");
+_include("../../../Library/Solution_Signature/Oracle_ArchLog_Netapp/Oracle_ArchLog_Netapp_events.sah");
+_include("../../../Library/Solution_Signature/Oracle_ArchLog_Netapp/Oracle_ArchLog_Netapp_Automation_Testcase_Function.sah");
+

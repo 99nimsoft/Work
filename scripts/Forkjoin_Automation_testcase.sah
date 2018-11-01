@@ -1,0 +1,131 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the remote agent test cases which are the part of  Oracle_DG solution. 
+ ** AuthorName : Automation Team
+ ** Created Date : June 2013
+ ************************************************************************/
+
+_log("=================================Pre-Condition===================================", "Custom1");
+
+//don't change the below line.
+//_include("../Library/Solution_Signature/Include/Oracle_DG_Include.sah");
+_include("../Library/Solution_Signature/Include/APP_PFR_Include.sah");
+//mentioned the correct parameter file name which user are going to execute within the "" code.
+_include("../conf/DRMInstallation_Parameter.sah");
+//_include("../conf/Forkjoin/Forkjoin_ODG_Group_Parameter.sah");
+_include("../conf/Forkjoin/Forkjoin_AppPFR_Group_Parameter.sah");
+_include("../Library/Common/CommonRepository/CommonDRM_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/CommonGUINavigation_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/GroupOperation_ObjRepository.sah");
+_include("../Library/RAL/Forkjoin/ObjectRepository/Forkjoin_ObjectRepository.sah");
+_include("../Library/Solution_Signature/APP_PFR/ObjectRepository/APPPFR_ObjectRepository.sah");
+_include("../conf/Forkjoin/UserSelected_Forkjoin_Testcase.sah");
+_include("../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+_include("../Library/RAL/Forkjoin/Forkjoin_TestCaseFunctions.sah");
+_include("../Library/RAL/Forkjoin/ForkjoinRAL_CommonFunction.sah");
+_include("../Library/RAL/Forkjoin/Forkjoin_RAL.sah");
+
+// *************************************************************************************************************************************************
+
+Login_001();
+
+//preCondition_ODGGroupCreation();  // Enable for only If oracleDG remote group creation 
+
+preCondition_AppPFRGroupCreation(); // Enable for If APP PFR remote group creation 
+
+_log("=================================Test========================================", "ForkjoinRAL");
+
+var $test1 = _testcase("Forkjoin_TC_001", "Forkjoin when found Success Pattern and verify Execution status as SUCCESS");
+$test1.start();
+Forkjoin_RAL1_Execute_001();
+$test1.end();
+
+var $test2 = _testcase("Forkjoin_TC_002", "Forkjoin when not found Success Pattern Verify STOPPING/ABORT state ");
+$test2.start();
+Forkjoin_RAL2_Execute_002();
+$test2.end();
+
+var $test3 = _testcase("Forkjoin_TC_003", "Forkjoin when not found Failure Pattern and verify Execution status as SUCCESS");
+$test3.start();
+Forkjoin_RAL3_Execute_003();
+$test3.end();
+
+var $test4 = _testcase("Forkjoin_TC_004", "Forkjoin when found Failure Pattern Verify STOPPING/ABORT state");
+$test4.start();
+Forkjoin_RAL4_Execute_004();
+$test4.end();
+
+var $test5= _testcase("Forkjoin_TC_005", "Verify STOPPING state when Quit Forkjoin RAL with different user");
+$test5.start();
+Forkjoin_RAL4_Execute_UserAB();
+$test5.end();
+
+var $test6 = _testcase("Forkjoin_TC_006","Verify UserInput CONTINUE for AwaitingInput Forkjoin RAL");
+$test6.start();
+Forkjoin_RAL5_Execute_006();
+$test6.end();
+
+var $test7= _testcase("Forkjoin_TC_007", "Verify forkjoin when adding action group and verify proper Error message displayed");
+$test7.start();
+Forkjoin_RAL_Execute_007();
+$test7.end();
+
+var $test8= _testcase("Forkjoin_TC_008","Verify forkjoin with TEAction Exection of Selected Test options");
+$test8.start();
+Forkjoin_RAL6_Execute_008();
+$test8.end();
+
+var $test9= _testcase("Forkjoin_TC_009","Verify forkjoin with BPI Action of Selected Test options");
+$test9.start();
+Forkjoin_RAL7_Execute_009();
+$test9.end();
+
+var $test10= _testcase("Forkjoin_TC_010","Verify forkjoin with BCO RAL Trigger NC Start and Stop");
+$test10.start();
+Forkjoin_RAL8_Execute_010();
+$test10.end();
+
+var $test11= _testcase("Forkjoin_TC_011","Verify forkjoin with BCO RAL Execution reports");
+$test11.start();
+Forkjoin_RAL_Execute_011();
+$test11.end();
+
+var $test12= _testcase("Forkjoin_TC_012","Verify Multiple Rals between forkjoin with vertically publish and execute");
+$test12.start();
+Forkjoin_RAL9_Execute_012();
+$test12.end();
+
+var $test13= _testcase("Forkjoin_TC_013","Verify Multiple forkjoin rals horizontally publish and execute");
+$test13.start();
+Forkjoin_RAL10_Execute_013();
+$test13.end();
+
+var $test14= _testcase("Forkjoin_TC_014","Create Action Group Ral and save and publish");
+$test14.start();
+ActionGroup_RAL12_Execute_014();
+$test14.end();
+
+var $test15= _testcase("Forkjoin_TC_015","Create Forkjoin with Action Group Ral Import/Edit Publish and Execute");
+$test15.start();
+ForkjoinActionGroup_RAL_Execute_015();
+$test15.end();
+
+var $test16= _testcase("Forkjoin_TC_016","Verify Forkjoin RAL /import/edit/Publish/export/createNewRal from exported and Execute");
+$test16.start();
+Forkjoin_RAL11_Execute_016();
+$test16.end();
+
+var $test17= _testcase("Forkjoin_TC_017","Verify Forkjoin and Action Rals workflow Execution Report");
+$test17.start();
+Forkjoin_Verify_Report_017();
+$test17.end();
+
+var $test13= _testcase("Forkjoin_TC_013","Verify Multiple forkjoin rals horizontally publish and execute");
+$test13.start();
+Forkjoin_RAL10_Execute_013();
+$test13.end();
+
+_log("================================Post-Condition================================== ", "Custom1");
+
+Logout_001();

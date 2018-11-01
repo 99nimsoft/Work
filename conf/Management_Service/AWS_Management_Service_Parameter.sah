@@ -1,0 +1,32 @@
+
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This user Input required to create the AWSManagement_Service
+ ** AuthorName : Sujata Rani Choudhury
+ ** Created Date : Dec 2015
+ ***********************************************************************************************/
+
+
+var $l_Management_Service=_readExcelFile($SAHI_HOME + "\\conf\\Management_Service\\Management_Service_Parameter.xls","Management");
+
+
+//This user Input required to Login the DRM server
+var $username = $l_Management_Service[3][2]; // DRM server GUI user name 
+var $password = $l_Management_Service[4][2]; // DRM server GUI pwd
+
+//This user Input required to create the Site
+var $locationPR = "PR"; // PR Site Location
+var $incharge = "drmadmin"; // Site Incharge
+var $addressPR = "Mumbai"; // PR site Address
+var $locationDR = "DR"; // DR Site Location
+var $addressDR = "Bangalore";// DR site Address
+
+
+//This user Input required to create the AWSManagement_Service
+var $AgentNodesite = $l_Management_Service[9][2]; // Site Location
+var $AWSmsName = $l_Management_Service[10][2]; // this name AWS Mgmt service name will create 
+var $aws_access_id = $l_Management_Service[11][2];//AWS Access key
+var $aws_secret_key = $l_Management_Service[12][2];//AWS Secret key 
+
+

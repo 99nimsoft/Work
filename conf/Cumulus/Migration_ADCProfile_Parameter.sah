@@ -1,0 +1,40 @@
+var $l_adcprofileInputs =_readExcelFile($SAHI_HOME + "\\conf\\ADCProfile\\ADCProfile_Parameter.xls","Remote");
+var $username = $l_adcprofileInputs[3][2];// DRM server User name
+var $password = $l_adcprofileInputs[4][2];// DRM server Password name
+
+//System Created ADC Profiles
+var $ADCprofile="Gold DR";
+var $ADCprofile1="Silver DR";
+//
+var $profileName=$l_adcprofileInputs[7][2];// ADC profile Name;
+var $profiledesc=$l_adcprofileInputs[8][2];// ADC profile Desc;
+var $profiledesc2="Bronze Profile2";
+var $changeDesc="Bronze_Profile";
+
+
+var $profileAllocType="Allocated";
+var $profileAllocType1="Reserved";
+var $profileAllocTypeInDb1="1";//Allocated
+var $profileAllocTypeInDb2="2"; //Reserved
+
+var $profileAllocPercent= $l_adcprofileInputs[9][2];// ADC Profile Allocation Percentage;
+var $changeAllocPercent="50";
+
+//var	$profileAllocTypeGUI="PAYASYOUGO";
+var	$profileAllocTypeGUI="ALLOCATED";
+var	$profileAllocTypeGUI2="RESERVED";
+var $profileRpo=$l_adcprofileInputs[10][2];// ADC Profile RPO;
+var $changeRpo="30";
+
+var $profileNetwork="Use UCS Director vDC Policy";
+var $changeProfileNetwork="Use UCS Director vDC Policy";
+var $profileStorage="Use UCS Director vDC Map";
+var $changeStorage="Use UCS Director vDC Map";
+
+
+
+//DB PARAM
+var $hostUserNamePR=$l_adcprofileInputs[13][2];// DRM server DB user; 
+var $hostPasswordPR=$l_adcprofileInputs[14][2];// DRM server DB Password;
+var $hostIPPR=$l_adcprofileInputs[15][2];// DRM server IPAddress;
+var $hostPortPR=3306;// DRM server DB Port;

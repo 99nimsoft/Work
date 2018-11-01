@@ -1,0 +1,1383 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are the part of  APP PFR solution screen wise fetching and comparing data from Db and GUI. 
+ ** @AuthorName : Padmavathi
+ ** Created Date : May 2014
+ ************************************************************************/
+
+/**
+* Function is for Functional Group creation for NetApp SnapMirror solution.
+*@param :null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+
+
+function Creation_NetApp_SnapMirror_Group() {
+	//$groupCreation = Create_FG($groupName, $groupDescription, $SolutionSignature, $primaryComponents, $remoteComponents, $primaryNetAppComponent, $remoteNetAppComponent, $primaryDatasets, $remoteDatasets, $primaryProtections, $remoteProtections);
+	if (_exists(_link($groupName))) {
+		_log("Same group name already exists");
+	} else {
+		navigateToDiscovery();
+		_click(_link("Groups"));
+		_click(_cell("Create new - Group - Functional Group Application Group Business Group 3 Site Group"));
+		_setSelected(_select("createGroup"), "Functional Group");
+		_click(_button("Go "));
+		_wait(1000);
+		_setValue(_textbox("groupName"), $groupName);
+		_setValue(_textarea("groupDescription"), $groupDescription);	
+		if($subscriber != ""){
+		   _setSelected(_select("subscriberId"), $subscriber);
+		} 
+		_setSelected(_select("solutionType"), $SolutionSignature);
+		_click(_button("/Next/"));
+		_wait(10000);
+		_click(_link("Server Component"));
+	
+		_click(_checkbox("primaryComponents", _near(_cell($primaryComponents, _under(_tableHeader("PrimaryComponent"))))));
+		_click(_checkbox("remoteComponents", _near(_cell($remoteComponents, _under(_tableHeader("RemoteComponent"))))));
+		_wait(1000);
+		_click(_checkbox("primaryComponents", _near(_cell($primaryNetAppComponent,_under(_tableHeader("PrimaryComponent"))))));
+		_click(_checkbox("remoteComponents", _near(_cell($remoteNetAppComponent, _under(_tableHeader("RemoteComponent"))))));
+		
+		_click(_submit("Save"));
+		_wait(2000);
+		_click(_link("Application Dataset"));		
+		
+		_setSelected(_select("primaryDatasets"), $datasetNamePR);
+		_setSelected(_select("remoteDatasets"), $datasetNameDR);
+		_click(_submit(" Save"));
+		_wait(1000);
+		_click(_link("Data Protection"));
+		_setSelected(_select("primaryProtections"), $primaryProtections);
+		_setSelected(_select("remoteProtections"), $remoteProtections);
+		_click(_button("Save"));
+		_click(_button("/Next/"));
+		_wait(1000);
+		_click(_button("Save"));
+		_click(_link("License"));
+		_click(_link("License"));
+		_click(_checkbox("Recovery"));
+		_click(_checkbox("Test"));
+		_click(_button("Save[2]"));
+		_click(_button("Finish"));
+		if (_exists(_link($groupName))) {
+			_assertExists("Group created succesfully");
+		} else {
+			_fail("Group not created succesfully.So that stopping execution.");
+		}
+	}
+}// End Of NetApp_SnapMirror_Group_Creation
+
+/**
+* Function is for Functional Group creation for NetApp SnapMirror solution.
+*@param :null
+*@return : null
+*@Author: Anita
+*
+*/
+function Creation_Oracle_NetApp_SnapMirror_Group(){
+	var $groupCreation = Create_RG_Netapp($groupName, $groupDescription, $SolutionSignature, $primaryComponents, $remoteComponents, $primaryNetAppComponent, $remoteNetAppComponent, $primaryDatasets, $remoteDatasets, $primaryProtections, $remoteProtections);
+	if ($groupCreation.get("flag") == 0) {
+		_log("Same group name already exists");
+	} else {
+		_wait(90000,_button("Submit"));
+		_click(_button("Submit"));
+		_wait(10000);
+		_click(_link("License"));
+		_wait(5000);
+		_click(_checkbox("Recovery"));
+		_click(_checkbox("Test"));
+		_wait(1000);
+		_click(_button("licensebutton"));
+		_wait(1000);
+		_click(_link("RPO/RTO"));
+		_wait(5000);
+		_setValue(_textbox("desrpo1"), $desiredRpo);
+		_setValue(_textbox("rpoint1"), $rpoCompute);
+		_click(_button("/Save/"));
+		_wait(5000);
+		_click(_button("/Finish/"));
+		_wait(5000);
+		navigateToGroups();
+		if (_exists(_link($groupName))) {
+			_assertExists("Group created succesfully");
+		} else {
+			_fail("Group not created succesfully.So that stopping execution.");
+		}
+	}
+}
+
+function Create_RG_Netapp($groupName, $groupDescription, $SolutionSignature, $primaryComponents, $remoteComponents, $primaryNetAppComponent, $remoteNetAppComponent, $primaryDatasets, $remoteDatasets, $primaryProtections, $remoteProtections){
+	navigateToGroups();
+	var $flag;
+	if (_exists(_link($groupName))) {
+		$flag = 0;
+	} 
+	else {
+		$flag = 1;
+		//_setSelected(_select("createGroup"),"Recovery Group");
+		_click(_button("Discover Recovery Group"));
+		_wait(1000);
+		//_click(_button("/Go/"));
+		_setValue(_textbox("groupName"), $groupName);
+		_setValue(_textarea("groupDescription"), $groupDescription);	
+		if($subscriber != ""){
+			_setSelected(_select("subscriberId"), $subscriber);
+		}
+		_setSelected(_select("solutionType"), $SolutionSignature);	
+		_click(_button("/Next/"));
+		_wait(10000);
+		_click(_link("Server Component"));
+		_click(_checkbox("primaryComponents", _near(_cell($primaryComponents, _under(_tableHeader("PrimaryComponent"))))));
+		_click(_checkbox("remoteComponents", _near(_cell($remoteComponents, _under(_tableHeader("RemoteComponent"))))));
+		_wait(1000);
+		_click(_checkbox("primaryComponents", _near(_cell($primaryNetAppComponent,_under(_tableHeader("PrimaryComponent"))))));
+		_click(_checkbox("remoteComponents", _near(_cell($remoteNetAppComponent, _under(_tableHeader("RemoteComponent"))))));
+		
+		_click(_submit("Save"));
+		_wait(2000);
+		_click(_link("Application Dataset"));		
+		
+		_setSelected(_select("primaryDatasets"), $datasetNamePR);
+		_setSelected(_select("remoteDatasets"), $datasetNameDR);
+		_click(_submit(" Save"));
+		_wait(1000);
+		_click(_link("Data Protection"));
+		_setSelected(_select("primaryProtections"), $primaryProtections);
+		_setSelected(_select("remoteProtections"), $remoteProtections);
+		_click(_button("Save"));
+		_click(_button("/Next/"));
+		_wait(20000);
+	}
+		var $groupCreation = new java.util.Properties();
+		$groupCreation.put("flag", $flag);
+		return $groupCreation;
+ }
+
+
+
+/**
+* Function is for Post Group Creation Discovery > Groups > Solution Details > Show Advanced Configuration Post SO.
+*@param : null
+*@return : null
+*@Author: Padmavathi
+*
+
+
+function Post_Group_Creation_Post_SO(){
+	
+	Post_Group_Creation_Details($groupName);
+}
+
+*/
+
+/**
+* Function is for Post Group Creation Discovery > Groups > Solution Details.
+*@param : $groupName
+*@return : null
+*@Author: Padmavathi
+*/
+
+function Post_Group_Creation_Details($groupName){
+	navigateToDiscovery();
+	_click(_link("Groups"));
+	_click(_link($groupName));
+	_click(_link("Solution Details"));
+	
+	var $replicationInterval= _getCellText(_textbox("interval"));
+	_assertExists("Replication Interval at GUI",$replicationInterval);
+	
+	var $mapProtected=_getCellText(_option(0));
+	_assertExists("Source and Destenation Path from GUI", $mapProtected);
+	
+}
+
+/**
+* Function is for Verification of replication status in replication page after SO
+*@param : null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+function NetApp_SnapMirror_Replication_Post_SO() {
+	NetApp_SnapMirror_Replication_Status($groupName,$compIPDR,$remoteUserNameValDR,$remotePwdValDR,"SO");
+}
+
+/**
+* Function is for Verification of replication status in replication page before SO
+*@param : null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+function NetApp_SnapMirror_Replication() {
+	NetApp_SnapMirror_Replication_Status($groupName,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+}
+
+
+/**
+* Function is for Verification of  in replication page .
+*@param : $groupName,$compIP,$remoteUserNameVal,$remotePwdVal,$WFType
+*@return : null
+*@Author: Padmavathi
+*/
+function NetApp_SnapMirror_Replication_Status($groupName,$compIP,$remoteUserNameVal,$remotePwdVal,$WFType){
+	_click(_link("Manage"));
+	_click(_link("Groups List View"));
+	_click(_link($groupName));
+	_click(_link("Manage DR Solution"));
+    var $filesetNameGUI=_getCellText(_cell(1,_near(_cell("Fileset Name:"))));
+    $path = "$EAMSROOT/panacesFileReplicator/filesets/"+$filesetNameGUI+"/" ; 
+    
+    Replication_Details($groupName,$WFType);
+     
+     _click(_span("ui-icon ui-icon-triangle-1-e")); 
+    
+    
+    var $i=0;
+    while($i < 10) {
+    _wait(100);
+    
+    ////
+    var $sshCommand = "grep -R \"FILESET_TOTAL_REPLICATED_ACTUALSIZE=\" " + $path+ $filesetNameGUI+".rt";
+	$status = Execute_Ssh_Command($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommand);
+
+    var $totalreplication = $status.get("output").toString();
+	var $totalreplicationsize=$totalreplication.split("=");
+    var $totalreplicationactualsize=($totalreplicationsize[1]);
+	var $totalreplicationactualsizedb=$totalreplicationactualsize.split(",");
+	var $TotalReplicationactualSizedb=($totalreplicationactualsizedb[0]+" "+ "Bytes");
+	_assertExists("Total Replication Actual Size from db", $TotalReplicationactualSizedb);
+	
+	var $totalReplicatedActualSizeGUI=_getCellText(_cell(0,_rightOf(_cell("Total Replicated Actual Size"))));
+    _assertExists("Total Replicated Actual Size from GUI" ,  $totalReplicatedActualSizeGUI);
+
+	_assertEqual($TotalReplicationactualSizedb,$totalReplicatedActualSizeGUI, "Validate value from db and GUI Total Replicated Actual Size");
+  
+    ////FILESET_RECENT_FILES_REPLICATED
+	
+	var $sshCommand = "grep -R \"FILESET_RECENT_FILES_REPLICATED=\" " + $path+ $filesetNameGUI+".rt";
+	$status = Execute_Ssh_Command($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommand);
+    
+    var $lastReplicatedFile1=$status.get("output").toString();
+	var $lastReplicatedFile2=$lastReplicatedFile1.split("=");
+
+ 	var  $lastReplicatedFiledb=($lastReplicatedFile2[1]);
+    
+	_assertExists("Last Replicated File from db", $lastReplicatedFiledb);
+	 
+	var $lastReplicatedFileGUI=_getCellText(_cell(0,_rightOf(_cell("Last Replicated File[1]"))));
+    _assertExists("Last Replicated File from GUI" ,$lastReplicatedFileGUI);
+     
+	_assertEqual($lastReplicatedFiledb,$lastReplicatedFileGUI , "Valiadate value from db and GUI Last Replicated File");
+	 
+    
+	////
+	var $sshCommand = "grep -R \"FILESET_RECENT_FILES_REPLICATED_SIZE=\" " + $path+ $filesetNameGUI+".rt";
+	$status = Execute_Ssh_Command($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommand);
+
+  	var $lastReplicatedFilesize1=$status.get("output").toString();
+	var $lastReplicatedFilesize2=$lastReplicatedFilesize1.split("=");
+    var  $lastReplicatedFilesizedb=($lastReplicatedFilesize2[1]+" "+ "Bytes");
+    
+	_assertExists("Last Replicated File size from  db", $lastReplicatedFilesizedb);
+	 
+	var $lastReplicatedFilesizeGUI=_getCellText(_cell(0,_rightOf(_cell("Last Replicated File size"))));
+    _assertExists("Last Replicated File size from GUI" ,$lastReplicatedFilesizeGUI);
+     
+	_assertEqual($lastReplicatedFilesizedb,$lastReplicatedFilesizeGUI , "Valiadate value from db and GUI Last Replicated File size");
+	 
+  
+	///
+    var $sshCommand = "grep -R \"REPLICATION_THRUPUT=\" " + $path+ $filesetNameGUI+".rt";
+ 	$status = Execute_Ssh_Command($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommand);
+
+ 	var $throughput= $status.get("output").toString();
+ 	var $throughputdb0=$throughput.split("=");
+    var $throughputdb2=($throughputdb0[1]);
+ 	var $throughputdb1=$throughputdb2.split(",");
+ 	var  $throughputdb=($throughputdb1[0]+" "+"Bytes/Sec");
+	 
+	_assertExists("Throughtput from db", $throughputdb);
+	 
+	var $throughputGUI=_getCellText(_cell(0,_rightOf(_cell("Throughput"))));
+    _assertExists("Throughtput from GUI", $throughputGUI);
+	 
+	_assertEqual($throughputdb,$throughputGUI, "Validate Throughput"); 
+	
+	if($lastReplicatedFiledb != "N/A")
+	{
+		_wait(1000);
+		break;
+	}
+    $i++;
+    }
+}
+
+
+// Replication Page for LOCAL and REMOTE
+
+
+
+/**
+* Function is for Verification of the all RTO detail from RPO/RTO screen for NetApp_SnapMirror solution
+*@param : null
+*@return : $dbRto
+*@Author: Padmavathi
+*
+*/
+
+function NetApp_SnapMirror_Rto() {
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("RPO/RTO"));
+
+	// verification of current RTO :
+
+	
+	var $stepName1 = parseInt(_getText(_cell(1, _near(_cell("Custom action for Production Pre-check")))));
+	var $stepName2 = parseInt(_getText(_cell(1, _near(_cell("Custom action for Remote Pre-check")))));
+	var $stepName3 = parseInt(_getText(_cell(1, _near(_cell("Custom action for FailOver ")))));
+	
+	
+	var $expectedCompletionTime = Math.floor($stepName1 + $stepName2 + $stepName3);
+	_assertExists("Expected completion time", $expectedCompletionTime);
+
+	// Calling function Calculate_Rto from Group_manager.sah
+	$dbRto = Calculate_Rto($expectedCompletionTime);
+	return $dbRto;
+
+} // End of NetApp_SnapMirror RTO
+
+/**
+* Function is for Verification of details in Manage-Manage DR Solution screen for NetApp_SnapMirror solution Post SO
+*@param : null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+
+function NetApp_SnapMirror_Managedrsolution_PostSO() {
+	NetApp_SnapMirror_Managedrsolution_Status($groupName,"SO");
+} // End of NetApp_SnapMirror_Managedrsolution_PostSO()
+
+/**
+* Function is for Verification of details in Manage-Manage DR Solution screen for NetApp_SnapMirror solution before SO
+*@param : null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+function NetApp_SnapMirror_Managedrsolution() {
+	NetApp_SnapMirror_Managedrsolution_Status($groupName);
+}// End o fNetApp_SnapMirror_Managedrsolution()
+
+
+/**
+* Function is for Verification of details in Manage-Manage DR Solution screen for NetApp_SnapMirror solution.
+*@param : $groupName,$WFType 
+*@return : null
+*@Author: Padmavathi
+*
+*/
+function NetApp_SnapMirror_Managedrsolution_Status($groupName,$WFType){
+	_click(_link("Manage"));
+	_click(_link("Groups List View"));
+	_click(_link($groupName));
+	_click(_link("Manage DR Solution"));
+
+	// calling Group_ManageGroupInformation to verify the PR and DR site status
+	Group_Managedrsolution($WFType);
+
+	var $protectionMechanism = _getCellText(_cell(1, _near(_cell("Protection Mechanism:"))));
+	_assertExists("Protection Mechanism is:", $protectionMechanism);
+	_assertEqual($systemTypeProtection, $protectionMechanism, "Validating Protection Mechanism in GUI");
+	
+	var $replicationStatusGui = _getText(_cell(1, _near(_cell("Replication Status:"))));
+	_assertExists("Replication Status:", $replicationStatusGui);
+	
+	
+ 
+}// end Of NetApp_SnapMirror_Managedrsolution_Status()
+
+/**
+* Function is for Validation of logs in Monitor > GroupSnapshot screen for NetApp_SnapMirror solution post SO.
+*@param : null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+
+function NetApp_SnapMirror_Groupsnapshot_Post_SO() {
+	
+	NetApp_SnapMirror_Groupsnapshot_Status($groupName,$datasetNameDR,$compIPDR,$remoteUserNameValDR,$remotePwdValDR,"SO");
+
+} // End of NetApp_SnapMirror_Groupsnapshot_Post_SO()
+
+
+/**
+* Function is for Validation of logs in Monitor > GroupSnapshot screen for NetApp_SnapMirror solution before SO.
+*@param : null
+**@return : null
+*@Author: Padmavathi
+*
+*/
+function NetApp_SnapMirror_Groupsnapshot() {
+	
+	NetApp_SnapMirror_Groupsnapshot_Status($groupName,  $datasetNamePR, $compIPPR, $remoteUserNameValPR, $remotePwdValPR, "NC");
+}// End of NetApp_SnapMirror_Groupsnapshot()
+
+/**
+* Function is for Validation of logs in Monitor > GroupSnapshot screen for NetApp_SnapMirror solution.
+*@param :$groupName,$datasetName,$compIP,$remoteUserNameVal,$remotePwdVal,$WFType
+*@return : null
+*@Author: Padmavathi
+*
+*/
+
+function NetApp_SnapMirror_Groupsnapshot_Status($groupName,$datasetName,$compIP,$remoteUserNameVal,$remotePwdVal,$WFType) {
+	Popup_Handler();
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("Group Snapshot"));
+/*
+	// verifying Recovery Point
+	if ($WFType == "SO") {
+		if (_exists(_cell("Not supported in Switchover mode"))) {
+			_log("So done successfully");
+		} else {
+			_log("Gui not showing correct value");
+		}
+		// calling NetApp_SnapMirror_RPO_Post_SO function
+		
+		NetApp_SnapMirror_Rpo_Post_SO();
+
+	} else {
+		// calling NetApp_SnapMirror_RPO function
+		NetApp_SnapMirror_Rpo();
+	}
+	
+	 var $recoveryPointGui1 = _getText(_span(1, _near(_span("DR Data Consistent up to:"), _near(_cell("Continuity")))));
+	 var $date = $recoveryPointGui1;
+     var $dateString = $date.toString();
+     var $recoveryPointGui = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+ 	_assertExists("Recovery Point DR Data Consistent up to:", $recoveryPointGui);
+ 	if ($recoveryPointinDB == $recoveryPointGui){
+	_assertEqual($recoveryPointinDB, $recoveryPointGui, "Validating Recovery Point DR Data Consistent upto correct in GUI");
+}  	else {
+ 		_log("Validating Recovery Point DR Data Consistent is not  correct in GUI");
+ 	}
+	// Verfing Recovery time
+	if ($WFType == "SO") {
+		if (_exists(_cell("Not supported in Switchover mode"))) {
+			_log("Not supported in Switchover mode");
+		}
+	} else {
+		Popup_Handler();
+		_click(_link("Monitor"));
+		_click(_link($groupName));
+		_click(_link("Group Snapshot"));
+		var $recoveryTimeGui1 = (_getText(_cell(5, _near(_span("Est. time to recover:", _near((_cell("Recovery Time")))))))).split("Est. time to recover:");
+		var $recoveryTimeGui = $recoveryTimeGui1[1];
+		_assertExists("Recovery Time  Est. time to recover:", $recoveryTimeGui);
+		// calling function to calculate rto for Recovery Time
+		var $dbRto = NetApp_SnapMirror_Rto($groupName);
+		Popup_Handler();
+		_click(_link("Monitor"));
+		_click(_link($groupName));
+		_click(_link("Group Snapshot"));
+		_assertEqual($dbRto.get("actualRtoDB"), $recoveryTimeGui, "Validating Recovery Time  Est. time to recover correct in GUI");
+	}
+	Popup_Handler();
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("Group Snapshot"));
+	var $continuityOperation = _getText(_cell(1, _near(_cell("Continuity Operation:"))));
+	_assertExists("Continuity Operation:", $continuityOperation);
+*/
+	//PR
+    var $LasttimewhentheApplicationSubSystemfilesgotmodifiedGUI=_getCellText(_cell(1,_near(_cell("Last time when the ApplicationSubSystem files got modified:"))));
+    _assertExists("Last time when the ApplicationSubSystem files got modified from GUI" ,$LasttimewhentheApplicationSubSystemfilesgotmodifiedGUI);
+  
+    var $lasttimewhentheApplicationSubSystemfilesgotmodifiedGUIBF = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($LasttimewhentheApplicationSubSystemfilesgotmodifiedGUI).getTime();
+	_assertExists("Last time when the ApplicationSubSystem files got modified from GUI", $lasttimewhentheApplicationSubSystemfilesgotmodifiedGUIBF);
+    
+    
+    //DR    
+    var $TimeuntilwhenApplicationSubSystemfilesareavailableGUI=_getCellText(_cell(1,_near((_cell("Time until when ApplicationSubSystem files are available:")))));
+    _assertExists("Time until when ApplicationSubSystem files are available from GUI",$TimeuntilwhenApplicationSubSystemfilesareavailableGUI);
+   
+    var $timeuntilwhenApplicationSubSystemfilesareavailableGUIBF = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($TimeuntilwhenApplicationSubSystemfilesareavailableGUI).getTime();
+ 	_assertExists("Time until when ApplicationSubSystem files are available from GUI", $timeuntilwhenApplicationSubSystemfilesareavailableGUIBF);
+    
+  navigateToDiscovery();
+   _click(_link("Subsystems"));
+   _click(_link("Datasets"));
+   _click(_link($datasetName));
+   
+   var $applicationPath1 = _getCellText(_cell(1,_near(_cell("ApplicationSubSystem Path/Location:"))));
+   var $application=$applicationPath1.split(",");
+   var $applicationPath=$application[0];
+   //$path = "$applicationPath"; 
+   
+    var $sshCommand = "echo > " + $applicationPath +"/file01.txt";
+	 $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+    
+	
+   
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("Group Snapshot"));
+
+	 $count = 0;
+		while($count<10){
+			_wait(30000);
+			$count++;	
+		}
+	//PR
+    var $LasttimewhentheApplicationSubSystemfilesgotmodifiedGUI=_getCellText(_cell(1,_near(_cell("Last time when the ApplicationSubSystem files got modified:"))));
+    _assertExists("Last time when the ApplicationSubSystem files got modified from GUI" ,$LasttimewhentheApplicationSubSystemfilesgotmodifiedGUI);
+  
+    
+    var $lasttimewhentheApplicationSubSystemfilesgotmodifiedGUIAF = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($LasttimewhentheApplicationSubSystemfilesgotmodifiedGUI).getTime();
+  	_assertExists("Last time when the ApplicationSubSystem files got modified from GUI", $lasttimewhentheApplicationSubSystemfilesgotmodifiedGUIAF);
+    
+    
+    //DR    
+    var $TimeuntilwhenApplicationSubSystemfilesareavailableGUI=_getCellText(_cell(1,_near((_cell("Time until when ApplicationSubSystem files are available:")))));
+    _assertExists("Time until when ApplicationSubSystem files are available from GUI",$TimeuntilwhenApplicationSubSystemfilesareavailableGUI);
+
+    var $timeuntilwhenApplicationSubSystemfilesareavailableGUIAF = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($TimeuntilwhenApplicationSubSystemfilesareavailableGUI).getTime();
+  	_assertExists("Time until when ApplicationSubSystem files are available from GUI", $timeuntilwhenApplicationSubSystemfilesareavailableGUIAF);
+    
+    
+  _assertTrue($lasttimewhentheApplicationSubSystemfilesgotmodifiedGUIBF<=$lasttimewhentheApplicationSubSystemfilesgotmodifiedGUIAF, "Last time when the ApplicationSubSystem files got modified is Equal in GUI and db");
+ 
+  _assertTrue($timeuntilwhenApplicationSubSystemfilesareavailableGUIBF<=$timeuntilwhenApplicationSubSystemfilesareavailableGUIAF, "Time until when ApplicationSubSystem files are available is Equal in GUI and db");
+ 
+}
+// End Of NetApp_SnapMirror_Groupsnapshot();
+
+/**
+* Function is for verification of details in Manage-Group Information screen for NetApp_SnapMirror solution Post SO
+*@param : null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+
+function NetApp_SnapMirror_Groupinformation_Post_SO() {
+    NetAPP_SnapMirrorGroup_Managegroupinformation($groupName,$datasetNameDR,$compIPDR,$remoteUserNameValDR,$remotePwdValDR);
+}// End of NetApp_SnapMirror_Groupinformation_Post_SO()
+
+/**
+* Function is for verification of details in Manage-Group Information screen for NetApp_SnapMirror solution Before SO
+*@param : null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+function NetApp_SnapMirror_Groupinformation() {
+	NetApp_SnapMirror_Groupinformation_Details($groupName,$datasetNamePR,$compIPPR, NetAppcompIP, $remoteUserNameValPR, $NetAppUserNameVal, $remotePwdValPR, $NetAppPwdVals);
+}// End of NetApp_SnapMirror_Groupinformation()
+
+
+function NetAPP_SnapMirrorGroup_Managegroupinformation($groupName, $WFType) {
+	_wait(6000);
+
+	_click(_link("Manage"));
+	_click(_link("Groups List View"));
+	_click(_link($groupName));
+	_click(_link("Group Information"));
+
+	var $productionSiteConfigured = _getText(_cell(1, _near(_cell("Production Site:"), _under(_cell("Configured")))));
+	_assertExists("Configured Production Site:", $productionSiteConfigured);
+	var $productionSiteCurrent = _getText(_cell(2, _near(_cell("Production Site:"), _under(_cell("Current")))));
+	_assertExists("Current Production Site:", $productionSiteCurrent);
+
+	// Verify Configured and Current Site for PR
+	if ($WFType == "SO") {
+		_assertNotExists($productionSiteConfigured, $productionSiteCurrent, "Current PR site not same as configured  .Site status incorrect");
+	} else {
+		_assertExists($productionSiteConfigured, $productionSiteCurrent, "Comparing configured and current PR site");
+	}
+
+	var $productionServerConfigured = _getText(_cell(1, _near(_cell("Production Server:"), _under(_cell("Configured")))));
+	_assertExists("Configured Production Server:", $productionServerConfigured);
+	var $productionServerCurrent = _getText(_cell(2, _near(_cell("Production Server:"), _under(_cell("Current")))));
+	_assertExists("Current Production Server:", $productionServerCurrent);
+
+	if ($WFType == "SO") {
+		_assertNotExists($productionServerConfigured, $productionServerCurrent, "Current PR server not same as configured  .Site status incorrect");
+	} else {
+		_assertExists($productionServerConfigured, $productionServerCurrent, "Comparing configured and current PR server");
+	}
+
+	var $DRSiteConfigured = _getText(_cell(1, _near(_cell("DR Site:"), _under(_cell("Configured")))));
+	_assertExists("Configured DR Site:", $DRSiteConfigured);
+	var $DRSiteCurrent = _getText(_cell(2, _near(_cell("DR Site:"), _under(_cell("Current")))));
+	_assertExists("Current DR Site:", $DRSiteCurrent);
+
+	// Verify Configured and Current Site for DR
+
+	if ($WFType == "SO") {
+		_assertNotEqual($DRSiteConfigured, $DRSiteCurrent, "Current DR site not same as configured  .Site status incorrect");
+	} else {
+		_assertExists($DRSiteConfigured, $DRSiteCurrent, "Comparing configured and current DR site");
+	}
+
+	var $DRServerConfigured = _getText(_cell(1, _near(_cell("DR Server:"), _under(_cell("Configured")))));
+	_assertExists("Configured DR Server:", $DRServerConfigured);
+	var $DRServerCurrent = _getText(_cell(2, _near(_cell("DR Server:"), _under(_cell("Current")))));
+	_assertExists("Current DR Server:", $DRServerCurrent);
+	if ($WFType == "SO") {
+		_assertNotExists($DRServerConfigured, $DRServerCurrent, "Current DR server not same as configured  .Site status incorrect");
+	} else {
+		_assertExists($DRServerConfigured, $DRServerCurrent, "Comparing configured and current DR site");
+	}
+
+	var $currentGroupState = _getText(_cell(1, _near(_cell("Current Group State:"))));
+	_assertExists("Current Group State:", $currentGroupState);
+	var $currentContinuityStatus = _getText(_cell(1, _near(_cell("Current Continuity Status:"))));
+	_assertExists("Current Continuity Status:", $currentContinuityStatus);
+	var $continuityOperation = _getText(_cell(1, _near(_cell("Continuity Operation:"))));
+	_assertExists("Continuity Operation:", $continuityOperation);
+}// End of Group_ManageGroupInformation()
+
+
+/**
+* Function is for Monitor Relationship Screen.
+*@param :  $groupName.
+*@return : null
+*@Author: Padmavathi
+*
+*/
+
+function Monitor_Relationship_SnapMirror($groupName) {
+	/*
+	 * _wait(60000); Popup_Handler(); _wait(60000); Popup_Handler(); _wait(60000);
+	 */
+	Popup_Handler();
+	_wait(5000);
+	Popup_Handler();
+
+	 $count = 0;
+		while($count<10){
+			_wait(30000);
+			$count++;	
+		}
+		
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("Relationship"));
+	_click(_link("Expand All"));
+
+	// Validation of Solution Signature
+	var $drSolutionSignature = _getText(_cell(1, _near(_cell("DR Solution Signature[1]"))));
+	_assertEqual($SolutionSignature, $drSolutionSignature, "Checking DR Solution Signature from the user input and GUI showing for group");
+
+	// Validation of Replication Details for PR
+	var $primaryService = _getText(_link(0, _near(_strong("Primary Service"))));
+	_assertEqual($primaryProtections, $primaryService, "Checking Protection Scheme name from user input and GUI showing for PR");
+
+	// Splitting the strings to get the replication type for PR
+	var $replicationTypePR = _getText(_cell(0, _near(_strong("Primary Service"))));
+	var $replicationPR = $replicationTypePR.split(":");
+	var $replication_PR = $replicationPR[1].split("[");
+	var $primaryServiceType = $replication_PR[1].split("]");
+
+	var $primaryServiceType1=$primaryServiceType[0];
+
+   _assertEqual($systemTypeProtection, $primaryServiceType1, "Checking System type Protection from user input and GUI showing for PR");
+
+
+	var $primaryServiceStatus = _getText(_cell(0, _near(_strong("Primary Service Status"))));
+	_assertExists("Primary Service Status:", $primaryServiceStatus);
+
+	// Validation of Replication Details for DR
+	var $remoteService = _getText(_link(0, _near(_strong("Remote Service"))));
+	_assertEqual($remoteProtections, $remoteService, "Checking Protection Scheme from user input and GUI for DR");
+/////////////////
+	
+	// Splitting the strings to get the replication type for DR
+	var $replicationTypeDR =  _getText(_cell(0, _near(_strong("Remote Service"))));
+	var $replicationDR = $replicationTypeDR.split(":");
+	var $replication_DR = $replicationDR[1].split("[");
+	var $remoteServiceType = $replication_DR[1].split("]");
+
+	var $remoteServiceType1=$remoteServiceType[0];
+	
+	_assertEqual($systemTypeProtection,$remoteServiceType1 , "Checking System type Protection from user input and GUI showing for DR");
+
+
+	var $remoteServiceStatus = _getText(_cell(0, _near(_strong("Remote Service Status"))));
+	_assertExists("Remote Service Status:", $remoteServiceStatus);
+
+	// Validation of Data set for PR
+	var $primaryDataset = _getText(_link(1, _near(_strong("Primary Dataset"))));
+	_assertExists("Primary Dataset:", $primaryDataset);
+	_assertEqual($datasetNamePR, $primaryDataset, "Checking Dataset from user input and GUI for PR");
+
+	// Splitting the strings to get the Data set type for PR
+	var $datasetPR = _getText(_cell(0, _near(_strong("Primary Dataset"))));
+	var $datasetTypePR = $datasetPR.split(":");
+	var $prDataset = $datasetTypePR[1].split("[");
+	var $prDatasetType = $prDataset[1].split("]");
+	_assertEqual($datasetType, $prDatasetType[0], "Checking Dataset Type from user input and GUI for PR");
+
+	var $primaryDataset = _getText(_cell(0, _near(_strong("Primary Dataset Status"))));
+	var $primaryDatasetPR = $primaryDataset.split(":");
+	_assertExists("Primary Dataset Status:", $primaryDatasetPR[2]);
+
+	// Validation of Data set for DR
+	var $remoteDataset = _getText(_link(0, _near(_strong("Remote Dataset"))));
+	_assertEqual($datasetNameDR, $remoteDataset, "Checking Dataset from user input and GUI for DR");
+
+	// Splitting the strings to get the Data set type for DR
+	var $datasetDR = _getText(_cell(0, _near(_strong("Remote Dataset"))));
+	var $datasetType_DR = $datasetDR.split(":");
+	var $drDataset = $datasetType_DR[1].split("[");
+	var $drDatasetType = $drDataset[1].split("]");
+	_assertEqual($datasetType, $drDatasetType[0], "Checking Dataset Type from user input and GUI for DR");
+
+	var $remoteDataset = _getText(_cell(0, _near(_strong("Remote Dataset Status"))));
+	var $remoteDataset_DR = $remoteDataset.split(":");
+	_assertExists("Remote Dataset Status:", $remoteDataset_DR[2]);
+
+	// Validation of Component for PR 1
+	var $primaryComponent = _getText(_link(0, _near(_strong("Primary Component 1"))));
+	_assertEqual($compNamePR, $primaryComponent, "Checking Component from user input and GUI for PR");
+
+	// Splitting the strings to get the Component type for PR
+	var $componentPR = _getText(_cell(0, _near(_strong("Primary Component 1"))));
+	var $systemTypePR = $componentPR.split(":");
+	var $prComponent = $systemTypePR[1].split("[");
+	var $prSystemType = $prComponent[1].split("]");
+	_assertEqual($systemType, $prSystemType[0], "Checking System type component from user input and GUI for PR");
+
+	var $prComponent1 = _getText(_cell(0, _near(_strong("Primary Component 1 Status"))));
+	var $prComponent = $prComponent1.split(":");
+	_assertExists("Primary Component Status", $prComponent[1]);
+	
+		// Validation of Component for PR 2
+	var $primaryComponent = _getText(_link(0, _near(_strong("Primary Component 2"))));
+	_assertEqual($NetAppcompNamePR, $primaryComponent, "Checking Component from user input and GUI for PR");
+
+	// Splitting the strings to get the Component type for PR
+	var $componentPR = _getText(_cell(0, _near(_strong("Primary Component 2"))));
+	var $systemTypePR = $componentPR.split(":");
+	var $prComponent = $systemTypePR[1].split("[");
+	var $prSystemType = $prComponent[1].split("]");
+	_assertEqual($systemType, $prSystemType[0], "Checking System type component from user input and GUI for PR");
+
+	var $prComponent1 = _getText(_cell(0, _near(_strong("Primary Component 2 Status"))));
+	var $prComponent = $prComponent1.split(":");
+	_assertExists("Primary Component Status", $prComponent[1]);
+
+	// Validation of Component for DR 1
+	var $remoteComponent = _getText(_link(0, _near(_strong("Remote Component 1"))));
+	_assertEqual($compNameDR, $remoteComponent, "Checking Component from user input and GUI for DR");
+
+	// Splitting the strings to get the Component type for DR
+	var $componentDR = _getText(_cell(0, _near(_strong("Remote Component 1"))));
+	var $systemTypeDR = $componentDR.split(":");
+	var $drComponent = $systemTypeDR[1].split("[");
+	var $drSystemType = $drComponent[1].split("]");
+	_assertEqual($systemType, $drSystemType[0], "Checking System type component from user input and GUI for DR");
+
+	var $remoteComponent = _getText(_cell(0, _near(_strong("Remote Component 1 Status"))));
+	var $remoteComponentDR = $remoteComponent.split(":");
+	_assertExists("Remote Component Status:", $remoteComponentDR[1]);
+
+
+
+// Validation of Component for DR 2
+	var $remoteComponent = _getText(_link(0, _near(_strong("Remote Component 2"))));
+	_assertEqual($NetAppcompNameDR, $remoteComponent, "Checking Component from user input and GUI for DR");
+
+	// Splitting the strings to get the Component type for DR
+	var $componentDR = _getText(_cell(0, _near(_strong("Remote Component 2"))));
+	var $systemTypeDR = $componentDR.split(":");
+	var $drComponent = $systemTypeDR[1].split("[");
+	var $drSystemType = $drComponent[1].split("]");
+	_assertEqual($systemType, $drSystemType[0], "Checking System type component from user input and GUI for DR");
+
+	var $remoteComponent = _getText(_cell(0, _near(_strong("Remote Component 2 Status"))));
+	var $remoteComponentDR = $remoteComponent.split(":");
+	_assertExists("Remote Component Status:", $remoteComponentDR[1]);
+	
+}
+
+
+/**
+* Function is for verification of details in Manage-Group Information screen for NetApp_SnapMirror solution Before SO
+*@param : $groupName,$userPR, $pwdPR, $internalLogon,$APPListenerIPPR, $dbSidSelect,$userDR, $pwdDR, $internalLogon,$APPListenerIPDR, $dbSidSelect,$WFType
+*@return : null
+*@Author: Padmavathi
+*
+*/
+ function NetApp_SnapMirrorR_Groupinformation_Details($groupName,$datasetName, $compIP, $NetAppcompIP, $remoteUserNameVal, $NetAppUserNameVal, $NetAppPwdVal, $remotePwdVal,$WFType)
+{
+
+	_click(_link("Manage"));
+	_click(_link("Groups List View"));
+	_click(_link($groupName));
+	_click(_link("Group Information"));
+  // calling Group_ManageGroupInformation to verify the PR and DR site status
+    Group_Managegroupinformation($groupName, $WFType);
+      
+//PR
+     
+ 	var $i=0;
+	while($i<10){
+		var $lastReplicatedApplicationFileTimeStampGUI=_getCellText(_cell(1,_near(_cell("Last time when the ApplicationSubSystem files got modified:"))));
+	     _assertExists("Application Files Modification Timestamp from GUI" ,$lastReplicatedApplicationFileTimeStampGUI);
+	if($lastReplicatedApplicationFileTimeStampGUI =="N/A"){
+		_wait(30000);
+	}
+	else
+		{
+		break;
+		_log("Go Ahead");
+		}
+	$i++;
+	}
+   
+     var $lastReplicatedApplicationFileTimeStampGUIBF = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($LasttimewhentheApplicationSubSystemfilesgotmodifiedGUI).getTime();
+ 	_assertExists("Application Files Modification Timestamp from GUI", $lastReplicatedApplicationFileTimeStampGUIBF);
+     
+     
+     //DR    
+     var $timeUntilApplicationFilesareavailableGUI =_getCellText(_cell(1,_near(_cell("Time until when ApplicationSubSystem files are available:"))));
+     _assertExists("Last Replicated Application File Timestamp from GUI",$timeUntilApplicationFilesareavailableGUI);
+    
+     var $timeUntilApplicationFilesareavailableGUIBF = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($timeUntilApplicationFilesareavailableGUI).getTime();
+  	_assertExists("Last Replicated Application File Timestamp from GUI", $timeUntilApplicationFilesareavailableGUI);
+     
+    navigateToDiscovery();
+    _click(_link("Subsystems"));
+    _click(_link("Datasets"));
+    _click(_link($datasetName));
+    
+    var $applicationPath1 = _getCellText(_cell(1,_near(_cell("ApplicationSubSystem Path/Location:"))));
+    var $application=$applicationPath1.split(",");
+    var $applicationPath=$application[0];
+    //$path = "$applicationPath"; 
+    
+     var $sshCommand = "echo > " + $applicationPath +"/file00.txt";
+ 	 $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+    
+ 	_click(_link("Manage"));
+	_click(_link("Groups List View"));
+	_click(_link($groupName));
+	_click(_link("Group Information"));
+
+	 $count = 0;
+		while($count<10){
+			_wait(30000);
+			$count++;	
+		}
+	 //PR
+     var $lastTimeApplicationFilesGotModified=_getCellText(_cell(1,_near(_cell("Last time when the ApplicationSubSystem files got modified:"))));
+     _assertExists("Application Files Modification Timestamp from GUI" ,$lastTimeApplicationFilesGotModified);
+   
+     
+     var $lastTimeApplicationFilesGotModifiedAF = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($ApplicationFilesModificationTimeStamp).getTime();
+   	_assertExists("Last Replicated Application File Timestamp from GUI", $lastTimeApplicationFilesGotModifiedAF);
+     
+     
+     //DR    
+     var $timeUntilApplicationFilesareavailable=_getCellText(_cell(1,_near(_cell("Time until when ApplicationSubSystem files are available:"))));
+     _assertExists("Last Replicated Application File Timestamp from GUI",$timeUntilApplicationFilesareavailable);
+
+     var $timeUntilApplicationFilesareavailableAF = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($LastReplicatedApplicationFileTimeStamp).getTime();
+   	_assertExists("Last Replicated Application File Timestamp from GUI", $timeUntilApplicationFilesareavailableAF);
+     
+     
+    _assertTrue($lastTimeApplicationFilesGotModifiedBF<=$lastTimeApplicationFilesGotModifiedAF, "Application Files Modification Timestamp is Equal in GUI and db");
+ 
+   _assertTrue($timeUntilApplicationFilesareavailableBF<=$timeUntilApplicationFilesareavailable, "Last Replicated Application File Timestamp is Equal in GUI and db");
+ 
+}
+
+/**
+* Function is to Start NormalFULLCopy for NetApp_SnapMirror Solution
+* *@param : $groupName
+*@return : null
+*@Author: padmavathi
+*
+*/
+
+function Execute_NFC($groupName) {
+	_click(_link("Manage"));
+	_click(_link("Groups List View"));
+	_click(_link($groupName));
+	_click(_link("Manage DR Solution"));
+
+	if (_exists(_button("Stop Replication"))) {
+		_log("button Stop Replication existes");
+	} else {
+		_wait(10000);
+		_click(_button("Start Replication"));
+	    _wait(10000);
+	}
+	if (_exists(_button("/Initiate NormalFullCopy/"))) {
+		_click(_button("Initiate NormalFullCopy"));
+		if (_exists(_cell("Workflow Readiness"))) {
+			_click(_button("/workflowrun/"));
+		}
+		_click(_checkbox("cbox"));
+		_click(_button("/Continue/"));
+		_wait(10000);
+		Popup_Handler();
+		var $i = 0;
+
+		// Looping till Stop Normal Copy button appears
+		while ($i < 30) {
+			_log($i);
+			_wait(10000);
+			_click(_link("Manage"));
+			_click(_link("Groups List View"));
+			_click(_link($groupName));
+			_click(_link("Manage DR Solution"));
+			if (_exists(_button("/Initiate NormalCopy/"))) {
+				_log("Start NormalCopy button exists");
+				break;
+			} 
+			else
+				_log("Start NormalCopy button not exists");
+			
+			if (_exists(_button("Stop Replication")))
+				{
+				_log("Replication Started");
+				}else{
+					_click(_button("Start Replication"));
+						}
+				$i = $i + 1;
+		}
+		// End of while
+	} else {
+		_log("Initiate NormalFullCopy button does not exists and the group might be already in normal copy state");
+	}
+	_assertExists(_button("/Initiate NormalCopy/", _near(_link("Manage DR Solution"))));
+
+
+} // End of executeNFC()
+
+
+/**
+* Function is to File Creation on PR for NetApp_SnapMirror Solution
+* *@param : null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+function File_Creation_PR(){
+	File_Creation($datasetNamePR,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	
+}
+/**
+* Function is to File Creation for NetApp_SnapMirror Solution
+* *@param : $datasetNamePR,$compIP,$remoteUserNameVal,$remotePwdVal
+*@return : null
+*@Author: Padmavathi
+*
+*/
+function File_Creation($datasetNamePR,$compIP,$remoteUserNameVal,$remotePwdVal){
+	
+	  navigateToDiscovery();
+	   _click(_link("Subsystems"));
+	   _click(_link("Datasets"));
+	   _click(_link($datasetNamePR));
+	   
+	   var $applicationPath1 = _getCellText(_cell(1,_near(_cell("ApplicationSubSystem Path/Location:"))));
+	   var $application=$applicationPath1.split(",");
+	   var $applicationPath=$application[0];
+	   
+	  var $sshCommand = "echo > " + $applicationPath +"/file00.txt";
+	  $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+      _wait(100);
+	  
+	  var $sshCommand = "echo > " + $applicationPath +"/file01.txt";
+	  $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+      _wait(100);
+       
+      var $sshCommand = "echo > " + $applicationPath +"/file02.txt";
+	  $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+      _wait(100);
+	  
+      var $sshCommand = "echo > " + $applicationPath +"/file03.txt";
+	  $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	  _wait(100);
+	  
+	  var $sshCommand = "echo > " + $applicationPath +"/file04.txt";
+	  $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	  _wait(100);
+	  
+	  var $sshCommand = "echo > " + $applicationPath +"/file05.txt";
+	  $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	   
+}
+
+/**
+* Function is for Replication Details  NetApp_SnapMirror Solution
+* *@param : $groupName,$WFType
+*@return : null
+*@Author:Padmavathi
+*
+*/
+
+
+function NetAPP_SnapMirror_Replication_Details($groupName,$WFType)
+{
+	 _click(_link("Monitor"));
+	 _click(_link($groupName));
+	 _click(_link("Replication"));
+	     
+	  var $protectionGUI = _getCellText(_cell(0,_rightOf(_cell("Protection:"))));
+     _assertEqual($systemTypeProtection , $protectionGUI,"Comparing Protection Schema name's in Replication page");
+		
+      var $replicationStatus = _getCellText(_cell(0,_rightOf(_cell("Replication Status:"))));
+	  _assertEqual("ACTIVE", $replicationStatus);
+		
+		
+		
+	  var $primaryRemoteServicesGUIPR = _getCellText(_cell(0,_rightOf(_cell("Primary - Remote Services:"))));
+	  _assertExists("Primary Remote Services from GUI", $primaryRemoteServicesGUIPR);
+
+	  var $primaryRemoteServicesGUI = $primaryRemoteServicesGUIPR.split("-");
+	  
+	  _assertExists($NetApp_Protection_PR, $primaryRemoteServicesGUI[0], "Comparing Primary Protection Schema name in Replication page");
+	  _assertExists($NetApp_Protection_DR, $primaryRemoteServicesGUI[1], "Comparing Remotey Protection Schema name in Replication page");
+	
+	  var $stateonDR = _getCellText(_cell(0,_rightOf(_cell("State:"))));
+	  _assertEqual("snapmirrored" , $stateonDR, "Validating DR State Information in Replication page");	  
+	  
+	  var $statusonDR = _getCellText(_cell(1, _near(_cell("Status:"))));
+	  _assertEqual("idle" , $statusonDR, "Validating DR Status Information in Replication page");
+	  
+	    
+	  var $primarymode =  _getCellText(_cell(0,_rightOf(_cell("Mode"))));
+	  _assertEqual("7-Mode" , $primarymode, "Validating  Primary Mode Information in Replication page");
+	  
+	  var $remotemode = _getCellText(_cell(1,_rightOf(_cell("Mode"))));
+	  _assertEqual("7-Mode" , $remotemode, "Validating Remote Mode Information in Replication page");
+	  
+	  var $primarylunpath = _getCellText(_cell(0,_rightOf(_cell("QTree/LUN Path:"))));
+	  _assertEqual($lunPathPR , $primarylunpath, "Comparing Primary Lunpath in Replication page");
+	  
+	  var $remotelunpath = _getCellText(_cell(1,_rightOf(_cell("QTree/LUN Path:"))));
+	  _assertEqual($lunPathDR, $remotelunpath, "Comparing Remote Lunpath in Replication page");
+	  
+	  var $primarylocation = _getCellText(_cell(0,_rightOf(_cell("Location:"))));
+	  _assertEqual($volumeNamePR , $primarylocation, "Comparing Primary Volume name in Replication page");
+	  	  	  
+	  var $remotelocation = _getCellText(_cell(1,_rightOf(_cell("Location:"))));
+	 _assertEqual($volumeNameDR, $remotelocation, "Comparing Remote Lunpath in Replication page");
+	 
+		  
+	  var $primaryvolumename = _getCellText(_cell(0,_rightOf(_cell("Volume Name:"))));
+	  _assertEqual("app_vol" , $primaryvolumename, "Comparing Primary Volume name in Replication page");
+	  
+	  var $remotevolumename = _getCellText(_cell(1,_rightOf(_cell("Volume Name:"))));
+	  _assertEqual("app_vol" , $remotevolumename, "Comparing Remote Volume name in Replication page");
+	  
+
+}//End of NetAPP_SnapMirror_Replication_Details After NC
+
+function NetAPP_SnapMirror_Replication_Details_Post_SO() {
+    NetAPP_SnapMirror_Replication_Details($groupName,"SO");
+}// End of NetAPP_SnapMirror_Replication_Details_Post_SO()	
+	
+	
+function SO_Execution_Status_NetApp_SnapMirror($groupName) {
+	
+	Waitfor_TestWF_Completion_Log_PFR_SO($groupName, "Switchover");
+
+}// End of SB_Execution_Status
+
+
+/**
+* Function is for Switchback status verification from Tests List View .
+*@param : $groupName
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function SB_Execution_Status_NetApp_SnapMirror($groupName) {
+	
+	Waitfor_TestWF_Completion_NetApp_SnapMirror_SB($groupName, "Switchback");
+
+}// End of SB_Execution_Status
+
+
+/**
+* Function is to verify test workflow execution status verification from Tests List View (Waitfor_TestWF_Completion_Log_Shipping_SO).
+*@param : $groupName, $WFName
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+
+
+function Waitfor_TestWF_Completion_NetApp_SnapMirror_SO($groupName, $WFName) {
+	var $i = 0;
+	// Looping till SO execution Complete
+	while ($i < 50) {
+		_log($i);
+		_wait(10000);
+		Popup_Handler();
+		_click(_link("Test"));
+		_click(_link("Test List View"));
+		_click(_link($groupName));
+		
+		//_click(_link($WFName));
+
+		var $testStatus = _getText(_span(6, _near(_link($WFName))));
+		_assertExists("Test Status :", $testStatus);
+		
+		if ($testStatus == "FAILED") {
+			_wait(1000);
+			_fail($WFName, "workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+		} else if ($testStatus == "EXECUTING") {
+			_click(_link(1, _near(_link($WFName))));
+	
+
+			if (_exists(_submit("OK=true userInputButton btn btn-primary btn-xs btn btn-info"))) {
+				_click(_submit("OK=true userInputButton btn btn-primary btn-xs btn btn-info"));
+				_click(_link("Go back"));
+			} 
+			
+			else if(_exists(_paragraph("PAN-TSQL-0083: Switchover failed for group " + $groupName + ""))) {
+				
+				_click(_submit("Continue=CONTINUE userInputButton btn btn-primary btn-xs btn btn-info"));
+				_click(_link("Go back"));
+			} 
+		
+				} 
+		
+	
+			else if ($testStatus == "EXECUTING") {
+			_wait(10000);
+			_click(_link("Go back"));
+		} else if ($testStatus == "SUCCESS") {
+			_assertExists($WFName, "workflow executed succesfully.");
+			break;
+		}
+		$i = $i + 1;
+		
+	}
+	_click(_link("Go back"));
+	
+	if ($testStatus == "AWAITING_INPUT") {
+		_fail("Failed because of waiting for user input");
+	}// End of while loop
+} // End of Waitfor_TestWF_Completion()
+
+
+
+
+/**
+* Function is to verify test workflow execution status verification from Tests List View (Waitfor_TestWF_Completion_Log_Shipping_SB).
+*@param : $groupName, $WFName
+*@return : null
+*@Author: Padmavathi
+*
+*/
+
+
+function Waitfor_TestWF_Completion_NetApp_SnapMirror_SB($groupName, $WFName) {
+	var $i = 0;
+	// Looping till SO execution Complete
+	while ($i < 50) {
+		_log($i);
+		_wait(10000);
+		Popup_Handler();
+		_click(_link("Test"));
+		_click(_link("Test List View"));
+		_click(_link($groupName));
+		
+		//_click(_link($WFName));
+
+		var $testStatus = _getText(_span(6, _near(_link($WFName))));
+		_assertExists("Test Status :", $testStatus);
+		
+		if ($testStatus == "FAILED") {
+			_wait(1000);
+			_fail($WFName, "workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+		} else if ($testStatus == "EXECUTING") {
+			_click(_link(1, _near(_link($WFName))));
+			if (_exists(_submit("OK=true userInputButton btn btn-primary btn-xs btn btn-info"))) {
+				_click(_submit("OK=true userInputButton btn btn-primary btn-xs btn btn-info"));
+				_click(_link("Go back"));
+			} 
+			else if(_exists(_paragraph("PAN-TSQL-0084: Switchback failed for group " + $groupName + ""))){
+				_click(_submit("Continue=CONTINUE userInputButton btn btn-primary btn-xs btn btn-info"));
+				_click(_link("Go back"));
+			} 
+			} 
+		else if ($testStatus == "EXECUTING") {
+			_wait(10000);
+			_click(_link("Go back"));
+		} else if ($testStatus == "SUCCESS") {
+			_assertExists($WFName, "workflow executed succesfully.");
+			break;
+		}
+		$i = $i + 1;
+		
+	}
+	_click(_link("Go back"));
+	
+	if ($testStatus == "AWAITING_INPUT") {
+		_fail("Failed because of waiting for user input");
+	} // End of while loop
+} // End of Waitfor_TestWF_Completion()
+
+
+//////////////////
+
+
+function NetAPP_SnapMirror_Rpo_Post_SO() {
+
+	 NetAPP_SnapMirror_Rpo_Status($groupName,$datasetNameDR,$compIPDR,$remoteUserNameValDR,$remotePwdValDR);
+	
+} // End of NetAPP_SnapMirror_Post_SO()
+
+/**
+* Function is for Verification of the all RPO detail from RPO/RTO screen for NetAPP SnapMirror solution before SO
+*@param : null
+*@return : null
+*@Author: Padmavathi
+*
+*
+*/
+function NetApp_SnapMirror_Rpo() {
+
+NetAPP_SnapMirror_Rpo_Status($groupName,$datasetNamePR,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+
+}// End of NetAPP_SnapMirror()
+
+/**
+* Function is for Verification of the all RPO detail from RPO/RTO screen for NetAPP SnapMirror solution.
+*@param : $groupName,$datasetName,$compIP,$remoteUserNameVal,$remotePwdVal
+*@return : $dbRecoveryPoint
+*@Author: Padmavathi
+*
+*/
+function NetAPP_SnapMirror_Rpo_Status($groupName,$datasetName,$compIP,$remoteUserNameVal,$remotePwdVal) {
+
+	Popup_Handler();
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("RPO/RTO"));
+	//PR
+    var $lastTimeApplicationFilesGotModified =_getCellText(_cell(1,_near(_cell("Last Time Application Files Got Modified: "))));
+    _assertExists("Last Time Application Files Got Modified from GUI" ,$lastTimeApplicationFilesGotModified);
+        
+    var $lastTimeApplicationFilesGotModifiedBF = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($lastTimeApplicationFilesGotModified).getTime();
+	_assertExists("Last Time Application Files Got Modified from GUI", $lastTimeApplicationFilesGotModified);
+    
+    //DR    
+    var $timeUntilApplicationFilesareavailable =_getCellText(_cell(1,_near((_cell("Time Until Application Files are available:")))));
+    _assertExists("Time Until Application Files are available from GUI",$timeUntilApplicationFilesareavailable);
+   
+    var $timeUntilApplicationFilesareavailableBF = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($timeUntilApplicationFilesareavailable).getTime();
+ 	_assertExists("Time Until Application Files are available", $timeUntilApplicationFilesareavailable);
+    
+  navigateToDiscovery()
+   _click(_link("Subsystems"));
+   _click(_link("Datasets"));
+   _click(_link($datasetName));
+   
+   var $applicationPath1 = _getCellText(_cell(1,_near(_cell("ApplicationSubSystem Path/Location:"))));
+   var $application=$applicationPath1.split(",");
+   var $applicationPath=$application[0];
+   //$path = "$applicationPath"; 
+   
+   var $sshCommand = "echo > " + $applicationPath +"/file100.txt";
+   $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+    
+   _click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("RPO/RTO"));
+	 $count = 1;
+		while($count<10){
+			_wait(30000);
+			$count++;	
+		}
+			
+    
+	//PR
+    var $lastTimeApplicationFilesGotModifiedGUI =_getCellText(_cell(1,_near(_cell("Last Time Application Files Got Modified:"))));
+    _assertExists("Last Time Application Files Got Modified from GUI" ,$lastTimeApplicationFilesGotModified);
+  
+    var $lastTimeApplicationFilesGotModified = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($lastTimeApplicationFilesGotModifiedGUI).getTime();
+  	_assertExists("Last Time Application Files Got Modified from GUI", $lastTimeApplicationFilesGotModified);
+    
+    //DR    
+    var $timeUntilApplicationFilesareavailableGUI =_getCellText(_cell(1,_near((_cell("Time Until Application Files are available:")))));
+    _assertExists("Time Until Application Files are available from GUI",$timeUntilApplicationFilesareavailable);
+
+    var $timeUntilApplicationFilesareavailable = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($timeUntilApplicationFilesareavailableGUI).getTime();
+  	_assertExists("Time Until Application Files are available from GUI", $timeUntilApplicationFilesareavailable);
+    
+    _assertTrue($lastTimeApplicationFilesGotModifiedBF<=$lastTimeApplicationFilesGotModified, "Last Time Application Files Got Modified is Equal in GUI and db");
+    _assertTrue($timeUntilApplicationFilesareavailableBF<=$timeUntilApplicationFilesareavailable, "Time Until Application Files are available is Equal in GUI and db");
+    	 
+// Calling Calulate_Rpo function to verify RPO calculation from gui
+	$dbRpo = Calulate_Rpo($lastTimeApplicationFilesGotModifiedGUI,$timeUntilApplicationFilesareavailableGUI);
+    $recoveryPointinDB = $dbRpo.get("recoveryPointDB");
+    
+    $dbRecoveryPoint = new java.util.Properties();
+ 	$dbRecoveryPoint.put("recoveryPointDB", $recoveryPointinDB);
+	return $dbRpo;
+	return $dbRecoveryPoint;
+	
+}// End Of NetApp_SnapMirror RPO
+
+
+
+function NetApp_SnapMirror_Stop_Reverse_Normal_Copy($groupName) {
+	_click(_link("Manage"));
+	_click(_link("Groups List View"));
+	_click(_link($groupName));
+	_click(_link("Manage DR Solution"));
+	if (_exists(_button("Stop Reverse NormalCopy"))) {
+		_click(_button("Stop Reverse NormalCopy"));
+		_click(_checkbox("cbox"));
+		_click(__button("Continue"));
+		_wait(30000);
+		Popup_Handler();	
+		var $i = 0;
+		// Looping till Initiate Reverse NormalCopy button appears
+		while ($i < 10) {
+			_log($i);
+			_wait(10000);
+			_click(_link("Manage"));
+			_click(_link("Groups List View"));
+			_click(_link($groupName));
+			_click(_link("Manage DR Solution"));
+			if (_exists(_button("Initiate Reverse NormalCopy", _near(_link("Manage DR Solution"))))) {
+				_log("Initiate Reverse NormalCopy button exists");
+				break;
+			} else {
+					_log("Initiate Reverse NormalCopy button not exists");
+			}
+			$i = $i + 1;
+		} // End of while loop
+	} 
+	else {
+		_log("Reverse Normal Copy button does not exists and the group might be already in Reverse normal copy stopped state");
+	}
+	_assertExists(_button("Initiate Reverse NormalCopy", _near(_link("Manage DR Solution"))));
+
+}// End of Stop_Reverse_Normal_Copy()
+
+
+
+

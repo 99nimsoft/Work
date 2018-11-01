@@ -1,0 +1,167 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : IBMRO 
+ ** Objective : This script contains test cases created against bugs 
+ ** AuthorName : Gaurav
+ ** Created Date : 18th April 18
+ ************************************************************************/
+
+_log("=================================Pre-Condition===================================", "Custom1");
+
+_include("../../Library/Solution_Signature/Include/APP_PFR_Include.sah");
+_include("../../conf/DRMInstallation_Parameter.sah");
+_include("../../Library/Common/CommonRepository/CommonDRM_ObjRepository.sah");
+_include("../../Library/Common/CommonRepository/GroupOperation_ObjRepository.sah");
+_include("../../Library/Advanced_Reporter/ObjectRepository/APPPFR_ObjectRepository.sah");
+_include("../../conf/BugsRetest/APP_PFR_Remote_Agent_Parameter.sah");
+_include("../../Library/Common/CommonRepository/CommonGUINavigation_ObjRepository.sah");
+_include("../../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+_include("../../Library/BugRegression/BugRegression_Include.sah");
+_include("../../Library/Solution_Signature/DB2_FDB_HP3PAR/ObjectRepository/DB2_FDB_HP3PAR_ObjectRepository.sah");
+_include("../../Library/Replication/HP3PAR/DB2_HP3PAR.sah");
+_include("../../Library/AdminFeature/Admin_Page_Usability/Admin_Page_Usability_Common_Functions.sah");
+_include("../../Library/Solution_Signature/DB2_FDB_HP3PAR/DB2_FDB_HP3PAR_Automation_Testcase_function.sah");
+_include("../../Library/Database/DB2_HP3PAR/DB2_HP3PAR.sah");
+_include("../../Library/Replication/HP3PAR/HP3PAR_Common.sah");
+
+_include("../../Library/Component/ObjectRepository/Component_ObjectRepository.sah");
+_include("../../Library/Database/APPSubSystem/ObjectRepository/APPSubSystem_ObjectRepository.sah");
+_include("../../Library/Replication/PFR/ObjectRepository/PFR_ObjectRepository.sah");
+_include("../../Library/BugRegression/ObjectRepository/BugRegression_ObjectRepository.sah");
+
+Login_001();
+
+
+_log("=================================Test Start ========================================", "Custom1");
+
+var $test1 = _testcase("Test_001", " Verify Bug #40908 Custom replicator Protection scheme edit functionality not working");
+
+$test1.start();
+
+_log("Precondition Group creation start","Custom4");
+	groupCreationwithCustomReplicator();
+_log("Precondition Group creation stop","Custom4");
+
+testEditProtectionSchemaFunctionality($bug40908sernamePR);
+
+$test1.end();
+
+_log("================================Test End ============================================", "Custom1");
+
+_log("=================================Test Start ========================================", "Custom1");
+
+var $test2 = _testcase("Test_002", " Verify Bug #43881 Workflow Snapshot widget : User Invention spelling needs to be corrected to User Intervention");
+
+$test2.start();
+
+if($BrowserLang == "N"){
+	verifyFieldOperationalDashboard();
+}
+else{
+	_log("This bug only applicable for english language","Custom4");
+}
+
+$test2.end();
+
+_log("================================Test End ============================================", "Custom1");                      
+
+
+_log("=================================Test Start ========================================", "Custom1");
+
+var $test3 = _testcase("Test_003", " Verify Bug #39940 In change password page throws error as Error t.status -- t.statusText");
+
+var $rndmName = Math.random().toString(36).substring(7).replace(/[0-9]/g,'');
+
+$test3.start();
+
+	createUserWithDifferentPriviledges($rndmName,"SUPER ADMINISTRATOR",$rndmName);
+
+$test3.end();
+
+_log("================================Test End ============================================", "Custom1");
+
+_log("=================================Test Start ========================================", "Custom1");
+
+var $test4 = _testcase("Test_004", " Verify Bug #40645 Password visible > the passwords for the subsystems in the logs");
+
+$test4.start();
+	Login_001();
+	testBug40645();
+
+$test4.end();
+
+_log("================================Test End ============================================", "Custom1");
+
+
+_log("=================================Test Start ========================================", "Custom1");
+
+var $test5 = _testcase("Test_005", " Verify Bug #38916 Message Your email client does not support HTML messages");
+
+$test5.start();
+
+	testBug38916();
+
+$test5.end();
+
+_log("================================Test End ============================================", "Custom1");
+
+_log("=================================Test Start ========================================", "Custom1");
+
+var $test6 = _testcase("Test_006", " Verify Bug #40866 Monitor/Manager->Sites page is not displayed suddenly on DRM server");
+
+$test6.start();
+
+	testBug40866();
+
+$test6.end();
+
+_log("================================Test End ============================================", "Custom1");
+
+_log("=================================Test Start ========================================", "Custom1");
+
+var $test7 = _testcase("Test_007", "Verify Bug #40039 Application Groups and Recovery Groups tabs doesn't the total AG/RG count");
+
+$test7.start();
+
+	testBug40039();
+
+$test7.end();
+
+_log("================================Test End ============================================", "Custom1");
+
+
+_log("=================================Test Start ========================================", "Custom1");
+
+var $test8 = _testcase("Test_008", "Verify Bug #41135 Export CSV is not working,Clicking on the Export CSV,jsp file missing");
+
+$test8.start();
+
+	testBug41135();
+
+$test8.end();
+
+_log("================================Test End ============================================", "Custom1");													
+
+_log("=================================Test Start ========================================", "Custom1");
+
+var $test9 = _testcase("Test_009", " Copyright IBM Corporation");
+
+$test9.start();
+
+	testBug44350();
+
+$test9.end();
+
+_log("================================Test End ============================================", "Custom1");   
+
+
+logout_pre();
+
+//pressing enter key for adobe flash player browser pop up 
+_keyDown(document.body, [13,13]);
+
+
+
+
+
+

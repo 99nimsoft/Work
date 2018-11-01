@@ -1,0 +1,3277 @@
+
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are used commonly 
+ **             for performing operation on group. 
+ ** AuthorName : Anita
+ ** Created Date : Mar2017
+ ************************************************************************/
+ 
+//var $EventSecMentioned;
+
+/**
+* Function is for Functional Group Creation  .
+*@param :  $groupName, $groupDescription, $SolutionSignature, $primaryComponents,
+*          $remoteComponents, $primaryDatasets, $remoteDatasets, $primaryProtections, $remoteProtections
+*@return : $groupCreation
+*@Author: Swati Choudhary
+*
+*/
+
+function Create_FG($groupName, $groupDescription, $SolutionSignature, $primaryComponents, $remoteComponents, $primaryDatasets, $remoteDatasets, $primaryProtections, $remoteProtections,$solsignVal) {
+	navigateToGroups();
+	var $flag;
+
+	if (_exists(_link($groupName))) {
+		$flag = 0;
+	} else {
+		$flag = 1;
+		//_setSelected(_select("createGroup"),"Recovery Group");
+		_click(_button($obj_discGroup));
+		_wait(1000);
+		//_click(_button("/Go/"));
+		_setValue(_textbox("groupName"), $groupName);
+		_setValue(_textarea("groupDescription"), $groupDescription);	
+		if($subscriber != ""){
+			_setSelected(_select("subscriberId"), $subscriber);
+		}
+		_setSelected(_select("solutionType"), $SolutionSignature);	
+		_click(_button($obj_Next1));
+		_wait(10000);
+		_click(_link($obj_ServerComp));
+		_click(_checkbox("primaryComponents", _near(_cell($primaryComponents, _under(_tableHeader($obj_prComp))))));
+		_click(_checkbox("remoteComponents", _near(_cell($remoteComponents, _under(_tableHeader($obj_remoteComp))))));
+		_click(_submit($obj_Save));
+		_wait(2000);
+		_click(_link($obj_applDataset));
+		_click(_checkbox($obj_showAll));
+		_wait(1000);
+		_setSelected(_select("primaryDatasets[1]"), $primaryDatasets);
+		_setSelected(_select("remoteDatasets[1]"), $remoteDatasets);
+		_click(_submit($obj_Save1));
+		_click(_link($obj_dataProt));
+		_wait(2000);
+		_setSelected(_select("primaryProtections"), $primaryProtections);
+		_setSelected(_select("remoteProtections"), $remoteProtections);
+		_click(_button($obj_Save1));
+		_click(_button($obj_Next1));
+		_wait(20000);
+	}
+	var $groupCreation = new java.util.Properties();
+	$groupCreation.put("flag", $flag);
+	return $groupCreation;
+} // End of groupCreation()
+
+/**
+* Function is for Moving Group From Maintenance to Manage.
+*@param :  $groupName.
+*@return : null
+*@Author: Debabrat Sahu
+*
+*/
+
+function RefeshDetails_Replication(){
+	navigateToReplication($groupName);
+_wait(1000);
+_click(_button($obj_refreshDetails));
+var $i=0;
+while($i<10){
+if(_isVisible(_button($obj_refreshDetails))){
+break;
+}
+_wait(10000);
+$i++;
+
+}
+} 
+
+/**
+* Function is for Moving Group From Maintenance to Manage.
+*@param :  $groupName.
+*@return : null
+*@Author: Anita
+*
+*/
+
+function Move_To_Manage_Group($groupName) {
+	navigateToGroups();
+	if (_exists(_link($obj_viewall))){
+		_click(_link($obj_viewall));
+	}
+	_click(_span($obj_imgwrench, _near(_link($groupName))));
+	_wait(5000);
+	//_click(_submit($obj_manageGrp));
+	//_wait(5000);
+	if(_exists(_span($obj_Managed_Degraded))){
+	_log("Group is already managed");		
+	}		
+	else{		
+		 _click(_submit($obj_manageGrp));		
+		 _wait(10000);		
+		}		
+} // End of moveToManageGroup()
+
+/**
+* Function is for Continuity Status of the Group.
+*@param :  $groupName,$cstate.
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function Change_ContinuityStatus_Group($groupName, $cstate) {
+	_wait(1000);
+	navigateToGroups();
+	if (_exists(_link($obj_viewall))){
+		_click(_link($obj_viewall));
+	}
+	_click(_span($obj_imgwrench, _near(_link($groupName))));
+	_click(_heading4($obj_changeContState));
+	_setSelected(_select($obj_smtargetState), $cstate);
+	_click(_submit($obj_Change));
+	
+}
+// End of changeContinuityStatusGroup()
+
+//End of changeContinuityStatusGroup()
+
+/**
+* Function is for Monitor Relationship Screen.
+*@param :  $groupName.
+*@return : null
+*@Author: Aditi Jain 
+*@modifiedBy : Govinda
+*/
+
+function Monitor_Relationship($groupName) {
+
+	NavigateToRGDetailsPage($groupName);
+
+	// Validation of Solution Signature
+		var $a= _getText(_heading5(/.*/, _rightOf(_heading4($groupName))));
+		var $aa =$a.split("(");
+	
+		var $b=$aa[1].split(",");
+		var $drSolutionSignature = $b[0].replace(/\-/g, "");
+
+		var $actualSolutionSignature = $drSolutionSignature.replace(/\s+/g, "").toLowerCase();
+		
+		var $expectedSolutionSignature = $SolutionSignature.replace(/\s+/g, "").toLowerCase();
+	
+		//var $drSolutionSignature = _getText(_cell(1, _near(_cell("DR Solution Signature[1]"))));
+		_assertEqual($expectedSolutionSignature, $actualSolutionSignature, "Checking DR Solution Signature from the user input and GUI showing for group");
+	
+	// Validation of Replication Details for PR
+	var $primaryService = _getText(_link(0, _near(_italic("image-replicator-white padding-r-30"))));
+	_assertEqual($sernamePR, $primaryService, "Checking Protection Scheme name from user input and GUI showing for PR");
+
+	// Splitting the strings to get the replication type for PR
+	var $replicationTypePR = _getText(_heading6(0, _near(_italic("image-replicator-white padding-r-30"))));
+
+		var $actualsystenType = $replicationTypePR.replace(/\s+/g, "");
+		
+		var $expectedsystemType = $systemTypeProtection.replace(/\s+/g, "");
+	
+   _assertEqual($expectedsystemType, $actualsystenType,"Checking System type Protection from user input and GUI showing for PR");
+
+
+	// Validation of Replication Details for DR
+	var $remoteService =  _getText(_link(0, _near(_italic("image-replicator-white padding-r-30[1]"))));
+	_assertEqual($sernameDR, $remoteService, "Checking Protection Scheme from user input and GUI for DR");
+
+	
+	// Splitting the strings to get the replication type for DR
+	var $replicationTypeDR =  _getText(_heading6(0, _near(_italic("image-replicator-white padding-r-30[1]"))));
+
+	var $actualsystenTypeDR = $replicationTypePR.replace(/\s+/g, "");
+	
+	_assertEqual($expectedsystemType,$actualsystenTypeDR , "Checking System type Protection from user input and GUI showing for DR");
+
+
+	// Validation of Data set for PR
+	var $primaryDataset = _getText(_link(0, _near(_italic("image-database-white padding-r-30[0]"))));
+	_assertExists("Primary Dataset:", $primaryDataset);
+	_assertEqual($datasetNamePR, $primaryDataset, "Checking Dataset from user input and GUI for PR");
+
+	
+	// Splitting the strings to get the Data set type for PR
+	var $datasetPR = _getText(_heading6(0, _near(_italic("image-database-white padding-r-30[0]"))));
+
+	_assertEqual($datasetType, $datasetPR, "Checking Dataset Type from user input and GUI for PR");
+
+	// Validation of Data set for DR
+	var $remoteDataset = _getText(_link(0, _near(_italic("image-database-white padding-r-30[1]"))));
+	_assertEqual($datasetNameDR, $remoteDataset, "Checking DatasetName from user input and GUI for DR");
+
+	// Splitting the strings to get the Data set type for DR
+	var $datasetDR = _getText(_heading6(0, _near(_italic("image-database-white padding-r-30[1]"))));
+
+	_assertEqual($datasetType, $datasetDR, "Checking Dataset Type from user input and GUI for DR");
+
+	// Validation of Component for PR
+	var $primaryComponent = _getText(_link(/.*/, _near(_span("left-up-arrow"))));
+	_assertEqual($compNamePR, $primaryComponent, "Checking ComponentName from user input and GUI for PR");
+
+	// Splitting the strings to get the Component type for PR
+	var $componentPR = _getText(_heading6(/.*/, _near(_span("left-up-arrow[1]"))));
+
+	_assertEqual($systemType, $componentPR, "Checking System type component from user input and GUI for PR");
+
+	// Validation of Component for DR
+	var $remoteComponent = _getText(_link(/.*/, _near(_span("left-up-arrow[1]"))));
+	_assertEqual($compNameDR, $remoteComponent, "Checking Component from user input and GUI for DR");
+
+	// Splitting the strings to get the Component type for DR
+	
+	var $componentDR =  _getText(_heading6(/.*/, _near(_span("left-up-arrow[1]"))));
+
+	_assertEqual($systemType, $componentDR, "Checking System type component from user input and GUI for DR");
+
+	
+}
+
+
+/**
+* Function is to Start NormalFULLCopy for APP_PFR Solution
+* *@param : $groupName
+*@return : null
+*@Author: Govinda Mengji
+*@Modified by: Padmavathi
+*/
+
+function Execute_NFC( $groupName, $workflowType ) {
+	
+	
+	if($systemTypeDataset != "Sybase"){
+		publishBCO( $groupName, $workflowType );
+	} 
+	
+	
+	_wait(5000);
+	_call(top.location.reload()); // reload via Javascript
+	navigateToGroups();/*
+	var $continuityStatus = _getText(_cell(1, _near(_link($groupName))));
+	var $i = 1;
+	// Looping till Group Continuity state become DR Sync is not started
+	while ( $i < 2 ) {
+
+		if ( $continuityStatus == "DR Init is not started" ) {
+			break;
+		} else {
+			_wait( 30000 );
+			navigateToGroups();
+			$continuityStatus = _getText(_cell(1, _near(_link($groupName))));
+		}
+		$i++ ;
+	} // while ended*/
+	//NavigateToRGDetailsPage();
+	_call(top.location.reload());
+	navigateToManageRecovery($groupName);
+	//_click(_link($obj_vewAllWorkFlows));
+	
+	workflowExecution( $workflowType );
+	_wait( 30000 );
+	if ( _exists( _link($obj_EXECUTING, _near(_link($workflowType))))) {
+		_log( "NormalFullCopy workflow is inprogress" );
+	} else {
+		_log( "NormalFullCopy workflow Execution is not started successfully" );
+	}
+} // End OF Execute_NFC()
+
+/**
+* Function is to Initiate NormalCopy from Manage-Groups List View->Manage DR Solution screen.
+*@param :  null.
+*@return : null
+*@Author: Swati Choudhary
+*@Modified by: Padmavathi
+*/
+
+function Execute_NC( $groupName, $workflowType ) {
+	
+	
+	if($systemTypeDataset != "Sybase"){
+		publishBCO( $groupName, $obj_NormalCopy );
+	} 
+	_call(top.location.reload()); // reload via Javascript
+	_wait( 5000 );
+	navigateToGroups();/*
+	var $continuityStatus = _getText( _cell( 1, _near( _link( $groupName ) ) ) );
+	var $i = 1;
+	// Looping till Group Continuity state become DR Sync is not started
+	while ( $i < 2 ) {
+		_log( $i );
+		if ( $continuityStatus == "DR Sync is not started" || $continuityStatus == "DR Sync is Aborted" || $continuityStatus == "DR Sync In Progress" ) {
+			break;
+		} else {
+			_wait( 30000 );
+			navigateToGroups();
+			$continuityStatus = _getText( _cell( 1, _near( _link( $groupName ) ) ) );
+		}
+		$i++ ;
+	} // while ended*/
+	//NavigateToRGDetailsPage($groupName);
+	_call(top.location.reload());
+	if (_exists(_link($obj_viewall))){
+		_click(_link($obj_viewall));
+	}
+	navigateToManageRecovery($groupName);
+	//_click(_link($obj_vewAllWorkFlows));
+	
+	
+	workflowExecution( $obj_NormalCopy );
+	_wait( 30000 );
+	if ( _exists( _link( $obj_EXECUTING, _near( _link( $obj_NormalCopy ) ) ) ) ) {
+		_log( "NormalCopy workflow is inprogress" );
+	} else {
+		_log( "NormalCopy workflow Execution is not started successfully" );
+	}
+} // End OF Execute_NC()
+
+
+/**
+* Function is to Verify Normal Copy /reverse Normal Copy status.
+*@param :  $groupName,$WFName
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+// Description:
+function BCO_Exceution_Status($groupName, $workflowType) {
+	//NavigateToRGDetailsPage();
+	_call(top.location.reload()); // reload via Javascript
+	navigateToManageRecovery($groupName);
+	_wait(10000);
+	var $i=0;
+	var $sec = 0;
+	while ($i < 5){
+		_click(_link($obj_vewAllWorkFlows));
+		if(_isVisible(_link($obj_EXECUTING, _near(_link($workflowType))))){
+			$sec=$sec+40;
+			_log("This workflow Executing for last " + $sec + " Secs");
+		} 
+		if(_isVisible(_link($obj_AWAITINGINPUT, _near(_link($workflowType))))){
+			_click(_link($obj_AWAITINGINPUT, _near(_link($workflowType))));
+			_click(_button($obj_AwaitingInput));
+			
+			if(_exists(_paragraph("/SFR-WATCH-DIR-FAILED/"))){
+				_log("Ignoring the SFR watch DIR due space issue ...continuing the test");
+				_click(_submit($ContAsSuccess));
+				_setValue(_textarea("reasonname"), "IgnoreContinue");
+				_click(_button("Ok"));
+				_wait(3000);
+			}
+			
+			if(_exists(_paragraph("/PAN-TSQL-0044/"))){
+				_log("Ignoring the Precheck ral");
+				_click(_submit($ConAsFailure));
+				_setValue(_textarea("reasonname"), "IgnoreContinue");
+				_click(_button("Ok"));
+				_wait(3000);
+			}
+			
+			/*if (_exists(_submit($obj_RetryUserIPbtn))) {
+				_click(_submit($obj_RetryUserIPbtn));
+				_setValue(_textarea("reasonname"), "RETRY");
+				_click(_button("Ok"));
+				_wait(3000);
+			}*/
+			
+		} else if(_isVisible(_strong($obj_SUCCESS, _near(_link($workflowType))))){
+			_log($workflowType + " workflow executed succesfully");
+			break;
+		}
+	 _wait(30000);
+	// NavigateToRGDetailsPage();
+	 _call(top.location.reload()); // reload via Javascript
+	 navigateToManageRecovery($groupName);
+	 $i++;
+	}	
+}// End of BCO_Exceution_Status()
+
+
+/**
+* Function is to Verify Normal Copy Execution status.
+*@param :  $groupName
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function NC_Execution_Status($groupName) {
+	NavigateToRGDetailsPage($groupName);
+	BCO_Exceution_Status($groupName, $obj_NormalCopy);
+} // end of NC_Execution_Status()
+
+/**
+* Function is to Verify Reverse Normal Copy Execution status.
+*@param :  $groupName
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function RNC_Execution_Status($groupName) {
+
+	NavigateToRGDetailsPage($groupName);
+	BCO_Exceution_Status($groupName, $obj_ReverseNormalCopy);
+} // end of RNC_Execution_Status()
+
+/**
+* Function is to Stop Normal Copy from Manage-Groups List View ->Manage DR Solution screen.
+*@param :  $groupName
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function Stop_NC($groupName,$workflowType) {
+	
+	Stop_BCO_Execution($groupName,$obj_NormalCopy);
+	
+} // End of Stop_Reverse_Normal_Copy()
+
+/**
+* Function is to Initiate reverse normal from Manage-Groups List View ->Manage DR Solution screen
+*@param :  $groupName
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function Execute_Reverse_Normal_Copy($groupName) {
+	
+	if($systemTypeDataset != "Sybase"){
+		publishBCO($groupName, $obj_ReverseNormalCopy);
+	} 
+	_wait(5000);
+	navigateToGroups();	
+	navigateToManageRecovery($groupName);
+	workflowExecution($obj_ReverseNormalCopy);
+	
+	_wait(30000);
+	if (_exists(_link($obj_EXECUTING, _near(_link($obj_ReverseNormalCopy))))) {
+		_log("ReverseNormalCopy workflow is inprogress");
+	} else {
+		_log("ReverseNormalCopy workflow Execution is not started successfully");
+	}		
+}
+
+/**
+* Function is to Stop reverse normal copy.
+*@param :  $groupName
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function Stop_Reverse_Normal_Copy($groupName) {
+	
+	Stop_BCO_Execution($groupName,$obj_ReverseNormalCopy);
+	
+} // End of Stop_Reverse_Normal_Copy()
+
+
+function Stop_BCO_Execution($groupName,$workflowType){
+	//NavigateToRGDetailsPage();
+	navigateToManageRecovery($groupName);
+	//_wait(10000);
+			if(_isVisible(_link($obj_EXECUTING, _near(_link($workflowType))))){
+	_click(_link($obj_EXECUTING));
+	_wait(10000);
+	//_click(_button("Awaiting Input"));
+	//_click(_submit("Continue as success=CONTINUE_AS_SUCCESS userInputButton btn btn-primary btn-xs btn btn-info"));
+	_click(_link($obj_Abort));
+	_setValue(_textarea($obj_textReason), $obj_xyz);
+	_click(_button($obj_ReasonAbort));
+	NavigateToRGDetailsPage($groupName);
+	var $abc=_getText(_strong($obj_ABORTED, _near(_link($workflowType))));
+	_log($abc);
+	_assertEqual($obj_ABORTED, _getText(_strong($obj_ABORTED, _near(_link($workflowType)))));
+	}
+	
+	else if(_isVisible(_link($obj_AWAITINGINPUT, _near(_link($workflowType))))){
+		 _wait(10000);
+		_click(_link($obj_AWAITINGINPUT, _near(_link($workflowType))));
+		_wait(5000);
+		 if(_assertExists(_button($obj_AwaitingInput))){
+	            _click(_button($obj_AwaitingInput));
+	           // _wait(10000);
+	                  _click(_submit($obj_QuitUserIPbtn));
+	                  _setValue(_textarea("reasonname"), "Aborting Execution");
+	                  _click(_button("Ok"));
+	                  _wait(3000);
+	                  NavigateToRGDetailsPage($groupName);
+	                  _wait(10000,_isVisible(_strong($obj_ABORTED, _near(_link($workflowType)))));
+	                  var $abc=_getText(_strong($obj_ABORTED, _near(_link($workflowType))));
+	              	_log($abc);
+	              	_assertEqual($obj_ABORTED, _getText(_strong($obj_ABORTED, _near(_link($workflowType)))));
+	              }
+	           }
+	else{
+		_log("No Execution happened");
+	}
+	
+	
+}
+
+
+
+
+/**
+* Function is to Import NC Work-flow for all Group States
+*@param :  null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+var $WFType;
+function Import_WF_NC() {
+	var $fileNormalCopy = $l_Sahi_UserData +"\\"+ $WFPath + "\\" + $fileNC;
+	_log($fileNormalCopy);
+	Import_WF($groupName, $fileNormalCopy, $obj_Continuity1, $obj_NormalCopy);
+} // End of Import_WF_NC()
+
+/**
+* Function is to Import SO Work-flow for all Group States
+*@param :  null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+function Import_WF_SO() {
+	var $fileSwitchOver = $l_Sahi_UserData +"\\"+ $WFPath + "\\"+ $fileSO;
+	_log($fileSwitchOver);
+	Import_WF($groupName, $fileSwitchOver, $obj_DrillsDisc, $obj_Switchover);
+} // End of Import_WF_SO()
+
+/**
+* Function is to Import RNC Work-flow for all Group States
+*@param :  null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+function Import_WF_RNC() {
+	var $fileReverseNormalCopy = $l_Sahi_UserData +"\\" +$WFPath + "\\" + $fileRNC;
+	_log($fileReverseNormalCopy);
+	Import_WF($groupName, $fileReverseNormalCopy, $obj_Continuity1, $obj_ReverseNormalCopy);
+} // End of Import_WF_RNC()
+
+/**
+* Function is to Import SB Work-flow for all Group States
+*@param :  null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+function Import_WF_SB() {
+	var $fileSwitchBack = $l_Sahi_UserData +"\\"+ $WFPath + "\\" + $fileSB;
+	Import_WF($groupName, $fileSwitchBack, $obj_DrillsDisc, $obj_Switchback);
+} // End of Import_WF_SB()
+
+/**
+* Function is to Import FO Work-flow for all Group States
+*@param :  null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+function Import_WF_FO() {
+
+	var $fileFailOver = $l_Sahi_UserData + "\\"+ $WFPath + '\\' + $fileFO;
+	Import_WF($groupName, $fileFailOver, $obj_Continuity1, $obj_Failover);
+} // End of Import_WF_FO()
+
+
+
+/**
+* Function is to Import PFR Fileset Work-flow for all Group States
+*@param :  null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+function Import_WF_IntegrityCheck() {
+	var $fileIntegrityCheck = $l_Sahi_UserData + "\\"+ $WFPath +"\\" + $filePFRral;
+	Import_WF($groupName, $fileIntegrityCheck, $obj_DrillsDisc, $obj_IntegrityCheck);
+} // End of Import_WF_IntegrityCheck()
+
+/**
+* Function is to Import Pre RPO Work-flow for all Group States
+*@param :  null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+function Import_WF_PreRPO() {
+	var $filewfPreRPO = $l_Sahi_UserData + $WFPath + '\\' + $filePreRPO;
+	navigateToGroups();
+	_click(_link($groupName));
+	_click(_link($obj_GroupConfigation));
+	_click(_link($obj_RPORTO));
+	_click(_link("Configure Pre App RPO Computation Workflow"));
+
+	   _wait(1000);
+	    _log($SAHI_HOME+"utility\\import.exe"+" "+$filewfPreRPO);
+		_execute($SAHI_HOME+"utility\\import.exe"+" "+$filewfPreRPO);
+		_wait(10000);
+		//_click(_link($obj_Test));
+		//_click(_link("Go back"));
+
+} // End of Import_WF_PreRPO()
+
+
+/**
+* Function is to Import Pre RPO Work-flow for all Group States
+*@param :  null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+function Import_WF_PostRPO() {
+	var $filewfPostRPO = $l_Sahi_UserData + $WFPath + '\\' + $filePostRPO;
+	navigateToGroups();
+	_click(_link($groupName));
+	_click(_link($obj_GroupConfigation));
+	_click(_link($obj_RPORTO));
+	_click(_link("Configure Post App RPO Computation Workflow"));
+
+	   _wait(1000);
+	    _log($SAHI_HOME+"utility\\import.exe"+" "+$filewfPostRPO);
+		_execute($SAHI_HOME+"utility\\import.exe"+" "+$filewfPostRPO);
+		_wait(10000);
+		_click(_link($obj_SaveNow));
+		_click(_link($obj_Nextbtn));
+		_click(_div($obj_PublishWorkflow));
+		//_click(_link("Go back"));
+
+}
+// End of Import_WF_PostRPO()
+
+/**
+* Function is to Import Pre RTO Work-flow for all Group States
+*@param :  null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+function Import_WF_PreRTO() {
+	var $filewfPreRTO = $l_Sahi_UserData + $WFPath + '\\' + $filePreRTO;
+	navigateToGroups();
+	if (_exists(_link($obj_viewall))){
+		_click(_link($obj_viewall));
+	}
+	_click(_link($groupName));
+	_click(_link($obj_GroupConfigation));
+	_click(_link($obj_RPORTO));
+	_click(_checkbox($obj_PreRPOConfig));
+	_click(_link("Configure Pre RTO Computation Workflow"));
+
+	   _wait(1000);
+	    _log($SAHI_HOME+"utility\\import.exe"+" "+$file);
+		_execute($SAHI_HOME+"utility\\import.exe"+" "+$file);
+		_wait(10000);
+		_click(_span($obj_SaveNow));
+		_click(_link($obj_Publish));
+		_click(_div($obj_PublishWorkflow));
+		_click(_link($obj_Test));
+		//_click(_link("Go back"));
+
+} // End of Import_WF_PreRPO()
+
+
+/**
+* Function is to Import Post RTO Work-flow for all Group States
+*@param :  null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+function Import_WF_PostRTO() {
+	var $filewfPostRPO = $l_Sahi_UserData + "\\"+ $WFPath + "\\" + $filePostRTO;
+	navigateToGroups();
+	if (_exists(_link($obj_viewall))){
+		_click(_link($obj_viewall));
+	}
+	_click(_link($groupName));
+	_click(_link($obj_GroupConfigation));
+	_click(_link($obj_RPORTO));
+	_click(_checkbox($obj_PreRPOConfig));
+	_click(_link($obj_PostRPOConfig));
+	   _wait(1000);
+	    _log($SAHI_HOME+"utility\\import.exe"+" "+$file);
+		_execute($SAHI_HOME+"utility\\import.exe"+" "+$file);
+		_wait(10000);
+		_click(_span($obj_SaveNow));
+		_click(_link($obj_Publish));
+		_click(_div($obj_PublishWorkflow));
+		_click(_link($obj_Test));
+		//_click(_link("Go back"));
+
+} // End of Import_WF_PostRTO()
+
+
+
+/**
+* Function is Common for Importing Work-flow for all Group States and is called whereever Work-flow is imported.
+*@param : $groupName, $file, $linkName, $WFType
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+function Import_WF($groupName, $file, $linkName, $WFType) {
+	_wait(5000);
+	navigateToGroups();
+	_click(_link($groupName));
+	_click(_link($obj_GroupConfigation));
+	_click(_link($linkName));
+	_click(_link($WFType));
+	_click(_span("glyphIon"));
+	_click(_link("workflowTabLink"));
+	_click(_button("importWorkflowBtn"));
+	//_click(_paragraph("addbtnb"));
+    _wait(2000);
+    
+    $file = $file.replace(/\//g, "\\");
+    _log($file + "workflow file path");
+    
+    if (_isChrome()){
+    	_log($SAHI_HOME+"utility\\importChrome.exe"+" "+$file);
+    	_execute($SAHI_HOME+"utility\\importChrome.exe"+" "+$file);
+	}else{
+		_log($SAHI_HOME+"utility\\import.exe"+" "+$file);
+		_execute($SAHI_HOME+"utility\\import.exe"+" "+$file);
+	}
+	_wait(20000);
+	_click(_link("saveLink"));
+	_click(_link($obj_Nextbtn));
+	_click(_div($obj_PublishWorkflow));
+	//_click(_link("Go back"));
+	
+	
+} // End of Import_WF();
+
+/**
+* Function is to verify test workflow execution status verification from Tests List View .
+*@param : $groupName, $WFName
+*@return : null
+*@Author: Swati Choudhary
+*@Modified By:Team
+*
+*/
+function Waitfor_TestWF_Completion($groupName, $WFName) {
+	var $i = 0;
+	// Looping till SO execution Complete
+	while ($i < 30) {
+		_log($i);
+		_wait(20000);
+		navigateDrillListing($groupName);
+		// updated --anita
+	  	if(_exists(_link("/.*/", _rightOf(_div("/" + $WFName +  "/")), _under(_div($obj_ExecutionStatus))))){ 
+			var $testStatus = _getText(_link("/.*/", _rightOf(_div("/" + $WFName +  "/")), _under(_div($obj_ExecutionStatus))));
+			_log($testStatus);
+			_assertExists("Test Status :", $testStatus);	
+		} 	else {
+			var $testStatus = _getText(_span("/.*/", _rightOf(_div("/" + $WFName +  "/")), _under(_div($obj_ExecutionStatus)))); 			
+			_assertExists("Test Status :", $testStatus);
+		}
+		
+		if ($testStatus == $obj_Failed) {
+			_wait(1000);
+			_fail($WFName, "workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+		} else if ($testStatus == $obj_AWAITINGINPUT) {
+			_click(_link(1, _near(_link($WFName))));
+			if($groupName =="MYSQL_SR_Remote_drm72"){
+				   _log("stop slave and start slave at DR");
+				}
+			_click(_button($obj_AwaitingInput));
+			
+			if(_exists(_paragraph("/SFR-WATCH-DIR-FAILED: Error while registering watch directory/"))){
+				_log("Ignoring the SFR watch DIR due space issue ...continuing the test");
+				_click(_submit("Continue as success=CONTINUE_AS_SUCCESS userInputButton btn btn-primary btn-xs btn btn-info"));
+				_setValue(_textarea("reasonname"), "CONTINUE_AS_SUCCESS");
+				_click(_button("Ok"));
+			}
+			
+			if (_exists(_submit($obj_OKUserInput))) {				
+				_click(_submit($obj_OKUserInput));	
+				_setValue(_textarea("reasonname"), "OK=true");
+				_click(_button("Ok"));
+				//_call(window.history.back());
+			} 
+			
+			if(_exists(_paragraph("/PAN-COSA-1011/"))){
+				_log("Ignoring the PAN-COSA-1011: Execution of TCL script CreateRecoveryConfig.tcl failed issue ...continuing the test");
+				_click(_submit("Continue as success=CONTINUE_AS_SUCCESS userInputButton btn btn-primary btn-xs btn btn-info"));
+				_setValue(_textarea("reasonname"), "CONTINUE_AS_SUCCESS");
+				_click(_button("Ok"));
+			}
+			
+			else if (_exists(_submit($obj_ContinueUserInput)) && _exists(_submit($obj_RetryUserIPbtn))){
+				_click(_submit($obj_ContinueUserInput));		
+				//_call(window.history.back());
+			}
+			
+			else if (_exists(_submit($obj_RetryUserIPbtn))) {
+			_click(_submit($obj_RetryUserIPbtn));
+			_setValue(_textarea("reasonname"), "Retry");
+			_click(_button("Ok"));
+			//_call(window.history.back());
+			}
+			else if (_exists(_submit($obj_RetryUserIPbtn))) {
+			_click(_submit($obj_RetryUserIPbtn));
+			//_call(window.history.back());
+			}
+					
+			else if (_exists(_submit($obj_ContinueUserInput))) {
+				_click(_submit($obj_ContinueUserInput));
+				_setValue(_textarea("reasonname"), "Continuw");
+				_click(_button("Ok"));
+				//_call(window.history.back());				
+			}
+		}  else if ($testStatus == $obj_SUCCESS) {
+		_assertExists($WFName, "workflow executed succesfully.");
+		break;		
+	}
+	$i++;
+}
+	navigateDrillListing($groupName);
+	if(_exists(_link("/.*/", _rightOf(_div("/" + $WFName +  "/")), _under(_div($obj_ExecutionStatus))))){ 
+		var $testStatus = _getText(_link("/.*/", _rightOf(_div("/" + $WFName +  "/")), _under(_div($obj_ExecutionStatus))));
+		_log($testStatus);
+		if ($testStatus == $obj_AWAITINGINPUT) {
+			_click(_link(1, _near(_link($WFName))));
+			_click(_button($obj_AwaitingInput));
+			_focusWindow();
+			_takeScreenShot(); 
+		}
+		_assertExists("Test Status :", $testStatus);	
+	} else {
+		var $testStatus = _getText(_span("/.*/", _rightOf(_div("/" + $WFName +  "/")), _under(_div($obj_ExecutionStatus)))); 			
+		_assertExists("Test Status :", $testStatus);
+	}            
+	_assertExists("Test Status :", $testStatus);
+	if ($testStatus == $obj_AWAITINGINPUT) {
+		_fail("Failed because of waiting for user input");
+	}	else if ($testStatus == $obj_SUCCESS) {
+		_assertExists($WFName, "workflow executed succesfully.");		
+	}else if ($testStatus == $obj_EXECUTING) {
+		_assertExists($WFName, "workflow executed succesfully.");
+		_fail("Failed because of executing for long time");
+ }
+
+}
+
+
+/**
+* Function is to Start Switch over from Tests List View .
+*@param : $groupName
+*@return : null
+*@Author: Swati Choudhary
+*
+*
+*/
+function Start_SO($groupName){
+	publishDrill($groupName,$obj_Switchover);
+	navigateToGroups();
+	/*
+		var $continuity1 = _getText(_cell(1, _near(_cell($groupName), _under(_tableHeader("Status")))));
+
+	 _log($continuity1);
+	 
+		// Looping till Continuity status is "DR Ready Synchronization stopped";
+		var $i = 0;
+		// Looping till SO execution Complete
+		while ($i < 2) {
+			_log($i);
+			if (($continuity1 == "DR Sync is Aborted") || ($continuity1 == "DR Sync In Progress") || ($continuity1 == "DR Sync Paused") || ($continuity1 == "DR Sync is not started")) {
+				break;
+			} else {
+				_wait(30000);
+				navigateToGroups();
+				var $continuity = _getText(_cell(1, _near(_cell($groupName), _under(_tableHeader("Status")))));
+				//_assertExists("continuity", $continuity);	
+			}
+			$i++;
+		} // while ended
+		*/
+		navigateDrillListing($groupName);
+		_click(_image($obj_ExecuteWorkflow, _near(_link($obj_Switchover))));
+		_click(_link($obj_Execute));
+
+		var $i = 0;
+		// Looping till Stop Test button appears
+		while ($i < 5) {
+			_log($i);
+			
+		if (_exists(_link($obj_EXECUTING))) {
+			_log("Switchover Started");
+				
+					break;
+				} else {
+				    _log("SO not started.");
+				    //awaitingInput();
+				}
+				$i = $i + 1;
+				_wait(5000);
+				
+			} // End of while loop
+		
+			_log("Switch over already Inprogress");
+		_assertExists((_link($obj_EXECUTING)));
+	
+		navigateDrillExecutingPage();			
+		var $workflowType=_getText(_link(1, _near(_link($groupName))));
+	
+		_assertEqual($obj_Switchover, $workflowType, "Validating workflow Type");
+
+}//End_of Start SO
+
+
+/**
+* Function is for Switchover execution status verification from Tests List View .
+*@param : $groupName
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function SO_Execution_Status($groupName) {
+	SO_steps($groupName);
+	Waitfor_TestWF_Completion($groupName, $obj_Switchover);
+
+} // end of SO_Execution_Status()
+/**
+* Function is for common steps for SO .
+*@param : $groupName
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+function SO_steps($groupName){
+	navigateDrillListing($groupName);
+
+
+}
+
+/**
+* Function is for MSSQL mirroring Switchover execution status verification from Tests List View .
+*@param : $groupName
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+function Mirroring_SO_Execution_Status($groupName){
+	SO_steps($groupName);
+	Mirroring_Waitfor_TestWF_Completion($groupName,$obj_Switchover);
+}
+
+/**
+* Function is for MSSQL mirroring waiting for Test Workflow to complete .
+*@param : $groupName,$WFName
+*@return : null
+*@Author: Aditi Jain
+*@Modified By:Debabrat Sahu
+*
+*/
+function Mirroring_Waitfor_TestWF_Completion($groupName,$WFName){
+	var $i = 0;
+	// Looping till SO execution Complete
+	while ($i < 20) {
+		_log($i);
+		_wait(20000);
+		navigateDrillListing($groupName);
+		
+		if(_exists(_link("/.*/", _rightOf(_div("/" + $WFName +  "/")), _under(_div($obj_ExecutionStatus))))){ 
+			var $testStatus = _getText(_link("/.*/", _rightOf(_div("/" + $WFName +  "/")), _under(_div($obj_ExecutionStatus))));
+			_log($testStatus);
+			_assertExists("Test Status :", $testStatus);	
+		} else {
+			var $testStatus = _getText(_span("/.*/", _rightOf(_div("/" + $WFName +  "/")), _under(_div($obj_ExecutionStatus)))); 			
+			_assertExists("Test Status :", $testStatus);
+		}
+		if ($testStatus == $obj_Failed) {	
+			_wait(1000);
+			_fail($WFName, "workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+			
+		} else if ($testStatus == $obj_AWAITINGINPUT) {
+			_click(_link(1, _near(_link($WFName))));
+			
+				_click(_button($obj_AwaitingInput));
+				
+				if (_exists(_submit($obj_OKUserInput))) {
+					_click(_submit($obj_OKUserInput));
+					_setValue(_textarea("reasonname"), "OK true");
+					_click(_button("Ok"));
+					_wait(3000);
+					
+				} else if(_exists(_paragraph("/PAN-DSQL-0099: Verify Mirror Role Failed.*/")))
+					     
+					{
+					var $command1 = "NET STOP \"Panaces Agent For MS SQL Server\"";	
+					Event_Action($ipPR,$remoteUserNameValPR,$remotePwdValPR,$command1);
+					//_wait(5000);
+					var $command2 = "NET START \"Panaces Agent For MS SQL Server\"";	
+					Event_Action($ipPR,$remoteUserNameValPR,$remotePwdValPR,$command2);
+					//_wait(5000);
+					var $command3 = "NET STOP \"Panaces Agent For MS SQL Server\"";		
+					Event_Action($ipDR,$remoteUserNameValDR,$remotePwdValDR,$command3);
+					_wait(5000);
+					var $command4 = "NET START \"Panaces Agent For MS SQL Server\"";	
+					Event_Action($ipDR,$remoteUserNameValDR,$remotePwdValDR,$command4);
+					_wait(5000);
+				
+					if(_exists(_submit($obj_RetryUserIPbtn))) {
+					_click(_submit($obj_RetryUserIPbtn));
+					}
+					
+					}
+				else{
+					_fail("Awaiting input check backend setup");
+					}
+		}
+		else if ($testStatus == $obj_EXECUTING) {
+			_wait(10000);
+		} else if ($testStatus == $obj_SUCCESS) {
+			_assertExists($WFName, "workflow executed succesfully.");
+			break;
+		}
+		$i = $i + 1;
+
+	}// End of while loop
+	navigateDrillListing($groupName);
+	if(_exists(_link("/.*/", _rightOf(_div("/" + $WFName +  "/")), _under(_div($obj_ExecutionStatus))))){ 
+		var $testStatus = _getText(_link("/.*/", _rightOf(_div("/" + $WFName +  "/")), _under(_div($obj_ExecutionStatus))));
+		_log($testStatus);
+		if ($testStatus == $obj_AWAITINGINPUT) {
+			_click(_link(1, _near(_link($WFName))));
+			_click(_button($obj_AwaitingInput));
+			_focusWindow();
+			_takeScreenShot(); 
+		}
+		_assertExists("Test Status :", $testStatus);	
+	} else {
+		var $testStatus = _getText(_span("/.*/", _rightOf(_div("/" + $WFName +  "/")), _under(_div($obj_ExecutionStatus)))); 			
+		_assertExists("Test Status :", $testStatus);
+	}            
+	_assertExists("Test Status :", $testStatus);
+	if ($testStatus == $obj_AWAITINGINPUT) {
+		_fail("Failed because of waiting for user input");
+	}	else if ($testStatus == $obj_SUCCESS) {
+		_assertExists($WFName, "workflow executed succesfully.");		
+	}else if ($testStatus == $obj_EXECUTING) {
+		_assertExists($WFName, "workflow executed succesfully.");
+		_fail("Failed because of executing for long time");
+ }
+
+}// End of Waitfor_TestWF_Completion()	
+
+/**
+* Function is to Initiate switch back from Tests List View .
+*@param : $groupName
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function Start_SB($groupName) {
+	publishDrill($groupName,$obj_Switchback);
+	
+	navigateToGroups();
+	navigateDrillListing($groupName);
+	
+	_click(_image($obj_ExecuteWorkflow, _near(_link($obj_Switchback))));
+	_click(_link($obj_Execute));
+	
+	_wait(1000);
+	// _wait(5000);
+	var $i = 0;
+	// Looping till Stop Test button appears
+	while ($i < 10) {
+		_log($i);
+		
+	if (_exists(_span($obj_EXECUTING))) {
+	_log("Switchback Started");
+	
+		break;
+	} else {
+	    _log("SB not started.");
+	}
+	$i = $i + 1;
+	_wait(5000);
+    } // End of while loop
+
+	_log("SwitchBack already Inprogress");
+	_assertExists((_span($obj_EXECUTING)));
+	_wait(2000);
+
+	navigateDrillExecutingPage();
+	var $workflowType= _getText(_link(1, _near(_link($groupName))));
+
+	_assertEqual($obj_Switchback, $workflowType, "Validating workflow Type");
+} // End of Start_SB ()
+
+/**
+* Function is for Switchback status verification from Tests List View .
+*@param : $groupName
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function SB_Execution_Status($groupName) {
+	//SB_steps($groupName);
+	Waitfor_TestWF_Completion($groupName, $obj_Switchback);
+
+}// End of SB_Execution_Status
+
+
+/**
+* Function is for common steps for SB .
+*@param : $groupName
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+function SB_steps($groupName){
+	//_click(_link("Drill"));
+	//_click(_link("Summary"));
+	//_click(_link($groupName));
+	
+	navigateDrillListing($groupName);
+}
+
+/**
+* Function is for Switchback status verification in mssql mirroring from Tests List View .
+*@param : $groupName
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+
+function Mirroring_SB_Execution_Status($groupName) {
+	SB_steps($groupName);
+	Mirroring_Waitfor_TestWF_Completion($groupName,$obj_Switchback);
+
+}
+/**
+* Function is to verify the Continuity Status Before NC.
+*@param : null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function Verify_Continuitystatus_Before_NC() {
+	Verify_Continuity_Status($groupName, "DR Sync is not started");
+}
+
+/**
+* Function is to verify the Continuity Status during NC.
+*@param : null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function Verify_Continuitystatus_In_NC() {
+	Verify_Continuity_Status($groupName, "DR Sync In Progress");
+}
+
+/**
+* Function is to verify the Continuity Status after Stop NC .
+*@param : null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function Verify_Continuitystatus_Stop_NC() {
+	Verify_Continuity_Status($groupName, "DR Ready Synchronization stopped");
+}
+
+/**
+* Function is to verify the Continuity Status during SO WF execution .
+*@param : null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function Verify_Continuitystatus_In_SO() {
+	Verify_Continuity_Status($groupName, "Switchover In Progress");
+}
+
+
+/**
+* Function is to verify the Continuity Status after SO WF execution once SO stopped .
+*@param : null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function Verify_Continuitystatus_After_SO() {
+	Verify_Continuity_Status($groupName, "DR Resync is Aborted");
+}
+
+/**
+* Function is to verify the Continuity Status during RNC execution.
+*@param : null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function Verify_Continuitystatus_In_RNC() {
+	Verify_Continuity_Status($groupName, "DR Active Reverse synchronization in progress");
+}
+
+/**
+* Function is to verify the Continuity Status after stopping RNC.
+*@param : null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function Verify_Continuitystatus_Stop_RNC() {
+	Verify_Continuity_Status($groupName, "DR Resync is Aborted");
+}
+
+/**
+* Function is to verify the Continuity Status during SB WF execution.
+*@param : null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function Verify_Continuitystatus_In_SB() {
+	Verify_Continuity_Status($groupName, "Switchback In Progress");
+}
+
+/**
+* Function is to verify the Continuity Status after SB WF execution once SB stopped.
+*@param : null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function Verify_Continuitystatus_After_SB() {
+	Verify_Continuity_Status($groupName, "DR Ready Synchronization stopped");
+}
+
+/**
+* Function is to verify the Continuity Status during FO WF execution.
+*@param : null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function Verify_Continuitystatus_In_FO() {
+	Verify_Continuity_Status($groupName, "DR Active");
+}
+
+/**
+* Function is to verify the Continuity Status after FO WF execution once FO stopped.
+*@param : null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function Verify_Continuitystatus_After_FO() {
+	Verify_Continuity_Status($groupName, "DR Active");
+}
+
+/**
+* Function is to verify the Continuity Status.
+*@param :$groupName, $continuityStatus
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+function Verify_Continuity_Status($groupName, $continuityStatus) {
+	_wait(5000);
+	navigateToGroups();
+	_log("This feature is removed");
+	/*
+	var $continuity = _getText(_cell(1, _near(_cell($groupName), _under(_tableHeader("Status")))));
+	_log($continuity);	
+	_assertEqual($continuityStatus, $continuity, "Validating Continuity status");	
+	*/
+}
+
+/**
+* Function is to Start Fail over work flow execution.
+*@param :$groupName
+*@return : null
+*@Author: Swati Choudhary
+*@Modified by: Padmavathi
+*/
+
+function Start_FO( $groupName, $workflowType ) {
+	publishBCO( $groupName, $workflowType );
+	_wait( 5000 );
+	navigateToGroups();/*
+	var $continuityStatus = _getText( _cell( 1, _near( _link( $groupName ) ) ) );
+	var $i = 1;
+	while ( $i < 20 ) {
+		_log( $i );
+		if ( $continuityStatus == "DR Sync is Aborted"|| $continuityStatus == "DR Sync is not started" ) {
+			break;
+		} else {
+			_wait( 30000 );
+			navigateToGroups();
+			$continuityStatus = _getText( _cell( 1, _near( _link( $groupName ) ) ) );
+		}
+		$i++ ;
+	} // while ended*/
+	NavigateToRGDetailsPage($groupName);
+	workflowExecution( $workflowType );
+	_wait( 30000 );
+	if ( _exists( _link( $obj_EXECUTING, _near( _link( $workflowType ) ) ) ) ) {
+		_log( "Failover workflow is inprogress" );
+	} else {
+		_log( "Failover workflow Execution is not started successfully" );
+	}
+} // End OF Start_FO()
+
+
+
+/**
+* Function is to Verify Failover execution Status.
+*@param :$groupName
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function FO_Execution_Status($groupName) {
+	NavigateToRGDetailsPage($groupName);
+	BCO_Exceution_Status($groupName, $obj_Failover);
+} // End of FO_Execution
+
+/**
+* Function is to Verify Protection Scheme Satus From GUI at PR.
+*@param :null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function Get_Protectionscheme_Status_Gui_PR() {
+	Get_Protectionscheme_Status_Gui($sernamePR);
+}
+
+/**
+* Function is to Verify Protection Scheme Satus From GUI at DR.
+*@param :null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+function Get_Protectionscheme_Status_Gui_DR() {
+	Get_Protectionscheme_Status_Gui($sernameDR);
+}
+
+/**
+* Function is to Verify Protection Scheme Satus From GUI.
+*@param :$sername
+*@return : $protectionSchemeStatusGui
+*@Author: Swati Choudhary
+*
+*/
+function Get_Protectionscheme_Status_Gui($sername) {
+	navigateToDiscovery();
+	_click(_link($obj_subsystems));
+	_click(_link($ProtectionSchemes));
+
+	
+	if($BrowserLang == "Y-JA" || $BrowserLang == "Y-JEN"){
+		var $status = _getText(_cell(5, _near(_cell($sername), _under(_tableHeader($obj_Status)))));
+		if($status=="アクティブ"){
+			$status = "ACTIVE";
+		}
+	}
+	else{
+		var $status = _getText(_cell(5, _near(_cell($sername), _under(_tableHeader($obj_Status)))));
+	}
+	_assertExists("Protection Schemes in GUI", $status);
+	//var $protectionSchemeStatusGui = new java.util.Properties();
+	//$protectionSchemeStatusGui.put("status", $status);
+    //return $protectionSchemeStatusGui;
+	return $status;
+	
+}// End of Protectionscheme_Status()
+
+/**
+* Function is to Verify Dataset Satus From GUI for PR.
+*@param :null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function Get_Dataset_Status_Gui_PR() {
+	return Get_Dataset_Status_Gui($datasetNamePR);
+}
+
+/**
+* Function is to Verify Dataset Satus From GUI for DR.
+*@param :null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function Get_Dataset_Status_Gui_DR() {
+	return Get_Dataset_Status_Gui($datasetNameDR);
+}
+
+/**
+* Function is to Verify Dataset Satus From GUI.
+*@param :$$datasetName
+*@return : $datasetStatusGui
+*@Author: Swati Choudhary
+*
+*/
+function Get_Dataset_Status_Gui($datasetName) {
+	navigateToDiscovery();
+	_click(_link($obj_subsystems));
+	_click(_link($obj_Datasets));
+
+	if($BrowserLang == "N"){
+		var $status = _getText(_cell(5, _near(_cell($datasetName), _under(_tableHeader($obj_Status)))));
+	}
+	else{
+	var $status = _getText(_cell(5, _near(_cell($datasetName), _under(_tableHeader($obj_Status)))));
+	}
+	_wait(10000, _cell("ACTIVE"));
+	_assertExists("Dataset in GUI :", $status);
+
+	//var $datasetStatusGui = new java.util.Properties();
+	//$datasetStatusGui.put("status", $status);
+
+	//return $datasetStatusGui;
+	
+	return $status;
+
+}// End of Dataset_Status()
+
+/**
+* Function is to Verify Component Satus From GUI for PR.
+*@param :null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function Get_Component_Status_Gui_PR() {
+	return Get_Component_Status_Gui($compNamePR);
+}
+
+/**
+* Function is to Verify Component Satus From GUI for DR.
+*@param :null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+function Get_Component_Status_Gui_DR() {
+	return Get_Component_Status_Gui($compNameDR);
+}
+
+/**
+* Function is to Verify Component Satus From GUI.
+*@param :$compName
+*@return : $componentStatusGui
+*@Author: Swati Choudhary
+*
+*/
+function Get_Component_Status_Gui($compName) {
+	navigateToDiscovery();
+	_click(_link($obj_subsystems));
+	_click(_link($obj_components));
+	var $componentStatus = _getText(_cell(6, _near(_cell($compName), _under(_tableHeader($obj_Status)))));
+	_assertExists("Component in GUI is :", $componentStatus);
+
+	var $componentStatusGui = new java.util.Properties();
+	$componentStatusGui.put("componentStatusGui", $componentStatus);
+	return $componentStatusGui;
+}// End of Component_Status()
+
+/**
+* Function is to verify details in Manage- DR Solution screen.
+*@param :$WFType
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function Group_Managedrsolution($WFType) {
+	_wait(2000);
+	Popup_Handler();
+	_click(_link("Manage"));
+	_click(_link("Groups List View"));
+	_click(_link($groupName));
+	_click(_link("Manage DR Solution"));
+
+	var $productionSiteConfigured = _getText(_cell(1, _near(_cell("Production Site:"), _under(_cell("Configured")))));
+	_assertExists("Configured Production Site:", $productionSiteConfigured);
+	var $productionSiteCurrent = _getText(_cell(2, _near(_cell("Production Site:"), _under(_cell("Current")))));
+	_assertExists("Current Production Site:", $productionSiteCurrent);
+
+	// Verify Configured and Current Site for PR
+	if ($WFType == "SO") {
+		_assertNotEqual($productionSiteConfigured, $productionSiteCurrent, "Current PR site same as configured it means So not executed succesfully.Site status incorrect");
+	} else {
+		_assertEqual($productionSiteConfigured, $productionSiteCurrent, "Comparing configured and current PR site ");
+	}
+
+	var $DRSiteConfigured = _getText(_cell(1, _near(_cell("DR Site:"), _under(_cell("Configured")))));
+	_assertExists("Configured DR Site:", $DRSiteConfigured);
+	var $DRSiteCurrent = _getText(_cell(2, _near(_cell("DR Site:"), _under(_cell("Current")))));
+	_assertExists("Current DR Site:", $DRSiteCurrent);
+
+	// Verify Configured and Current Site for DR
+	if ($WFType == "SO") {
+		_assertNotEqual($DRSiteConfigured, $DRSiteCurrent, "Current DR site same as configured it means So not executed succesfully.Site status incorrect");
+	} else {
+		_assertEqual($DRSiteConfigured, $DRSiteCurrent, "Comparing configured and current DR site");
+
+	}
+	var $buttonNotification = _getValue(_button("button"));
+	_assertExists("Currently group Button status is on MAnage DR soluction screen is ", $buttonNotification);
+	var $replicactionNotification = _getValue(_button(1));
+	_assertExists("Currently replication button status is on MAnage DR soluction screen is", $replicactionNotification);
+
+} // End of Group_ManageDRSolution()
+
+/**
+* Function is to verify details in Manage-Group Information screen.
+*@param :$groupName,$WFType
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function Group_Managegroupinformation($groupName, $WFType) {
+	_wait(6000);
+
+	_click(_link("Manage"));
+	_click(_link("Groups List View"));
+	_click(_link($groupName));
+	_click(_link("Group Information"));
+
+	var $productionSiteConfigured = _getText(_cell(1, _near(_cell("Production Site:"), _under(_cell("Configured")))));
+	_assertExists("Configured Production Site:", $productionSiteConfigured);
+	var $productionSiteCurrent = _getText(_cell(2, _near(_cell("Production Site:"), _under(_cell("Current")))));
+	_assertExists("Current Production Site:", $productionSiteCurrent);
+
+	// Verify Configured and Current Site for PR
+	if ($WFType == "SO") {
+		_assertNotEqual($productionSiteConfigured, $productionSiteCurrent, "Current PR site not same as configured  .Site status incorrect");
+	} else {
+		_assertEqual($productionSiteConfigured, $productionSiteCurrent, "Comparing configured and current PR site");
+	}
+
+	var $productionServerConfigured = _getText(_cell(1, _near(_cell("Production Server:"), _under(_cell("Configured")))));
+	_assertExists("Configured Production Server:", $productionServerConfigured);
+	var $productionServerCurrent = _getText(_cell(2, _near(_cell("Production Server:"), _under(_cell("Current")))));
+	_assertExists("Current Production Server:", $productionServerCurrent);
+
+	if ($WFType == "SO") {
+		_assertNotEqual($productionServerConfigured, $productionServerCurrent, "Current PR server not same as configured  .Site status incorrect");
+	} else {
+		_assertEqual($productionServerConfigured, $productionServerCurrent, "Comparing configured and current PR server");
+	}
+
+	var $DRSiteConfigured = _getText(_cell(1, _near(_cell("DR Site:"), _under(_cell("Configured")))));
+	_assertExists("Configured DR Site:", $DRSiteConfigured);
+	var $DRSiteCurrent = _getText(_cell(2, _near(_cell("DR Site:"), _under(_cell("Current")))));
+	_assertExists("Current DR Site:", $DRSiteCurrent);
+
+	// Verify Configured and Current Site for DR
+
+	if ($WFType == "SO") {
+		_assertNotEqual($DRSiteConfigured, $DRSiteCurrent, "Current DR site not same as configured  .Site status incorrect");
+	} else {
+		_assertEqual($DRSiteConfigured, $DRSiteCurrent, "Comparing configured and current DR site");
+	}
+
+	var $DRServerConfigured = _getText(_cell(1, _near(_cell("DR Server:"), _under(_cell("Configured")))));
+	_assertExists("Configured DR Server:", $DRServerConfigured);
+	var $DRServerCurrent = _getText(_cell(2, _near(_cell("DR Server:"), _under(_cell("Current")))));
+	_assertExists("Current DR Server:", $DRServerCurrent);
+	if ($WFType == "SO") {
+		_assertNotEqual($DRServerConfigured, $DRServerCurrent, "Current DR server not same as configured  .Site status incorrect");
+	} else {
+		_assertEqual($DRServerConfigured, $DRServerCurrent, "Comparing configured and current DR site");
+	}
+
+	var $currentGroupState = _getText(_cell(1, _near(_cell("Current Group State:"))));
+	_assertExists("Current Group State:", $currentGroupState);
+	var $currentContinuityStatus = _getText(_cell(1, _near(_cell("Current Continuity Status:"))));
+	_assertExists("Current Continuity Status:", $currentContinuityStatus);
+	var $continuityOperation = _getText(_cell(1, _near(_cell("Continuity Operation:"))));
+	_assertExists("Continuity Operation:", $continuityOperation);
+}// End of Group_ManageGroupInformation()
+
+/**
+* Function is to verify GruopSnapshot screen in monitor screen after Failover.
+*@param :$groupName
+*@return : $time
+*@Author: Swati Choudhary
+*
+*/
+
+function Gruopsnapshot_Post_FO($groupName) {
+	_wait(5000);
+	Popup_Handler();
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("Group Snapshot"));
+
+	var $continuity = _getText(_cell(0, _under(_cell("Continuity"))));
+	_assertExists("Continuity:", $continuity);
+	_assertEqual("DR Active Recovery complete", $continuity, "Verifying continuity status after FO");
+
+	var $replication = _getText(_cell(0, _under(_cell($obj_Replication))));
+	_assertExists("Replication status:", $replication);
+	_assertEqual("Not supported in Failover mode", $replication, "Validating Replication status in FO mode");
+	_assertExists(_span("Failover SUCCESS"));
+
+	var $continuityOperation = _getText(_cell(1, _near(_cell("Continuity Operation:"))));
+	_assertExists("Continuity Operation:", $continuityOperation);
+	_assertEqual($obj_Failover, $continuityOperation, "Continuity Operation status during FO");
+
+	var $startTime = _getText(_cell(1, _near(_cell("Start time:"))));
+	_assertExists("Start Time:", $startTime);
+	var $endTime = _getText(_cell(1, _near(_cell("End time:"))));
+	_assertExists("End Time", $endTime);
+	var $time = new java.util.Properties();
+	$time.put("Start Time", $startTime);
+	$time.put("End Time", $endTime);
+	return $time;
+}// End of GruopSnapshot_Post_FO()
+
+/**
+* Function is to verify Manage DR solution screen in manage screen after Failover
+*@param :$groupName
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function Managedrsolution_Post_FO($groupName) {
+	_wait(5000);
+	Popup_Handler();
+	_click(_link("Manage"));
+	_click(_link("Groups List View"));
+	_click(_link($groupName));
+	_click(_link("Manage DR Solution"));
+	// verify Replication screen message
+	var $message = $obj_ReplicationMsgDisplay;
+	_assertExists(_cell($message));
+}// End of ManageDRSolution_Post_FO()
+
+/**
+* Function is to verify Group Information screen in manage screen after Failover
+*@param :$groupName
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function Groupinformation_Post_FO($groupName) {
+	_wait(5000);
+	Popup_Handler();
+	
+	_click(_link("Manage"));
+	_click(_link("Groups List View"));
+	_click(_link($groupName));
+	_click(_link("Group Information"));
+
+	var $productionSiteConfigured = _getText(_cell(1, _near(_cell("Production Site:"), _under(_cell("Configured")))));
+	_assertExists("Configured Production Site:", $productionSiteConfigured);
+	var $productionSiteCurrent = _getText(_cell(2, _near(_cell("Production Site:"), _under(_cell("Current")))));
+	_assertExists("Current Production Site:", $productionSiteCurrent);
+
+	// Verify Configured and Current Site for PR
+	if ($productionSiteConfigured == $productionSiteCurrent) {
+		_log("PR site same as configured");
+	} else {
+		_log("Current PR site not same as configured it means fail over done succesfully");
+	}
+	var $DRSiteConfigured = _getText(_cell(1, _near(_cell("DR Site:"), _under(_cell("Configured")))));
+	_assertExists("Configured DR Site:", $DRSiteConfigured);
+	var $DRSiteCurrent = _getText(_cell(2, _near(_cell("DR Site:"), _under(_cell("Current")))));
+	_assertExists("Current DR Site:", $DRSiteCurrent);
+	// Verify Current Site status for DR
+	if ($DRSiteCurrent == "Not Applicable") {
+		_log("DR Site not availavle and FO done succesfully");
+	} else {
+		_log("FO failed");
+	}
+
+	var $continuityStatus = _getText(_cell(1, _near(_bold("Current Group State:"))));
+	_assertExists("Current Group State:", $continuityStatus);
+	_assertEqual("Failover(Active)", $continuityStatus, "Checking current group status");
+	var $continuity = _getText(_cell(0, _rightOf(_cell("Current Continuity Status:"))));
+	_assertExists("Current Continuity Status:", $continuity);
+	_assertEqual("DR Active Recovery complete", $continuity, "Verifying continuity status after FO ");
+	var $startTime = _getText(_cell(1, _near(_cell("Start time:"))));
+	_assertExists("Start Time:", $startTime);
+	var $endTime = _getText(_cell(1, _near(_cell("End time:"))));
+	_assertExists("End Time", $endTime);
+}// End of GroupInformation_Post_FO()
+
+/**
+* Function is to verify RPO Tab details after Failover
+*@param :$groupName
+*@return : null
+*@Author: Padmavathi
+*
+*/
+
+function Calculate_RPO_Post_FO($groupName) {
+_wait(5000);
+NavigateToRGDetailsPage($groupName);
+_click(_link($obj_RPO_grp));
+var $dataRecovereduptoGUIFromGUI = _getText(_heading5($obj_DataRecovered));
+_assertExists($dataRecovereduptoGUIFromGUI);
+//Panaces database connection using jdbc connection function
+$props = Get_Mysql_Db_Connection_URL($drmDbUserName, $drmDbPassword, $drmServer, "3306", "panaces");
+// Execute query on panaces database
+var db = _getDB("com.mysql.jdbc.Driver", $props.get("databaseconnection"), $props);
+var $dataRecoveredupto = db.select("select rpo_CurrentRPOTS from RPO where rpo_id=(select g_rpo_id from groups where g_id =(select g_id from groups where g_name='" + $groupName + "'));");
+// Converting query output in GUI date format
+var $dataRecovereduptoDB = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse($dataRecoveredupto));
+var $dataRecovereduptoFromDB =("Data recovered upto :" + $dataRecovereduptoDB);
+_assertExists($dataRecovereduptoFromDB);
+_assertEqual($dataRecovereduptoFromDB, $dataRecovereduptoGUIFromGUI, "Comparing Data recovered upto from DB and GUI");
+}// End of Calculate_RPO_Post_FO function.
+
+
+/**
+* Function is to verify RTO Tab details after Failover
+*@param :$groupName
+*@return : null
+*@Author: Padmavathi
+*
+*/
+
+function Calculate_RTO_Post_FO($groupName) {
+_wait(5000);
+NavigateToRGDetailsPage($groupName);
+_click(_link($obj_RTO_grp));
+var $failoverUuration = _getText(_heading5($obj_FailoverDuration));
+_assertExists($failoverUuration);
+var $failoverUurationnew = $failoverUuration.split($obj_durationSplt);
+var $failoverUurationTime = $failoverUurationnew[1];
+NavigateToViewAllWorkflowsPage($groupName);
+_click(_link($obj_Failover));
+var $timeTakensec=_getText(_div(0, _under(_div($obj_TimeTakenSec))));
+// Converting Failover Duration from Seconds to HH:MM:SS(i.e HH:MM:SS to
+// SSS...)
+var $hour = Math.floor($timeTakensec / 3600);
+// _log($hour);
+if ($hour < 10) {
+$hour = "0" + $hour;
+}
+var $minute = Math.floor(($timeTakensec % 3600) / 60);
+// _log($minute);
+if ($minute < 10) {
+$minute = "0" + $minute;
+}
+var $second = ($timeTakensec % 3600) % 60;
+// _log($second);
+if ($second < 10) {
+$second = "0" + $second;
+}
+var $timeTaken = $hour + ":" + $minute + ":" + $second;
+// var $timeTakensecnew = new
+// java.string.ConvertSecondToHHMMString.parse($timeTakensec);
+_assertEqual($failoverUurationTime, $timeTaken, "Comparing the Failover Duration from RTO Tab and FO Workflow details page");
+} //End of Calculate_RTO_Post_FO function.
+
+/**
+* Function is to verify Repliction screen in monitor screen after Failover
+*@param :$groupName
+*@return : null
+*@Author: Swati Choudhary
+*@Modified by: Padmavathi
+*
+*/
+
+function Replication_Post_FO($groupName) {
+_wait(5000);
+NavigateToRGDetailsPage($groupName);
+_click(_link($obj_Replication));
+var $message = $obj_ReplicationMsgDisplay;
+_assertExists($message);
+}// End of Replication_Post_FO()
+
+
+/**
+* Function is to verify Repliction screen in monitor screen after Failover
+*@param :$transactionTimePRDB, $transactionTimeDRDB
+*@return : $dbRpo
+*@Author: Swati Choudhary
+*
+*/
+// Description: Calculate RPO from back end
+function Calulate_Rpo($transactionTimePRDB, $transactionTimeDRDB) {
+	
+	_assertExists("transaction Time PR DB:", $transactionTimePRDB);
+
+	_assertExists("$transaction Time DR DB:", $transactionTimeDRDB);
+	// Current RPO calculation
+
+	// From back end received TransactionTime changing the time format
+
+
+	var $prRpoTime = new java.text.SimpleDateFormat($dateTimeFormat).parse($transactionTimePRDB).getTime();
+
+	var $drRpoTime = new java.text.SimpleDateFormat($dateTimeFormat).parse($transactionTimeDRDB).getTime();
+
+	if($prRpoTime < $drRpoTime){
+		$currenRpoDB = "00:00:00";
+	} else {
+		// From back end Current RPO in total second
+		var $currenRpoinsec = Math.floor(($prRpoTime - $drRpoTime) / 1000);
+
+		$currenRpoinsec = Math.abs($currenRpoinsec);
+		
+		_assertExists("CurrenRPOinsec", $currenRpoinsec);
+		// converting $currenRpoinsec in HH:MM:SS format
+		var $hour = Math.floor($currenRpoinsec / 3600);
+		if ($hour < 10) {
+			$hour = "0" + $hour;
+		}
+		var $minute = Math.floor(($currenRpoinsec % 3600) / 60);
+		if ($minute < 10) {
+			$minute = "0" + $minute;
+		}
+		var $second = ($currenRpoinsec % 3600) % 60;
+		if ($second < 10) {
+			$second = "0" + $second;
+		}
+		 $currenRpoDB = $hour + ":" + $minute + ":" + $second;		
+	}
+	
+
+	// verification of RPO deviation:
+	 //var $configuredRpoGui = _getText(_cell(1, _near(_strong("Configured App RPO:"))));
+	 //newUIcode
+	 var $configuredGui= _getText(_heading5($obj_ConfigAppRPO));
+	 
+	 if($BrowserLang == "N"){
+		 var $configured=$configuredGui.split(" ");
+		 var $configuredRpoGui = $configured[4];
+	  }
+	  else{
+		  var $configured=$configuredGui.split("RPO : ");
+		  var $configuredRpoGui = $configured[1];
+	  }
+
+	// convert from hh:mm:ss to ss
+	var $configuredRpoGuiinsec = $configuredRpoGui.split(":");
+	var $configuredRpo = $configuredRpoGuiinsec[0] * 3600 + $configuredRpoGuiinsec[1] * 60 + $configuredRpoGuiinsec[2] * 1;
+
+	if (($configuredRpo > $currenRpoinsec) || ($configuredRpo < 0 || $prRpoTime < $drRpoTime)) {
+		var $rpoDeviationDB = 0;
+		_assertExists("RPO deviation DB:", $rpoDeviationDB);
+	}
+
+	else if ($configuredRpo == 0) {
+		var $rpoDeviationDB = $currenRpoinsec;
+		_assertExists("RPO deviation DB:", $rpoDeviationDB);
+	} else {
+		 $rpoDeviationDB = Math.floor((($currenRpoinsec - $configuredRpo) * 100) / $configuredRpo);
+		_assertExists("RPO deviation DB:", $rpoDeviationDB);
+	}
+
+	// verification of Recovery Point:
+	//UI
+
+	var $rpoSummary1 = _getText(_heading5(1, _near(_heading5($obj_ApplnRPOSumry))));
+	_assertExists("Current RPO:", $rpoSummary1);
+	
+	var $rpoSummary = $rpoSummary1.split($obj_Updated);
+	_assertExists("RPO SUMMARY:", $rpoSummary[1]);
+
+	if ($currenRpoDB == "00:00:00") {
+		 $recoveryPointDB1 = $rpoSummary[1];
+		_assertExists("Recovery Point:", $recoveryPointDB1);
+	} else {
+		 $recoveryPointDB1 = $transactionTimeDRDB;
+		_assertExists("Recovery Point:", $recoveryPointDB1);
+	}
+	//*****************
+	 var $date = $recoveryPointDB1;
+     var $dateString = $date.toString(); 
+        
+     if($BrowserLang == "N"){
+    	 var $recoveryPointDB = new java.text.SimpleDateFormat($dateTimeFormat).parse($dateString).getTime();
+	  }
+	  else{
+		  var $recoveryPointDB = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+	  }
+	_assertExists("Recovery Point:", $recoveryPointDB);	
+	//******************
+	
+	
+	//var $currenRpoGui = _getText(_cell(1, _near(_cell("Current App RPO:"))));
+	//UI
+	var $currenRpoGui  = _getText(_heading5($obj_CurrentAppRPO));
+	_assertExists("Current RPO GUI", $currenRpoGui);
+	var $a=$currenRpoGui.split(" :");
+	var $currenRpoGui1=$a[1];
+	var $actualRPOinsec = $currenRpoGui1.split(":");
+	var $actualRPO = $actualRPOinsec[0] * 3600 + $actualRPOinsec[1] * 60 + $actualRPOinsec[2] * 1;
+	_assertExists("actualRPO", $actualRPO);
+
+	//UI
+	
+	if(_exists(_heading5("/.*%/[1]", _under(_link($obj_RPO_grp))))){
+		 $rpoDeviationGui1 = _getText(_heading5("/.*%/[1]", _under(_link($obj_RPO_grp)))).split("%");
+	} else {
+		 $rpoDeviationGui1 = _getText(_heading5("/.*%/", _under(_link($obj_RPO_grp)))).split("%");
+	}
+		
+	var $rpoDeviationGui = $rpoDeviationGui1[0];
+	_assertExists("RPOdeviationGUI", $rpoDeviationGui);
+
+	
+	//var $recoveryPointGui1 = _getText(_cell(1, _near(_cell("Recovery Point:"))));
+	//UI
+	var $recoveryPoint= _getText(_div($obj_RecoveryPoint));	
+	if($BrowserLang == "N"){
+		var $recoveryPointGui1 = $recoveryPoint.split("t:");
+	}
+	else{
+		var $recoveryPointGui1 = $recoveryPoint.split("ポイント:");
+	}
+	_assertExists("recoveryPointGui", $recoveryPointGui1[1]); //*--
+	//******************
+	 var $date = $recoveryPointGui1[1];
+     var $dateString = $date.toString();
+     var $recoveryPointGui = new java.text.SimpleDateFormat($dateTimeFormat2).parse($dateString).getTime();
+ 	_assertExists("recoveryPointGui", $recoveryPointGui);
+ 	//******************
+ 	
+ 	
+	_assertEqual($currenRpoDB, $currenRpoGui1, "Comparing Current RPO from DB and GUI");
+	_assertEqual($rpoDeviationDB, $rpoDeviationGui, "Comparing RPO deviation from DB and GUI");
+	
+	
+	var $timediff = $recoveryPointGui - $recoveryPointDB;
+	if ($timediff <300000) {
+		 _assertExists("Recovery Point from DB and GUI is passed");
+	} else if($timediff == 0)  {
+		_assertEqual($recoveryPointDB, $recoveryPointGui, "Comparing Recovery Point from DB and GUI");
+	}
+	else{
+	 _assertExists("Recovery Point from DB and GUI is not passed");
+ 	}
+
+	Popup_Handler();
+	var $dbRpo = new java.util.Properties();
+	$dbRpo.put("currenRpoDB", $currenRpoDB);
+	$dbRpo.put("rpoDeviationDB", $rpoDeviationDB);
+	$dbRpo.put("recoveryPointDB", $recoveryPointDB);
+	return $dbRpo;
+}
+
+
+/**
+* Function is to Calculate RTO from back end
+*@param :$expectedCompletionTime
+*@return : $dbRto
+*@Author: Swati Choudhary
+*
+*/
+
+// Description: 
+function Calculate_Rto($expectedCompletionTime) {
+
+	// converting $expectedCompletionTime in HH:MM:SS format
+	var $hour = Math.floor($expectedCompletionTime / 3600);
+	// _log($hour);
+	if ($hour < 10) {
+		$hour = "0" + $hour;
+	}
+	var $minute = Math.floor(($expectedCompletionTime % 3600) / 60);
+	// _log($minute);
+	if ($minute < 10) {
+		$minute = "0" + $minute;
+	}
+	var $second = ($expectedCompletionTime % 3600) % 60;
+	// _log($second);
+	if ($second < 10) {
+		$second = "0" + $second;
+	}
+	 $actualRtoDB = $hour + ":" + $minute + ":" + $second;
+	_assertExists("actual RTO DB", $actualRtoDB);
+
+	var $actualRtoinsec = $actualRtoDB.split(":");
+	var $actualRto = $actualRtoinsec[0] * 3600 + $actualRtoinsec[1] * 60 + $actualRtoinsec[2] * 1;
+	_assertExists("actual RTO", $actualRto);
+
+	//var $configuredRtoGui = _getText(_cell(1, _near(_strong("Configured RTO:"))));
+	//UI
+	var $configuredRto = _getText(_div($obj_ConfigRTO));
+	_assertExists("Configured RTO", $configuredRto);
+	var $configured = $configuredRto.split("-");
+	// converi hh:mm:ss into ss
+	var $configuredRtoGuiinsec = $configured[1].split(":");
+	var $configuredRto = $configuredRtoGuiinsec[0] * 3600 + $configuredRtoGuiinsec[1] * 60 + $configuredRtoGuiinsec[2] * 1;
+	_log($configuredRto);
+
+	// verification of RTO deviation:
+
+	if (($configuredRto > $actualRto) || ($configuredRto < 0)) {
+		var $rtoDeviationDB = 0;
+		_assertExists("RTO deviation DB", $rtoDeviationDB);
+	} else if ($configuredRto == 0) {
+		var $rtoDeviationDB = $actualRto;
+		_assertExists("RTO deviation DB", $rtoDeviationDB);
+	} else {
+		var $rtoDeviationDB = Math.floor((($actualRto - $configuredRto) * 100) / $configuredRto);
+		_assertExists("RTO deviation DB", $rtoDeviationDB);
+	}
+
+	//RTO Summary
+	
+	//var $rtoSummary1 = _getText(_cell("/RTO Summary as of.*/"));
+	//UI
+	var $rtoSummary1 = _getText(_heading5(1, _near(_heading5($obj_RTOSumry))));
+	_log($rtoSummary1);
+	var $rtoSummary = $rtoSummary1.split($obj_Updated);
+	_log($rtoSummary);
+	_wait(10000);
+	
+	var $tmp = $rtoSummary[1].substring(2,$rtoSummary[1].length);
+	var $rtoSummaryinmilisec = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($tmp).getTime();
+	//var $rtoSummaryinmilisec = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($rtoSummary[1]).getTime();
+	
+	_log($rtoSummaryinmilisec);
+	var $rtoSummaryinsec = $rtoSummaryinmilisec / 1000;
+	var $recoveryTimeDbinsec = Math.floor($rtoSummaryinsec + $actualRto);
+	var $recoveryTimeMilisec = $recoveryTimeDbinsec * 1000;
+	var $recoveryTimeDB1 = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.util.Date($recoveryTimeMilisec));
+	
+	_assertExists("Recovery Time db", $recoveryTimeDB1);
+	//*****************
+	 var $date = $recoveryTimeDB1;
+     var $dateString = $date.toString();
+     var $recoveryTimeDB = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+	_assertExists("Recovery Time db", $recoveryTimeDB);
+	//*****************
+	
+	
+	//var $currenRtoGui = _getText(_cell(1, _near(_cell("Current RTO:"))));
+    //UI
+	var $currenRto = _getText(_div($obj_CurrentRTO));
+	var $currenRtoGui = $currenRto.split("-");
+	// converi hh:mm:ss into ss
+	var $currentRtoGuiinsec = $currenRtoGui[1].split(":");
+	var $currentRto = $currentRtoGuiinsec[0] * 3600 + $currentRtoGuiinsec[1] * 60 + $currentRtoGuiinsec[2] * 1;
+	_assertExists("Current RTO", $currentRto);
+
+	
+	//UI
+	var $deviation= _getText(_div($obj_Deviation));
+	var $deviationRTO=$deviation.split("-");
+	var $devRTO=$deviationRTO[1];
+	var $rtoDeviationGUI1 = $devRTO.split("%");
+	var $rtoDeviationGUI = $rtoDeviationGUI1[0];
+	_assertExists("RTOdeviationGUI", $rtoDeviationGUI);
+
+	
+	
+	var $rt= _getText(_div($obj_RecoveryTime));
+	var $recoveryTime1=$rt.split("-");
+ 
+	//var $recoveryTime1 = _getText(_cell(1, _near(_cell("Recovery Time:"))));
+	_assertExists("RecoveryTime in GUI", $recoveryTime1[1]);
+	//*****************
+	 var $date = $recoveryTime1[1];
+     var $dateString = $date.toString();
+     var $recoveryTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+     _assertExists("RecoveryTime in GUI", $recoveryTime);
+   //*****************
+	_assertEqual($actualRtoDB, $currenRtoGui[1], "Comparing Current RTO from DB and GUI");
+	
+	_assertEqual($rtoDeviationDB, $rtoDeviationGUI, "Comparing RTO deviation from DB and GUI");
+	
+	var $timedifference = $recoveryTime - $recoveryTimeDB;
+	if ($timedifference <300000) {
+		 _assertExists("Recovery Time from DB and GUI is passed");
+	} else if($timedifference == 0)  {
+		_assertEqual($recoveryTimeDB, $recoveryTime, "Comparing Recovery Time from DB and GUI");
+	}
+	else{
+	 _assertExists("Recovery Time from DB and GUI is not passed");
+ 	}
+
+	var $dbRto = new java.util.Properties();
+	$dbRto.put("actualRtoDB", $actualRtoDB);
+	return $dbRto;
+
+} // End of Calculate_Rto
+
+/**
+* Function is to Stop replication from GUI
+*@param :null
+*@return : $server
+*@Author: Swati Choudhary
+*
+*/
+
+/*function () {
+	_click(_link("Manage"));
+	_click(_link("Groups List View"));
+	_click(_link($groupName));
+	_click(_link("Manage DR Solution"));
+	_assertExists(_button($obj_StopReplication));
+	var $sshCommand = "date";
+	$date = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	var $serverTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse($date));
+	_assertExists("Server Time", $serverTime);
+	if (_exists(_button($obj_StopReplication))) {
+		_click(_button($obj_StopReplication));
+		if (_exists(_button($obj_StartReplication))) {
+			_log("Replication stopped successfully");
+
+		} else {
+			_log("Replication not stopped");
+		}
+	} else {
+		_log("Replication already stopped");
+	}
+	var $server = new java.util.Properties();
+	$server.put("Server Time", $serverTime);
+	return $server;
+} // End of Stop_Replication
+*/
+
+function Stop_Replication() {
+	
+	navigateToReplication($groupName);
+	_wait(4000); //delay added
+	_assertExists(_button($obj_StopReplication));
+	var $sshCommand = "date";
+	$date = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	var $serverTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse($date));
+	_assertExists("Server Time", $serverTime);
+	if (_exists(_button($obj_StopReplication))) {
+		_click(_button($obj_StopReplication));
+		_click(_link($obj_Stop));
+		if (_exists(_button($obj_StartReplication))) {
+			_log("Replication stopped successfully");
+
+		} else {
+			_log("Replication not stopped");
+		}
+	} else {
+		_log("Replication already stopped");
+	}
+	var $server = new java.util.Properties();
+	$server.put("Server Time", $serverTime);
+	return $server;
+} // End of Stop_Replication
+
+/**
+* Function is to Start replication from GUI
+*@param :null
+*@return : $server
+*@Author: Swati Choudhary
+*
+*/
+
+function Start_Replication() {
+
+	navigateToReplication($groupName);
+	_wait(4000); //delay added
+	_assertExists(_button($obj_StartReplication));
+	var $sshCommand = "date";
+	$date = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	var $serverTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse($date));
+	_assertExists("Server Time", $serverTime);
+	if (_exists(_button($obj_StartReplication))) {
+		_click(_button($obj_StartReplication));
+		_click(_link($obj_Start));
+		if (_exists(_button($obj_StopReplication))) {
+			_log("Replication started successfully");
+
+		} else {
+			_log("Replication not started");
+
+		}
+	} else {
+		_log("Replication already runnning");
+	}
+	var $server = new java.util.Properties();
+	$server.put("Server Time", $serverTime);
+	return $server;
+}// End of Start_Replication
+
+
+/**
+* Function is Event Verification.
+*@param :$serverTime, $groupName, $EventMentioned, $Eventdes, $Image
+*@return : null
+*@Author: Anantha Sakthi
+*/
+function Event_Verification($serverTime, $groupName, $EventMentioned, $Eventdes, $Image) {
+	_click(_link($obj_Admin));	
+	_click(_link($obj_CurrentEvents));	
+	_click(_link($obj_AdvFilter));
+	_wait(3000);
+	_click(_checkbox($obj_severity3));
+	_check(_checkbox("severity", _near(_cell($obj_Warningevent))));
+	_click(_checkbox("CLOSED"));
+	_click(_checkbox("INFO"));
+	_uncheck(_checkbox("systemEvents"));
+	_click(_checkbox($obj_WIP));
+	_setSelected(_select($obj_groups), [ $groupName ]);
+	_click(_button($obj_Apply)); 
+	_wait(3000);
+	var $i = 0;
+
+	var $flag = 0;
+	
+	while ($i < 30) {  
+		 _wait(10000);
+			_call(top.location.reload());
+		   if( _exists(_link($EventMentioned,_under(_link($obj_EventName),700))) == true) {			  
+				
+				var $Time = _getText(_cell(3, _near(_link($EventMentioned))));
+				_assertExists("Time", $Time);
+				var $GuiTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($Time).getTime();
+				_assertExists("GuiTime", $GuiTime);
+				var $DbTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($serverTime).getTime();
+				_assertExists("DbTime", $DbTime);
+				var $timedifference = $GuiTime - $DbTime;
+				if ($timedifference > 0) {
+					_log("Event generate Successfully.");
+					_log($Image);
+				var $description = _getText(_cell(1, _near(_link($EventMentioned))));
+				_assertExists("description", $description);
+				var $event = $description.split("::");
+				var $eventno = $event[0].split(":");
+				var $actualEventdes = $eventno[1].trim();
+				_assertExists("Actual Event description", $actualEventdes);
+				/*	if ($eventname == "Primary" || $eventname == "DR") {
+					$eventname = $event[0] + ":" + $event[1];
+					_assertExists("eventname", $eventname);
+				}*/
+				_log($actualEventdes);
+				_log($Eventdes);
+				 $eventname = $actualEventdes.trim();
+				 $Eventdes = $Eventdes.trim();
+			
+				if ($actualEventdes == $Eventdes || $description.indexOf($Eventdes) >= 0) {
+						_log("event description correct.");
+						$flag = 1;						
+						break;
+					}
+				}				   
+		   } else {
+			   _log("Event not yet generated successfully.");
+		   }
+		   $i++;
+		   _log($i);
+	 }	
+	
+	
+	if ($flag == 1) {
+		_assertTrue(1 == 1, "event Generated succesfully");
+	} else {
+		_assertTrue(1 == 0, "event not Generated succesfully");
+	}
+}// end Of Event_Verification()
+
+
+
+
+/**
+* Function is Event Action using Pstool , executing batch file .
+*@param :$ip,$userName,$pwd,$MssqlServer
+*@return : null
+*@Author: Govind Mengji
+*
+*/
+
+function Event_Action($ip,$userName,$pwd,$MssqlServer){
+	
+var $eventAction1 = "PsExec.exe \\\\" + $ip + " -u " + $userName + " -p " + $pwd + " cmd /c call " + $MssqlServer;
+var $eventAction = "cd" + " " +$pstoolPath + "\n" +$eventAction1;
+
+writeToFile($eventAction,$SAHI_HOME + "utility\\Execute.bat");
+//_log($pstoolPath + $eventAction1);
+//_execute($pstoolPath + $eventAction1,"true");
+_execute($SAHI_HOME + "utility\\Execute.bat","true");
+
+} //end of event_Action()
+
+
+/**
+* Function is for remote agent stop and start the agent from DRM server
+*@param :$compIP, $agentStatus
+*@return : $server
+*@Author: Swati Choudhary
+*/
+
+function Get_Remote_Agent_Event($compIP, $agentStatus) {
+	var $sshCommand = 'sudo /../.' + $EAMSROOT + 'bin/' + $agentStatus + $compIP + ' LINUXSERVER';
+	$actionStatus = Execute_Ssh_Command($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	var $agentStartString = $actionStatus.get("output").toString(); 
+//_log($agentStartString+" om");
+
+	var $actionTime = $agentStartString.split(",");
+	var $date = $actionTime[2].split("Li");
+	_log($date);
+	var $serverTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse($date[0]));
+	_assertExists("Server Time", $serverTime);
+	var $server = new java.util.Properties();
+	$server.put("Server Time", $serverTime);
+	return $server;
+}// End of Get_Remote_Agent_Event
+
+/**
+* Function is for local agent event,date and time from DRM server.
+*@param :$compIP, $remoteUserNameVal, $remotePwdVal, $localAgentPath, $agentStatus
+*@return : $server
+*@Author: Swati Choudhary
+**@Author: Anita -- updated Execute_Ssh_Command for local agent
+*/
+
+function Get_Local_Agent_Event($compIP, $remoteUserNameVal, $remotePwdVal, $localAgentPath, $agentStatus,$agentCheck) {
+
+	// Verify date and time in DRM server
+	var $sshCommand = "date";
+	$date = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	var $serverTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse($date));
+	_assertExists("Server Time", $serverTime);
+
+	// Connecting to DR and PR machine
+	if($agentCheck == "Y"){
+		var $sshCommand = $agentStatus;		
+	} else {
+		 $sshCommand = 'sh /' + $localAgentPath + "DRMAgents/" + $agentStatus;
+		 _log($sshCommand); 
+	}
+	
+	if($datasetType == "DB2"){
+		$status = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	} 
+	else {
+		$status = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	}
+	
+	var $server = new java.util.Properties();
+	$server.put("Server Time", $serverTime);
+	return $server;
+}// End of Get_Local_Agent_Event
+
+/**
+* Function is for  get the local Linux agent status from backend for PR
+*@param :null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+// Description: For Lcoal Linux agent get the status from backend for PR and DR
+function Get_Local_Componenet_Status_DB_PR() {
+	return Get_Local_Componenet_Status_DB($localAgentPathPR, $compIPPR, $remoteUserNameValPR, $remotePwdValPR);
+} // End of Get_Local_Componenet_Status_DB_PR()
+
+
+/**
+* Function is for  get the local Linux agent status from backend for DR
+*@param :null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+function Get_Local_Componenet_Status_DB_DR() {
+	return Get_Local_Componenet_Status_DB($localAgentPathDR, $compIPDR, $remoteUserNameValDR, $remotePwdValDR);
+} // End of Get_Local_Componenet_Status_DB_DR()
+
+/**
+* Function is to get local component status from backend.
+*@param :$localAgentPath, $compIP, $remoteUserNameVal, $remotePwdVal
+*@return :$componentStatusDB
+*@Author: Swati Choudhary
+*
+*/
+function Get_Local_Componenet_Status_DB($localAgentPath, $compIP, $remoteUserNameVal, $remotePwdVal) {
+	
+	//var $temp_path ='../.' + $localAgentPath + "DRMAgents/";
+	//_assertExists("Verify the path", $temp_path);
+	var $agentStatus = '/../.' + $localAgentPath + "DRMAgents/"+ "LinuxOSAgent.sh status ";
+	$linuxAgentStatus = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $agentStatus);
+    
+	// verify linuxAgentStatus
+	_assertExists("linuxAgentStatus", $linuxAgentStatus);
+
+	if ($linuxAgentStatus == "LinuxOSAgent is running.") {
+		var $componentStatus = "ACTIVE";
+		_assertExists("Component Status in DB is: ", $componentStatus);
+		
+	} else if ($linuxAgentStatus == "LinuxOSAgent is not running.") {
+		var $componentStatus = "UNKNOWN";
+		_assertExists("Component Status in DB is: ", $componentStatus);
+
+	} else {
+		var $componentStatus = "UNKNOWN";
+		_assertExists("Component Status in DB is: ", $componentStatus);
+	}
+	var $componentStatusDB = new java.util.Properties();
+	$componentStatusDB.put("componentStatusdb", $componentStatus);
+
+	return $componentStatusDB;
+}// End of Get_Local_Componenet_Status_DB()
+
+/**
+* Function is to get Remote Linux agent status from backend and GUI for PR.
+*@param :$compIPPR
+*@return :null
+*@Author: Swati Choudhary
+*
+*/
+
+function Get_Remote_Componenet_Status_DB_PR($compIPPR,$parentIP,$parentUser,$parentPwd,$installedDir) {
+	return Get_Remote_Componenet_Status_DB($compIPPR,$parentIP,$parentUser,$parentPwd,$installedDir);
+} // End of Get_Local_Componenet_Status_DB_PR()
+
+/**
+* Function is to get Remote Linux agent status from backend and GUI for DR.
+*@param :$compIPDR
+*@return :null
+*@Author: Swati Choudhary
+*
+*/
+function Get_Remote_Componenet_Status_DB_DR($compIPDR,$parentIP,$parentUser,$parentPwd,$installedDir) {
+	return Get_Remote_Componenet_Status_DB($compIPDR,$parentIP,$parentUser,$parentPwd,$installedDir);
+} // End of Get_Local_Componenet_Status_DB_DR()
+
+/**
+* Function is to get Remote Linux agent status from backend and GUI.
+*@param :$compIP
+*@return :$componentStatusDB
+*@Author: Swati Choudhary
+*
+*/
+function Get_Remote_Componenet_Status_DB($compIP,$parentIP,$parentUser,$parentPwd,$installedDir) {
+	
+	$systemTypeUpper = $systemType.toUpperCase(); 	
+	if($withSiteController=="yes"){
+	var $agentStatus = 'cd '+ $installedDir +'bin/;'+' sh ' + $systemType+"OSAgent.sh status " + $compIP + " " + $systemTypeUpper+"SERVER ";
+	$linuxAgentStatus = SecuredShellConnection($parentIP, $parentUser, $parentPwd, $agentStatus);
+	}
+	else
+		{
+		var $agentStatus = 'cd '+ $installedDir +'bin/;'+' sudo sh ' + $systemType+"OSAgent.sh status " + $compIP + " " + $systemTypeUpper+"SERVER ";
+		$linuxAgentStatus = SecuredShellConnection($parentIP, $parentUser, $parentPwd, $agentStatus);
+		_log($linuxAgentStatus);
+		}
+	_assertExists($systemType+"AgentStatus", $linuxAgentStatus);
+
+	if ((new java.lang.String($linuxAgentStatus.toString())).contains(new java.lang.String("There is no "+$systemType+"OSAgent running"))) {
+		var $componentStatus = "UNKNOWN";
+		_log($componentStatus);
+		_assertExists("Componenet Status in DB is: ", $componentStatus);
+
+	} else if ((new java.lang.String($linuxAgentStatus.toString())).contains(new java.lang.String($systemType +"OSAgent running"))) {
+		var $componentStatus = "ACTIVE";
+		_assertExists("Componenet Status in DB is: ", $componentStatus);
+
+	} else {
+		var $componentStatus = "UNKNOWN";
+		_assertExists("Componenet Status in DB is: ", $componentStatus);
+	}
+	var $componentStatusDB = new java.util.Properties();
+	$componentStatusDB.put("componentStatusdb", $componentStatus);
+
+	return $componentStatusDB;
+}// End of Get_Remote_Componenet_Status_DB()
+
+/**
+* Function is to get Local Linux agent status from backend and GUI for PR.
+*@param :$$agentType
+*@return :null
+*@Author: Swati Choudhary
+*
+*/
+
+function Verify_Component_Status_PR($agentType) {
+	_wait(5000);
+	Popup_Handler();
+	
+	if ($agentType == "Local") {
+		var $componentStatusDB = Get_Local_Componenet_Status_DB_PR();
+	} 
+	else {
+		if($withSiteController=="yes")
+		{
+			var $componentStatusDB = Get_Remote_Componenet_Status_DB_PR($compIPPR,$siteControllerPRnode,$siteControllerPRUser,$siteControllerPRPwd,$siteControllerPRPath);
+		}
+		else
+		{
+			var $componentStatusDB = Get_Remote_Componenet_Status_DB_PR($compIPPR);
+		}
+	}
+	var $componentStatusGui = Get_Component_Status_Gui_PR();
+	_assertEqual($componentStatusDB.get("componentStatusdb"), $componentStatusGui.get("componentStatusGui"), "Comparing Component status from DB and GUI for PR");
+}// end of Verify_Component_Status_PR()
+
+function Verify_NetAppComponent_Status_PR($agentType) {
+	_wait(5000);
+	Popup_Handler();
+	if ($agentType == "Local") {
+		var $componentStatusDB = Get_Local_Componenet_Status_DB_PR();
+	} else {
+		var $componentStatusDB = Get_Remote_Componenet_Status_DB_PR($NetAppcompIPPR);
+	}
+	var $componentStatusGui = Get_Component_Status_Gui_PR();
+	_assertEqual($componentStatusDB.get("componentStatusdb"), $componentStatusGui.get("componentStatusGui"), "Comparing Component status from DB and GUI for PR");
+}// end of Verify_Component_Status_PR()
+
+/**
+* Function is to get Local Linux agent status from backend and GUI for DR.
+*@param :$agentType
+*@return :null
+*@Author: Swati Choudhary
+*
+*/
+
+function Verify_Component_Status_DR($agentType) {
+	_wait(5000);
+	Popup_Handler();
+	if ($agentType == "Local") {
+
+		var $componentStatusDB = Get_Local_Componenet_Status_DB_DR();
+		_log($componentStatusDB); // get the component status for local
+	} else {
+		if($withSiteController=="yes"){
+			var $componentStatusDB = Get_Remote_Componenet_Status_DB_DR($compIPDR,$siteControllerDRnode,$siteControllerDRUser,$siteControllerDRPwd,$siteControllerDRPath);
+			}
+			else
+				{
+				var $componentStatusDB = Get_Remote_Componenet_Status_DB_DR($compIPDR,$drmServer, $drmUserName, $drmPassword,$EAMSROOT);
+				}
+		}
+		var $componentStatusGui = Get_Component_Status_Gui_DR();
+		_assertEqual($componentStatusDB.get("componentStatusdb"), $componentStatusGui.get("componentStatusGui"), "Component status not same in GUI and backend for DR");
+	}// end of Verify_Component_Status_DR()
+
+function Verify_NetAppComponent_Status_DR($agentType) {
+	_wait(5000);
+	Popup_Handler();
+	if ($agentType == "Local") {
+
+		var $componentStatusDB = Get_Local_Componenet_Status_DB_DR();
+	} else {
+		var $componentStatusDB = Get_Remote_Componenet_Status_DB_DR($NetAppcompIPDR);
+	}
+	var $componentStatusGui = Get_Component_Status_Gui_DR();
+	_assertEqual($componentStatusDB.get("componentStatusdb"), $componentStatusGui.get("componentStatusGui"), "Component status not same in GUI and backend for DR");
+}// end of Verify_Component_Status_DR()
+
+
+// ************************************************************************************************************************************************************************//
+
+/**
+* Function is for  get the local Windows agent status from backend for PR
+*@param :null
+*@return : null
+*@Author: Govinda
+*
+*/
+
+// Description: For Local Windows agent get the status from backend for PR and DR
+function Get_Local_Componenet_Status_DB_PR_Windows() {
+	return Get_Local_Componenet_Status_DB_Windows($localAgentPathPR, $compIPPR, $remoteUserNameValPR, $remotePwdValPR);
+} // End of Get_Local_Componenet_Status_DB_PR_Windows()
+
+
+/**
+* Function is for  get the local Windows agent status from backend for DR
+*@param :null
+*@return : null
+*@Author: Govinda
+*
+*/
+function Get_Local_Componenet_Status_DB_DR_Windows() {
+	return Get_Local_Componenet_Status_DB_Windows($localAgentPathDR, $compIPDR, $remoteUserNameValDR, $remotePwdValDR);
+} // End of Get_Local_Componenet_Status_DB_DR_Windows()
+
+/**
+* Function is to get local component status from backend.
+*@param :$localAgentPath, $compIP, $remoteUserNameVal, $remotePwdVal
+*@return :$componentStatusDB
+*@Author: Govinda
+*
+*/
+function Get_Local_Componenet_Status_DB_Windows($localAgentPath, $compIP, $remoteUserNameVal, $remotePwdVal) {
+	var $agentStatus = '../.' + $localAgentPath + "WindowsOSAgent.sh status ";
+	$WindowsAgentStatus = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $agentStatus);
+
+	_assertExists("WindowsAgentStatus", $WindowsAgentStatus);
+
+	if ($WindowsAgentStatus == "WindowsOSAgent is running.") {
+		var $componentStatus = "ACTIVE";
+		_assertExists("Componenet Status in DB is: ", $componentStatus);
+
+	} else if ($WindowsAgentStatus == "WindowsOSAgent is not running.") {
+		var $componentStatus = "UNKNOWN";
+		_assertExists("Componenet Status in DB is: ", $componentStatus);
+
+	} else {
+		var $componentStatus = "UNKNOWN";
+		_assertExists("Componenet Status in DB is: ", $componentStatus);
+	}
+	var $componentStatusDB = new java.util.Properties();
+	$componentStatusDB.put("componentStatusdb", $componentStatus);
+
+	return $componentStatusDB;
+}// End of Get_Local_Componenet_Status_DB_Windows()
+
+/**
+* Function is to get Remote Windows agent status from backend and GUI for PR.
+*@param :$compIPPR
+*@return :null
+*@Author: Govinda
+*
+*/
+
+function Get_Remote_Componenet_Status_DB_PR_Windows($compIPPR) {
+	return Get_Remote_Componenet_Status_DB_Windows($compIPPR, $remoteUserNameValPR, $remotePwdValPR);
+} // End of Get_Local_Componenet_Status_DB_PR_Windows()
+
+/**
+* Function is to get Remote Windows agent status from backend and GUI for DR.
+*@param :$compIPDR
+*@return :null
+*@Author: Govinda
+*
+*/
+function Get_Remote_Componenet_Status_DB_DR_Windows($compIPDR) {
+	return Get_Remote_Componenet_Status_DB_Windows($compIPDR, $remoteUserNameValDR, $remotePwdValDR);
+} // End of Get_Local_Componenet_Status_DB_DR_Windows()
+
+/**
+* Function is to get Remote Windows agent status from backend and GUI.
+*@param :$compIP
+*@return :$componentStatusDB
+*@Author: Govinda
+*
+*/
+function Get_Remote_Componenet_Status_DB_Windows($compIP) {
+	var $agentStatus = '../.' + $EAMSROOT + 'bin/' + "WindowsOSAgent.sh status " + $compIP + ' WindowsSERVER ';
+	$WindowsAgentStatus = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $agentStatus);
+
+	_assertExists("WindowsAgentStatus", $WindowsAgentStatus);
+    
+	if ((new java.lang.String($WindowsAgentStatus.toString())).contains(new java.lang.String("There is no WindowsOSAgent running"))) {
+		var $componentStatus = "UNKNOWN";
+		_assertExists("Componenet Status in DB is: ", $componentStatus);
+
+	} else if ((new java.lang.String($WindowsAgentStatus.toString())).contains(new java.lang.String("WindowsOSAgent running"))) {
+		var $componentStatus = "ACTIVE";
+		_assertExists("Componenet Status in DB is: ", $componentStatus);
+
+	} else {
+		var $componentStatus = "UNKNOWN";
+		_assertExists("Componenet Status in DB is: ", $componentStatus);
+	}
+	var $componentStatusDB = new java.util.Properties();
+	$componentStatusDB.put("componentStatusdb", $componentStatus);
+
+	return $componentStatusDB;
+}// End of Get_Remote_Componenet_Status_DB_Windows()
+
+/**
+* Function is to get Local Windows agent status from backend and GUI for PR.
+*@param :$$agentType
+*@return :null
+*@Author: Govinda
+*
+*/
+
+function Verify_Component_Status_PR_Windows($agentType) {
+	_wait(5000);
+	Popup_Handler();
+	if ($agentType == "Local") {
+		var $componentStatusDB = Get_Local_Componenet_Status_DB_PR_Windows();
+	} else {
+		var $componentStatusDB = Get_Remote_Componenet_Status_DB_PR_Windows($compIPPR);
+	}
+	var $componentStatusGui = Get_Component_Status_Gui_PR();
+	_assertEqual($componentStatusDB.get("componentStatusdb"), $componentStatusGui.get("componentStatusGui"), "Comparing Component status from DB and GUI for PR");
+}// end of Verify_Component_Status_PR_Windows()
+
+
+/**
+* Function is to get Local Windows agent status from backend and GUI for DR.
+*@param :$agentType
+*@return :null
+*@Author: Govinda
+*
+*/
+
+function Verify_Component_Status_DR_Windows($agentType) {
+	_wait(5000);
+	Popup_Handler();
+	if ($agentType == "Local") {
+
+		var $componentStatusDB = Get_Local_Componenet_Status_DB_DR_Windows();
+	} else {
+		var $componentStatusDB = Get_Remote_Componenet_Status_DB_DR_Windows($compIPDR);
+	}
+	var $componentStatusGui = Get_Component_Status_Gui_DR();
+	_assertEqual($componentStatusDB.get("componentStatusdb"), $componentStatusGui.get("componentStatusGui"), "Component status not same in GUI and backend for DR");
+}// end of Verify_Component_Status_DR_Windows()
+
+// ************************************************************************************************************************************************************************//
+//***********************************************************************************
+
+
+/**
+* Function is for  get the local Sybase agent status from backend for PR
+*@param :null
+*@return : null
+*@Author: Govinda
+*
+*/
+
+// Description: For Local Sybase agent get the status from backend for PR and DR
+function Get_Local_Componenet_Status_DB_PR_Solaris() {
+	return Get_Local_Componenet_Status_DB_Solaris($localAgentPathPR, $compIPPR, $remoteUserNameValPR, $remotePwdValPR);
+} // End of Get_Local_Componenet_Status_DB_PR_Sybase()
+
+
+/**
+* Function is for  get the local Sybase agent status from backend for DR
+*@param :null
+*@return : null
+*@Author: Govinda
+*
+*/
+function Get_Local_Componenet_Status_DB_DR_Solaris() {
+	return Get_Local_Componenet_Status_DB_Solaris($localAgentPathDR, $compIPDR, $remoteUserNameValDR, $remotePwdValDR);
+} // End of Get_Local_Componenet_Status_DB_DR_Sybase()
+
+/**
+* Function is to get local component status from backend.
+*@param :$localAgentPath, $compIP, $remoteUserNameVal, $remotePwdVal
+*@return :$componentStatusDB
+*@Author: Govinda
+*
+*/
+function Get_Local_Componenet_Status_DB_Solaris($localAgentPath, $compIP, $remoteUserNameVal, $remotePwdVal) {
+	var $agentStatus = '../.' + $localAgentPath + "SolarisOSAgent.sh status ";
+	
+	$SolarisAgentStatus = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $agentStatus);
+
+	_assertExists("SolarisAgentStatus", $SolarisAgentStatus);
+
+	if ($SolarisAgentStatus == "SolarisOSAgent is running") {
+		var $componentStatus = "ACTIVE";
+		_assertExists("Componenet Status in DB is: ", $componentStatus);
+
+	} else if ($SolarisAgentStatus == "SolarisOSAgent is not running.") {
+		var $componentStatus = "UNKNOWN";
+		_assertExists("Componenet Status in DB is: ", $componentStatus);
+
+	} else {
+		var $componentStatus = "UNKNOWN";
+		_assertExists("Componenet Status in DB is: ", $componentStatus);
+	}
+	var $componentStatusDB = new java.util.Properties();
+	$componentStatusDB.put("componentStatusdb", $componentStatus);
+	
+	return $componentStatusDB;
+}// End of Get_Local_Componenet_Status_DB_Windows()
+
+
+////////////////////////////
+
+/**
+* Function is to get Local Windows agent status from backend and GUI for PR.
+*@param :null
+*@return :null
+*@Author: Govinda
+*
+*/
+
+function Verify_Component_Status_PR_Solaris() {
+	_wait(5000);
+	Popup_Handler();
+
+	var $componentStatusDB = Get_Local_Componenet_Status_DB_PR_Solaris();
+
+	var $componentStatusGui = Get_Component_Status_Gui_PR();
+	_assertEqual($componentStatusDB.get("componentStatusdb"), $componentStatusGui.get("componentStatusGui"), "Comparing Component status from DB and GUI for PR");
+}// end of Verify_Component_Status_PR_Solaris()
+
+/**
+* Function is to get Local Solaris agent status from backend and GUI for DR.
+*@param :$agentType
+*@return :null
+*@Author: Govinda
+*
+*/
+
+function Verify_Component_Status_DR_Solaris() {
+	_wait(5000);
+	Popup_Handler();
+	
+
+    var $componentStatusDB = Get_Local_Componenet_Status_DB_DR_Solaris();
+	
+	var $componentStatusGui = Get_Component_Status_Gui_DR();
+	_assertEqual($componentStatusDB.get("componentStatusdb"), $componentStatusGui.get("componentStatusGui"), "Component status not same in GUI and backend for DR");
+}// end of Verify_Component_Status_DR_Windows()
+
+
+/**
+* Function is for Verification of  in replication page .
+*@param : $groupName,$compIP,$remoteUserNameVal,$remotePwdVal,$WFType
+*@return : null
+*@Author: Govinda Mengji
+*@Modified By:Debabrat Sahu
+*@Modified By:Padmavathi
+*@Reaseon: Replication status function is common for all Log PFR solutions, hence making it as common function
+*/
+
+function PFR_Replication_status($groupName,$compIP,$remoteUserNameVal,$remotePwdVal,$WFType){
+	NavigateToRGDetailsPage($groupName);
+	_click(_link($obj_Replication));
+    
+
+	$fileName=_getCellText(_cell(1, _near(_tableHeader($obj_Fileset))));
+     $fileNameSplit= $fileName.split("[");
+
+	var $filesetNameGUI= $fileNameSplit[0].trim();
+	_log($filesetNameGUI);    
+
+    var $EAMSROOT = "/opt/PFR";
+    
+    
+    $path = $EAMSROOT + "/panacesFileReplicator/filesets/"+$filesetNameGUI+"/" ; 
+    
+    Replication_Details($groupName,$WFType);
+     
+    _click(_span("glyphicon icon-caret-right"));   
+    // added anita
+    if($WFType="SO"){
+	var $guiLastRepFilePath = _getText(_div(1, _near(_span($obj_LastReplicatedFile))));
+    _log($guiLastRepFilePath);
+    }//added
+    var $i=0;
+    while($i < 10) {
+    _wait(100);
+    
+    var $sshCommand = "grep -R \"FILESET_TOTAL_REPLICATED_ACTUALSIZE=\" " + $path+ $filesetNameGUI+".rt";
+    //$totalreplicationDB = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+    $totalreplicationDB = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+    _log("Output after firing command:-"+$sshCommand+" , is :-"+$totalreplicationDB,"Custom4");
+    
+    var $sshCommand = "grep -R \"FILESET_RECENT_FILES_REPLICATED=\" " + $path+ $filesetNameGUI+".rt";
+    //$lastReplicatedFileDB = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+    $lastReplicatedFileDB = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+    _log("Output after firing command:-"+$sshCommand+" , is :-"+$lastReplicatedFileDB,"Custom4");
+    
+    var $sshCommand = "grep -R \"FILESET_RECENT_FILES_REPLICATED_SIZE=\" " + $path+ $filesetNameGUI+".rt";
+    //$lastReplicatedFilesizeDB = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+    $lastReplicatedFilesizeDB = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+    _log("Output after firing command:-"+$sshCommand+" , is :-"+$lastReplicatedFilesizeDB,"Custom4");
+    
+    var $sshCommand = "grep -R \"REPLICATION_THRUPUT=\" " + $path+ $filesetNameGUI+".rt";
+    //$throughputDB = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+    $throughputDB = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+    _log("Output after firing command:-"+$sshCommand+" , is :-"+$throughputDB,"Custom4");
+    
+    var $j=0;
+    while($j < 10){
+    _wait(11000);
+    $j++;
+    }
+    
+
+        //var $totalreplication = $totalreplicationDB.get("output").toString();
+        var $totalreplication = $totalreplicationDB.toString();
+	    var $totalreplicationsize=$totalreplication.split("=");
+	    var $totalreplicationactualsize=($totalreplicationsize[1]);
+	    var $totalreplicationactualsizedb=$totalreplicationactualsize.split(",");
+	    var $TotalReplicationactualSizedb=($totalreplicationactualsizedb[0]+" "+ "Bytes");
+	    _assertExists("Total Replication Actual Size from db", $TotalReplicationactualSizedb);
+	    var $totalReplicatedActualSizeGUI=_getCellText(_span(1, _near(_span($obj_TotalRepldActualSize))));
+
+	    _assertExists($obj_TotalRepldActualSize ,  $totalReplicatedActualSizeGUI);
+	    
+	    var $totalReplicatedActualSizeGUI=_getText(_span(1, _near(_span($obj_TotalRepldActualSize))));
+
+	    _assertExists($obj_TotalRepldActualSize ,  $totalReplicatedActualSizeGUI);
+	
+	    _assertEqual($TotalReplicationactualSizedb,$totalReplicatedActualSizeGUI, "Validate value from db and GUI Total Replicated Actual Size");
+	  
+	    ////FILESET_RECENT_FILES_REPLICATED
+
+	    
+	    //var $lastReplicatedFile1=$lastReplicatedFileDB.get("output").toString();
+	    var $lastReplicatedFile1=$lastReplicatedFileDB.toString();
+	    var $lastReplicatedFile2=$lastReplicatedFile1.split("=");
+	
+	    var  $lastReplicatedFiledb=($lastReplicatedFile2[1]);
+	    
+	    _assertExists("Last Replicated File from db", $lastReplicatedFiledb);
+	 
+	    var $lastReplicatedFileGUI=_getCellText(_span(1, _near(_span($obj_LastReplicatedFile))));
+	    _assertExists("Last Replicated File from GUI" ,$lastReplicatedFileGUI);
+	     
+	    _assertExists($lastReplicatedFiledb,$lastReplicatedFileGUI , "Valiadate value from db and GUI Last Replicated File");
+	 
+	    	
+	    //var $lastReplicatedFilesize1=$lastReplicatedFilesizeDB.get("output").toString();
+	    var $lastReplicatedFilesize1=$lastReplicatedFilesizeDB.toString();
+	    var $lastReplicatedFilesize2=$lastReplicatedFilesize1.split("=");
+	    var  $lastReplicatedFilesizedb=($lastReplicatedFilesize2[1]+ "Bytes");
+	    
+	    _assertExists("Last Replicated File size from  db", $lastReplicatedFilesizedb);
+	 
+	    var $lastReplicatedFilesizeGUI=_getCellText(_span(1, _near(_span($obj_LastReplicatedFileSize))));
+	
+	    _assertExists("Last Replicated File size from GUI" ,$lastReplicatedFilesizeGUI);
+	     
+	    _assertEqual($lastReplicatedFilesizedb.replace(" ", "").trim().toLowerCase(),$lastReplicatedFilesizeGUI.replace(" ", "").trim().toLowerCase() , "Valiadate value from db and GUI Last Replicated File size");
+	 
+	
+	    //var $throughput= $throughputDB.get("output").toString();
+	    var $throughput= $throughputDB.toString();
+	    var $throughputdb0=$throughput.split("=");
+	    var $throughputdb2=($throughputdb0[1]);
+	    var $throughputdb1=$throughputdb2.split(",");
+	    var  $throughputdb=($throughputdb1[0]+"Bytes/Sec");
+	 
+	    _assertExists("Throughtput from db", $throughputdb);
+	 
+	    //var $throughputGUI=_getCellText(_cell(0,_rightOf(_cell($obj_Throughput))));
+	    var $throughputGUI=_getCellText(_span(1, _near(_span($obj_Throughput))));
+	    _assertExists("Throughtput from GUI", $throughputGUI);
+	 
+	    _assertEqual($throughputdb.replace(" ", "").trim().toLowerCase(),$throughputGUI.replace(" ", "").trim().toLowerCase(), "Validate Throughput"); 
+	    if($lastReplicatedFiledb != "N/A"){
+	    	_wait(1000);
+	    	break;
+	    }
+	    $i++;
+	 }
+}
+
+/**
+* Function is for Verification of  in replication page .
+*@param : $groupName,$compIP,$remoteUserNameVal,$remotePwdVal,$WFType
+*@return : null
+*@Author: Govinda Mengji
+*@Modified By:Debabrat Sahu
+*@Modified By:Padmavathi
+*@Reaseon: Replication status function is common for all Log PFR solutions, hence making it as common function
+*/
+
+
+function Replication_Details($groupName,$WFType){
+
+	var $protectionGUI = _getCellText(_span(1, _near(_div($obj_Protection_grp ))));
+	_assertExists("Protection from GUI", $protectionGUI);
+	_assertEqual($protectionGUI,$systemTypeProtection);
+
+	//var $PendingFiles = _getText(_cell(0,_under( _tableHeader($obj_PendingFiles))));
+	var $PendingFiles = _getText(_row(1, _near(_tableHeader($obj_PendingFiles)))).split($obj_Synchronized+" ")[1].split(" ")[0].trim();
+
+	if($PendingFiles == "0"){
+	    var $replicationStatusdb = $obj_Synchronized;
+	}
+	else {
+	    
+	    var $replicationStatusdb = $obj_FilesPending;
+	}
+
+	var $replicationStatus1 = _getCellText(_listItem(1,_near(_span($obj_ReplicationStatus))));
+	
+	if($BrowserLang == "N"){
+		var $replicationStatus2 = $replicationStatus1.split(":");
+	}
+	else if($BrowserLang == "Y-JA"){
+		var $replicationStatus2 = $replicationStatus1.split($obj_ReplicationStatus);
+		}
+
+	else if($BrowserLang == "Y-EN"){
+		var $replicationStatus2 = $replicationStatus1.split($obj_ReplicationStatus);
+		}
+	
+	
+	var $replicationStatus = $replicationStatus2[1];
+	_assertExists("Replication Status from GUI", $replicationStatus);
+	_assertExists($replicationStatusdb, $replicationStatus , "Replication Status");
+
+	var $primaryRemoteServicesGUIPR = _getCellText(_span(1,    _near(_span($obj_PrimaryRemoteServices))));
+	_assertExists("Primary Remote Services from GUI",    $primaryRemoteServicesGUIPR);
+	var $primaryRemoteServicesGUIPR2 = $primaryRemoteServicesGUIPR.toString();
+	var $primaryRemoteServicesGUI = $primaryRemoteServicesGUIPR2.split(" ");
+
+	if($WFType == "SO"){
+	    _assertEqual($primaryRemoteServicesGUI[0],$sernameDR, "Primary & DR interchange");
+	    _assertEqual($primaryRemoteServicesGUI[2],$sernamePR ,"Primary & DR interchange"); 
+	     }
+	else {
+	_assertEqual($primaryRemoteServicesGUI[0],$sernamePR, "Primary Services are Equal");
+	_assertEqual($primaryRemoteServicesGUI[2],$sernameDR ,"Remote Services are Equal"); 
+	}
+}
+
+
+/**
+ * Function is used to add the custom action for script execution with  on Windows
+ * 
+ * @param : null
+ * @return: null
+ * @Author: Padmavathi
+ */
+
+function Group_Status_BasedONEvents($groupName,$grpStatus){
+    _click(_link($obj_Admin));
+    _click(_link($obj_CurrentEvents));
+    _click(_link($obj_AdvFilter));
+    _check(_checkbox($obj_severity2));
+    _check(_checkbox($obj_severity3));
+    _check(_checkbox($obj_severity4));
+    _check(_checkbox($obj_NEWevent));
+    _check(_checkbox($obj_WIP));
+    _setSelected(_select($obj_groups), [ $groupName ]);
+    _click(_button($obj_Apply));
+    _wait(3000);
+    var $criticalEvents = _isVisible(_image($obj_Criticalevent));
+    _assertExists("Critical Events: "+ $criticalEvents);
+     
+    var $seriousEvents = _isVisible(_image($obj_Seriousevent));
+    _assertExists("Serious Events: "+ $seriousEvents);
+     
+    var $warningEvents = _isVisible(_image($obj_Warningevent));
+    _assertExists("Warning Events: "+ $warningEvents);
+    
+    if($criticalEvents == true){
+    NavigateToRGDetailsPage($groupName);
+    _assertExists(_heading4($obj_bold, _near(_italic($obj_dotred))));
+    $grpStatus="Red Color";
+    _log($grpStatus);
+    _log("Inactive - Production services are unavailable");
+    }
+    else if($seriousEvents == true){
+    NavigateToRGDetailsPage($groupName);
+    _assertExists(_heading4($obj_bold, _near(_italic($obj_dotyellow))));
+    $grpStatus="Yellow Color";
+    _log($grpStatus);
+    _log("Group is In InActive State");
+    }
+    else if($warningEvents == true){
+    NavigateToRGDetailsPage($groupName);
+    _assertExists(_heading4($obj_bold, _near(_italic($obj_dotorrange))));
+    $grpStatus="Yellow Color";
+    _log($grpStatus);
+    _log("Degraded - One or more subsystems of the DR solution are down");
+    }
+    else{
+    NavigateToRGDetailsPage($groupName);
+    _assertExists(_heading4($obj_bold, _near(_italic($obj_dotgreen))));
+    $grpStatus="Green Color";
+    _log($grpStatus);
+    _log("Active - Production services are up and available");
+    }
+}//End of Group Status Based on Events function.
+
+/**
+*Function for Group Health Status
+*@param : $groupName $workflow
+*@return : null
+*@Author: Anita
+*
+*/
+function Group_Status_Info($groupName,$grpStatus){
+    NavigateToRGDetailsPage($groupName);
+    if(_exists(_heading4($obj_bold, _near(_italic($obj_dotgreen))))){
+        $grpStatus ="Active - Production services are up and available";
+        _log($groupName);
+        _log($grpStatus);
+    }
+    else if(_exists(_heading4($obj_bold, _near(_italic($obj_dotred))))){
+        $grpStatus ="Inactive - Production services are unavailable";
+        _log($groupName);
+        _log($grpStatus);
+    }
+    else if(_exists(_heading4($obj_bold, _near(_italic($obj_dotorrange))))){
+        $grpStatus ="Degraded - One or more subsystems of the DR solution are down";
+        _log($groupName);
+        _log($grpStatus);
+    }
+    else if(_exists(_heading4($obj_bold, _near(_italic($obj_dotyellow))))){
+        $grpStatus ="Group Status is degraded";
+        _log($groupName);
+        _log($grpStatus);
+    }
+    else{
+        _click(_span($obj_OverviewMain));
+       navigateToDiscovery()
+        if(_exists(_image($obj_fgrpgif))){
+            $grpStatus ="Test - DR Test in Progress";
+            _log($groupName);
+            _log($grpStatus);
+        }
+        else{
+            $grpStatus ="Group is in Maintenance";    
+        }
+    }
+}
+
+
+/**
+* Function is for Verification of  in RTO
+*@param : 
+*@return : 
+*@Author: Govinda Mengji
+*@Reaseon: RTO Calulation for converting Hours and miniuts in sec
+*/
+
+function RTO_Calculate() {
+     
+$RalHMS = _getText(_span($obj_fusionchartstooltip));
+    _log($RalHMS, "Value");
+      $RalHMSsplit = $RalHMS.split(" ");
+    _log($RalHMSsplit , "RalHMSsplit");
+     $RalLength =$RalHMSsplit.length;
+    _log($RalLength, "Lenght");
+
+if($RalLength=="6"){
+        
+        var $hours = parseInt($RalHMSsplit[0] * 3600);
+        _log($hours , "Hours into sec");
+        
+        var $Minutes = parseInt($RalHMSsplit[2] * 60);
+        _log($Minutes , "Minutes into sec");
+        
+        var $Seconds = parseInt($RalHMSsplit[4]);
+        _log($Seconds , "Seconds");
+        
+        $RalHMSTotal= parseInt($hours+$Minutes+$Seconds);
+        return $RalHMSTotal;
+        
+}
+
+else if($RalLength=="4"){
+
+        var $hoursorMinutesnum  = $RalHMSsplit[0];
+        _log($hoursorMinutesnum , "Hours or Minutes in number");
+        
+        var $hoursorMinutesstr = $RalHMSsplit[1];
+        _log($hoursorMinutesstr , "Hours or Minutes in Character");
+        
+        var $Minutesorsecondsnum =$RalHMSsplit[2];
+        _log($Minutesorsecondsnum , "Minutes or seconds in number");
+        
+        var $Minutesorsecondsstr =$RalHMSsplit[3];
+        _log($Minutesorsecondsstr , "Minutes or seconds in Character");
+        
+           if($hoursorMinutesstr == "Hours")
+           {
+              var $hoursorINsecMin = parseInt($hoursorMinutesnum * 3600);
+             _log($hoursorINsecMin , "Hours into sec"); 
+             }
+              else {
+                  var $hoursorINsecMin = parseInt($hoursorMinutesnum * 60);
+                  _log($hoursorINsecMin , "Minutes into sec");
+              }
+           
+            if($Minutesorsecondsstr=="Minutes"){
+
+               var $Minutesinsec = parseInt($Minutesorsecondsnum * 60);
+               _log($Minutesinsec , "Minutes into sec");
+               
+           } 
+           else{
+               var $Minutesinsec = parseInt($Minutesorsecondsnum);
+               _log($Minutesinsec , "Seconds");
+           }
+          
+       $hoursorMinutesoesecTotal =  parseInt($hoursorINsecMin+$Minutesinsec);
+        return $hoursorMinutesoesecTotal;
+          
+    }
+
+else if ($RalLength=="2"){
+        var $HoursorMintorSecnum = ($RalHMSsplit[0]);
+        var $HoursorMintorSecstr =  ($RalHMSsplit[1]);
+        
+        if($HoursorMintorSecstr == "Hours"){
+            var $HoursorMintorSec = parseInt($HoursorMintorSecnum * 3600);
+             _log($HoursorMintorSec , "Hours into sec"); 
+        
+        }
+        else if ($HoursorMintorSecstr == "Minutes"){
+            var $HoursorMintorSec = parseInt($HoursorMintorSecnum * 60);
+            _log($HoursorMintorSec , "Minutes into seconds");
+        } 
+        else {
+            var $HoursorMintorSec = parseInt($HoursorMintorSecnum);
+            _log($HoursorMintorSec , "Seconds");
+        }
+        
+        $HoursorMintorSecnumsingleTotal = parseInt($HoursorMintorSec);
+         return $HoursorMintorSecnumsingleTotal;
+    
+    }
+}
+
+function Stop_NC() {
+	
+	navigateToReplication($groupName);
+	_wait(4000);
+	if (_exists(_button($obj_StopReplication))) {
+		_click(_button($obj_StopReplication));
+		_click(_link($obj_Stop));
+		if (_exists(_button($obj_StartReplication))) {
+			_log("Replication stopped successfully");
+
+		} else {
+			_log("Replication not stopped");
+		}
+	} else {
+		_log("Replication already stopped");
+	}
+	if (_exists(_image($StopWorkflow,_rightOf(_link("NormalCopy"))))==true) {
+		_click(_image($StopWorkflow,_rightOf(_link("NormalCopy"))));
+		_click(_link($obj_Stop, _near(_heading3($StopWorkflow))));
+			
+		_wait(4000);
+		
+		if (_exists(_image($StopWorkflow,_rightOf(_link("NormalCopy"))))==true) {
+			_click(_image($StopWorkflow,_rightOf(_link("NormalCopy"))));
+			_click(_link($obj_Stop, _near(_heading3($StopWorkflow))));
+			_wait(2000);
+		}
+	}
+	else{
+		_log("Normal Copy already stopped");
+	}
+} 

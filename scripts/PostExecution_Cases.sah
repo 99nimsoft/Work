@@ -1,0 +1,73 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script is use to analysis of log and services.
+ ** AuthorName : Anantha Sakthi
+ ** Created Date : January 2016
+ ************************************************************************/
+
+_log("=================================Pre-Condition===================================","Custom1");
+
+_include("../Library/Common/Common_Function.sah");
+_include("../conf/DRMInstallation_Parameter.sah");
+
+
+_log("=================================Verification after Sanity done DRmserver 1 ========================================","Custom1");
+
+
+//Leak connection search string
+
+$sshCommand = "zgrep  \"Releasing Unreleased Connection : \" " + $EAMSROOT + "/var/log/*.*"; 
+
+$status = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+
+
+_assertEqual("",$status);
+
+//Stack Count
+
+$sshCommand = "zgrep  \"STACK\" " + $EAMSROOT + "/var/log/*.* | wc -l"; 
+
+$status = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+
+_assertEqual("",$status);
+
+
+//Stack Count
+
+$sshCommand = "zgrep  \"Exception\" " + $EAMSROOT + "/var/log/*.* | wc -l"; 
+
+$status = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+
+_assertEqual("",$status);
+
+_log("=================================Verification after Sanity done in DRmserver 2 ========================================","Custom1");
+
+_include("../conf/DRMInstallation_Parameter_new.sah");
+
+
+//Leak connection search string
+
+$sshCommand = "zgrep  \"Releasing Unreleased Connection : \" " + $EAMSROOT + "/var/log/*.*"; 
+
+$status = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+
+
+_assertEqual("",$status);
+
+//Stack Count
+
+$sshCommand = "zgrep  \"STACK\" " + $EAMSROOT + "/var/log/*.* | wc -l"; 
+
+$status = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+
+_assertEqual("",$status);
+
+
+//Stack Count
+
+$sshCommand = "zgrep  \"Exception\" " + $EAMSROOT + "/var/log/*.* | wc -l"; 
+
+$status = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+
+_assertEqual("",$status);

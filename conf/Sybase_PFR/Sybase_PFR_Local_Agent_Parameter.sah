@@ -1,0 +1,139 @@
+ var $l_Sybase_PFR=_readExcelFile($SAHI_HOME+ "\\conf\\Sybase_PFR\\Sybase_PFR_Parameter.xls","Local");
+
+
+//This user Input required to Login the DRM server
+var $username = $l_Sybase_PFR[3][2]; // DRM server GUI user name e.g. "swati"
+var $password = $l_Sybase_PFR[4][2]; // DRM server GUI pwd
+
+
+//This user Input required to install the local agents
+var $localAgentPathPR = $l_Sybase_PFR[28][2]; // this is the Path where user has install the agent on PR 
+var $localAgentPathDR = $l_Sybase_PFR[29][2]; // this is the Path where user has install the agent on DR 
+
+var $RemoteAgentPathPR = $l_Sybase_PFR[28][5];
+var $RemoteAgentPathDR = $l_Sybase_PFR[29][5];
+
+//Remote Agent Installation
+var $agentBuildPR =$l_Sybase_PFR[28][2];
+var $agentBuildDR=$l_Sybase_PFR[29][2];
+var $PfrStart="1";
+var $PfrServicePath=$l_Sybase_PFR[32][5];
+var $systemType = $l_Sybase_PFR[31][2];
+var $osType = $l_Sybase_PFR[30][2];
+
+//This user Input required to create the Site
+var $locationPR = "PR"; // PR Site Location
+var $incharge = "drmadmin"; // Site Incharge
+var $addressPR = "Mumbai"; // PR site Address
+var $locationDR = "DR"; // DR Site Location
+var $addressDR = "Bangalore";// DR site Address
+
+//This user Input required to create the Component for Local or remote
+var $agentType = "Local"; // This if for agent type always enter as e.g. Local or Remote.Note Here first letter is upper case and remaining lower case.
+var $compIPPR = $l_Sybase_PFR[7][2]; // PR Componenet ID
+var $compIPDR = $l_Sybase_PFR[8][2]; // DR Componenet ID
+var $remoteUserNameValPR = $l_Sybase_PFR[9][2]; // PR Machine user name. this information required for both local and remote
+var $remotePwdValPR = $l_Sybase_PFR[10][2]; // PR Machine Pwd name. this information required for both local and remote
+var $remoteUserNameValDR = $l_Sybase_PFR[11][2];// DR Machine user name. this information required for both local and remote
+var $remotePwdValDR = $l_Sybase_PFR[12][2];// PR Machine Pwd name. this information required for both local and remote
+var $compNamePR = $l_Sybase_PFR[13][2]; // PR Componenet Name
+var $compNameDR = $l_Sybase_PFR[14][2]; // DR Componenet Name
+
+
+//This user Input required to create the dataset
+var $systemTypeDataset = "Sybase";
+var $datasetNamePR = $l_Sybase_PFR[3][5]; // PR dataset name
+var $datasetNameDR = $l_Sybase_PFR[4][5]; // DR dataset name
+var $serverNamePR = $l_Sybase_PFR[5][5];
+var $serverNameDR = $l_Sybase_PFR[6][5];
+var $usernamedbPR=$l_Sybase_PFR[7][5];
+var $usernamedbDR=$l_Sybase_PFR[8][5];
+var	$passwordPR=$l_Sybase_PFR[9][5];
+var	$passwordDR=$l_Sybase_PFR[10][5];
+var	$portPR=$l_Sybase_PFR[11][5];
+var	$portDR=$l_Sybase_PFR[12][5];
+var $complevelPR=$l_Sybase_PFR[13][5];
+var $complevelDR=$l_Sybase_PFR[14][5];
+var $pathPR=$l_Sybase_PFR[15][5];
+var $pathDR=$l_Sybase_PFR[16][5];
+var $database=$l_Sybase_PFR[17][5];
+_log("Logger by Hari" + $database);
+var $dataDevNamePR=$l_Sybase_PFR[18][5];
+var $dataDevNameDR=$l_Sybase_PFR[19][5];
+var $dataDevSizePR=$l_Sybase_PFR[20][5];
+var $dataDevSizeDR=$l_Sybase_PFR[21][5];
+var $logDevNamePR=$l_Sybase_PFR[22][5];
+var $logDevNameDR=$l_Sybase_PFR[23][5];
+var $logDevSizePR=$l_Sybase_PFR[24][5];
+var $logDevSizeDR=$l_Sybase_PFR[25][5];
+var $hostname="hostname";
+	
+
+//This user Input required to create the protection Scheme
+var $sernamePR = $l_Sybase_PFR[17][2]; // PR Protection Scheme name
+var $sernameDR = $l_Sybase_PFR[18][2]; // DR Protection Scheme name
+var $mgmtHostPFRPR = $compNamePR + " (" + $compIPPR + ")"; 
+var $mgmtHostPFRDR = $compNameDR + " (" + $compIPDR + ")"; 
+
+//This user Input required to create the Group
+var $groupName = $l_Sybase_PFR[21][2]; // Group name
+var $groupDescription = "Sybase PFR"; // Group description
+var $primaryDumPath=$l_Sybase_PFR[22][2];
+var $secondaryDumPath=$l_Sybase_PFR[23][2];
+var $primaryLogPath=$l_Sybase_PFR[24][2];
+var $secondaryLogPath=$l_Sybase_PFR[25][2];
+var $fullDumppath=$l_Sybase_PFR[34][2];
+
+
+
+//var $copy= "scp -r "+$primaryDumPath+"Sybase_PR_FULL_0_1386312869470.trn sybase@"+$compIPDR+":"+$secondaryDumPath;
+
+//var $copy= "scp -r "+$primaryDumPath+"* sybase@"+$compIPDR+":"+$secondaryDumPath;
+var $copy= "scp -r "+$primaryDumPath+"/* sybase@"+$compIPDR+":"+$secondaryDumPath + "/";
+
+// *********************************************************************************************************************************************
+// Important Note : Please don't modify/edit any below variable or its value.
+// If you made any changes of variable and its value, script will not execute.
+// *********************************************************************************************************************************************
+
+var $primaryPanacesServer = $drmServer; // this is Primary DRM server
+var $panacesAgentNodeAddressPR = $compIPPR;
+var $panacesAgentNodeAddressDR = $compIPDR;
+var $compsitePR = $locationPR;
+var $compsiteDR = $locationDR;
+var $primaryComponents = $compNamePR;
+var $remoteComponents = $compNameDR;
+var $primaryDatasets = $datasetNamePR;
+var $remoteDatasets = $datasetNameDR;
+var $primaryProtections = $sernamePR;
+var $remoteProtections = $sernameDR;
+var $mgmtHostDGPR =$compNamePR+' ('+$compIPPR+')';
+var $mgmtHostDGDR = $compNameDR+' ('+$compIPDR+')';
+var $dependentComponentNamePR = $compNamePR;
+var $dependentComponentNameDR = $compNameDR;
+
+var $userPR=$usernamedbPR;
+var $userDR=$usernamedbDR;
+var $WFPath = "samples\\Sybase\\SybaseLogPFR";
+var $fileSO="BCS-SybaseLogPFR-SO.xml";
+var $fileSB="BCS-SybaseLogPFR-SB.xml";
+var $incharge = "drmadmin";
+var $desiredRpo = "300";
+var $rpoCompute = "300";
+var $systemTypeProtection = "PFR"; // Protection Scheme type
+var $SolutionSignature = "Sybase Logs with PFR"; // Solution type
+var $systemTypeDataset = "Sybase"; // database subsystem
+var $datasetType = "Sybase";// database Type
+var $systemType = "Linux";
+
+var $drmDbUserName = "automation"; // DRM server database user id
+var $drmDbPassword = "sanovi";// DRM server database password
+var $sybaseAgentChk="1";
+var $sybase_PFRAgentChk = "1";
+var $pfrAgentChk = "1";
+
+//This user Input required to update oracle Local Agent PanacesAgentsInstaller.properties
+var $agentBuildPR = "/opt/";
+var $agentBuildDR = "/opt/";
+var $userinputresultjarsybasePR=$l_Sybase_PFR[32][2];
+var $userinputresultjarsybaseDR=$l_Sybase_PFR[33][2];

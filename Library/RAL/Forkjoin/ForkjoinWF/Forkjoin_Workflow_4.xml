@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?><ws:workflow xmlns:ws="http://www.sanovi.com/panaces/workflow/">
+    <userDef size="0"/>
+    <name>ForkjoinRAL2</name>
+    <version>7.1 35316</version>
+    <description>null</description>
+    <approverList/>
+    <action-list>
+        <action id="0" successPathId="1" failurePathId="1">
+            <registeredName>Custom</registeredName>
+            <name>Custom</name>
+            <uniqueName/>
+            <description>Custom action</description>
+            <deletable>false</deletable>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction type="cmd" etcComputationType="userDefined">
+                    <serverName/>
+                    <command/>
+                    <sudoUsername/>
+                    <execDir/>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                        <dryrunexecType>2</dryrunexecType>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>5433</joinId>
+            <version>7.1 35316</version>
+        </action>
+        <fork-group id="1" successPathId="2">
+            <registeredName>DefaultForkGroup</registeredName>
+            <name>DefaultForkGroup</name>
+            <uniqueName/>
+            <description>DefaultForkGroup action</description>
+            <deletable>false</deletable>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:defaultForkGroup>
+                    <actionsToWaitForList>
+                        <item>5435</item>
+                        <item>5436</item>
+                        <item>5437</item>
+                    </actionsToWaitForList>
+                    <waitForAllActions>true</waitForAllActions>
+                </ws:defaultForkGroup>
+            </privateProperties>
+            <action-list>
+                <action id="0" successPathId="1" failurePathId="1">
+                    <registeredName>StartProcess</registeredName>
+                    <name>StartProcess</name>
+                    <uniqueName/>
+                    <description>StartProcess action</description>
+                    <recurrence>0</recurrence>
+                    <deletable>false</deletable>
+                    <operationType>8</operationType>
+                    <syncName/>
+                    <actionFailureEvent severity="INFO"/>
+                    <userInputEvent severity="INFO"/>
+                    <userInputOnFailureEvent severity="CRITICAL"/>
+                    <privateProperties>
+                        <ws:StartProcess componentName="Production Server" componentType="dynamic" command="date" waitFor="180"/>
+                    </privateProperties>
+                    <joinId>5435</joinId>
+                    <version>7.1 35316</version>
+                </action>
+                <action id="1" successPathId="2" failurePathId="2">
+                    <registeredName>StartProcess</registeredName>
+                    <name>StartProcess</name>
+                    <uniqueName/>
+                    <description>StartProcess action</description>
+                    <recurrence>120</recurrence>
+                    <deletable>false</deletable>
+                    <operationType>8</operationType>
+                    <syncName/>
+                    <actionFailureEvent severity="INFO"/>
+                    <userInputEvent severity="INFO"/>
+                    <userInputOnFailureEvent severity="CRITICAL"/>
+                    <privateProperties>
+                        <ws:StartProcess componentName="Production Server" componentType="dynamic" command="ls" waitFor="180"/>
+                    </privateProperties>
+                    <joinId>5436</joinId>
+                    <version>7.1 35316</version>
+                </action>
+                <action id="2" final="true">
+                    <registeredName>StartProcess</registeredName>
+                    <name>StartProcess</name>
+                    <uniqueName/>
+                    <description>StartProcess action</description>
+                    <recurrence>300</recurrence>
+                    <deletable>false</deletable>
+                    <operationType>8</operationType>
+                    <actionFailureEvent severity="INFO"/>
+                    <userInputEvent severity="INFO"/>
+                    <userInputOnFailureEvent severity="CRITICAL"/>
+                    <privateProperties>
+                        <ws:StartProcess componentName="Production Server" componentType="dynamic" command="df -h" waitFor="180">
+                            <failurePattern>dev</failurePattern>
+                        </ws:StartProcess>
+                    </privateProperties>
+                    <joinId>5437</joinId>
+                    <version>7.1 35316</version>
+                </action>
+            </action-list>
+        </fork-group>
+        <action id="2" final="true">
+            <registeredName>Custom</registeredName>
+            <name>Custom</name>
+            <uniqueName/>
+            <description>This is Custom action</description>
+            <timeToExecute>0</timeToExecute>
+            <recurrence>0</recurrence>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction type="cmd" etcComputationType="userDefined">
+                    <serverName/>
+                    <command/>
+                    <timeout>180</timeout>
+                    <sudoUsername/>
+                    <execDir/>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                        <dryrunexecType>2</dryrunexecType>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>5438</joinId>
+            <version>7.1 35316</version>
+        </action>
+    </action-list>
+</ws:workflow>

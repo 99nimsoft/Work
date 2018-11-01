@@ -1,0 +1,357 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script common function for the HP3PAR solution. 
+ ** AuthorName : Anantha Sakthi
+ ** Created Date : Sep 2016
+ ************************************************************************/
+
+
+
+/**
+*This function is used to edit the HP3PAR tcl file for replication modification
+*@param :	$$a_user - userId.
+			$stringToUpdate -- which string in the tcl have to edit
+			$string -- what string to be edit for $stringToUpdate
+*@return : null
+*@author : Ananth
+*/
+
+function edit_replicationInfotcl_HP3PAR($compIP, $remoteUserNameVal, $remotePwdVal,$stringToUpdate,$string,$pathofTCl){
+	
+	$DRMbuildAgent = $pathofTCl + "/agents/" ; 	
+	
+	if($stringToUpdate == "rep_state"){	 
+	
+		var $sedCommand = "sed -i 's@set rep_state.*@set rep_state \""+$string+"\"@' " + $DRMbuildAgent + "/HP3PAR_RepInfo.tcl";	
+		
+		$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sedCommand);
+		_log($sedCommand);
+		
+		var $sshCommand = "grep -R \"set rep_state\" " +$DRMbuildAgent + "HP3PAR_RepInfo.tcl";
+
+		$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+		
+		$repstatus = $status.split(" ");
+		$repstatus = $repstatus[2];
+		_log($repstatus);
+		if($repstatus = $string){
+			_log("Status updated successfully");
+		} else {
+			_log("rep Status Not Updated successfully");
+		} 
+		
+	} else {
+		var $sedCommand = "sed -i 's@$PANACES_CLI_RETVAL setArgs \"REPLICATION_DETAILS_DATALAG\".*@$PANACES_CLI_RETVAL setArgs \"REPLICATION_DETAILS_DATALAG\" \""+$string+"\"@' " + $DRMbuildAgent + "/HP3PAR_RepInfo.tcl";
+		
+		$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sedCommand);
+		_log($sedCommand);
+		
+		var $sshCommand = "grep -R \"REPLICATION_DETAILS_DATALAG\" " +$DRMbuildAgent + "HP3PAR_RepInfo.tcl";
+
+		$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+		
+		$repstatus = $status.split(" ");
+		$repstatus = $repstatus[3];
+		_log($repstatus);
+		if($repstatus == $string){
+			_log("Data Lag updated successfully");
+		} else {
+			_log("Data Lag Not Updated successfully");
+		} 
+	}	
+
+}
+
+/**
+*This function is used to edit the HP3PAR tcl file for replication modification
+*@param :	$$a_user - userId.
+			$stringToUpdate -- which string in the tcl have to edit
+			$string -- what string to be edit for $stringToUpdate
+*@return : null
+*@author : Omprakash
+*/
+
+function edit_replicationInfotcl_HP3PAR_Remote($compIP, $remoteUserNameVal, $remotePwdVal,$stringToUpdate,$string,$pathofTCl){
+	
+	$DRMbuildAgent = $pathofTCl + "/agents/" ; 	
+	
+	if($stringToUpdate == "rep_state"){	 
+	
+		var $sedCommand = "sudo "+"sed -i 's@set rep_state.*@set rep_state \""+$string+"\"@' " + $DRMbuildAgent + "/HP3PAR_RepInfo.tcl";	
+		
+		$status = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sedCommand);
+		_log($sedCommand);
+		
+		var $sshCommand = "grep -R \"set rep_state\" " +$DRMbuildAgent + "HP3PAR_RepInfo.tcl";
+
+		$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+		
+		$repstatus = $status.split(" ");
+		$repstatus = $repstatus[2];
+		_log($repstatus);
+		if($repstatus = $string){
+			_log("Status updated successfully");
+		} else {
+			_log("rep Status Not Updated successfully");
+		} 
+		
+	} else {
+		var $sedCommand = "sudo "+"sed -i 's@$PANACES_CLI_RETVAL setArgs \"REPLICATION_DETAILS_DATALAG\".*@$PANACES_CLI_RETVAL setArgs \"REPLICATION_DETAILS_DATALAG\" \""+$string+"\"@' " + $DRMbuildAgent + "/HP3PAR_RepInfo.tcl";
+		
+		$status = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sedCommand);
+		_log($sedCommand);
+		
+		var $sshCommand = "grep -R \"REPLICATION_DETAILS_DATALAG\" " +$DRMbuildAgent + "HP3PAR_RepInfo.tcl";
+
+		$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+		
+		$repstatus = $status.split(" ");
+		$repstatus = $repstatus[3];
+		$repStatus=$repstatus.split(",")[0].split('"')[1];
+		_log($repStatus);
+		if($repStatus == $string){
+			_log("Data Lag updated successfully");
+		} else {
+			_log("Data Lag Not Updated successfully");
+		} 
+	}	
+
+}
+
+/**
+*This function is used to edit the HP3PAR tcl file for replication modification
+*@param :	$compIP, $remoteUserNameVal, $remotePwdVal,$stringToUpdate,$string
+			$stringToUpdate -- which string in the tcl have to edit
+			$string -- what string to be edit for $stringToUpdate
+*@return : null
+*@author : Ananth
+*/
+
+function edit_getStatusTcl_HP3PAR($compIP, $remoteUserNameVal, $remotePwdVal,$stringToUpdate,$string,$pathofTCl){
+	
+	$DRMbuildAgent = $pathofTCl + "/agents/" ;  	
+	
+	var $sedCommand = "sed -i 's@set rep_state.*@set rep_state \"" + $string + "\"@' " + $DRMbuildAgent + "/HP3PAR_getStatus.tcl";
+
+	$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sedCommand);
+	_log($sedCommand);
+	
+	var $sshCommand = "grep -R \"set rep_state\" " +$DRMbuildAgent + "HP3PAR_getStatus.tcl";
+
+	$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	
+	$repstatus = $status.split(" ");
+	$repstatus = $repstatus[2];
+	_log($repstatus);
+	if($repstatus == $string){
+		_log("Data Lag updated successfully");
+	} else {
+		_log("Data Lag Not Updated successfully");
+	} 	
+}
+
+/**
+*This function is used to edit the HP3PAR tcl file for replication modification
+*@param :	$compIP, $remoteUserNameVal, $remotePwdVal,$stringToUpdate,$string
+			$stringToUpdate -- which string in the tcl have to edit
+			$string -- what string to be edit for $stringToUpdate
+*@return : null
+*@author : Omprakash V
+*/
+
+function edit_getStatusTcl_HP3PAR_Remote($compIP, $remoteUserNameVal, $remotePwdVal,$stringToUpdate,$string,$pathofTCl){
+	
+	$DRMbuildAgent = $pathofTCl + "/agents/" ;  	
+	
+	var $sedCommand = "sudo "+"sed -i 's@set rep_state.*@set rep_state \"" + $string + "\"@' " + $DRMbuildAgent + "/HP3PAR_getStatus.tcl";
+
+	$status = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sedCommand);
+	_log($sedCommand);
+	
+	var $sshCommand = "grep -R \"set rep_state\" " +$DRMbuildAgent + "HP3PAR_getStatus.tcl";
+
+	$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	
+	$repstatus = $status.split(" ");
+	$repstatus = $repstatus[2];
+	_log($repstatus);
+	if($repstatus == $string){
+		_log("Data Lag updated successfully");
+	} else {
+		_log("Data Lag Not Updated successfully");
+	} 	
+}
+
+/**
+*This function is used to edit the HP3PAR start tcl file for start the replication
+*@param :	$compIP, $remoteUserNameVal, $remotePwdVal
+			
+*@return : null
+*@author : Omprakash
+*/
+function edit_StartTcl_HP3PAR($compIP, $remoteUserNameVal, $remotePwdVal,$pathofTCl){
+	
+	$DRMbuildAgent = $pathofTCl + "/agents/"+"/HP3PAR_start.tcl" ;  
+	$DRMbuildAgent1=$pathofTCl+"/agents/"+"HP3PAR_RepInfo.tcl";
+	
+	var $sedCommand = "sudo "+"sed -i 's@s/INACTIVE/ACTIVE/g.*@s/INACTIVE/ACTIVE/g " + $DRMbuildAgent1+'"' + "@' "+ $DRMbuildAgent;
+
+	$status = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sedCommand);
+	_log($sedCommand);
+}
+
+/**
+*This function is used to add the HP3PAR stop tcl file for start the replication
+*@param :	$compIP, $remoteUserNameVal, $remotePwdVal
+			
+*@return : null
+*@author : Omprakash
+*/
+function edit_StopTcl_HP3PAR($compIP, $remoteUserNameVal, $remotePwdVal,$pathofTCl){
+	
+	$DRMbuildAgent = $pathofTCl + "/agents/"+"/HP3PAR_stop.tcl" ;  	
+	$DRMbuildAgent1=$pathofTCl+"/agents/"+"HP3PAR_RepInfo.tcl";
+	var $sedCommand = "sudo "+"sed -i 's@s/ACTIVE/INACTIVE/g.*@s/ACTIVE/INACTIVE/g " + $DRMbuildAgent1+'"' + "@' "+ $DRMbuildAgent;
+
+	$status = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sedCommand);
+	_log($sedCommand);
+}
+/**
+*This function is used to add the HP3PAR tcl file for start the replication
+*@param :	$compIP, $remoteUserNameVal, $remotePwdVal
+			
+*@return : null
+*@author : Ananth
+*/
+
+function add_HP3PAR_StartTcl($compIP, $remoteUserNameVal, $remotePwdVal,$pathofTCl){
+	
+	$DRMbuildAgent = $pathofTCl + "/agents/" ; 
+	
+	$winExeWget_Command = "wget -r -nd -P " + $DRMbuildAgent + " http://172.168.20.43/jenkins/job/DRM_Automation/ws//HP3PAR/HP3PAR_start.tcl";
+	$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $winExeWget_Command,"Y");
+	
+	var $sshCommand = "chmod 777 "+ $DRMbuildAgent +"HP3PAR_start.tcl";
+
+	$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	
+}
+
+/**
+*This function is used to add the HP3PAR tcl file for start the replication
+*@param :	$compIP, $remoteUserNameVal, $remotePwdVal
+			
+*@return : null
+*@author : Omprakash
+*/
+
+function add_HP3PAR_StartTcl_Remote($compIP, $remoteUserNameVal, $remotePwdVal,$pathofTCl){
+	
+	$DRMbuildAgent = $pathofTCl + "/agents/" ; 
+	
+	$winExeWget_Command = "sudo wget -r -nd -P " + $DRMbuildAgent + " http://172.168.20.43/jenkins/job/DRM_Automation/ws//HP3PAR/HP3PAR_start.tcl";
+	$status = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $winExeWget_Command,"Y");
+	
+	var $sshCommand = "sudo chmod 777 "+ $DRMbuildAgent +"HP3PAR_start.tcl";
+
+	$status = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	
+}
+
+/**
+*This function is used to add the HP3PAR tcl file of replication info and get status
+*@param :	$compIP, $remoteUserNameVal, $remotePwdVal
+			
+*@return : null
+*@author : Ananth
+*/
+
+function add_HP3PAR_RepInfo_getStatusTcl($compIP, $remoteUserNameVal, $remotePwdVal,$pathofTCl){
+	
+	$DRMbuildAgent = $pathofTCl + "/agents/" ; 
+	
+	$winExeWget_Command = "wget -r -nd -P " + $DRMbuildAgent + " http://172.168.20.43/jenkins/job/DRM_Automation/ws//HP3PAR/HP3PAR_RepInfo.tcl";
+	$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $winExeWget_Command,"Y");
+	
+	var $sshCommand = "chmod 777 "+ $DRMbuildAgent +"HP3PAR_RepInfo.tcl";
+
+	$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	
+	$winExeWget_Command = "wget -r -nd -P " + $DRMbuildAgent + " http://172.168.20.43/jenkins/job/DRM_Automation/ws//HP3PAR/HP3PAR_getStatus.tcl";
+	$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $winExeWget_Command,"Y");
+	
+	var $sshCommand = "chmod 777 "+ $DRMbuildAgent +"HP3PAR_getStatus.tcl";
+
+	$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	
+}
+
+/**
+*This function is used to add the HP3PAR tcl file of replication info and get status
+*@param :	$compIP, $remoteUserNameVal, $remotePwdVal
+			
+*@return : null
+*@author : omprakash
+*/
+
+function add_HP3PAR_RepInfo_getStatusTcl_Remote($compIP, $remoteUserNameVal, $remotePwdVal,$pathofTCl){
+	
+	$DRMbuildAgent = $pathofTCl + "/agents/" ; 
+	
+	$winExeWget_Command = "sudo wget -r -nd -P " + $DRMbuildAgent + " http://172.168.20.43/jenkins/job/DRM_Automation/ws//HP3PAR/HP3PAR_RepInfo.tcl";
+	$status = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $winExeWget_Command,"Y");
+	
+	var $sshCommand = "sudo chmod 777 "+ $DRMbuildAgent +"HP3PAR_RepInfo.tcl";
+
+	$status = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	
+	$winExeWget_Command = "sudo wget -r -nd -P " + $DRMbuildAgent + " http://172.168.20.43/jenkins/job/DRM_Automation/ws//HP3PAR/HP3PAR_getStatus.tcl";
+	$status = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $winExeWget_Command,"Y");
+	
+	var $sshCommand = "sudo chmod 777 "+ $DRMbuildAgent +"HP3PAR_getStatus.tcl";
+
+	$status = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	
+}
+
+/**
+*This function is used to add the HP3PAR tcl file for stop the replication
+*@param :	$compIP, $remoteUserNameVal, $remotePwdVal
+			
+*@return : null
+*@author : Ananth
+*/
+
+function add_HP3PAR_StopTcl($compIP, $remoteUserNameVal, $remotePwdVal,$pathofTCl){
+	
+	$DRMbuildAgent = $pathofTCl + "/agents/" ; 
+	
+	$winExeWget_Command = "wget -r -nd -P " + $DRMbuildAgent + " http://172.168.20.43/jenkins/job/DRM_Automation/ws//HP3PAR/HP3PAR_stop.tcl";
+	$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $winExeWget_Command,"Y");
+	
+	var $sshCommand = "chmod 777 "+ $DRMbuildAgent +"HP3PAR_stop.tcl";
+
+	$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	
+}
+
+/**
+*This function is used to add the HP3PAR tcl file for stop the replication for remote
+*@param :	$compIP, $remoteUserNameVal, $remotePwdVal
+			
+*@return : null
+*@author : omprakash
+*/
+function add_HP3PAR_StopTcl_Remote($compIP, $remoteUserNameVal, $remotePwdVal,$pathofTCl){
+	
+	$DRMbuildAgent = $pathofTCl + "/agents/" ; 
+	
+	$winExeWget_Command = "sudo wget -r -nd -P " + $DRMbuildAgent + " http://172.168.20.43/jenkins/job/DRM_Automation/ws//HP3PAR/HP3PAR_stop.tcl";
+	$status = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $winExeWget_Command,"Y");
+	
+	var $sshCommand = "sudo chmod 777 "+ $DRMbuildAgent +"HP3PAR_stop.tcl";
+
+	$status = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	
+}

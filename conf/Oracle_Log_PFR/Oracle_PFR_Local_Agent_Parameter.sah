@@ -1,0 +1,126 @@
+ var $l_Oracle_PFR=_readExcelFile($SAHI_HOME+ "\\conf\\Oracle_Log_PFR\\Oracle_PFR_Parameter.xls","Local");
+
+//This user Input required to Login the DRM server
+var $username = $l_Oracle_PFR[3][2]; // DRM server GUI user name e.g. "swati"
+var $password = $l_Oracle_PFR[4][2]; // DRM server GUI pwd
+
+//Remote Agent Installation
+var $agentBuildPR ="/opt";
+var $agentBuildDR="/opt/";
+var $PfrStart="1";
+
+$oraclePort = "1555";
+
+var $portdataset = "1521";
+
+//This user Input required to install the local agents
+var $localAgentPathPR = $l_Oracle_PFR[16][5]; // this is the Path where user has install the agent on PR "/opt/panaces/"
+var $localAgentPathDR = $l_Oracle_PFR[17][5]; // this is the Path where user has install the agent on DR "/opt/panaces/"
+var $localAgentPath= $l_Oracle_PFR[17][5];
+
+
+var $PfrStart="1";
+var $PfrServicePath=$l_Oracle_PFR[21][5];
+
+
+var $RemoteAgentPathPR = $l_Oracle_PFR[21][5];
+var $RemoteAgentPathDR = $l_Oracle_PFR[22][5];
+
+
+var $userinputoraclehome=$l_Oracle_PFR[18][5];
+var $userinputresultjarora =$l_Oracle_PFR[19][5];
+var $userinputresultjlibora=$l_Oracle_PFR[20][5];
+
+//For OS AUTHENTICATION
+var $OS_Authentication = $l_Oracle_PFR[20][2];
+
+//This user Input required to create the Site
+var $locationPR = "PR"; // PR Site Location
+var $incharge = "drmadmin"; // Site Incharge
+var $addressPR = "Mumbai"; // PR site Address
+var $locationDR = "DR"; // DR Site Location
+var $addressDR = "Bangalore";// DR site Address
+
+//This user Input required to create the Component for Local or remote
+var $agentType = "Local"; // This if for agent type always enter as e.g. Local or Remote.Note Here first letter is upper case and remaining lower case.
+var $compIPPR = $l_Oracle_PFR[7][2]; // PR Componenet ID
+var $compIPDR = $l_Oracle_PFR[8][2]; // DR Componenet ID
+var $remoteUserNameValPR = $l_Oracle_PFR[9][2]; // PR Machine user name. this information required for both local and remote
+var $remotePwdValPR = $l_Oracle_PFR[10][2]; // PR Machine Pwd name. this information required for both local and remote
+var $remoteUserNameValDR = $l_Oracle_PFR[11][2];// DR Machine user name. this information required for both local and remote
+var $remotePwdValDR = $l_Oracle_PFR[12][2];// PR Machine Pwd name. this information required for both local and remote
+var $compNamePR = $l_Oracle_PFR[13][2]; // PR Componenet Name
+var $compNameDR = $l_Oracle_PFR[14][2]; // DR Componenet Name
+var $internalLogon = "sysdba";
+
+//This user Input required to create the dataset
+var $dbSidSelect = $l_Oracle_PFR[3][5]; 
+var $userPR =  $l_Oracle_PFR[4][5]; // for oracle db connection
+var $pwdPR =  $l_Oracle_PFR[5][5]; // for oracle db connection
+var $userDR =  $l_Oracle_PFR[6][5]; // for oracle db connection
+var $pwdDR =  $l_Oracle_PFR[7][5]; // for oracle db connection
+var $datasetNamePR = $l_Oracle_PFR[8][5]; // PR dataset name
+var $datasetNameDR = $l_Oracle_PFR[9][5]; // DR dataset name
+
+//This user Input required to create the protection Scheme
+var $sernamePR = $l_Oracle_PFR[12][5]; // PR Protection Scheme name
+var $sernameDR = $l_Oracle_PFR[13][5]; // DR Protection Scheme name
+var $userNameVal = "oracle";
+var $pwdVal = "oracle";
+var $dgDiscoveryHostIPPR = $compIPPR;// protection scheme
+var $dgDiscoveryHostIPDR = $compIPDR;
+var $dgDiscoverySID = $l_Oracle_PFR[3][5]; // database Name
+var $mgmtHostPFRPR = $compNamePR + " (" + $compIPPR + ")"; 
+var $mgmtHostPFRDR = $compNameDR + " (" + $compIPDR + ")"; 
+
+var $systemType =  $l_Oracle_PFR[23][2];
+var $osType =  $l_Oracle_PFR[22][2];
+
+
+
+//This user Input required to create the Group
+var $groupName = $l_Oracle_PFR[17][2]; // Group name
+var $groupDescription = "ORA_PFR"; // Group description
+
+// *********************************************************************************************************************************************
+// Important Note : Please don't modify/edit any below variable or its value.
+// If you made any changes of variable and its value, script will not execute.
+// *********************************************************************************************************************************************
+
+var $primaryPanacesServer = $drmServer; // this is Primary DRM server
+var $panacesAgentNodeAddressPR = $compIPPR;
+var $panacesAgentNodeAddressDR = $compIPDR;
+var $compsitePR = $locationPR;
+var $compsiteDR = $locationDR;
+var $primaryComponents = $compNamePR;
+var $remoteComponents = $compNameDR;
+var $primaryDatasets = $datasetNamePR;
+var $remoteDatasets = $datasetNameDR;
+var $primaryProtections = $sernamePR;
+var $remoteProtections = $sernameDR;
+var $mgmtHostDGPR =$compNamePR+' ('+$compIPPR+')';
+var $mgmtHostDGDR = $compNameDR+' ('+$compIPDR+')';
+var $dependentComponentNamePR = $compNamePR;
+var $dependentComponentNameDR = $compNameDR;
+var $oracleListenerIPPR = $dgDiscoveryHostIPPR;
+var $oracleListenerIPDR = $dgDiscoveryHostIPDR;
+var $incharge = "drmadmin";
+var $desiredRpo = "300";
+var $rpoCompute = "180";
+var $systemTypeProtection = "PFR"; // Protection Scheme type
+var $SolutionSignature = "Oracle Archive Logs with PFR"; // Solution type
+var $systemTypeDataset = "Oracle"; // database subsystem
+var $datasetType = "Oracle";// database Type
+
+
+var $oracleAgentChk="1";
+var $pfrAgentChk="1";
+var $filePFRral= "BCS-OracleArLogPFR-SetupPFRReplication.xml"; //Location of PFR fileset Ral 
+var $WFPath = "Oracle\\OracleArLogPFR"; // Location of SO/SB/FO xml file
+var $fileNC = "BCS-OracleArLogPFR-NC.xml";
+var $fileRNC= "BCS-OracleArLogPFR-RNC.xml";
+var $fileSO = "BCS-OracleArLogPFR-SO.xml"; // Location of SO xml file
+var $fileSB = "BCS-OracleArLogPFR-SB.xml"; // Location of SB xml file
+var $fileFO = "BCS-OracleArLogPFR-FO.xml"; // Location of FO xml file
+var $dgDiscoveryDest = "/.*service=.*/i";
+var $WFPathForPFR = "/Oracle/OracleArLogPFR";

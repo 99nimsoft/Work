@@ -1,0 +1,21 @@
+
+var $l_customActionRAL = _readExcelFile("../../conf/RAL/CommonRalInputs.xls","Sheet1");  //To read the inputs from the drm_inputs excel file.
+
+
+$serverIP = $l_customActionRAL[3][3];
+$serverUsername = $l_customActionRAL[4][3];
+$serverPassword = $l_customActionRAL[5][3];
+$groupName = $l_customActionRAL[6][3];
+$directoryPath = $l_customActionRAL[7][3];
+	
+$WorkflowName = "AutomationRal1";
+
+$site = "DRM_Site";
+$os = "Linux";
+$compName = $os + "_" +$serverIP; 
+
+$ralString = "work";
+$ralCategory = "Workflow";
+$ralName = "Custom";
+
+

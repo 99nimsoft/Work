@@ -1,0 +1,180 @@
+var $l_StartProcessRAL = _readExcelFile("../../../conf/RAL/StartProcess/StartProcessRalInputs.xls","StartProcess");  //To read the inputs from the drm_inputs excel file.
+
+
+	
+
+
+//var $site = "DRM_Site";
+//This user Input required to create the Site
+var $locationPR = "PR"; // PR Site Location
+var $incharge = "drmadmin"; // Site Incharge
+var $addressPR = "Mumbai"; // PR site Address
+var $locationDR = "DR"; // DR Site Location
+var $addressDR = "Bangalore";// DR site Address
+var $compsitePR = $locationPR;
+var $compsiteDR = $locationDR;
+var $systemType = $l_StartProcessRAL[9][3];
+var $osType = $l_StartProcessRAL[12][3];
+
+//This user Input required to create the Component for remote
+var $agentType = "Remote";
+var $compIPPR = $l_StartProcessRAL[13][3]; // PR Componenet ID
+var $compIPDR = $l_StartProcessRAL[14][3];// DR Componenet ID
+var $remoteUserNameValPR = $l_StartProcessRAL[15][3]; // PR Machine user name. this information required for both local and remote
+var $remotePwdValPR = $l_StartProcessRAL[16][3]; // PR Machine Pwd name. this information required for both local and remote
+var $remoteUserNameValDR = $l_StartProcessRAL[17][3];// DR Machine user name. this information required for both local and remote
+var $remotePwdValDR = $l_StartProcessRAL[18][3];// PR Machine Pwd name. this information required for both local and remote
+var $compNamePR = $l_StartProcessRAL[19][3]; // PR Componenet Name
+var $compNameDR = $l_StartProcessRAL[20][3]; // DR Componenet Name
+
+//This user Input required to create the Component for Local
+var $localAgentPath = $l_StartProcessRAL[11][5];
+var $agentBuildPath = $l_StartProcessRAL[12][5];
+var $LocalCompIP = $l_StartProcessRAL[13][5];
+var $LocalCompName = $l_StartProcessRAL[14][5];
+var $LocalCompUserName = $l_StartProcessRAL[15][5];
+var $LocalCompPassword = $l_StartProcessRAL[16][5];
+
+
+
+//This user Input required to create the dataset
+var $systemTypeDataset = "Application SubSystem";
+var $datasetNamePR = $l_StartProcessRAL[22][3]; // PR dataset name
+var $datasetNameDR = $l_StartProcessRAL[23][3]; // DR dataset name
+var $fileNameTextPathPR = $l_StartProcessRAL[24][3];
+var $fileNameTextPathDR = $l_StartProcessRAL[25][3];
+var $dependentComponentNamePR = $compNamePR;
+var $dependentComponentNameDR = $compNameDR;
+
+
+
+//This user Input required to create the protection Scheme
+var $systemTypeProtection = "PFR"; 
+var $sernamePR = $l_StartProcessRAL[27][3]; // PR Protection Scheme name
+var $sernameDR = $l_StartProcessRAL[28][3]; // DR Protection Scheme name
+var $mgmtHostPFRPR = $compNamePR + " (" + $compIPPR + ")"; 
+var $mgmtHostPFRDR = $compNameDR + " (" + $compIPDR + ")"; 
+
+var $groupName = $l_StartProcessRAL[6][3];
+var $groupDescription = "APP PFR";
+var $SolutionSignature = "Application SubSystem with PFR"; 
+
+
+var $WorkflowName = $l_StartProcessRAL[8][3];
+
+var $ralString ="Process";
+var $ralCategory ="Process";
+var $ralName ="StartProcess";
+
+var $username=$l_StartProcessRAL[10][3];
+var $password=$l_StartProcessRAL[11][3];
+
+var $compNameDynamic="Production Server";
+var $drServer=$l_StartProcessRAL[20][3];
+var $compNameStatic =  $l_StartProcessRAL[17][3];
+
+var $command = $l_StartProcessRAL[31][3];
+var $command1 = $l_StartProcessRAL[42][3];
+var $command2 = $l_StartProcessRAL[41][3];
+
+var $NewScriptName = $l_StartProcessRAL[31][4];
+var $ExistingScriptName = $l_StartProcessRAL[32][4];
+var $waitTime = $l_StartProcessRAL[31][7];
+var $rootPath = "/";
+var $commandWithSingleQuote = $l_StartProcessRAL[33][3];
+var $scriptWithSingleQuote = $l_StartProcessRAL[33][4];
+var $scriptWithSingleQuote1 = $l_StartProcessRAL[33][5];
+
+var $commandWithDoubleQuote = $l_StartProcessRAL[34][3];
+var $scriptWithDoubleQuote = $l_StartProcessRAL[34][4];
+var $scriptWithDoubleQuote1 = $l_StartProcessRAL[34][5];
+
+var $commandWithPipe = $l_StartProcessRAL[35][3];
+var $scriptWithPipe = $l_StartProcessRAL[35][4];
+var $scriptWithPipe1 = $l_StartProcessRAL[35][5];
+
+var $Spattern1 = $l_StartProcessRAL[37][5];
+var $Fpattern1 = $l_StartProcessRAL[37][6];
+var $Spattern2 = $l_StartProcessRAL[38][5];
+var $Fpattern2 = $l_StartProcessRAL[38][6];
+var $Spattern3 = $l_StartProcessRAL[39][5];
+var $Fpattern3 = $l_StartProcessRAL[39][6];
+
+var $Spattern4a = $l_StartProcessRAL[40][5];
+var $Fpattern4b = $l_StartProcessRAL[40][6];
+var $Spattern4c = $l_StartProcessRAL[41][5];
+var $Fpattern4d = $l_StartProcessRAL[41][6];
+var $Spattern4e = $l_StartProcessRAL[42][5];
+var $Fpattern4f = $l_StartProcessRAL[42][6];
+var $Spattern4g = $l_StartProcessRAL[43][5];
+var $Fpattern4h = $l_StartProcessRAL[43][6];
+var $Spattern4i = $l_StartProcessRAL[44][5];
+var $Fpattern4j = $l_StartProcessRAL[44][6];
+
+var $Spattern4k = $l_StartProcessRAL[45][5];
+var $Fpattern4l = $l_StartProcessRAL[45][6];
+
+var $Spattern4m = $l_StartProcessRAL[46][5];
+var $Fpattern4n = $l_StartProcessRAL[46][6];
+
+
+var $Spattern4o = $l_StartProcessRAL[47][5];
+var $Fpattern4p = $l_StartProcessRAL[47][6];
+
+
+var $Spattern5a = $l_StartProcessRAL[41][5];
+var $Fpattern5a = $l_StartProcessRAL[41][6];
+var $Spattern5b = $l_StartProcessRAL[42][5];
+var $Fpattern5b = $l_StartProcessRAL[42][6];
+var $Spattern5c = $l_StartProcessRAL[43][5];
+var $Fpattern5c = $l_StartProcessRAL[43][6];
+var $SString="Did not find the success pattern";
+var $FString="Found failure pattern";
+// KV Values for Start process RAL
+var $CommandKvName = "PANOS_EXEC_FILE_PATH";
+var $WaitTimeKvName = "PANOS_EXEC_WAIT_MODE";
+var $kvFlag = $l_StartProcessRAL[31][8];
+
+var $Spattern=" ";
+var $Fpattern=" ";
+
+// Solaris :
+var $SolCompIP = $l_StartProcessRAL[41][3]; // PR Componenet ID
+var $SolCompName = $l_StartProcessRAL[42][3];
+var $compIPPR = $l_StartProcessRAL[13][3];
+var $compIPPR = $l_StartProcessRAL[13][3];
+
+
+
+
+
+
+var $primaryPanacesServer = $drmServer; // this is Primary DRM server
+var $panacesAgentNodeAddressPR = $compIPPR;
+var $panacesAgentNodeAddressDR = $LocalCompIP;
+var $compsitePR = $locationPR;
+var $compsite = $compsitePR;
+var $compsiteDR = $locationDR;
+var $primaryComponents = $compNamePR;
+var $remoteComponents = $compNameDR;
+var $primaryDatasets = $datasetNamePR;
+var $remoteDatasets = $datasetNameDR;
+var $primaryProtections = $sernamePR;
+var $remoteProtections = $sernameDR;
+var $mgmtHostDGPR =$compNamePR+' ('+$compIPPR+')';
+var $mgmtHostDGDR = $compNameDR+' ('+$compIPDR+')';
+var $dependentComponentNamePR = $compNamePR;
+var $dependentComponentNameDR = $compNameDR;
+var $incharge = "drmadmin";
+var $desiredRpo = "300";
+var $rpoCompute = "300";
+var $systemTypeProtection = "PFR"; // Protection Scheme type
+var $SolutionSignature = "Application SubSystem with PFR"; // Solution type
+var $systemTypeDataset = "LinuxOS"; // database subsystem
+var $datasetType = "Application SubSystem";// database Type
+var $drmDbUserName = "automation"; // DRM server database user id
+var $drmDbPassword = "sanovi";// DRM server database password
+var $APP_PFRAgentChk = "1";
+var $pfrAgentChk="1";
+//var $localAgentPathPR =  $RemoteAgentPathPR;
+//var $localAgentPathDR = $RemoteAgentPathDR;

@@ -1,0 +1,114 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the remote agent test cases which are the part of   MSSQL FullDB Hitachi solution. 
+ ** AuthorName : Aditi Jain
+ ** Created Date : April 2015
+ ************************************************************************/
+
+_log("=================================Pre-Condition===================================", "Custom1");
+
+//don't change the below line.
+_include("../Library/Solution_Signature/Include/MSSQL_FDB_HUR_Include.sah");
+// mentioned the correct parameter file name which user are going to execute within the "" code.
+_include("../conf/DRMInstallation_Parameter.sah");
+_include("../conf/MSSQL_FDB_HUR/MSSQL_FDB_HUR_Remote_Agent_Parameter.sah");
+_include("../conf/MSSQL_FDB_HUR/UserSelected_MSSQL_FDB_HUR_Testcase.sah");
+
+// *************************************************************************************************************************************************
+// Notes: below test cases for Local agent
+
+
+
+
+
+
+
+Login_001();
+
+
+_log("=================================Test========================================", "Custom1");
+
+
+
+if ($g_executeMssqlFdbHURAll == "Y" || $g_siteMssqlFdbHUR == "Y") {
+	var $test0 = _testcase("Site_0003", "Create New Site");
+	$test0.start();
+	Site_0003();
+	$test0.end();
+}
+
+
+if ($g_executeMssqlFdbHURAll == "Y" || $g_agentNodeMssqlFdbHUR == "Y") {
+	var $test1 = _testcase("Object_Manager/ Common/ Components/ Component_04", "Create Agent Node");
+	$test1.start();
+	Agent_node_001();
+	$test1.end();
+}
+
+if ($g_executeMssqlFdbHURAll == "Y" || $g_componentRemoteDiscoveryMssqlFdbHUR == "Y") {
+	var $test2 = _testcase("Object_Manager/ Common/ Components/ Component_04", "Create New Component");
+	$test2.start();
+	MssqlFdbHUR_Component_Remote_Discovery_0018();
+	$test2.end();
+}
+
+if ($g_executeMssqlFdbHURAll == "Y" || $g_datasetDiscoveryMssqlFdbHUR == "Y") {
+	var $test3 = _testcase("Object_Manager/Dataset/MSSQL/OraDiscovery_0006 ", "Dataset Discovery");
+	$test3.start();
+	MssqlFdbHUR_Dataset_Discovery_0007();
+	$test3.end();
+}
+
+if ($g_executeMssqlFdbHURAll == "Y" || $g_datasetAutoDiscoveryMssqlFdbHUR == "Y") {
+	var $test4 = _testcase("Object_Manager/Dataset/MSSQL/Ora_Auto_DatasetDiscovery0002", "MSSQL Auto Dataset Discovery");
+	$test4.start();
+	MssqlFdbHUR_Auto_DatasetDiscovery0009();
+	$test4.end();
+}
+
+if ($g_executeMssqlFdbHURAll == "Y" || $g_protectionSchemeDiscoveryMssqlFdbHUR == "Y") {
+	var $test5 = _testcase("Object_Manager/ProtectionScheme/DataGaurd/MssqlFdbHUR_Discovery0002", "Protection Scheme Discovery");
+	$test5.start();
+	MssqlFdbHUR_Protectionscheme_Discovery_0018();
+	$test5.end();
+}
+
+if ($g_executeMssqlFdbHURAll == "Y" || $g_protectionSchemeDetailsMssqlFdbHUR == "Y") {
+	var $test6 = _testcase("Object_Manager/ProtectionScheme/DataGaurd/MssqlFdbHUR_Discovery0003", "DataGaurd Configured Information");
+	$test6.start();
+	MssqlFdbHUR_Configured_information0003();
+	$test6.end();
+}
+
+
+if ($g_executeMssqlFdbHURAll == "Y" || $g_protectionSchemeStatusMssqlFdbHUR == "Y") {
+	var $test7 = _testcase("Object_Manager/ProtectionScheme/DataGaurd/MssqlFdbHUR_Discovery0003", "DataGaurd Configured Information");
+	$test7.start();
+	MssqlFdbHUR_Protectionscheme_status_0021();
+	$test7.end();
+}
+
+
+
+if ($g_executeMssqlFdbHURAll == "Y" || $g_groupCreationMssqlFdbHUR == "Y") {
+	var $test8 = _testcase("Continuity_Manager/Common/FG/Group/GroupCreation_0001", "MssqlFdbHUR Group Creation");
+	$test8.start();
+	MssqlFdbHUR_GroupCreation_0022();
+	$test8.end();
+}
+
+if ($g_executeMssqlFdbHURAll == "Y" || $g_moveGroupToManageMssqlFdbHUR == "Y") {
+	var $test9 = _testcase("Continuity_Manager/Common/FG/Group/GroupCreation_0006", "Move Group to Manage");
+	$test9.start();
+	MssqlFdbHUR_Move_Group_Manage_0006();
+	$test9.end();
+}
+
+if ($g_executeMssqlFdbHURAll == "Y" || $g_changeContinuityStateMssqlFdbHUR == "Y") {
+	var $test10 = _testcase("Continuity_Manager/Common/FG/Manage/Change_Continuity_State_0001", "Change Continuity Status");
+	$test10.start();
+	MssqlFdbHUR_Change_Continuity_State_0001();
+	$test10.end();
+}
+

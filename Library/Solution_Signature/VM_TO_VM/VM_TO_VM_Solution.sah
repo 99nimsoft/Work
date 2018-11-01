@@ -1,0 +1,1009 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are the part of  APP PFR solution screen wise fetching and comparing data from Db and GUI. 
+ ** @AuthorName : Govinda Mengji
+ ** Created Date : Nov 2013
+ ************************************************************************/
+
+/** Objective : This script contains all the functions specifics to CMM Discovery Page
+ ** AuthorName : Anita
+ ** Created Date : Apr 2017
+ ************************************************************************/
+/**
+* Function is to vCentre PR , AWS DR in Management services
+*@param  :$siteNamePR,$msTypePR,$vcenterName,$vcenterIp,$vcenterusername,$vcenterpassword
+*@return : null
+*@Author: Anita
+*
+*/
+
+function CreateManagementService($siteName,$msType,$vcenterName,$vCenterServer,$vcenterusername,$vcenterpassword){
+	navigateToDiscovery();
+	if(_exists(_link("Management Service"))){
+		_click(_link("Management Service"));
+		/////////////////////////////////////////////////////////////////////
+		var $mangList = _getText(_table("report"));
+		_log($mangList);
+		var $vcenterExists =$mangList.match($vcenterName);
+		//_log($vcenterExists);
+		//_log($awsExists);
+		if($vcenterExists ==null){
+			var $msVentreResult= vCenter($siteName,$msType,$vcenterName,$vCenterServer,$vcenterusername,$vcenterpassword);
+			_log($msVentreResult);
+			if ($msVentreResult == "ACTIVE"){
+				_log("Successfully Created vCentre for PR in Management Service is ACTIVE");
+			}
+			else{
+				_log(" Created vCentre for PR in Management Service is UNKNOWN");
+			}
+		}
+		else{
+			_log("Already exists vCentre for PR in Management Service");
+		}
+		////////////////////////////////////////////////////////////////////
+	}
+	else{		
+		_fail("Management Services link not present,hence failing the test");
+	}
+}
+
+function vCenter($siteName,$msType,$vcenterName,$vCenterServer,$vcenterusername,$vcenterpassword){
+	
+		_click(_link("Add Management Service"));
+		_assertExists(_cell("Management Service Discovery"));
+		
+		_setSelected(_select("msSite"), $siteName);
+		_setSelected(_select("msType"), $msType);
+		_setValue(_textbox("msName"), $vcenterName);
+		_setValue(_textbox("vCenterServer"), $vCenterServer);
+		_click(_button("Ping"));
+		_wait(5000,_isVisible(_span("Ping to "+$vCenterServer+" was successful.")));
+		var $pingTest=_getText(_span("Ping to "+$vCenterServer+" was successful."));
+		_assertExists($pingTest);
+		 
+		_setValue(_textbox("userName2"), $vcenterusername);
+		_setValue(_password("password2"), $vcenterpassword);
+		_click(_button("Test Credentials"));		
+        _wait(10000,_isVisible(_span("Credential Check Passed")));
+        var $credVcentrechk=_getText(_span("Credential Check Passed"));
+        _assertExists($credVcentrechk);
+        if($credVcentrechk!="Credential Check Passed"){
+        	_log("Credential Check Failed:Unable to get response for this request in configured time");
+        }
+		_click(_submit("Save"));
+		
+		_wait(10000,_isVisible(_cell("Management Service List")));		
+		var $vcenterNameExist = _getText(_link($vcenterName, _near(_cell("VCENTER"))));
+		_assertExists("VCENTER for PR created",$vcenterNameExist);
+		
+		// Looping till VCENTER status becomes ACTIVE
+		var $i = 1;
+		while ( $i < 10 ) {
+			var $msPRStatus =  _getText(_cell(4, _near(_link($vcenterName))));
+			_log($msPRStatus);
+			if ( $msPRStatus == "ACTIVE" ) {
+				break;
+			} 
+			_wait(30000);
+			Navigate_Management_Service();
+			$i++ ;
+		} // while ended
+		var $msPRStatus =  _getText(_cell(4, _near(_link($vcenterName))));
+		return $msPRStatus;
+}
+/*
+function ApplicationDiscovery(){
+	
+	AppStackDiscoveryAWS();	
+	if($addLBflag=="yes"||$addLBflag=="Yes" || $addLBflag=="YES"){
+		_log("ADD Load Balancer = "+$addLBflag);
+		addLoadBalancer($updateLBName); //Click ADD LB btn and Publish
+	}
+	else{
+		_log("ADD Load Balancer = "+$addLBflag);
+	}
+	getUtilizationProductionServers(); //UI changes Jun12th2017
+	completeWorkLoadAnalysisSubmit($VMsNum);
+	performADCTransform(); 
+	addHACloneVM($VMsNum,$HACloneChoice,$cloneVMSize);
+	addNetworkConfig(); 
+	addSecurityConfig();
+	
+	goForRecomendation();   
+	setAvailabilityZoneANDValidate($VMsNum,$cloneVMSize,$HACloneChoice);
+	
+	if($excludeStorageDiskFlag =="yes" || $excludeStorageDiskFlag =="Yes" || $excludeStorageDiskFlag =="YES"){
+		_log("No of Storage Disk exclude = "+$excludeStorageDiskNum);
+		addStorageInfoToVM($VMsNum,$excludeStorageDiskFlag,$excludeStorageDiskNum);
+	}
+	
+	if($autoStorageVM =="no" || $autoStorageVM =="No" || $autoStorageVM =="NO"){
+		_log("VM has auto storage = "+$autoStorageVM);
+		addStorageInfoToVM($VMsNum,$excludeStorageDiskFlag,$excludeStorageDiskNum);
+	}
+	else{
+		_log("VM has auto storage = "+$autoStorageVM);
+	}
+	validateAppstack();
+	//submitBluePrint(); 
+}
+*/
+
+function ApplicationDiscovery($locationPR,$appStackName,$vcentreNamePR,$mserviceipPR,$vmIP,$tierNum,$VMsNum){
+	NavigateToAWSDiscoveryWizard();
+	if(_exists(_link($appStackName))){
+		if($isMultiple=="yes"){
+		Navigate_to_Appstack($appStackName);
+		}
+		else
+		{
+			_log("Delete Appstack if already Exists");
+			_click(_span("glyphicon glyphicon-trash", _near(_div($appStackName))));
+			_click(_button("Confirm"));
+			_wait(3000);
+			}
+		}
+		
+	
+	_click(_button("Virtual Application Recovery"));
+	_wait(3000);
+	_call(top.location.reload());
+	//var $appDisc = _getText(_listItem("Application Discovery"));
+	//_assertExists($appDisc);
+	
+	if($tierNum == "1" && $VMsNum =="1"){	
+		appStackCreation($locationPR,$appStackName,$vcentreNamePR,$mserviceipPR,$vmIP,$tierNum,$VMsNum);
+	}
+	else{
+	_log("Select the Tier and add VMs");
+		appStackCreationMultiTier($locationPR,$appStackName,$vcentreNamePR,$mserviceipPR,$vmIP,$tierNum,$VMsNum);
+	}
+}
+
+
+function appStackCreation($locationPR,$appStackName,$vcenterName,$vCenterServer,$vmIP,$tierNum,$VMsNum){
+	
+	_setValue(_textbox("app-name"), $appStackName);
+	_log("Tier Number is: "+$tierNum);
+	_log("default 1 Tier 1 VM is application");
+	_setValue(_textbox("app-name"), $appStackName);
+	_click(_submit("Add Tier"));
+	_click(_button("Select Tier"));
+	_click(_link("Application"));
+	_click(_submit("Add Server"));
+	_wait(3000);
+	if(_radio("server", _near(_label("Virtual Machine"))).checked){
+		_log("Add Server for Virtual machine is enabled");
+	}
+	if(_exists(_submit("/Discover VMs/", _near(_cell($vcenterName))))){
+		_click(_submit("/Discover VMs/", _near(_cell($vcenterName)))); 
+		var $i=1;
+		while(i<20){
+			if(_exists(_cell($vmIP))){
+				break;
+			}
+			if($isMultiple=="yes"){
+			_wait(200000);
+			}
+			else
+				{
+				_wait(200000);
+				}
+			_log("wait for loading ");
+			$i++;
+		}
+		_check(_checkbox("chkboxSelVM", _near(_cell($vmIP))));
+		_wait(1000);
+		var $DatastoreName=_getText(_cell(2,_near(_cell($vmIP))));
+		_log($DatastoreName);
+		if($cgMapping=="yes") 
+			{
+			CG_Mapping($DatastoreName);
+			}
+		var $vmName1=_getText(_cell(0,_near(_cell($vmIP))));
+		
+		_click(_link("Application", _near(_cell($vmIP))));
+		_wait(1000);
+		
+		//_click(_button("Save"));
+		if(_exists(_button("Apply"))){
+			_click(_button("Apply"));
+		}
+		else{
+			_click(_button("Save"));
+		}
+		_wait(5000);
+		_click(_button("closeServerModal"));
+		_wait(5000);
+		if(_exists(_link($vmName1))){
+			_log($vmName1 + " VM added success");
+			_click(_submit("Next"));
+			}
+		else{
+			_log($vmName1 + " VM is not added properly .. please check VM snapshot should be cleared");
+		}
+	}	
+	else{
+		_fail("Discover VMs button not exists: hence failed in appstack creation");
+	}	 	
+}
+
+function appStackCreationMultiTier($siteNamePR,$appStackName,$vcenterName,$vCenterServer,$vmIP,$tierNum,$VMsNum,$selTier,$vmIPno){
+	
+    _log("Appstack Name is: "+$appStackName);
+	_setValue(_textbox("app-name"), $appStackName);
+    _log("Select Tier is: "+$selTier);
+    _log("VM is: "+$vmIPno);
+	//////select Tiers//////////////
+	for(var $trNum=0; $trNum<$tierNum; $trNum++){
+		
+		_click(_submit("Add Tier"));
+		_wait(1000);
+		_click(_button("Select Tier"));
+		_wait(1000);
+		_mouseOver(_link($selTier[$trNum]));
+		_click(_link($selTier[$trNum]));
+		_wait(1000);
+		if($selTier[$trNum]=="Custom"){
+			_click(_link($selTier[$trNum]));
+			_wait(1000);
+			_highlight(_textbox("tier-text custom-input"));
+			_setValue(_textbox("tier-text custom-input"), "Custom"+$trNum);
+			_wait(2000);
+		}
+		else{
+			continue;
+		}
+	}
+	//////click on ADD VM btn////////////////////////////////////////////////////////////
+	
+	_click(_submit("Add Server"));
+	_wait(3000);
+	if(_radio("server", _near(_label("Virtual Machine"))).checked){
+		_log("Add Server for Virtual machine is enabled");
+	}
+	_click(_submit("/Discover VMs/", _near(_cell($vcenterName)))); 
+	var $i=1;
+	while($i<30){
+		var $vmRes=_getText(_div("vm-result"));		
+		if(_exists(_div("vm-result"))){
+			_log($vmRes);
+			break;
+		}
+		_wait(10000);
+		_log("wait for loading VMs");
+		$i++;
+	}//loop ends	
+	///////////////////////////////select VMs//////////////////////////////////////////////
+	_log("No of Tier is: " +$tierNum);
+	_log("No of VMs is: " +$VMsNum);
+	if($tierNum == $VMsNum){
+		for(var $vmNum=0; $vmNum<$tierNum; $vmNum++){
+			if (_exists(_checkbox("chkboxSelVM", _near(_cell($vmIPno[$vmNum]))))){
+				_check(_checkbox("chkboxSelVM", _near(_cell($vmIPno[$vmNum]))));
+				_wait(2000);
+				_click(_link($selTier[$vmNum], _near(_cell($vmIPno[$vmNum]))));
+				_wait(2000);
+			}
+			else{
+				continue;
+			}
+		}
+	}
+	else{
+		for(var $vmNum=0; $vmNum<$tierNum; $vmNum++){			
+			for (var $vmNumIn=$vmNum; $vmNumIn<$VMsNum; $vmNumIn++){
+				//_log("Select the VMs is: " +$vmIPno[$vmNumIn]);
+				if (_exists(_checkbox("chkboxSelVM", _near(_cell($vmIPno[$vmNumIn]))))){
+					_check(_checkbox("chkboxSelVM", _near(_cell($vmIPno[$vmNumIn]))));
+					_wait(3000);
+					_click(_link($selTier[$vmNum], _near(_cell($vmIPno[$vmNumIn]))));
+					_wait(3000);
+				}
+				else{
+					continue;
+				}
+			}
+		}
+	}
+	
+	if(_exists(_button("Apply"))){
+		_click(_button("Apply"));
+	}
+	else{
+		_click(_button("Save"));
+	}
+	_wait(5000);
+	_click(_button("closeServerModal"));
+	_wait(5000);
+}
+
+
+function Vcentre_Resource_Mapping(){
+	navigateToDiscovery();
+	_click(_link("Vcenter Mapping"));
+	if(_exists(_cell($vcentreNamePR)))
+	{
+	_log("Vcentre Mapping is Already exists");
+	}
+else
+	{
+_setSelected(_select("srcVcenter"), $vcentreNamePR);
+_setSelected(_select("srcDataCen"), $dataCentrePR);
+_setSelected(_select("srcClusterMultiple"), $clusterPR);
+_setSelected(_select("destVcenter"), $vcentreNameDR);
+_setSelected(_select("destDataCen"), $dataCentreDR);
+_setSelected(_select("destClusterMultiple"), $clusterDR);
+_click(_button("Add"));
+_assertExists(_cell($vcentreNamePR));
+}
+}
+
+function Adding_Place_Holder_Datastore()
+{
+	navigateToDiscovery();
+	_click(_link("Vcenter Mapping"));
+	_click(_link("Placeholder Datastore"));
+	if(_exists(_cell($vcentreNameDR)))
+		{
+		_log("Placeholder Mapping is Already exists");
+		}
+	else
+		{
+	_setSelected(_select("vCenter"), $vcentreNameDR);
+	_setSelected(_select("ESX"), $esxName);
+	_setSelected(_select("PD"), $placeHolderDatastore);
+	_click(_button("Add"));
+	_assertExists(_cell($vcentreNameDR));
+		}
+}
+
+function Navigate_Management_Service(){
+	_click(_link("Admin"));
+	 _click(_link("Discover"));
+	_click(_link("Management Service"));
+}
+
+function Create_NetApp_Snapmirror_Protectionscheme($volumeName,$mgmtHostNetapp, $sername){
+	navigateToDiscovery();
+	_click(_link("Subsystems"));
+	_click(_link("Protection Schemes"));
+
+	// Validation of Protection scheme.
+	if (_exists(_link($sername))) {
+		_assertExists("Protection Scheme already exists");
+	} else {
+	_setSelected(_select("systemType"),$systemTypeProtschema);
+	_click(_button("/Go/"));
+	_setSelected(_select("mgmtHost_NetApp"), $mgmtHostNetapp);
+	_setValue(_textbox("sername"), $sername);
+	_wait(5000, _isVisible(_select("volumeName")));
+	if(_exists(_select("volumeName"), $volumeName))
+		{
+		_setSelected(_select("volumeName"), $volumeName);
+		$lunPath=_getText(_select("lunPath"))[1];
+		if(_exists("lunPath"),$lunPath)
+			{
+			$lunPath1=$lunPath+"";
+			_setSelected(_select("lunPath"),$lunPath1);
+			_wait("5000")
+			_click(_button("Save"));
+			}
+		else
+			{
+			_log("Lun Path is not exist for this vol name"+$volumeName);
+			_fail("Lun path is not exist so that execution is failling");
+			}
+		}
+	else
+		{
+		_log("Volume Name is not exist"+$volumeName);
+		_fail($volumeName+"is not exist so that execution is failling");
+		}
+	}
+	_click(_link("Subsystems"));
+	_click(_link("Protection Schemes"));
+	// Validation after creating Protection Scheme
+	if (_exists(_link($sername))){
+		_assertExists("Protection Scheme created");
+	} else {
+		_assertEqual("Protection Scheme created",_lastAlert()); 	
+		_fail("Protection scheme not created");
+	} 
+	
+}
+
+function NavigateToAWSDiscoveryWizard(){
+	if(_exists(_div("discovery"))){
+		_click(_div("discovery"));
+		_click(_heading4("/AWS discovery wizard/"));
+		_wait(3000);
+	}
+	else{
+		navigateToGroups_VM();
+		if(_exists(_heading4("/AWS discovery wizard/"))){
+			_click(_heading4("/AWS discovery wizard/"));
+		}
+		if(_exists(_heading4("/Application Recovery/"))){
+			_click(_heading4("/Application Recovery/"));
+		} 
+		_wait(3000);
+}
+}
+
+
+function create_AG()
+{
+	_wait(5000, _isVisible(_textbox("rpo")));
+	_setValue(_textbox("rpo"), "15");
+	_setValue(_textbox("rto"), "15");
+	if($withSameIp=="no")
+	{	
+	_check(_checkbox("on"));
+	_setValue(_textbox("ipAddress"), $drIP);
+	}
+	_click(_submit("Create Application Group"));
+	_wait("50000");
+	navigateToGroups_VM();
+ if(_exists(_link($AGgroupName))) {
+    _log("AG group is created successfully");
+    }
+ else
+	 {
+	 _log("AG group is Not created successfully");
+	 _fail("AG group is Not created successfully, So failing the testcase");
+	 }
+}
+
+function create_AG_With_Extended_DR($agName,$location,$serNameCr,$sernamePr,$drIp)
+{
+	_wait(5000, _isVisible(_textbox("rpo")));
+	_setValue(_textbox("rpo"), "15");
+	_setValue(_textbox("rto"), "15");
+	if($withSameIp=="no")
+	{	
+	_check(_checkbox("on"));
+	_setValue(_textbox("ipAddress"), $drIp);
+	}
+	_click(_submit("Add Cyber DR"));
+	_setValue(_textbox("rpo"), "15");
+	_setValue(_textbox("rto"), "15");
+	_setSelected(_select(2), $sernamePr);
+	_setSelected(_select(3), $location);
+	_setSelected(_select(4), $serNameCr);
+	_check(_checkbox("on"));
+    _click(_submit("Create Application Group"));
+    _wait("50000");
+    navigateToGroups_VM();
+    if(_exists(_link($agName))) {
+        _log("AG group is created successfully");
+        }
+     else
+    	 {
+    	 _log("AG group is Not created successfully");
+    	 if($isMultiple=="no"){
+    	 _fail("AG group is Not created successfully, So failing the testcase");
+    	 }
+    	 }
+}
+
+function CG_Mapping($DatastoreName)
+{
+	/*var $sshCommand = "sudo rm -rf "+$installedDRMBuildPath+"/installconfig/ConsistencyGroupToDatastoreMapping.properties;echo $?";
+	$status = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);	
+	var $sshCommand = "wget -r -nd -P "+$installedDRMBuildPath+"/installconfig/ "+"http://172.168.20.43/jenkins/job/DRM_Automation/ws/ConsistencyGroupToDatastoreMapping.properties;echo $?";
+	$status = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	var $sshCommand = "sudo chmod 777 "+$installedDRMBuildPath+"/installconfig/ConsistencyGroupToDatastoreMapping.properties;echo $?";
+	$status = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);*/
+var $sshCommand = "sed -i '/eg : CG1=Datastore2,DR_Template/a"+" \ "+ "CG1="+$DatastoreName+"' "+$installedDRMBuildPath+"/installconfig/ConsistencyGroupToDatastoreMapping.properties;echo $?";
+$status = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand); 
+var $sshCommand = "sed -i '/"+$DatastoreName+"/a"+" \ "+ "CG2="+$DatastoreName+"' "+$installedDRMBuildPath+"/installconfig/ConsistencyGroupToDatastoreMapping.properties;echo $?";
+$status = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand); 
+if($status=='0')
+	{
+	_log("CG Mapping done successfully");
+	}
+else
+	{
+	_log("CG Mapping not done successfully");
+	_fail("CG Mapping not done successfully, so execution is failing");
+	}
+
+}
+
+function Create_Remote_Component_Dummy_CR($systemType, $compname, $compip, $compsite) {
+	navigateToDiscovery();
+	_click(_link("Subsystems"));
+	_click(_link("Components"));
+	if (_exists(_link($compname) || _exists(_cell($compip)))) {
+		_log("component already exists");
+		
+		$compName = _getText(_link("/.*/", _leftOf(_cell($compip))));
+	} else {
+		_setSelected(_select("systemType"), $systemType);
+		_wait(1000);
+		_click(_button("/Go/"));
+		_setSelected(_select("ComponentType"), $systemType);
+		_setValue(_textbox("compip"), $compip);
+		_setValue(_textbox("compname"), $compname);
+		//_click(_button("Ping..."));
+		
+		if($subscriber != ""){
+			_setSelected(_select("subscriberId"), $subscriber);
+		}
+		_wait(1000);
+		var $ping = "Ping to $compip was successful.";
+		_assertExists($ping);
+		_setSelected(_select("compsite"), $compsite);
+		/*_setSelected(_select("credList"), "Add new credential");
+		_setValue(_textbox("usernameval"), $remoteUserNameVal);
+		_setValue(_password("pwdval"), $remotePwdVal);*/
+		//_click(_button("Test Credentials"));
+		_wait(1000);
+		var $testCredentials = "Credential Check Passed";
+		//_assertExists(_span($testCredentials));
+		_clearLastAlert();
+		_click(_button("Save"));
+		navigateToDiscovery();
+		_click(_link("Subsystems"));
+		_click(_link("Components"));
+		if (_exists(_link($compname))) {
+			_log("component created succesfully");
+		} else {
+			_assertEqual("component created succesfully",_lastAlert()); 
+			_fail("component not created succesfully.So that stopping execution.");
+		}
+	}
+}// end of RemoteComponent()
+
+function Create_Oracle_ProtectionScheme_Dummy_CR($systemTypeProtection,$sername,$mgmtHostPFR)
+{
+	navigateToDiscovery();
+	_click(_link("Subsystems"));
+	_click(_link("Protection Schemes"));
+	if (_exists(_link($sername))) {
+		_assertExists("Protectionscheme already exists");
+	} else {
+	_setSelected(_select("systemType"), $systemTypeProtection);
+	_click(_button("/Go/"));
+	
+	_setSelected(_select("mgmtHost_IBMGDPS"), $mgmtHostPFR);
+	_setValue(_textbox("sername"), $sername);
+	_setValue(_textbox("OtherReplicatorInputElement_0"), "/op");
+	_setValue(_textbox("OtherReplicatorInputElement_1"), "sa");
+	_setValue(_textbox("OtherReplicatorInputElement_2"), "sa");
+	_setValue(_textbox("OtherReplicatorInputElement_3"), "sa");
+	_setValue(_textbox("OtherReplicatorInputElement_4"), "sa");
+	_click(_button("Save")); }
+	_wait(3000);
+	navigateToDiscovery();
+	_click(_link("Subsystems"));
+	_click(_link("Protection Schemes"));
+	if (_exists(_link($sername))) 
+	{
+	_assertExists("Protection Schemes created successfully");
+	} 
+	else 
+	{
+		//_assertEqual("Protection Scheme created",_lastAlert()); 
+	_fail("Protection Schemes not created successfully.");
+	}
+
+}
+function Bulk_Upload()
+{
+
+var $sshCommand = "sudo rm -rf /tmp/"+$csvFileName+".csv;echo $?";
+SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand); 
+var $sshCommand = "sudo rm -rf /opt/"+$csvFileName+".csv;echo $?";
+SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);	
+Create_Batch_File_For_Pscp($drmServer,$drmUserName,$drmPassword,$SAHI_HOME + "\\conf\\VM_TO_VM\\","/tmp","Y");
+_execute($SAHI_HOME + "utility\\PscpCopy.bat","true");
+var $sshCommand = "sudo mv /tmp/"+$csvFileName+".csv /opt/;echo $?";
+SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand); 
+var $sshCommand = "sudo chmod 777 /opt/"+$csvFileName+".csv;echo $?";
+SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+var $sshCommand = "sudo sed -i 's@. $EAMSROOT/bin/common-localization.sh.*@#. $EAMSROOT/bin/common-localization.sh@' " + $installedDRMBuildPath + "/bin/SRMCLI.sh;echo $?";
+SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+var $sshCommand = "sudo sh "+$installedDRMBuildPath+"bin/"+"SRMCLI.sh -s /opt -n "+$csvFileName+".csv";
+var $status=SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand); 
+_log($status);
+var $StatusString = $status.split(",");
+var $bulkUploadstatus=$StatusString[8];
+_log($bulkUploadstatus);
+if($bulkUploadstatus=="Bulk upload operation completed.")
+	{
+	_log("Bulk upload operation completed Succesfully");
+	}
+else {
+	_log("Bulk upload operation not completed Succesfully");
+	_fail("Bulk upload operation not completed Succesfully, So stopping the execution");
+}
+}
+
+function navigateToGroups_VM(){
+	navigateToDiscovery();
+	 _click(_link("Groups"));
+	 _click(_link("View All"));
+	 }
+
+function VM_TO_VM_Start_Ral_Execution($appStackName,$workflowType){
+	var $appGrpName = GetApplicationGroupName($appStackName);
+	if($workflowType=="Failover"){
+		getRGNameFromAGName($appGrpName);
+			}
+		else
+			{
+		NavigateToAGDrillPage($appGrpName);
+			}
+	executeWorkflowType($workflowType);
+}
+
+function NavigateToAGDrillPage($appGrpName){
+	navigateToGroups_VM();
+		_click(_link($appGrpName));
+		_wait(2000);
+		if(_exists(_image("Drills"))){
+			_click(_image("Drills"));
+			_log("Drill page loaded success");
+		}else{
+			_click(_image("img-drills.png"));
+			_log("Drill page loaded success");
+		}
+		_wait(3000);
+	}
+
+function executeWorkflowType($workflowType){
+	if(_exists(_image("Execute Workflow", _near(_link($workflowType))))){
+		//_click(_image("Execute Workflow", _near(_link("Failover"))));
+		_click(_image("Execute Workflow", _near(_link($workflowType))));
+		_click(_link("Execute", _near(_link($workflowType))));
+		var $i = 0;
+		// Looping till Stop Test button appears
+		while ($i < 5) {
+			_log($i);		
+			if (_exists(_link("EXECUTING"))) {
+				_log($workflowType +" Execution Started");
+				break;						
+			}
+			if (_exists(_strong("EXECUTING"))) {
+				_log($workflowType +" Execution Started");
+				break;						
+			} 
+			else {
+			    _log($workflowType +" Execution not started.");
+			}
+			$i = $i + 1;
+			_wait(5000); 
+				
+		} // End of while loop
+	}
+}
+
+
+function Verify_Ral_Execution_Status($appGrpName,$workflowType){
+	var $appGrpName = GetApplicationGroupName($appStackName);
+	var $i=0;
+	while($i<7){
+		if($workflowType=="Failover"){
+			getRGNameFromAGName($appGrpName);
+				}
+			else
+				{
+			NavigateToAGDrillPage($appGrpName);
+				}
+		if(_exists(_link("EXECUTING", _near(_link($workflowType))))){
+			var $execstat= _getText(_link("EXECUTING", _near(_link($workflowType))));
+			_assertExists("Execustion status ",$execstat);
+			_click(_link("EXECUTING", _near(_link($workflowType))));
+			_wait(3000);
+			var $excralstat= _getText(_span("executionCurrentStatus"));
+			_log("Current Execution RAl status= "+$excralstat);
+			if($excralstat=="SUCCESS"){
+				_assertExists("Execustion status ",$execstat);
+				break;
+			}
+		}
+		
+		if(_exists(_link("AWAITING INPUT", _near(_link($workflowType))))){
+			var $execstat= _getText(_link("AWAITING INPUT", _near(_link($workflowType))));
+			_assertExists("Execustion status ",$execstat);
+			_click(_link("AWAITING INPUT", _near(_link($workflowType))));
+			_wait(3000);
+			_click(_button("Awaiting Input"));
+			/*
+			if(_exists(_button("Awaiting Input", _near(_span("/SetupELB_DRAddLoadBal/"))))){
+				_click(_button("Awaiting Input", _near(_span("/SetupELB_DRAddLoadBal/"))));
+				_log("Workflow execution has got AWAITING INPUT ..please check logs");
+				_fail("reaches max LoadBalancer count 20. Please delete LB in AWS console manually and resume execution");
+			}*/
+			
+			if(_exists(_paragraph("/Verify the Application=Failover Test Exercise is successfully completed/"))){
+				var $msg = _getText(_paragraph("/Verify the Application=Failover Test Exercise is successfully/"))
+				_assertExists($msg);
+				_click(_submit("OK=true userInputButton btn btn-primary btn-xs btn btn-info"));
+				_wait(240000);
+				var $excralstat= _getText(_span("executionCurrentStatus"));
+				_log("Current Execution RAl status= "+$excralstat);
+				if($excralstat=="SUCCESS"){
+					_assertExists("Execustion status ",$excralstat);
+					break;
+				}
+			}
+			else{
+				_fail("Workflow execution has got AWAITING INPUT ..please check logs");
+			}
+			
+		}
+		if(_exists(_span("FAILED", _near(_link($workflowType))))){
+			var $execstat= _getText(_span("FAILED", _near(_link($workflowType))));
+			_assertExists("Execustion status ",$execstat);
+			_fail("Workflow execution has got failed ..please check logs");
+		}
+		if(_exists(_span(6, _near(_link($workflowType))))){
+			var $execstat= _getText(_span(6, _near(_link($workflowType))));
+			_assertExists("Execustion details and version ",$execstat);
+			var $exechek = $execstat.match(/SUCCESS/);
+			if($exechek == "SUCCESS"){
+				break;
+			}
+		}
+		_log("waiting for complete workflow execution");
+		_wait(120000);// 2min
+		$i++;
+	}
+}
+
+function UpdateComponentTestCredPR($vmAgentIP,$vmUsername,$vmPswd){
+	var $compNamePRvm = getComponentNamePR($vmAgentIP);
+	_click(_link($compNamePRvm));
+	_wait(3000);
+	if(_exists(_image("Success", _near(_cell("/Credentials:/"))))){
+		_log("Already credential checked");
+	}
+	else{
+		_click(_button("/Edit/"));
+		_wait(3000);
+		_setSelected(_select("credList"), "Add new credential");
+		_setValue(_textbox("usernameval"), $vmUsername);
+		_setValue(_password("pwdval"), $vmPswd);
+		_click(_button("Test Credentials"));
+		_wait(10000);
+		if(_exists(_span("/Credential Check Failed/"))){
+			var $getErrMsg = _getText(_span("/Credential Check Failed/"));
+			_log("Error Message is " +$getErrMsg );
+			_log("Error with Test cred failed..");
+		}
+		var $testCredentials = "Credential Check Passed";
+		if(_exists(_span($testCredentials))){
+			_assertExists($testCredentials);
+			_click(_button("/Save/"));
+			_assertEqual("Component details updated successfully", _lastAlert());
+			_wait(3000);
+		}	
+	}
+}
+
+//UpdateComponentTestCredDR
+function UpdateComponentTestCredDR($vmUsername,$vmPswd){
+	var $compNameDRvm = getComponentNameDR();
+	var $compDRvmIP = getComponentDRIP();
+	_log($compNameDRvm + " " + $compDRvmIP);
+	
+	_click(_link($compNameDRvm));
+	_wait(3000);
+	if(_exists(_image("Success", _near(_cell("/Credentials:/"))))){
+		_log("Already credential checked");
+	}
+	else{
+		_click(_button("/Edit/"));
+		_wait(3000);
+		_setSelected(_select("credList"), "Add new credential");
+		_setValue(_textbox("usernameval"), $vmUsername);
+		_setValue(_password("pwdval"), $vmPswd);
+		_click(_button("Test Credentials"));
+		_wait(30000);
+		if(_exists(_span("/Credential Check Failed/"))){
+			var $getErrMsg = _getText(_span("/Credential Check Failed/"));
+			_log("Error Message is " +$getErrMsg );
+			_log("Error with Test cred failed..");
+		}
+		var $testCredentials = "Credential Check Passed";
+		if(_exists(_span($testCredentials))){
+			_assertExists($testCredentials);
+			_click(_button("/Save/"));
+			_assertEqual("Component details updated successfully", _lastAlert());
+			_wait(3000);
+		}	
+	}
+}
+
+
+function getComponentNamePR($vmAgentIP){
+	navigateToDiscovery();
+	_click(_link("Subsystems"));
+	_click(_link("Components"));	
+	if(_exists(_link(0, _near(_cell($vmAgentIP))))){
+		var $compNamePRvm = _getText(_link(0, _near(_cell($vmAgentIP))));
+		_assertExists("created PR CompName is",$compNamePRvm);
+		return $compNamePRvm;
+	}
+	else{
+		_log("PR CompName is not created success after provisioning done with success");
+	}
+}
+// ger DR comp IP
+
+function getComponentDRIP(){
+	navigateToDiscovery();
+	_click(_link("Subsystems"));
+	_click(_link("Components"));	
+	if(_exists(_cell(1, _leftOf(_cell($siteNameDR))))){
+		var $compNameDRIP = _getText(_cell(1, _leftOf(_cell($siteNameDR))));
+		_assertExists("created DR CompIP is",$compNameDRIP);
+		return $compNameDRIP;
+	}
+	else{
+		_log("DR CompIP is not created success after provisioning done with success");
+	}
+}
+
+//ger DR comp Name
+
+function getComponentNameDR(){
+	navigateToDiscovery();
+	_click(_link("Subsystems"));
+	_click(_link("Components"));	
+	if(_exists(_cell(0, _leftOf(_cell($siteNameDR))))){
+		var $compNameDRvm = _getText(_cell(0, _leftOf(_cell($siteNameDR))));
+		_assertExists("created DR CompName is",$compNameDRvm);
+		return $compNameDRvm;
+	}
+	else{
+		_log("DR CompName is not created success after provisioning done with success");
+	}
+}
+
+function getRGNameFromAGName($appGrpName){
+	if(_exists(_link($appGrpName))){
+		_log("Go ahead in AG page ");
+	}
+	else{
+		navigateToGroups_VM();
+	}
+	_click(_link($appGrpName));
+	_wait(3000);
+	_click(_image("Manage Group"));
+	_wait(5000);
+	if(_exists(_link("/RG_/", _near(_heading6($locationPR))))){
+		var $recGrpName = _getText(_link("/RG_/", _near(_heading6($locationPR))));
+		_log("RG name is = "+$recGrpName);
+		return $recGrpName
+	}
+	if(_exists(_link("/RG_/", _near(_heading6($siteNameDR))))){
+		var $recGrpName = _getText(_link("/RG_/", _near(_heading6($locationDR))));
+		_log("RG name is = "+$recGrpName);
+		return $recGrpName
+	}
+	else{
+		_log("RG name is not found thru AG manage page.. please check logs");
+		var $rgname= GetRecoveryGroupName($appStackName);
+		_log("RG name is found in RG manage page = "+$rgname);
+		return $rgname
+		//_fail("RG name is not found please check logs");
+	}
+}
+
+function GetApplicationGroupName($appStackName){
+	navigateToGroups_VM();
+	var $i=0;
+	var $agName = "AG_"+$appStackName;
+	while($i<5){
+		if(_exists(_link($agName))){
+			break;
+		}
+		_wait(3000);
+		$i++;
+	}
+	if(_exists(_link($agName))){
+		_assertExists($agName, "ApplicationGroup Created Success");
+		return $agName;
+	}
+	else{
+		_fail("Application Group has not created suucess after provisioning done success");
+	}
+}
+
+function GetRecoveryGroupName($appStackName){
+	navigateToGroups();
+	var $i=0;
+	while($i<5){
+		if(_exists(_link("RGName"))){
+			break;
+		}
+		_wait(3000);
+		$i++;
+	}
+	if(_exists(_link("/RG_Automation_/"))){
+		var $rgName = _getText(_link("/RG_Automation_/"));
+		_assertExists($rgName, "RecoveryGroup Created Success");
+		return $rgName;
+	}
+	else{
+		_fail("Recovery Group has not created suucess after provisioning done success");
+	}
+}
+
+function Importing_Fote_Workflows($appStackName)
+{
+	var $appGrpName = GetApplicationGroupName($appStackName);
+	var $recGrpName = getRGNameFromAGName($appGrpName);
+	_log($recGrpName);
+	//NavigateToDrillWorkflowEditor($recGrpName,"PreFailoverTestExercise");
+	//Add_Rals_PreFote();
+	Import_WF_XML($recGrpName,$filePreFote,"PreFailoverTestExercise");
+	_wait(2000);
+	Import_WF_XML($recGrpName,$filePreFote,"PostFailoverTestExercise");
+	_wait(2000);
+	Import_WF_XML($recGrpName,$filePreFote,"StartAppDR");
+	_wait(2000);
+	}
+
+function Import_WF_XML($groupName,$fileXml,$wftype) {
+	var $file = $SAHI_HOME + $WFPath + "\\"+ $fileXml;
+	_log($file);
+	Import_WF($groupName, $file, "Drills", $wftype);
+} 
+
+function Navigate_to_Appstack($appStackName)
+{
+	NavigateToAWSDiscoveryWizard();
+	if(_exists(_link($appStackName))){
+	_click(_link($appStackName));
+	_call(top.location.reload());
+	_click(_submit("Next"));
+	}
+}
+
+function Navigate_to_Appstack_SRM($appStackName)
+{
+	NavigateToAWSDiscoveryWizard();
+	if(_exists(_link($appStackName))){
+	_click(_link($appStackName));
+	_call(top.location.reload());
+	}
+}
+
+function Verify_AG_Name($agNames){
+navigateToGroups_VM();
+if(_exists(_link($agNames))) {
+    _log("AG group is created successfully");
+    return "1";
+    }
+ else
+	 {
+	 
+	 _log("No group fond with this Name so continue to create the group");
+	 return "0";
+	 if($isMultiple=="no"){
+	 _fail("AG group is Not created successfully, So failing the testcase");
+	 }
+	 }
+}
+
+function Navigate_to_Crendetials()
+{
+	navigateToDiscovery();
+	_click(_link("Credentials"));	
+}
+
+function Create_Crendetials_SRM()
+{
+Navigate_to_Crendetials();
+_click(_link("Create Credential"));
+_setValue(_textbox("username"), "1");
+_setValue(_textbox("username"), "1");
+_setSelected(_select("protocol"), "wmi");
+_setValue(_textbox("label"), "");
+}

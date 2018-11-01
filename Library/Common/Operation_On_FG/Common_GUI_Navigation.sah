@@ -1,0 +1,616 @@
+
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are used commonly 
+ **             for performing operation on group. 
+ ** AuthorName : Automation Team
+ ** Created Date : Jan 2013
+ ***********************************************************************/
+
+/**
+* Function is for Publish BCO workflows
+*@param : $groupName,$workflowType
+*@return : $dbRto
+*@Author: Srinivas Pulamarasetti
+*
+*/
+
+function publishBCO($groupName,$workflowType){
+       //_call(top.location.reload()); // reload via Javascript
+	_log($groupName);
+	NavigateToViewAllWorkflowsPage($groupName);
+	editWorkflowType($workflowType);
+	publishWorkflow()
+}
+function navigateToSiteController(){
+	_click(_link($obj_admin_slash));	
+	_click(_link($obj_discover));
+	_click(_link($obj_sitectl));
+	_wait(3000);
+}
+
+/**
+* Function is Group is exists 
+*@Author: Anita
+*/  
+function VerifyGroupExists($groupName){
+	_click(_link($obj_admin_slash));
+	_click(_link($obj_GuiNav_Manage));
+	_click(_heading4($obj_recoverygroups));
+	_click(_link($obj_viewall_slash));
+	var $grpExist = _getText(_link($groupName));
+	_log($grpExist);
+	return $grpExist;
+}
+/**
+* Function is for Verification navigate to RGlistingPage
+*@param : Null
+*@return : $dbRto
+*@Author: Srinivas Pulamarasetti
+*
+*/
+
+function NavigateToRGListingPage(){
+       //_call(top.location.reload()); // reload via Javascript
+	_click(_link($obj_admin));
+	_click(_link($obj_monitor));
+	_click(_heading4(11));
+	_click(_link($obj_viewall));
+  } 
+
+/**
+* Function is for Verification navigate to RGDetailsPage
+*@param : Null
+*@return : $dbRto
+*@Author: Srinivas Pulamarasetti
+*
+*/
+	
+function NavigateToRGDetailsPage($groupName){
+               //_call(top.location.reload());
+		NavigateToRGListingPage();
+		_click(_link($groupName));
+        _log($groupName);
+	} 
+	
+/**
+* Function is for Verification navigate to ViewAllWorkflowsPage
+*@param : Null
+*@return : $dbRto
+*@Author: Srinivas Pulamarasetti
+*
+*/
+
+function NavigateToViewAllWorkflowsPage($groupName){
+       //_log($groupName);
+		//NavigateToRGDetailsPage($groupName);
+		//_call(top.location.reload());
+	    navigateToManageRecovery($groupName);
+        _click(_link($obj_viewallworkflows));
+
+} 
+
+/**
+* Function is for Verification navigate to ViewAllWorkflowsPage
+*@param : Null
+*@return : $dbRto
+*@Author: Srinivas Pulamarasetti
+*
+*/
+function navigateToReplication($groupName){
+	navigateToManageRecovery($groupName);
+	_click(_link($obj_replication));
+	_click(_button($obj_refreshdetails));
+}
+
+/**
+* Function is for Verification navigate Drill Summary
+*@param : $groupName
+*@return : $dbRto
+*@Author: Debabrat Sahu
+*
+*/
+
+function navigateToBPWorkflow($groupName){
+	navigateToManageRecovery($groupName);
+	_click(_link($obj_viewallworkflows));
+	_click(_heading4($obj_GuiNav_BPWorkflows));
+	
+}
+
+/**
+* Function is for Verification navigate Drill Summary
+*@param : $groupName
+*@return : $dbRto
+*@Author: Debabrat Sahu
+*
+*/
+
+function navigateToManageRecovery($groupName){
+_click(_link($obj_admin));
+_click(_link($obj_GuiNav_Manage));
+_click(_heading4(11));
+_click(_link($obj_viewall));
+_click(_link($groupName));
+}
+
+/**
+* Function is for Verification navigate Drill Summary
+*@param : $groupName
+*@return : $dbRto
+*@Author: Debabrat Sahu
+*
+*/
+function navigateDrillSummary(){
+	//_wait(2000);
+	navigateDrillExecutingPage();
+	_click(_heading4($obj_summary));
+	_click(_link($obj_AgDrills));
+	_wait(2000);
+	_click(_link($obj_RGDrills));
+	_click(_link($obj_viewall));
+	
+}
+
+/**
+* Function is for Verification navigate Drill Summary
+*@param : $groupName
+*@return : $dbRto
+*@Author: Debabrat Sahu
+*
+*/
+
+function navigateToRefreshDetails($groupName){
+	
+	navigateToReplication($groupName);
+	_click(_button($obj_refreshdetails));
+	while(_isVisible(_button($obj_refreshdetails))){
+		break;
+	}
+}
+
+/**
+* Function is for Verification navigate Drill Summary
+*@param : $groupName
+*@return : $dbRto
+*@Author: Debabrat Sahu
+*
+*/
+
+
+function navigateDrillExecutingPage(){
+	//_wait(2000);
+	_click(_link($obj_admin));
+	_click(_link($obj_drill));
+}
+/**
+* Function is for Verification navigate Drill Listing
+*@param : $groupName
+*@return : $dbRto
+*@Author: Debabrat Sahu
+*
+*/
+function  navigateDrillListing($groupName){
+	navigateDrillSummary();
+	_click(_link($obj_viewall));
+	_click(_link($groupName));
+	_wait(10000);
+}
+
+/**
+* Function is for validate  the  execute button
+*@param : $groupName
+*@return : $dbRto
+*@Author: Debabrat Sahu
+*
+*/
+function validateExecuteButton($workflowType){
+	var $flag = _exists(_image($obj_executeworkflow, _near(_link($workflowType))));
+    _log($flag);
+} 
+
+/**
+* Function is for execute workflow
+* *@param : $groupName
+*@return : $dbRto
+*@Author: padmavathi
+*
+*/
+
+function workflowExecution($workflowType){
+	if(_exists(_image($obj_executeworkflow, _near(_link($workflowType))))){
+    _click(_image($obj_executeworkflow, _near(_link($workflowType))));
+    _click(_link($obj_execute));
+       if(_exists(_heading4($obj_filemod_aletr))){
+	 _click(_button($obj_yes));
+	}
+    _wait(30000);
+    _log($workflowType + "workflow execution started successfully");
+    	}
+	else
+		{
+		_log($workflowType + "workflow execution got failed");
+		}
+	}
+
+
+/**
+* Function is for Publish Drill
+*@param : $groupName
+*@return : $dbRto
+*@Author: Debabrat Sahu
+*
+*/
+
+function  navigateToManageBP($groupName)
+{
+	navigateToManageRecovery($groupName);
+	_click(_link( $obj_viewallworkflows));
+	_click(_heading4( $obj_bpworkflows));
+	
+	
+	}
+/**
+* Function is for Publish Drill
+*@param : $groupName
+*@return : $dbRto
+*@Author: Debabrat Sahu
+*
+*/
+function publishDrill($groupName,$workflowType){
+	navigateDrillListing($groupName);
+	editWorkflowType($workflowType);
+	publishWorkflow();
+}
+
+/**
+* Function is for Verification publish work flow  type
+*@param : $groupName
+*@return : $dbRto
+*@Author: Debabrat Sahu
+*
+*/
+function  editWorkflowType($workflowType){
+	_click(_link($obj_editworkflow, _near(_link($workflowType))));
+}
+
+/**
+* Function is for Verification publish workflow
+*@param : $groupName
+*@return : $dbRto
+*@Author: Debabrat Sahu
+*
+*/
+function  publishWorkflow(){
+	_wait(5000);
+//	_call(top.location.reload()); // reload via Javascript
+	_click(_link($obj_GuiNav_Next));
+	_click(_div($obj_GuiNav_PublishWF));
+	_wait(5000);
+}
+
+/**
+* Function is for Verification publish workflow
+*@param : $groupName
+*@return : $dbRto
+*@Author: Debabrat Sahu
+*
+*/
+function  navigateToBPWorkflows($groupName){
+	
+	NavigateToViewAllWorkflowsPage($groupName);
+	_click(_heading4( $obj_bpworkflows));
+}
+
+
+function ExecuteBPWorkflows($workflowType){
+	navigateToBPWorkflows($groupName);
+	if(_exists(_image("execute.png", _near(_link($workflowType))))){
+		_click(_image("execute.png", _near(_link($workflowType))));
+		_click(_link($obj_execute));
+		_log($workflowType + "workflow execution started successfully");
+		
+	}else
+		{
+		_log($workflowType + "workflow execution got failed");
+		}
+	
+}
+
+/**
+* Function is for Verification Check the status
+*@param : $groupName
+*@return : $dbRto
+*@Author: Debabrat Sahu
+*@Modified By: Padma
+*/
+function navigateToGroups(){
+	navigateToDiscovery();
+	 _click(_link($obj_Groups_link)); 
+	 _click(_heading4(10));
+	 if (_exists(_link($obj_viewall))){
+			_click(_link($obj_viewall));
+		}
+	 if (_exists(_link($obj_DiscGrpsViewAll))){
+			_click(_link($obj_DiscGrpsViewAll));
+		}
+	 
+}
+
+/**
+* Function is for Verification Check the status
+*@param : $groupName
+*@return : $dbRto
+*@Author: Govinda Mengji
+
+*/
+function navigateToRPO($groupName){
+	NavigateToRGDetailsPage($groupName);
+	_click(_link($obj_rpo));
+}
+
+
+
+/**
+* Function is for Verification Check the status
+*@param : $groupName
+*@return : $dbRto
+*@Author: Govinda Mengji
+
+*/
+function navigateToRTO($groupName){
+	NavigateToRGDetailsPage($groupName);
+	//_click(_image("Overview Group"));
+
+	_click(_link($obj_rto));
+	} 
+/**
+* Function is for close the ral editor and save
+*@param : $ral name
+*@return : 
+*@Author: Anantha
+*/  
+
+function SFR_saveClose($ral){
+	
+    _click(_button($obj_close, _near(_heading4($ral))));
+    _click(_link($obj_savenow));
+}
+
+
+/**
+ * Function is used to navigate to workflow editor page.
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+function NavigateToDrillWorkflowEditor($groupName,$workflowName){
+	navigateDrillListing($groupName);
+	_click( _link($obj_editworkflow, _near(_link($workflowName))));	
+}
+
+/**
+ * Function is used to navigate to workflow editor page.
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+function NavigateToBPWorkflowEditor($workflowName){
+	navigateToBPWorkflows();
+	_click( _link($obj_editworkflow, _near(_link($workflowName))));	
+}
+function navigateToAdmin(){
+	//_wait(2000);
+	_click(_link($obj_admin));
+	}
+
+function navigateToDiscovery(){
+	
+	if(_exists(_label($obj_admin))){
+		_click(_label($obj_admin));
+
+	}
+		
+	if(_exists(_span($obj_admin))){
+		
+		_click(_span($obj_admin));
+		_click(_div("Discovery"));
+	}
+	 _click(_link($obj_admin));
+	 _click(_link($obj_discover));
+
+}
+
+/**
+ 
+ /**
+* Function Add_Management_Service
+*@param : $groupName
+*@return : null
+*@Author: Sujata Rani Choudhury
+*
+*/
+
+function Add_Management_Service(){
+	 _click(_link($obj_admin));
+	_click(_link($obj_discover));
+	_click(_link($obj_mgmtservice));
+	_click(_link($obj_addmgmtservice));
+}
+
+/**
+* Function Management_Service
+*@param : $groupName
+*@return : null
+*@Author: Sujata Rani Choudhury
+*
+*/
+
+function Navigate_Management_Service(){
+    _click(_link($obj_admin));
+	_click(_link($obj_discover));
+	_click(_link($obj_mgmtservice));
+}
+
+
+
+
+/**
+* Function is for navigate to reports.
+*@Author: Omprakash.v
+*/
+
+function navigateToReports(){
+	_click(_link($obj_admin));
+	_click(_link($obj_GuiNav_Reports));
+}
+
+
+/**
+* Function is for navigate to Backup.
+*@Author: Omprakash.v
+*/
+
+function NavigateToBackup()
+{
+_click(_link($obj_admin));	
+_click(_link($obj_GuiNav_GotoBackup));
+}
+
+/**
+* Function is for navigate to Validation manager.
+*@Author: Omprakash.v
+*/ 
+
+function NavigateTo_Validation_Manager($groupName)
+{
+	navigateToManageRecovery($groupName);
+	_click(_link($obj_GuiNav_Validation));
+}
+/**
+* Function is for set the Verbose2 debug level for Linux remote agents
+*@Author: Anita
+*/ 
+
+function SetVerbose_LinuxRemoteAgents($compIP,$verboseType){
+	_click(_link($obj_admin_slash));
+	_click(_link($obj_gotologs));
+	_wait(3000);
+	_click(_link($obj_debuglevel));
+	var $agentNodeIP = $compIP;
+	var $agentNodeIP1 = $compIP+$obj_one;
+	var $agentNodeIP2 = $compIP+$obj_two;
+	if(_exists(_cell($agentNodeIP))){
+		_highlight(_cell($agentNodeIP));
+		_wait(3000);		
+		_setSelected(_select("/selected/", _rightOf(_cell($agentNodeIP))), $verboseType);
+		_assertEqual("Debug level successfully set.", _lastAlert());
+		_wait(5000);
+	}
+	if(_exists(_cell($agentNodeIP1))){
+		_highlight(_cell($agentNodeIP1));
+		_wait(3000);
+		_setSelected(_select("/selected/", _rightOf(_cell($agentNodeIP1))), $verboseType);
+		_assertEqual("Debug level successfully set.", _lastAlert());
+		_wait(5000);
+	}
+	if(_exists(_cell($agentNodeIP2))){
+		_highlight(_cell($agentNodeIP2));
+		_wait(3000);
+		_setSelected(_select("/selected/", _rightOf(_cell($agentNodeIP2))), $verboseType);
+		_assertEqual("Debug level successfully set.", _lastAlert());
+		_wait(5000);
+	}
+}
+
+// navigateToSiteController
+
+function navigateToSiteController(){
+	_click(_link($obj_admin));	
+	_click(_link($obj_discover));
+	_click(_link($obj_sitectl));
+	_wait(3000);
+}
+
+function adminPage_NavigateToNotificationPage() {
+	_click(_link($obj_admin));
+	_click(_link($obj_gotonotfct));
+	_assert(_exists(_cell($obj_notification)));
+}
+
+function adminPage_NavigateToAgentPage() {
+
+	_click(_link($obj_admin));
+	_click(_link($obj_GotoAgent));
+	_assert(_exists(_cell($obj_agents)));
+}
+
+function adminPage_NavigateToLogsPage() {
+
+	_click(_link($obj_admin));
+	_click(_link($obj_gotologs));
+	_assert(_exists(_cell($obj_resyorclog)));
+}
+
+function adminPage_NavigateToBackUpPage() {
+
+	_click(_link($obj_admin));
+	_click(_link($obj_GuiNav_GotoBackup));
+	_assert(_exists(_cell($obj_bckmgr)));
+}
+
+function navigateToHelp($argHelpTab) {
+
+	_click(_link($obj_help));
+	_click(_link($argHelpTab));
+	
+	switch ($argHelpTab)
+    {
+       case 'About':  	   
+    		if(_exists(_cell($obj_abtresyorc))==false){
+    			_fail($obj_hlpabt);
+    		}
+    	   
+       break;  
+       case 'Help Contents': 
+    	   
+    	   _selectWindow($obj_onlinehlp);
+    	   if(_exists(_heading1($obj_veronlinehelp))==false){
+    		   _fail($obj_onlinehlp);
+    	   }
+    	   
+       break;
+       case 'Quick Start':  	   
+   		if(_exists(_link($obj_qckstr))==false){
+   			_fail($obj_onhlpqckstart);
+   		}
+   	   
+      break;  
+       default:  
+    	   _log("--------- Pass correct parameter ----------","Custom5");
+    }
+}
+
+function navigateToGlobalConsole(){
+	if(_exists(_label("Admin"))==true){
+		_click(_label("Admin"));
+	}
+	else{
+		navigateToAdmin();	
+	}
+	_click(_link("Go to Global Console"));
+	
+	if(_exists(_cell("Configuring IBM RO Instances")) == true){
+		_log("Successfully navigated to Global Console Page","Custom4");
+	}
+	else{
+		_fail("Failed to navigate to Global Console Page");
+	}
+}

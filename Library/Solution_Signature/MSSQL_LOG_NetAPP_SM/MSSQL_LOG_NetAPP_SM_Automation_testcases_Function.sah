@@ -1,0 +1,1068 @@
+
+function APP_PFR_Agent_Instllation_001(){
+	try {
+		Install_Local_Agent_SilentMode_OS_Authentication_PR();
+		Install_Local_Agent_SilentMode_OS_Authentication_DR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0003(),Function: Create_Site_PR or Create_Site_DR ,execution got failed.kindly check the log for more details");
+		_fail("site not created succesfully.So that stopping execution.");
+	}
+}
+
+// Copy workflows from the DRM
+/*
+function MSSQL_LOG_NetApp_SM_copy_Workflow_xml_from_DrmServer() {
+	try {
+		//copy_Workflow_xml_from_DrmServer();
+		WorkFlow_copy_001();
+		} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:copy_Workflow_xml_from_DrmServer(),Function: copy_Workflow_xml_from_DrmServer() ,execution failed.kindly check the log for more details");
+		_fail("Workflow copy failed. Stopping execution.");
+	}
+}*/
+
+
+//Edit NC workflow
+
+function MSSQL_LOG_NetApp_SM_Edit_NormalCopy_0001() {
+	try {
+//		copy_Workflow_xml_from_DrmServer();
+		Edit_NC_Workflow();
+		} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Edit_NormalCopy_0001,Function: Edit_NormalCopy_0001() ,execution failed.kindly check the log for more details");
+		_fail("Edit_NormalCopy failed. Stopping execution.");
+	}
+}
+
+
+//Import NC workflow
+
+function MSSQL_LOG_NetApp_SM_Import_WF_NC() {
+	try {
+//		copy_Workflow_xml_from_DrmServer();
+		Import_WF_NC();
+		} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:MSSQL_LOG_NetApp_SM_Import_WF_NC(),Function: MSSQL_LOG_NetApp_SM_Import_WF_NC() ,execution failed.kindly check the log for more details");
+		_fail("MSSQL_LOG_NetApp_SM_Import_WF_NC() failed. Stopping execution.");
+	}
+}
+
+
+//Publish NC workflow
+
+function MSSQL_LOG_NetApp_publish_NC() {
+	try {
+		publish($groupName,'NormalCopy');
+		} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:MSSQL_LOG_NetApp_publish_NC(),Function: MSSQL_LOG_NetApp_publish_NC() ,execution failed.kindly check the log for more details");
+		_fail("MSSQL_LOG_NetApp_publish_NC() failed. Stopping execution.");
+	}
+}
+
+
+
+//Start NC
+
+function MSSQL_LOG_NetApp_Execute_NC() {
+	try {
+		Execute_NC();
+		} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Execute_NC(),Function: Execute_NC(),execution failed.kindly check the log for more details");
+		_fail("Execute_NC() failed. Stopping execution.");
+	}
+}
+
+
+
+
+function APP_PFR_Component_Local_Discovery_0002() {
+	try {
+		Create_Local_ComponentPR();
+		Create_Local_ComponentDR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Component_Local_Discovery_0002(),Function: Create_Local_ComponentPR or Create_Local_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("component not created succesfully.So that stopping execution.");
+	}
+}
+
+function MSSQL_LOG_NetApp_SM_Component_Remote_Discovery_0018() {
+	try {
+		Create_Remote_Component($systemType, $compNamePR, $compIPPR, $locationPR, $remoteUserNameValPR, $remotePwdValPR); // WIN PR
+		Create_Remote_Component($systemType, $compNameDR, $compIPDR, $locationDR, $remoteUserNameValDR, $remotePwdValDR); // WIN DR
+		Create_Remote_Component($NetAppsystemType, $NetAppcompNamePR, $NetAppcompIPPR, $locationPR, $NetAppremoteUserNameValPR, $NetAppremotePwdValPR); // LXN NetApp PR
+		Create_Remote_Component($NetAppsystemType, $NetAppcompNameDR, $NetAppcompIPDR, $locationDR, $NetAppremoteUserNameValDR, $NetAppremotePwdValDR); // LNX NetApp DR
+		} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("For test Case ID:Component_Remote_Discovery_0018(),Function: Create_Remote_ComponentPR or Create_Remote_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("Component creation Un-successfull. Stopping execution.");
+	}
+}
+
+function MSSQL_LOG_NetApp_SM_Dataset_Discovery_0007() {
+	try {
+		Create_Mssql_Dataset($systemTypeDataset, $dependentComponentNamePR, $datasetNamePR, 
+				$datasetPrDBUsrnm,$datasetPrDBpwd, $datasetport,$datasetDBnm);//PR
+		Create_Mssql_Dataset($systemTypeDataset, $dependentComponentNameDR, $datasetNameDR, 
+				$datasetDrDBUsrnm,$datasetDrDBpwd, $datasetport,$datasetDBnm);//DR
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("For test Case ID: APP_PFR_Dataset_Discovery_0007(),Function: Create_Mssql_Dataset(), execution failed.kindly check the log for more details");
+		_fail("Dataset not created succesfully. Stopping execution.");
+	}
+
+}
+/*
+function APP_PFR_Auto_DatasetDiscovery0009() {
+	try {
+		Verify_Dataset_Details_APP_PFR_PR();
+		Verify_Dataset_Details_APP_PFR_DR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:APP_PFR_Auto_DatasetDiscovery0009(),Function: Verify_Dataset_Details_PR or Verify_Dataset_Details_DR,execution got failed.kindly check the log for more details");
+	}
+}
+*/
+function NetAPP_SnapMirror_Dataset_status_0011() {
+	try {
+		
+		Verify_Mssql_Dataset_Status_PR();
+		Verify_Mssql_Dataset_Status_DR();
+		//Verify_APP_PFR_Dataset_Status_PR();
+		//Get_Mssql_Dataset_Status_db($drmServer, $drmUserName, $drmPassword,$compIPPR, $remoteUserNameValPR, $remotePwdValPR); 
+		//Get_Mssql_Dataset_Status_db($drmServer, $drmUserName, $drmPassword,$compIPDR, $remoteUserNameValDR, $remotePwdValDR);
+		//Verify_Dataset_Status($drmServer, $drmUserName, $drmPassword,$compIPDR, $remoteUserNameValDR, $remotePwdValDR,$sernameDR, $datasetNameDR);
+		//Verify_Dataset_Status($drmServer, $drmUserName, $drmPassword,$compIPDR, $remoteUserNameValDR, $remotePwdValDR,$sernameDR, $datasetNameDR);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:APP_PFR_Dataset_status_0011(),Function: Verify_Dataset_Status_PR ,execution got failed.kindly check the log for more details");
+	}
+/*	try {
+		Verify_APP_PFR_Dataset_Status_DR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:APP_PFR_Dataset_status_0011(),Function: Verify_Dataset_Status_DR ,execution got failed.kindly check the log for more details");
+	}*/
+}
+
+
+
+function MSSQL_LOG_NetApp_SM_Protectionscheme_Discovery_0018() {
+	try {
+		Create_NetApp_Protectionscheme($systemTypeProtection, $primaryProtection, $mgmtHostNetPR, $volumeNamePR, $lunPathPR); //PR
+		Create_NetApp_Protectionscheme($systemTypeProtection, $remoteProtection, $mgmtHostNetDR, $volumeNameDR, $lunPathDR); //DR
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("For test Case ID: MSSQL_LOG_NetApp_SM_Protectionscheme_Discovery_0018(),Function: Create_NetApp_Protectionscheme(), execution failed. Check logs for more details");
+		_fail("Protection Scheme not created succesfully. Stopping execution.");
+	}
+}
+
+function APP_PFR_Protectionscheme_local_status_0021(){
+	try{
+		Get_Status_Protection_Scheme_PR();
+	} catch ($e){
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: APP_PFR_Protectionscheme_status_0021(),Function: Verify_Protection_Scheme_Status_PR ,execution got failed.kindly check the log for more details");
+	}
+	try{
+		Get_Status_Protection_Scheme_DR();
+	} catch ($e){
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: APP_PFR_Protectionscheme_status_0021(),Function: Verify_Protection_Scheme_Status_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function NetApp_SnapMirror_Protectionscheme_status_0021() {
+	try {
+		Verify_NetApp_SnapMirror_Protection_Scheme_Status_PR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: NetApp_SnapMirror_Protectionscheme_status_0021(),Function: Verify_Protection_Scheme_Status_PR ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		Verify_NetApp_SnapMirror_Protection_Scheme_Status_DR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: NetApp_SnapMirror_Protectionscheme_status_0021(),Function: Verify_Protection_Scheme_Status_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+/*
+function NetAPP_SnapMirror_Move_Group_Manage_0006() {
+	try {
+		Move_To_Manage_Group($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Move_Group_Manage_0006(),Function: Move_To_Manage_Group ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+*/
+
+function MSSQL_LOG_NetApp_SM_GroupCreation_0022() {
+	try {
+		Creation_MSSQL_LOG_NetAPP_SM_Group();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MSSQL_LOG_NetApp_SM_GroupCreation_0022(),Function: MSSQL_LOG_NetApp_SM_GroupCreation_0022 ,execution failed. Please check the log for more details");
+		_fail("Group creation Failed. Execution Stopped.");
+	}
+
+}
+
+function MSSQL_LOG_NetApp_SM_Move_Group_Manage_0006() {
+	try {
+		Move_To_Manage_Group($groupName);
+		_wait(100);
+		Change_ContinuityStatus_Group($groupName, "Normal Inactive");
+		_wait(100);
+		publish($groupName,"NormalCopy ");
+	/*	_wait(100);
+		Execute_NFC($groupName);*/
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Move_Group_Manage_0006(),Function: Move_To_Manage_Group ,execution failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged, Stopping the execution.");
+	}
+}
+
+
+function APP_PFR_Post_Group_Creation_0010() {
+	try {
+		File_Creation_PR();
+		Post_Group_Creation();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Post_Group_Creation_0010(),Function: Post_Group_Creation ,execution failed.kindly check the log for more details");
+	}
+}
+
+
+function NetAPP_SnapMirror_Component_Status_0001() {
+	try {
+		Get_Remote_Componenet_Status_DB($NetAppcompIPPR); /* NetApp based components PR */
+		Get_Remote_Componenet_Status_DB($NetAppcompIPDR);	/* NetApp based components DR */
+		Get_Remote_Componenet_Status_DB_Windows($compIPPR) /* Windows Component PR */
+		Get_Remote_Componenet_Status_DB_Windows($compIPDR) /* Windows Component DR */
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Component_Status_0001(),Function: Verify_Component_Status_PR or Verify_Component_Status_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+function MSSQL_LOG_NetApp_SM_Monitor_Relationship_0030(){
+	try {
+		MSSQL_LOG_NetApp_Monitor_Relationship($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_assertTrue(false);
+		_log("for test Case ID: Monitor_Relationship_0030(),Function: Monitor_Relationship ,execution got failed.kindly check the log for more details");
+	}
+}
+
+//NC : VERIFYING THE MANAGE > GROUP LIST VIEW > GROUP INFORMATION PAGE
+
+function MSSQL_LOG_NetApp_SM_Manage_GroupInfo_0007() {
+	try {
+		MSSQL_LOG_NetApp_SM_Manage_GroupInfo($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_assertTrue(false);
+		_log("for test Case ID: GroupInformation_Manage_0007(),Function: APP_PFR_Groupinformation ,execution got failed.kindly check the log for more details");
+	}
+}
+
+//VERIFYING THE MONITOR > GROUP > GROUP SNAPSHOT PAGE
+
+function MSSQL_LOG_NetApp_SM_Manage_GrpSnpSht_0029() {
+	try {
+		NC_Execution_Status($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_assertTrue(false);
+		_log("for test Case ID: MSSQL_LOG_NetApp_SM_Manage_GrpSnpSht_0029,Function: NC_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("NC workflow execution failed. Stopping execution. Refer logs.");
+	}
+	try {
+		MSSQL_LOG_NetApp_SM_Managedrsolution_Status($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_assertTrue(false);
+		_log("for test Case ID: MSSQL_LOG_NetApp_SM_Manage_GrpSnpSht_0029(),Function: MSSQL_LOG_NetApp_SM_Managedrsolution_Status() ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+//VERIFYING THE MONITOR > GROUP > GROUP SNAPSHOT PAGE
+
+function MSSQL_LOG_NetApp_SM_Monitor_Grpsnpsht_0001() {
+	try {
+		MSSQL_LOG_NetApp_SM_Groupsnapshot();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_assertTrue(false);
+		_log("for test Case ID: Gruopsnapshot_Monitor_0001(),Function: NetAPP_SnapMirror_Groupsnapshot ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+//VERIFYING THE NC RPO
+
+function MSSQL_LOG_NetApp_SM_NC_RPO_0026($groupName) {
+	try {
+		MSSQL_LOG_NetApp_SM_RPO_Status($compIPPR,$datasetDBnm,$datasetPrDBUsrnm,$datasetPrDBpwd);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_assertTrue(false);
+		_log("for test Case ID: MSSQL_LOG_NetApp_SM_NC_RPO_0026(),Function: MSSQL_LOG_NetApp_SM_Rpo ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+//VERIFYING RTO
+function MSSQL_LOG_NetApp_SM_NC_RTO_0027($groupName) {
+	try {
+		MSSQL_LOG_NetApp_SM_RTOCheck();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_assertTrue(false);
+		_log("for test Case ID: MSSQL_LOG_NetApp_SM_NC_RTO_0027(),Function: NMSSQL_LOG_NetApp_SM_RTOCheck ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+//Validating the Monitor > Group > Replication Page.
+
+function MSSQL_LOG_NetApp_SM_NC_Replication_0028() {
+	try {
+		MSSQL_LOG_NetApp_SM_Replication_Details($groupName, "Normalcopy");
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_assertTrue(false);
+		_log("for test Case ID: MSSQL_LOG_NetApp_SM_NC_Replication_0028,Function: MSSQL_LOG_NetApp_SM_Replication_Details ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+//Stopping the NC
+
+function MSSQL_LOG_NetApp_SM_NC_Stop_NC_0002() {
+	try {
+		NC_Execution_Status($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_assertTrue(false);
+		_log("for test Case ID: Stop_NC_0002(),Function: NC_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("NC workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+	try {
+		Stop_NC($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_assertTrue(false);
+		_log("for test Case ID: Stop_NC_0002(),Function: Stop_NC ,execution got failed.kindly check the log for more details");
+	}
+}
+
+//Edit and Import SO 
+
+function MSSQL_LOG_NetApp_SM_NC_Import_SO_007() {
+	try {
+		Edit_SO_Workflow();
+		_wait(5000);
+		Import_WF_SO();// In Common > Group_Operation.sah
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+ 		_assertTrue(false);
+		_log("for test Case ID: Import_SO_For_Remote0007(),Function: Import_WF_SO ,execution got failed.kindly check the log for more details");
+		_fail("workflow not imported succesfully.So that stopping execution.");
+	}
+}
+
+//Start SO
+
+function MSSQL_LOG_NetApp_SM_NC_Start_SO_0011() {
+	try {
+		Verify_Continuity_Status($groupName, "DR Sync In Progress");
+		Start_SO($groupName);
+		MSSQL_LOG_NetApp_SM_NC_Check_SO_Status($groupName, "Switchover");
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_assertTrue(false);
+		_log("for test Case ID: Start_SO_0011(),Function: Start_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+//Continuity Status post SO
+
+function MSSQL_LOG_NetApp_SM_Verify_PostSO_Continuitystatus_013() {
+	try {
+		Verify_Continuity_Status($groupName, "DR Resync In Progress");
+		} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_assertTrue(false);
+		_log("for test Case ID: SO_Replication_0013(),Function: Verify_Continuitystatus_After_SO or NetAPP_SnapMirror_Replication_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+//Edit, Import and Start RNC
+
+function MSSQL_LOG_NetApp_SM_EditImportStart_RNC_0033() {
+	try {
+		//Execute_Reverse_Normal_Copy($groupName);
+		Edit_RNC_Workflow();
+		Import_WF_RNC();
+		Execute_Reverse_Normal_Copy();
+		RNC_Execution_Status($groupName);//In Common > Group_Operation.sah
+			} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_assertTrue(false);
+		_log("for test Case ID: Start_RNC_0033(),Function: Execute_Reverse_Normal_Copy or NetAPP_SnapMirror_Managedrsolution_PostSO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+//RNC MANAGE > GROUP INFORMATION VALIDATION
+
+function MSSQL_LOG_NetApp_SM_RNC_Manage_Groupinfo_0022() {
+
+	try {
+		MSSQL_LOG_NetApp_SM_Groupinfo_PostSO($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_assertTrue(false);
+		_log("for test Case ID: RNC_Groupinformation_Monitor_0022(),Function: NetAPP_SnapMirror_Groupinformation_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+//RNC > MONITOR > GROUPSNAPSHOT 
+
+function MSSQL_LOG_NetApp_SM_RNC_Groupsnapshot_Monitor_0021() {
+	try {
+		MSSQL_LOG_NetApp_SM_Groupsnapshot_Post_SO($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_assertTrue(false);
+		_log("for test Case ID: RNC_Gruopsnapshot_Monitor_0021(),Function: NetAPP_SnapMirror_Groupsnapshot_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+//RNC > MONITOR > RPO/RTO PAGE > RPO VALIDATION
+
+function MSSQL_LOG_NetApp_SM_RNC_Rpo_Monitor_0023() {
+	try {
+		MSSQL_LOG_NetApp_SM_RPO_Status($compIPDR,$datasetDBnm,$datasetDrDBUsrnm,$datasetDrDBpwd);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_assertTrue(false);
+		_log("for test Case ID: RNC_Rpo_Monitor_0023(),Function: NetAPP_SnapMirror_Rpo_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+//RNC > MONITOR > REPLICATION PAGE
+
+function MSSQL_LOG_NetApp_SM_RNC_Replication_0024() {
+	try {
+		MSSQL_LOG_NetApp_SM_Replication_Details($groupName,"Reverse Normalcopy")
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_assertTrue(false);
+		_log("for test Case ID: RNC_Replication_0024(),Function: NetAPP_SnapMirror_Replication_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+//STOPPING RNC
+
+function MSSQL_LOG_NetApp_SM_Stop_RNC_0033() {
+	try {
+		//RNC_Execution_Status($groupName); //This function is not handled well
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_assertTrue(false);
+		_log("for test Case ID: Stop_RNC_0033(),Function: RNC_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("RNC workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+	try {
+		MSSQL_LOG_NetApp_SM_Stop_RNC($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_assertTrue(false);
+		_log("for test Case ID: Stop_RNC_0033(),Function: Stop_Reverse_Normal_Copy ,execution got failed.kindly check the log for more details");
+	}
+}
+
+//EDIT AND IMPORT SB WORKFLOW.
+
+function MSSQL_LOG_NetApp_SM_EditNImport_SB_008() {
+	try {
+		Edit_SB_Workflow();
+		_wait(5000);
+		Import_WF_SB();// In Common > Group_Operation.sah
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+ 		_assertTrue(false);
+		_log("for test Case ID: Import_SB_For_Remote0007(),Function: Import_WF_SB ,execution got failed.kindly check the log for more details");
+		_fail("workflow not imported succesfully.So that stopping execution.");
+	}
+}
+
+
+//START SB
+
+function MSSQL_LOG_NetApp_SM_Start_SB_0034() {
+	try {
+		//  Verify_Continuity_Status($groupName, "DR Resync In Progress");
+		  Start_SB($groupName);
+		Waitfor_TestWF_Completion_NetApp_SnapMirror_SB($groupName, "Switchback");
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_assertTrue(false);
+		_log("for test Case ID: Start_SB_0034(),Function: Verify_Continuitystatus_Stop_RNC or Start_SB ,execution got failed.kindly check the log for more details");
+	}
+}
+
+//SB WORKFLOW EXECUTION STATUS CHECK
+
+function MSSQL_LOG_NetApp_SM_SB_Execution_0035() {
+
+	try {
+		MSSQL_LOG_NetApp_SM_SB_Execution_Status($groupName);
+		
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_assertTrue(false);
+		_log("for test Case ID: SB_Execution_0035(),Function: SB_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("SB workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+}
+
+
+//POST SB STATUS CHANGE
+
+function MSSQL_LOG_NetApp_SM_PostSB_StatusCheck_014() {
+	
+	try {
+		Verify_Continuity_Status($groupName, "DR Sync In Progress");
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_assertTrue(false);
+		_log("for test Case ID: SB_Execution_0035(),Function: Verify_Continuitystatus_In_SB ,execution got failed.kindly check the log for more details");
+	}
+
+}
+
+
+//STOP LNX REMOTE AGENTS
+
+function NetAPP_SnapMirror_Remote_Stop_Linux_Agent_DS_OS() {
+	try {
+		NetAPP_SnapMirror_Remote_PR_Linux_Agent_Stop_Event_DS_OS();
+		NetAPP_SnapMirror_Remote_DR_Linux_Agent_Stop_Event_DS_OS();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_assertTrue(false);
+		_log("for test Case ID: Remote_Stop_NetAPP_SnapMirror_Agent_0039(),Function: NetAPP_SnapMirror_Remote_PR_NetAPP_SnapMirror_Agent_Stop_Event or NetAPP_SnapMirror_Remote_DR_NetAPP_SnapMirror_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+
+function NetApp_SnapMirror_Contiunity_Status_0002() {
+	try {
+		Verify_Continuitystatus_Before_NC();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Contiunity_Status_0002(),Function: Verify_Continuitystatus_Before_NC ,execution got failed.kindly check the log for more details");
+	}
+}
+function NetApp_SnapMirror_Continuity_Management_0015() {
+	try {
+		Group_Managedrsolution();
+		
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Continuity_Management_0015(),Function: Group_Managedrsolution ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function NetApp_SnapMirror_Start_NormalCopy_0001() {
+	try {
+		Execute_NC();
+	    Verify_Continuitystatus_In_NC();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_NormalCopy_0001(),Function: Execute_NC or Verify_Continuitystatus_In_NC ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Monitor_Relationship_0030() {
+	try {
+		Monitor_Relationship($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Monitor_Relationship_0030(),Function: Monitor_Relationship ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Manage_DRsolution_0029() {
+	try {
+		NC_Execution_Status($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: APPDg_Manage_DRsolution_0029(),Function: NC_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("NC workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+	try {
+		APP_PFR_Managedrsolution();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: APPDg_Manage_DRsolution_0029(),Function: APP_PFR_Managedrsolution ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_GroupInformation_Manage_0007() {
+	try {
+		APP_PFR_Groupinformation();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: GroupInformation_Manage_0007(),Function: APP_PFR_Groupinformation ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Groupsnapshot_Monitor_0001() {
+	try {
+		APP_PFR_Groupsnapshot();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Gruopsnapshot_Monitor_0001(),Function: APP_PFR_Gruopsnapshot ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_NC_Replication_0028() {
+	try {
+		APP_PFR_Replication();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: NC_APP_PFR_Replication_0028(),Function: APP_PFR_Replication ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_NC_RPO_0026() {
+	try {
+		APP_PFR_Rpo();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: NC_APP_PFR_RPO_0026(),Function: APP_PFR_Rpo ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+function APP_PFR_NC_RTO_0027() {
+	try {
+		APP_PFR_Rto();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: NC_APP_PFR_RTO_0027(),Function: APP_PFR_Rpo ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Stop_NC_0002() {
+	try {
+		NC_Execution_Status($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_NC_0002(),Function: NC_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("NC workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+	try {
+		Stop_NC($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_NC_0002(),Function: Stop_NC ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Start_SO_0011() {
+	try {
+		Start_SO($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_SO_0011(),Function: Start_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_SO_Execution_0012() {
+	/*try {
+		Verify_Continuitystatus_In_SO();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SO_Execution_0012(),Function: Verify_Continuitystatus_In_SO ,execution got failed.kindly check the log for more details");
+	}*/
+	try {
+		SO_Execution_Status($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SO_Execution_0012(),Function: SO_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("SO workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+}
+
+function APP_PFR_SO_Verify_Continuitystatus_013() {
+	try {
+		Verify_Continuitystatus_After_SO();
+		} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SO_Replication_0013(),Function: Verify_Continuitystatus_After_SO execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Start_RNC_0033() {
+	try {
+		Execute_Reverse_Normal_Copy($groupName);
+		APP_PFR_Managedrsolution_PostSO();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_RNC_0033(),Function: Execute_Reverse_Normal_Copy or APP_PFR_Managedrsolution_PostSO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_RNC_Groupinformation_Monitor_0022() {
+	try {
+		RNC_Execution_Status($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_RNC_0033(),Function: RNC_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("RNC workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+	try {
+		APP_PFR_Groupinformation_Post_SO();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: RNC_Groupinformation_Monitor_0022(),Function: APP_PFR_Groupinformation_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_RNC_Groupsnapshot_Monitor_0021() {
+	try {
+		APP_PFR_Groupsnapshot_Post_SO();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: RNC_Gruopsnapshot_Monitor_0021(),Function: APP_PFR_Gruopsnapshot_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_RNC_Rpo_Monitor_0023() {
+	try {
+		APP_PFR_Rpo_Post_SO();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: RNC_Rpo_Monitor_0023(),Function: APP_PFR_Rpo_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_RNC_Replication_0024() {
+	try {
+		APP_PFR_Replication_Post_SO();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: RNC_Replication_0024(),Function: APP_PFR_Replication_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Stop_RNC_0033() {
+	try {
+		RNC_Execution_Status($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_RNC_0033(),Function: RNC_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("RNC workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+	try {
+		Stop_Reverse_Normal_Copy($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_RNC_0033(),Function: Stop_Reverse_Normal_Copy ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Start_SB_0034() {
+	try {
+		Verify_Continuitystatus_Stop_RNC();
+		Start_SB($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_SB_0034(),Function: Verify_Continuitystatus_Stop_RNC or Start_SB ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_SB_Execution_0035() {
+	try {
+		Verify_Continuitystatus_In_SB();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SB_Execution_0035(),Function: Verify_Continuitystatus_In_SB ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		SB_Execution_Status($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SB_Execution_0035(),Function: SB_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("SB workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+}
+
+function APP_PFR_SB_Monitor_Manage_0038() {
+	try {
+		Verify_Continuitystatus_After_SB();
+		APP_PFR_Managedrsolution();
+		APP_PFR_Replication();
+	
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SB_Monitor_Manage_0038(),Function: managedrsolution or Replication or Gruopsnapshot or Managegroupinformation or RPO or RTO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Start_FO_0001() {
+	try {
+		Start_FO($groupName);
+		Verify_Continuitystatus_In_FO();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_FO_0001(),Function: Stop_NC or Start_FO or Verify_Continuitystatus_In_FO  ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_FO_execution_0058() {
+	try {
+		FO_Execution_Status($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: FO_execution_0058(),Function: FO_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("Fail over workflow execution faild.So that stopping execution.Kindly check the logs for further details");
+	}
+}
+
+function APP_PFR_FO_RPO_0003() {
+	try {
+		Calculate_RPO_Post_FO($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: FO_RPO_0003(),Function: Calculate_RPO_Post_FO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_FO_Monitor_Manage_0006() {
+	try {
+		Gruopsnapshot_Post_FO($groupName);
+		Groupinformation_Post_FO($groupName);
+		Replication_Post_FO($groupName);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: FO_Monitor_Manage_0006(),Function: Gruopsnapshot_Post_FO or Groupinformation_Post_FO or Replication_Post_FO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Continuity_Status_FO_0007() {
+	try {
+		Verify_Continuitystatus_After_FO();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Continuity_Status_FO_0007(),Function: Verify_Continuitystatus_After_FO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+////////////////////////////////////////Agents/////////////////////////////////////////
+
+
+
+function APP_PFR_Remote_Stop_APP_PFR_Agent_0039() {
+	try {
+		APP_PFR_Remote_PR_PFR_Agent_Stop_Event();
+		APP_PFR_Remote_DR_PFR_Agent_Stop_Event();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Stop_APP_PFR_Agent_0039(),Function: APP_PFR_Remote_PR_APP_PFR_Agent_Stop_Event or APP_PFR_Remote_DR_APP_PFR_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Remote_Start_APP_PFR_Agent_0038() {
+	try {
+		APP_PFR_Remote_PR_PFR_Agent_Start_Event();
+		APP_PFR_Remote_DR_PFR_Agent_Start_Event();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Start_APP_PFR_Agent_0038(),Function: APP_PFR_Remote_PR_APP_PFR_Agent_Start_Event or APP_PFR_Remote_DR_APP_PFR_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+///
+function APP_PFR_Remote_Stop_Linux_Agent_0051() {
+	try {
+		APP_Remote_PR_Linux_Agent_Stop_Event();
+		APP_Remote_DR_Linux_Agent_Stop_Event();
+		
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: APP_PFR_Stop_replication_0051(),Function: APP_PFR_Stop_Replication_event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Remote_Start_Linux_Agent_0052() {
+	try {
+		APP_Remote_PR_Linux_Agent_Start_Event();
+		APP_Remote_DR_Linux_Agent_Start_Event();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: APP_PFR_Start_replication_0052(),Function: APP_PFR_Start_Replication_event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+function APP_PFR_Remote_Stop_APP_PFR_Agent_SO_InActive_0039() {
+	try {
+		APP_PFR_Remote_PR_PFR_Agent_Stop_Event_SO_InActive();
+		APP_PFR_Remote_DR_PFR_Agent_Stop_Event_SO_InActive();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Stop_APP_PFR_Agent_0039(),Function: APP_PFR_Remote_PR_APP_PFR_Agent_Stop_Event or APP_PFR_Remote_DR_APP_PFR_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Remote_Start_APP_PFR_Agent_SO_InActive_0038() {
+	try {
+		APP_PFR_Remote_PR_PFR_Agent_Start_Event_SO_InActive();
+		APP_PFR_Remote_DR_PFR_Agent_Start_Event_SO_InActive();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Start_APP_PFR_Agent_0038(),Function: APP_PFR_Remote_PR_APP_PFR_Agent_Start_Event or APP_PFR_Remote_DR_APP_PFR_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Remote_Stop_Linux_Agent_SO_InActive_0051() {
+	try {
+		APP_Remote_PR_Linux_Agent_Stop_Event_SO_InActive();
+		APP_Remote_DR_Linux_Agent_Stop_Event_SO_InActive();
+		
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: APP_PFR_Stop_replication_0051(),Function: APP_PFR_Stop_Replication_event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Remote_Start_Linux_Agent_SO_InActive_0052() {
+	try {
+		APP_Remote_PR_Linux_Agent_Start_Event_SO_InActive();
+		APP_Remote_DR_Linux_Agent_Start_Event_SO_InActive();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: APP_PFR_Start_replication_0052(),Function: APP_PFR_Start_Replication_event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+////////////////////Local Agent//////////////////////////////////////////////////
+
+function APP_PFR_Local_Stop_APP_PFR_Agent_0039() {
+	try {
+		APP_PFR_Local_PR_PFR_Agent_Stop_Event();
+		APP_PFR_Local_DR_PFR_Agent_Stop_Event();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Local_Stop_APP_PFR_Agent_0039(),Function: APP_PFR_Local_PR_APP_PFR_Agent_Stop_Event or APP_PFR_Local_DR_APP_PFR_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Local_Start_APP_PFR_Agent_0038() {
+	try {
+		APP_PFR_Local_PR_PFR_Agent_Start_Event();
+		APP_PFR_Local_DR_PFR_Agent_Start_Event();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Local_Start_APP_PFR_Agent_0038(),Function: APP_PFR_Local_PR_APP_PFR_Agent_Start_Event or APP_PFR_Local_DR_APP_PFR_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+///
+function APP_PFR_Local_Stop_Linux_Agent_0051() {
+	try {
+		APP_Local_PR_Linux_Agent_Stop_Event();
+		APP_Local_DR_Linux_Agent_Stop_Event();
+		
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: APP_PFR_Stop_replication_0051(),Function: APP_PFR_Stop_Replication_event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Local_Start_Linux_Agent_0052() {
+	try {
+		APP_Local_PR_Linux_Agent_Start_Event();
+		APP_Local_DR_Linux_Agent_Start_Event();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: APP_PFR_Start_replication_0052(),Function: APP_PFR_Start_Replication_event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+/////
+
+function APP_PFR_Local_Stop_APP_PFR_Agent_SO_InActive_0039() {
+	try {
+		APP_PFR_Local_PR_PFR_Agent_Stop_Event_SO_InActive();
+		APP_PFR_Local_DR_PFR_Agent_Stop_Event_SO_InActive();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Local_Stop_APP_PFR_Agent_0039(),Function: APP_PFR_Local_PR_APP_PFR_Agent_Stop_Event or APP_PFR_Local_DR_APP_PFR_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Local_Start_APP_PFR_Agent_SO_InActive_0038() {
+	try {
+		APP_PFR_Local_PR_PFR_Agent_Start_Event_SO_InActive();
+		APP_PFR_Local_DR_PFR_Agent_Start_Event_SO_InActive();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Local_Start_APP_PFR_Agent_0038(),Function: APP_PFR_Local_PR_APP_PFR_Agent_Start_Event or APP_PFR_Local_DR_APP_PFR_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Local_Stop_Linux_Agent_SO_InActive_0051() {
+	try {
+		APP_Local_PR_Linux_Agent_Stop_Event_SO_InActive();
+		APP_Local_DR_Linux_Agent_Stop_Event_SO_InActive();
+		
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: APP_PFR_Stop_replication_0051(),Function: APP_PFR_Stop_Replication_event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function APP_PFR_Local_Start_Linux_Agent_SO_InActive_0052() {
+	try {
+		APP_Local_PR_Linux_Agent_Start_Event_SO_InActive();
+		APP_Local_DR_Linux_Agent_Start_Event_SO_InActive();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: APP_PFR_Start_replication_0052(),Function: APP_PFR_Start_Replication_event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+

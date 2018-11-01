@@ -1,0 +1,42 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains APP PFR Solution specific
+ ** AuthorName : 
+ ** Created Date : 
+ ***********************************************************************************************/
+
+var $Excel1=_getExcel($SAHI_HOME + "\\Library\\RAL\\StartProcess\\ObjectRepository\\StartProcess_ObjectRepository.xls","Param");
+
+var $Excel=$Excel1.getData();
+
+if($BrowserLang == "N"){
+
+	var $j = 2;
+}
+else if($BrowserLang == "Y-JA"){
+	
+	var $j = 3;
+	}
+
+else if($BrowserLang == "Y-EN"){
+		
+		var $j = 3;
+	}
+////////////////////Solution\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+var $KeyValuePairs=$Excel[2][$j];
+var $inputKey=$Excel[3][$j];
+var $inputValue=$Excel[4][$j];
+var $AddkeyValue=$Excel[5][$j];
+var $StartProcessProcess=$Excel[6][$j];
+var $ActionProperties=$Excel[7][$j];
+var $command=$Excel[8][$j];
+var $SuccessPattern=$Excel[9][$j];
+var $FailurePattern=$Excel[10][$j];
+var $StartProcessProcess=$Excel[11][$j];
+var $ActionProperties=$Excel[12][$j];
+var $componentName=$Excel[13][$j];
+var $FailurePattern=$Excel[14][$j];
+var $waitFor=$Excel[15][$j];
+var $SaveNow=$Excel[16][$j];
+var $StartProcess=$Excel[17][$j];

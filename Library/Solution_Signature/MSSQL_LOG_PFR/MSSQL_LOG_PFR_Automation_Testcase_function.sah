@@ -1,0 +1,809 @@
+
+function MsSQL_Component_Local_Discovery_0002() {
+	try {
+		Create_Local_ComponentPR();// In component > Windows > Windows.sah
+		Create_Local_ComponentDR();// In component > Windows > Windows.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Component_Local_Discovery_0002(),Function: Create_Local_ComponentPR or Create_Local_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("component not created succesfully.So that stopping execution.");
+	}
+}
+
+function MsSQL_Component_Remote_Discovery_001() {
+	try {
+		Create_Remote_ComponentPR();// In component > Windows > Windows.sah
+		Create_Remote_ComponentDR();// In component > Windows > Windows.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Component_Remore_Discovery_0018(),Function: Create_Remote_ComponentPR or Create_Remote_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("component not created succesfully.So that stopping execution.");
+	}
+}
+
+function MsSQL_Dataset_Discovery_002() {
+	try {
+		Create_Mssql_DatasetPR();// In Database > MSSQL.sah
+		Create_Mssql_DatasetDR();// In Database > MSSQL.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:MSSQL_Dataset_Discovery_0007(),Function: Create_MSSQL_Dataset_PR or Create_MSSQL_Dataset_DR ,execution got failed.kindly check the log for more details");
+		_fail("dataset not created succesfully.So that stopping execution.");
+	}
+
+}
+
+function MsSQL_Auto_DatasetDiscovery_0011() {
+	try {
+		Verify_Mssql_Dataset_Details_PR();// In Database > MSSQL.sah
+		Verify_Mssql_Dataset_Details_DR();// In Database > MSSQL.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:MSSQL_Auto_DatasetDiscovery0009(),Function: Verify_Dataset_Details_PR or Verify_Dataset_Details_DR,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_Dataset_status_0010() {
+	try {
+		Verify_Mssql_Dataset_Status_PR(); // In Database > MSSQL.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:MSSQL_Dataset_status_0011(),Function: Verify_Dataset_Status_PR ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		Verify_Mssql_Dataset_Status_DR();// In Database > MSSQL.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:MSSQL_Dataset_status_0011(),Function: Verify_Dataset_Status_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_Protectionscheme_Discovery_003() {
+	try {
+		Create_Mssql_ProtectionschemePR(); //In Replication > MSSQL_PFR.sah
+		_wait(20000);
+		Create_Mssql_ProtectionschemeDR(); //In Replication > MSSQL_PFR.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MSSQL_Protectionscheme_Discovery_0018(),Function: Create_MSSQL_ProtectionSchemePR or Create_MSSQL_ProtectionSchemeDR ,execution got failed.kindly check the log for more details");
+		_fail("Protection Schemes not created succesfully.So that stopping execution.");
+	}
+}
+
+function MsSQL_GroupCreation_004() {
+	try {
+		Create_Mssql_Group($backupPR,$backupDR, $undoPR,$undoDR);//In Solution signature > MSSQL_Logshipping_Solution.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MSSQL_GroupCreation_0022(),Function: MsSQL_FG_DG_Group_Creation ,execution got failed.kindly check the log for more details");
+		_fail("Group not created succesfully.So that stopping execution.");
+	}
+
+}
+
+function MsSQL_Move_Group_Manage_005() {
+	try {
+		Move_To_Manage_Group($groupName); // In Common > Group_Operation.sah
+		_wait(100);
+		
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Move_Group_Manage_0006(),Function: Move_To_Manage_Group ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+
+}
+
+function MsSQL_Change_Continuity_State_006() {
+	try {
+		Change_ContinuityStatus_Group($groupName, "Normal Reset"); // In Common > Group_Operation.sah  //changed with Normal Inactive
+		_wait(20000);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Change_Continuity_State_0001(),Function: Change_ContinuityStatus_Group ,execution got failed.kindly check the log for more details");
+		_fail("Current group state is not correct,so that stopping execution");
+	}
+}
+
+function MsSQL_PostGroupCreation_007() {
+	try {
+		Post_Group_Creation_PR();//In Solution signature > MSSQL_LogsPFR_Solution.sah
+		Post_Group_Creation_DR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MSSQL_PostGroupCreation_0023(),Function: MsSQL_FG_DG_Group_Creation ,execution got failed.kindly check the log for more details");
+		_fail("Group not created succesfully.So that stopping execution.");
+	}
+
+}
+function MsSQL_NFC_008()
+{ 
+	try {
+		//publish($groupName,"Failover");
+		publishBCO( $groupName, "Failover");
+		Execute_NFC($groupName, "NormalFullCopy");
+		BCO_Exceution_Status($groupName, "NormalFullCopy");
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MsSQL_PFR_Operation_0011(),Function: Add_RAL_PFROperation(),Edit_IntegrityCheck_Workflow(),Import_WF_IntegrityCheck(),Start_IntegrityCheck(),execution got failed.kindly check the log for more details");
+		_fail("WorkFlow not Imported succesfully.So that stopping execution.");
+	}
+	
+	}
+function MsSQL_Component_Remote_Status_009() {
+	try {
+		Verify_Component_Status_PR_Windows();
+		Verify_Component_Status_DR_Windows();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Component_Remote_Status_0001(),Function: Verify_Component_Status_PR or Verify_Component_Status_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+//Local
+function MsSQL_Component_Local_Status_0001() {
+	try {
+		Get_Local_Componenet_Status_DB_PR();
+		Get_Local_Componenet_Status_DB_DR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Component_Local_Status_0001(),Function: Verify_Component_Status_PR or Verify_Component_Status_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_Contiunity_Status_0012() {
+	try {
+		Verify_Continuitystatus_Before_NC();// In Common > Group_Operation.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Contiunity_Status_0002(),Function: Verify_Continuitystatus_Before_NC ,execution got failed.kindly check the log for more details");
+	}
+}
+function MsSQL_Continuity_Management_0015() {
+	try {
+		Group_Managedrsolution();// In Common > Group_Operation.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Continuity_Management_0015(),Function: Group_Managedrsolution ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+function MsSQL_Start_NormalCopy_0013() {
+	try {
+		//Change_ContinuityStatus_Group_NC($groupName, "Normal Inactive"); //temp added when without NFC
+		publishBCO($groupName,"Failover");
+		Execute_NC($groupName, "NormalCopy");// In Common > Group_Operation.sah
+		Verify_Continuitystatus_In_NC();// In Common > Group_Operation.sah
+		BCO_Exceution_Status($groupName, "NormalCopy");
+				 $count = 0;
+			while($count<5){
+				_wait(30000);
+				$count++;	
+			}
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_NormalCopy_0001(),Function: Execute_NC or Verify_Continuitystatus_In_NC ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_Relationship_0014() {
+	try {
+		Monitor_Relationship($groupName);// In Common > Group_Operation.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Monitor_Relationship_0030(),Function: Monitor_Relationship ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_GroupInformation_Manage_0007() {
+	try {
+		Mssql_GroupInformation();//In Solution signature > MSSQL_Logshipping_Solution.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: GroupInformation_Manage_0007(),Function: MSSQL_Groupinformation ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_GroupSnapshot_Monitor_0001() {
+	try {
+		Mssql_GroupSnapshot();//In Solution signature > MSSQL_Logshipping_Solution.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: GroupSnapshot_Monitor_0001(),Function: MSSQL_Gruopsnapshot ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_NC_RPO_0016() {
+	try {
+		MSSQL_PFR_Rpo();//In Solution signature > MSSQL_Logshipping_Solution.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: NC_MSSQL_RPO_0026(),Function: MSSQL_Rpo ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_NC_MSSQL_RTO_0017() {
+	try {
+		MSSQL_PFR_Rto();//In Solution signature > MSSQL_Logshipping_Solution.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: NC_MSSQL_RTO_0027(),Function: MSSQL_Rto ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+function MSSQL_PFR_Continuity_Workflows_NC_0018() {
+	try {
+		MSSQL_PFR_Continuity_Workflows_Pre_SO();
+		// Verify_Continuitystatus_In_NC();
+		$count = 0;
+		while ($count < 10) {
+			_wait(30000);
+			$count++;
+		}
+	} catch ($e) {
+		_log($e.toString(), "Custom1");
+		_log("for test Case ID: Continuity_Workflows(),Function: Continuity_Workflows execution got failed.kindly check the log for more details");
+	}
+}
+
+
+function MSSQL_PFR_Continuity_Workflows_RNC() {
+	try {
+		MSSQL_PFR_Continuity_Workflows_Post_SO();
+		// Verify_Continuitystatus_In_NC();
+		$count = 0;
+		while ($count < 10) {
+			_wait(30000);
+			$count++;
+		}
+	} catch ($e) {
+		_log($e.toString(), "Custom1");
+		_log("for test Case ID: Continuity_Workflows(),Function: Continuity_Workflows execution got failed.kindly check the log for more details");
+	}
+}
+
+
+function MsSQL_Import_SO_For_Remote0020() {
+	try {
+		Edit_SO_Workflow($fileSO,$transPathPR,$undoPR);
+		_wait(5000);
+		Import_WF_SO();// In Common > Group_Operation.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Import_SO_For_Remote0007(),Function: Import_WF_SO ,execution got failed.kindly check the log for more details");
+		_fail("workflow not imported succesfully.So that stopping execution.");
+	}
+}
+
+
+
+function MsSQL_Stop_NC_0019() {
+	try {
+		NC_Execution_Status($groupName);// In Common > Group_Operation.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_NC_0002(),Function: NC_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("NC workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+	try {
+		Stop_NC($groupName);// In Common > Group_Operation.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_NC_0002(),Function: Stop_NC ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_Start_SO_0021() {
+	try {
+		Start_SO($groupName);// In Common > Group_Operation.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_SO_0011(),Function: Start_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_SO_Execution_0022() {
+	try {
+		SO_Execution_Status_MSSQL_PFR_SO($groupName);// In Common > Group_Operation.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SO_Execution_0012(),Function: SO_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("SO workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+}
+
+function MsSQL_NC_Replication_0015() {
+	try {
+		MSSQL_PFR_Replication($groupName);
+		Verify_Continuitystatus_In_NC();	
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SO_Replication_0013(),Function: Verify_Continuitystatus_After_SO or MSSQL_Replication_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+function MsSQL_SO_Replication_0023() {
+	try {
+		//MSSQL_PFR_Replication($groupName);
+		Verify_Continuity_Status($groupName, "DR Resync is not started");// In Common > Group_Operation.sah
+		PFR_Replication_status($groupName,$compIPDR,$remoteUserNameValDR,$remotePwdValDR,"SO");
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SO_Replication_0013(),Function: Verify_Continuitystatus_After_SO or MSSQL_Replication_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+function MsSQL_Start_RNC_0024() {
+	try {
+		Execute_Reverse_Normal_Copy($groupName);//In Common > Group_Operation.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_RNC_0033(),Function: Execute_Reverse_Normal_Copy or MSSQL_Managedrsolution_PostSO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_RNC_GroupInformation_Monitor_0022() {
+	try {
+		RNC_Execution_Status($groupName);//In Common > Group_Operation.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_RNC_0033(),Function: RNC_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("RNC workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+	try {
+		MSSQL_GroupInformation_Post_SO();//In Solution signature > MSSQL_Logshipping_Solution.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: RNC_GroupInformation_Monitor_0022(),Function: MSSQL_Groupinformation_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_RNC_GroupSnapshot_Monitor_0021() {
+	try {
+		MSSQL_GroupSnapshot_Post_SO();//In Solution signature > MSSQL_Logshipping_Solution.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: RNC_GroupSnapshot_Monitor_0021(),Function: MSSQL_Gruopsnapshot_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_RNC_Rpo_0025() {
+	try {
+		MSSQL_RPO_Post_SO();//In Solution signature > MSSQL_Logshipping_Solution.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: RNC_Rpo_Monitor_0023(),Function: MSSQL_Rpo_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_Stop_RNC_0026() {
+	try {
+		RNC_Execution_Status($groupName);//In Common > Group_Operation.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_RNC_0033(),Function: RNC_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("RNC workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+	try {
+		Stop_Reverse_Normal_Copy($groupName);//In Common > Group_Operation.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_RNC_0033(),Function: Stop_Reverse_Normal_Copy ,execution got failed.kindly check the log for more details");
+	}
+}
+
+//Events
+function MsSQL_Remote_Stop_MSSQL_Agent_SO_InActive0027() {
+	try {
+		MSSQL_Remote_PR_MSSQL_Agent_Stop_Event_SO_InActive();
+		MSSQL_Remote_DR_MSSQL_Agent_Stop_Event_SO_InActive();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Stop_MSSQL_Agent_0039(),Function: MSSQL_Remote_PR_MSSQL_Agent_Stop_Event_SO_InActive or MSSQL_Remote_DR_MSSQL_Agent_Stop_Event_SO_InActive ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_Remote_Start_MSSQL_Agent_SO_InActive0028() {
+	try {
+		MSSQL_Remote_PR_MSSQL_Agent_Start_Event_SO_InActive(); //MSSQLAgent.sh start
+		MSSQL_Remote_DR_MSSQL_Agent_Start_Event_SO_InActive();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Start_MSSQL_Agent_0038(),Function: MSSQL_Remote_PR_MSSQL_Agent_Start_Event_SO_InActive or MSSQL_Remote_DR_MSSQL_Agent_Start_Event_SO_InActive ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_Local_Stop_MSSQL_Agent_SO_InActive005() {
+	try {
+		MSSQL_Local_PR_MSSQL_Agent_Stop_Event_SO_InActive();
+		MSSQL_Local_DR_MSSQL_Agent_Stop_Event_SO_InActive();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Local_Stop_MSSQL_Agent_0039(),Function: MSSQL_Local_PR_MSSQL_Agent_Stop_Event_SO_InActive or MSSQL_Local_DR_MSSQL_Agent_Stop_Event_SO_InActive ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_Local_Start_MSSQL_Agent_SO_InActive0024() {
+	try {
+		MSSQL_Local_PR_MSSQL_Agent_Start_Event_SO_InActive();
+		MSSQL_Local_DR_MSSQL_Agent_Start_Event_SO_InActive();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Local_Start_MSSQL_Agent_0038(),Function: MSSQL_Local_PR_MSSQL_Agent_Start_Event_SO_InActive or MSSQL_Local_DR_MSSQL_Agent_Start_Event_SO_InActive ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_Stop_MSSQL_Instance_SO_InActive0029() {
+	try {
+		Mssql_PR_Instance_Stop_Event_SO_InActive();
+		//Mssql_DR_Instance_Stop_Event_SO_InActive();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Stop_MSSQL_Instance_002(),Function: Mssql_PR_Instance_Stop_Event_SO_InActive or Mssql_DR_Instance_Stop_Event_SO_InActive ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_Start_MSSQL_Instance_SO_InActive0030() {
+	try {
+		Mssql_PR_Instance_Start_Event_SO_InActive();
+		//Mssql_DR_Instance_Start_Event_SO_InActive();
+		
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Start_MSSQL_Instance_0023(),Function: Mssql_PR_Instance_Start_Event_SO_InActive or Mssql_DR_Instance_Start_Event_SO_InActive  ,execution got failed.kindly check the log for more details");
+	}
+}//Event End
+
+
+function MsSQL_Import_SB_For_Remote0031(){
+	try {
+		Edit_SB_Workflow($fileSB,$transPathDR,$undoDR);
+		_wait(5000);
+		Import_WF_SB();// In Common > Group_Operation.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Import_SB_For_Remote0007(),Function: Import_WF_SB ,execution got failed.kindly check the log for more details");
+		_fail("workflow not imported succesfully.So that stopping execution.");
+	}
+}
+
+function MsSQL_Import_SB_For_Local0007(){
+	try {
+		Edit_SB_Workflow($fileSB,$backupPathDR,$undoDR);
+		_wait(5000);
+		Import_WF_SB();// In Common > Group_Operation.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Import_SB_For_Local0007(),Function: Import_WF_SB ,execution got failed.kindly check the log for more details");
+		_fail("workflow not imported succesfully.So that stopping execution.");
+	}
+}
+
+function MsSQL_Start_SB_0032() {
+	try {
+		Verify_Continuitystatus_Stop_RNC();//In Common > Group_Operation.sah
+		//Start_SB($groupName);  //  since its used  navigateDrillExecutingPage instead navigateDrillListing
+		Start_SB_MSSQL_LOG_PFR($groupName); //start SB > MSSQL_LOG_PFR_Solution.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_SB_0034(),Function: Verify_Continuitystatus_Stop_RNC or Start_SB ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_SB_Execution_0033() {
+	try {
+		SB_Execution_Status_MSSQL_PFR_SB($groupName)();//In Common > Group_Operation.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SB_Execution_0035(),Function: SB_Execution_Status ,execution got failed.kindly check the log for more details");
+		//_fail("SB workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+}
+
+function MsSQL_SB_Continuity_Status_0034() {
+	try {
+		Verify_Continuity_Status($groupName, "DR Sync is Aborted");
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SB_Monitor_Manage_0038(),Function: managedrsolution or Replication or Gruopsnapshot or Managegroupinformation or RPO or RTO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MSSQL_LOG_PFR_Dryrun_Report_Testcase() {
+	try {
+		Dryrun_for_Diffrent_Workflows("NormalFullCopy");
+		Dryrun_for_Diffrent_Workflows("NormalCopy");
+		Dryrun_for_Diffrent_Workflows("Switchover");
+		Dryrun_for_Diffrent_Workflows("ReverseNormalCopy");
+		Dryrun_for_Diffrent_Workflows("Switchback");
+		Dryrun_for_Diffrent_Workflows("Failover");
+		Dryrun_for_Diffrent_Workflows("FallbackResync");
+		Dryrun_for_Diffrent_Workflows("Fallback");
+} catch ($e) {
+	_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MSSQL_LOG_PFR_Dryrun_Report_Testcase(),Function: MSSQL_LOG_PFR_Dryrun_Report,execution got failed.kindly check the log for more details");
+	}
+}
+//Events
+function MsSQL_Remote_Stop_MSSQL_Agent_0035() {
+	try {
+		MSSQL_Remote_PR_MSSQL_Agent_Stop_Event();
+		MSSQL_Remote_DR_MSSQL_Agent_Stop_Event();
+		Group_Status_In_Warning_Event();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Stop_MSSQL_Agent_0039(),Function: MSSQL_Remote_PR_MSSQL_Agent_Stop_Event or MSSQL_Remote_DR_MSSQL_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+			}
+}
+
+function MsSQL_Remote_Start_MSSQL_Agent_0036() {
+	try {
+		MSSQL_Remote_PR_MSSQL_Agent_Start_Event();
+		MSSQL_Remote_DR_MSSQL_Agent_Start_Event();
+		//Group_Status_In_INFO_Event();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Start_MSSQL_Agent_0038(),Function: MSSQL_Remote_PR_MSSQL_Agent_Start_Event or MSSQL_Remote_DR_MSSQL_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_Local_Stop_MSSQL_Agent_0039() {
+	try {
+		MSSQL_Local_PR_MSSQL_Agent_Stop_Event();
+		MSSQL_Local_DR_MSSQL_Agent_Stop_Event();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Local_Stop_MSSQL_Agent_0039(),Function: MSSQL_Local_PR_MSSQL_Agent_Stop_Event or MSSQL_Local_DR_MSSQL_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_Local_Start_MSSQL_Agent_0038() {
+	try {
+		MSSQL_Local_PR_MSSQL_Agent_Start_Event();
+		MSSQL_Local_DR_MSSQL_Agent_Start_Event();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Local_Start_MSSQL_Agent_0038(),Function: MSSQL_Local_PR_MSSQL_Agent_Start_Event or MSSQL_Local_DR_MSSQL_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_Stop_MSSQL_Instance_0037() {
+	try {
+		//Mssql_PR_Instance_Stop_Event();
+		//Mssql_DR_Instance_Stop_Event();
+		Group_Status_In_Critical_Event();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Stop_MSSQL_Instance_0041(),Function: Mssql_PR_Instance_Stop_Event or Mssql_DR_Instance_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_Start_MSSQL_Instance_0038() {
+	try {
+		//Mssql_PR_Instance_Start_Event();
+		Mssql_DR_Instance_Start_Event();
+		//Group_Status_In_INFO_Event();
+		
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Start_MSSQL_Instance_0040(),Function: Mssql_PR_Instance_Start_Event or Mssql_DR_Instance_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}//Event End
+
+
+
+function MsSQL_Start_FO_0039() {
+	try {
+		Stop_NC($groupName);//In Common > Group_Operation.sah
+		Start_FO($groupName);//In Common > Group_Operation.sah
+		Verify_Continuitystatus_In_FO();//In Common > Group_Operation.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_FO_0001(),Function: Stop_NC or Start_FO or Verify_Continuitystatus_In_FO  ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_FO_execution_0040() {
+	try {
+		FO_Execution_Status($groupName);//In Common > Group_Operation.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: FO_execution_0058(),Function: FO_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("Fail over workflow execution faild.So that stopping execution.Kindly check the logs for further details");
+	}
+}
+
+
+function MsSQL_FO_RPO_0042() {
+	try {
+		Calculate_RPO_Post_FO($groupName);//In Common > Group_Operation.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: FO_RPO_0003(),Function: Calculate_RPO_Post_FO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_FO_RTO_0043() {
+	try {
+		Calculate_RTO_Post_FO($groupName);//In Common > Group_Operation.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: FO_RPO_0003(),Function: Calculate_RPO_Post_FO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_FO_Replication_0044() {
+	try {
+		Calculate_Replication_Post_FO($groupName);//In Common > Group_Operation.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: FO_RPO_0003(),Function: Calculate_RPO_Post_FO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_FO_Monitor_Manage_0006() {
+	try {
+		Gruopsnapshot_Post_FO($groupName);//In Solution signature > MSSQL_Logshipping_Solution.sah
+		Groupinformation_Post_FO($groupName);//In Solution signature > MSSQL_Logshipping_Solution.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: FO_Monitor_Manage_0006(),Function: Gruopsnapshot_Post_FO or Groupinformation_Post_FO or Replication_Post_FO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_Continuity_Status_FO_0041() {
+	try {
+		Verify_Continuitystatus_After_FO();//In Common > Group_Operation.sah
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Continuity_Status_FO_0007(),Function: Verify_Continuitystatus_After_FO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_Stop_MSSQL_Instance_FO_Active_0045() {
+	try {
+		Mssql_DR_Instance_Stop_Event_Failover_Active();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Stop_MSSQL_Instance_FO_Active_0041(),Function: Mssql_DR_Instance_Stop_Event_Failover_Active ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_Start_MSSQL_Instance_FO_Active_0046() {
+	try {
+		Mssql_DR_Instance_Start_Event_Failover_Active();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Start_MSSQL_Instance_FO_Active_0040(),Function: Mssql_DR_Instance_Start_Event_Failover_Active ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_Stop_MSSQL_Agent_FO_Active_0047() {
+	try {
+		MSSQL_DR_MSSQL_Agent_Stop_Event_Failover_Active();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Stop_MSSQL_Instance_FO_Active_0041(),Function: Mssql_DR_Instance_Stop_Event_Failover_Active ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MsSQL_Start_MSSQL_Agent_FO_Active_0048() {
+	try {
+		MSSQL_DR_MSSQL_Agent_Start_Event_Failover_Active();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Start_MSSQL_Instance_FO_Active_0040(),Function: Mssql_DR_Instance_Start_Event_Failover_Active ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Create_MSSQL_DB_PR() {
+	try {
+		Create_MSSQLDatabase($compIPPR, $userPR, $pwdPR, $database);	
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Create_MSSQL_DB_PR(),Function: Create_MSSQL_DB_PR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Create_MSSQL_DB_DR() {
+	try {
+		Create_MSSQLDatabase($compIPDR, $userDR, $pwdDR, $database);	
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Create_MSSQL_DB_DR(),Function: Create_MSSQL_DB_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+function Drop_MSSQL_DB_PR() {
+	try {
+		Drop_MSSQLDatabase($compIPPR, $userPR, $pwdPR, $database);	
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Drop_MSSQL_DB_PR(),Function: Drop_MSSQL_DB_PR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Drop_MSSQL_DB_DR() {
+	try {
+		Drop_MSSQLDatabase($compIPDR, $userDR, $pwdDR, $database);	
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Drop_MSSQL_DB_DR(),Function: Drop_MSSQL_DB_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+/*
+
+Continuity_Manager/Common/FG/Group/GroupCreation_0001
+Continuity_Manager/Common/FG/Group/GroupCreation_0006
+Continuity_Manager/Common/FG/Manage/Change_Continuity_State_0001
+Continuity_Manager/Common/FG/Manage/Continuity_Management_0007
+Continuity_Manager/Common/FG/Manage/Continuity_Management_0015
+Continuity_Manager/Common/FG/Manage/NormalCopy_0001
+Continuity_Manager/Common/FG/Monitor/Failover_0001
+Continuity_Manager/Common/FG/Monitor/Failover_0003
+Continuity_Manager/Common/FG/Monitor/Failover_0006
+Continuity_Manager/Common/FG/Monitor/Failover_0007
+Continuity_Manager/Common/FG/Monitor/NormalCopy_0001
+Continuity_Manager/Common/FG/Monitor/RPO_0001
+Continuity_Manager/Common/FG/Monitor/RPO_0008
+Continuity_Manager/Common/FG/Monitor/RPO_0010
+Continuity_Manager/Common/FG/Monitor/RTO_0004
+Continuity_Manager/Common/FG/Monitor/Switchover_0001
+Continuity_Manager/Common/FG/Tests/SOSB_0001
+Continuity_Manager/Common/FG/Tests/SOSB_0005
+Continuity_Manager/Common/FG/Tests/SOSB_0006
+Continuity_Manager/Common/FG/Tests/SOSB_0007
+Continuity_Manager/Common/FG/Tests/SOSB_0011
+Continuity_Manager/Common/FG/Tests/SOSB_0012
+Continuity_Manager/Common/FG/Tests/SOSB_0013
+Continuity_Manager/Common/FG/Tests/SOSB_0015
+Continuity_Manager/Common/FG/Tests/SOSB_0021
+Continuity_Manager/Common/FG/Tests/SOSB_0022
+Continuity_Manager/Common/FG/Tests/SOSB_0023
+Continuity_Manager/Common/FG/Tests/SOSB_0024
+Continuity_Manager/Common/FG/Tests/SOSB_0026
+Continuity_Manager/Common/FG/Tests/SOSB_0030
+Continuity_Manager/Common/FG/Tests/SOSB_0032
+Continuity_Manager/Common/FG/Tests/SOSB_0033
+Continuity_Manager/Common/FG/Tests/SOSB_0034
+Continuity_Manager/Common/FG/Tests/SOSB_0035
+Continuity_Manager/Common/FG/Tests/SOSB_0036
+Continuity_Manager/Common/FG/Tests/SOSB_0038
+Continuity_Manager/Common/FG/Tests/SOSB_0040
+Continuity_Manager/Common/FG/Tests/Uniform_Workflow_Execution_Page_0001
+Continuity_Manager/Common/FG/Tests/Uniform_Workflow_Execution_Page_0002
+Continuity_Manager/Template/MSSQL/Manage/ExecutionPrivileges_MSSQL
+Continuity_Manager/Template/MSSQL/Manage/MSSQL2008_0001
+Continuity_Manager/Template/MSSQL/Monitor/MsSql_0014
+Continuity_Manager/Template/MSSQL/Monitor/MsSql_0019
+Continuity_Manager/Template/MSSQL/Monitor/MsSql_0022
+Continuity_Manager/Template/MSSQL/Tests/MSSQL_PFR_RNC_0001
+Continuity_Manager/Template/MSSQL/Tests/MSSQL_PFR_SB_0001
+Continuity_Manager/Template/MSSQL/Tests/MSSQL_PFR_SO_0001
+Continuity_Manager/Template/MSSQL/Tests/MSSQL_PFR_SO_Events_0001
+Continuity_Manager/Template/MSSQL/Tests/SOSB-1
+Continuity_Manager/Template/MSSQL_TrnLog/Manage/MSSQL_Event0009
+Continuity_Manager/Template/MSSQL_TrnLog/Manage/MSSQL_Event0016
+Continuity_Manager/Template/MSSQL_TrnLog/Manage/MSSQL_NC0001
+Continuity_Manager/Template/MSSQL_TrnLog/Manage/MSSQL_NC0038
+Continuity_Manager/Template/MSSQL_TrnLog/Manage/MSSQL_NC0055
+Continuity_Manager/Template/MSSQL_TrnLog/Monitor/MSSQL_Event0001
+Continuity_Manager/Template/MSSQL_TrnLog/Monitor/MSSQL_Event0005
+Continuity_Manager/Template/MSSQL_TrnLog/Monitor/MSSQL_Event0007
+Continuity_Manager/Template/MSSQL_TrnLog/Monitor/MSSQL_Event0014
+Continuity_Manager/Template/MSSQL_TrnLog/Monitor/MSSQL_Event0081
+Continuity_Manager/Template/MSSQL_TrnLog/Monitor/MSSQL_Event0083
+Continuity_Manager/Template/MSSQL_TrnLog/Monitor/MSSQL_NC0003
+Continuity_Manager/Template/MSSQL_TrnLog/Monitor/MSSQL_RPO0001
+Continuity_Manager/Template/MSSQL_TrnLog/Test_Exercise/MSSQL_TE0002
+Object_Manager/Common/Installation/Agent_Installation/Agent_Installation_01
+Object_Manager/Common/Installation/Agent_Installation/Agent_Installation_02
+Object_Manager/Common/Installation/Agent_Installation/Agent_Installation_06
+Object_Manager/Common/Installation/Agent_Installation/Agent_Installation_09
+
+
+*/

@@ -1,0 +1,164 @@
+
+
+if($BrowserLang == "N"){
+	var $l_Forkjoin=_readExcelFile($SAHI_HOME + "\\conf\\Forkjoin\\Forkjoin_Parameter.xls","ODGRemote");
+}
+else if($BrowserLang == "Y-JA"){
+	var $l_Forkjoin=_readExcelFile($SAHI_HOME + "\\conf\\Forkjoin\\Forkjoin_Parameter.xls","ODGRemote_JA");
+	}
+
+else if($BrowserLang == "Y-EN"){
+	var $l_Forkjoin=_readExcelFile($SAHI_HOME + "\\conf\\Forkjoin\\Forkjoin_Parameter.xls","ODGRemote_EN");
+	}
+
+
+//This user Input required to Login the DRM server
+var $username = $l_Forkjoin[3][2]; // DRM server GUI user name e.g. "swati"
+var $password = $l_Forkjoin[4][2]; // DRM server GUI pwd
+var $systemTypeAgent = "Linux";
+
+//For OS AUTHENTICATION
+var $OS_Authentication = $l_Forkjoin[20][2];
+
+//This user Input required to create the Site
+if($BrowserLang == "N"){
+	var $locationPR = "PR"; // PR Site Location
+	var $incharge = "drmadmin"; // Site Incharge
+	var $addressPR = "Mumbai"; // PR site Address
+	var $locationDR = "DR"; // DR Site Location
+	var $addressDR = "Bangalore";// DR site Address
+	}
+	else
+		{
+	var $locationPR = "一次"; // PR Site Location
+	var $incharge = "drmadmin"; // Site Incharge
+	var $addressPR = "ムンバイ"; // PR site Address
+	var $locationDR = "リモート"; // DR Site Location
+	var $addressDR = "バンガロール";// DR site Address
+		}
+
+//This user Input required to create the Component for Local or remote
+var $agentType = "Remote"; // This if for agent type always enter as e.g. Local or Remote.Note Here first letter is upper case and remaining lower case.
+var $compIPPR = $l_Forkjoin[7][2]; // PR Componenet ID
+var $compIPDR = $l_Forkjoin[8][2]; // DR Componenet ID
+var $remoteUserNameValPR = $l_Forkjoin[9][2]; // PR Machine user name. this information required for both local and remote
+var $remotePwdValPR = $l_Forkjoin[10][2]; // PR Machine Pwd name. this information required for both local and remote
+var $remoteUserNameValDR = $l_Forkjoin[11][2];// DR Machine user name. this information required for both local and remote
+var $remotePwdValDR = $l_Forkjoin[12][2];// PR Machine Pwd name. this information required for both local and remote
+var $compNamePR = $l_Forkjoin[13][2]; // PR Componenet Name
+var $compNameDR = $l_Forkjoin[14][2]; // DR Componenet Name
+var $internalLogon = "sysdba";
+
+//This user Input required to create the dataset
+var $dbSidSelect = $l_Forkjoin[3][5]; 
+var $userPR =  $l_Forkjoin[4][5]; ;// for oracle db connection
+var $pwdPR =  $l_Forkjoin[5][5]; ;// for oracle db connection
+var $userDR =  $l_Forkjoin[6][5]; ;// for oracle db connection
+var $pwdDR =  $l_Forkjoin[7][5]; ;// for oracle db connection
+var $datasetNamePR = $l_Forkjoin[8][5]; // PR dataset name
+var $datasetNameDR = $l_Forkjoin[9][5]; // DR dataset name
+
+var $portdataset =  $l_Forkjoin[15][5]; //port no for dataset creation for PR/DR
+
+
+//This user Input required to create the protection Scheme
+var $sernamePR = $l_Forkjoin[12][5]; // PR Protection Scheme name
+var $sernameDR = $l_Forkjoin[13][5]; // DR Protection Scheme name
+var $userNameVal = "oracle";
+//var $pwdVal = "coolz0n3";
+//var $pwdVal = "Sanovi123"; //PR72/DR62
+var $pwdVal = "oracle"; //PR101/DR71
+var $dgDiscoveryHostIPPR = $compIPPR;// protection scheme
+var $dgDiscoveryHostIPDR = $compIPDR;
+var $dgDiscoverySID = $l_Forkjoin[3][5];  // database Name
+
+//This user Input required to create the Group
+
+var $groupName = $l_Forkjoin[17][2]; // Group name
+
+var $groupDescription = "ORA_DG"; // Group description
+
+var $systemType = $l_Forkjoin[22][2];
+
+var $osType = $l_Forkjoin[21][2];
+// *********************************************************************************************************************************************
+// Important Note : Please don't modify/edit any below variable or its value.
+// If you made any changes of variable and its value, script will not execute.
+// *********************************************************************************************************************************************
+
+var $primaryPanacesServer = $drmServer; // this is Primary DRM server
+var $panacesAgentNodeAddressPR = $compIPPR;
+var $panacesAgentNodeAddressDR = $compIPDR;
+var $compsitePR = $locationPR;
+var $compsiteDR = $locationDR;
+var $primaryComponents = $compNamePR;
+var $remoteComponents = $compNameDR;
+var $primaryDatasets = $datasetNamePR;
+var $remoteDatasets = $datasetNameDR;
+var $primaryProtections = $sernamePR;
+var $remoteProtections = $sernameDR;
+var $mgmtHostDGPR =$compNamePR+' ('+$compIPPR+')';
+var $mgmtHostDGDR = $compNameDR+' ('+$compIPDR+')';
+var $dependentComponentNamePR = $compNamePR;
+var $dependentComponentNameDR = $compNameDR;
+var $oracleListenerIPPR = $dgDiscoveryHostIPPR;
+var $oracleListenerIPDR = $dgDiscoveryHostIPDR;
+var $incharge = "drmadmin";
+var $desiredRpo = "300";
+var $rpoCompute = "300";
+var $systemTypeProtection = "Oracle Data Guard"; // Protection Scheme type
+if($BrowserLang == "N"){
+	_setGlobal("Selected language is ","english");
+	var $SolutionSignature = "Oracle Archive Logs with DataGuard"; // Solution type
+}
+else{
+	_setGlobal("Selected language is ","japanese");
+	var $SolutionSignature = "DataGuardを使用したOracleアーカイブログ"; // Solution type
+}
+
+var $systemTypeDataset = "Oracle"; // database subsystem
+var $datasetType = "Oracle";// database Type
+
+var $oracleAgentChk="1";
+var $oracleDGAgentChk = "1";
+var $WFPath = "Oracle\\OracleArLogDG"; // Location of SO/SB/FO xml file
+var $fileNC = "BCS-OracleArLogDG-NC.xml";
+var $fileRNC= "BCS-OracleArLogDG-NC.xml";
+var $fileSO = "BCS-OracleArLogDG-SO.xml"; // Location of SO xml file
+var $fileSB = "BCS-OracleArLogDG-SB.xml"; // Location of SB xml file
+var $fileFO = "BCS-OracleArLogDG-FO.xml"; // Location of FO xml file
+var $dgDiscoveryDest = "/.*service=.*/i";
+
+//////////////// Forkjoin RAL //////////////////////////////////////////////
+
+var $usernameB="UserB";
+var $workflowXMlFile1 = $l_Forkjoin[28][3];
+var $workflowXMlFile2 = $l_Forkjoin[29][3];
+var $workflowXMlFile3 = $l_Forkjoin[30][3];
+var $workflowXMlFile4 = $l_Forkjoin[31][3];
+var $workflowXMlFile5 = $l_Forkjoin[32][3];
+var $workflowXMlFile6 = $l_Forkjoin[33][3]; //TE action workflow xml file name
+var $workflowXMlFile7 = $l_Forkjoin[34][3]; //BPI action workflow  xml file name
+var $workflowXMlFile8 = $l_Forkjoin[35][3]; //BCO action workflow  xml file name
+var $workflowXMlFile9 = $l_Forkjoin[36][3]; //Multiple Rals vertically betn Forkjoin workflow  xml file name
+var $workflowXMlFile10 = $l_Forkjoin[37][3]; //Multiple Forkjoin Horizontally xml file name
+var $workflowXMlFile11 = $l_Forkjoin[38][3]; //Import Forkjoin WF edit publish
+var $workflowXMlFile12 = $l_Forkjoin[39][3]; //Import Action group WF edit publish
+
+/////////////////////////////////////////////////////////////////////////////////
+
+var $ralName1 = $l_Forkjoin[28][2]; 
+var $ralName2 = $l_Forkjoin[29][2];
+var $ralName3 = $l_Forkjoin[30][2];
+var $ralName4 = $l_Forkjoin[31][2];
+var $ralName5 = $l_Forkjoin[32][2];
+var $ralName6 = $l_Forkjoin[33][2]; // TE action ral name
+var $ralName7 = $l_Forkjoin[34][2]; // bpi ral name
+var $ralName8 = $l_Forkjoin[35][2]; // bco ral name
+var $ralName9 = $l_Forkjoin[36][2]; //Multiple Rals vertically betn Forkjoin ral name
+var $ralName10 = $l_Forkjoin[37][2]; //Multiple Forkjoin Horizontally ral name
+var $ralName11 = $l_Forkjoin[38][2]; //Import Forkjoin WF ral name
+var $ralName12 = $l_Forkjoin[39][2]; //Import  Action group WF ral name
+
+
+

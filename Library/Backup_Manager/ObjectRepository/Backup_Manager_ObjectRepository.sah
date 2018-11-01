@@ -1,0 +1,47 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains APP PFR Solution specific
+ ** AuthorName : 
+ ** Created Date : 
+ ***********************************************************************************************/
+
+var $Excel1=_getExcel($SAHI_HOME + "\\Library\\Backup_Manager\\ObjectRepository\\Backup_Manager_ObjectRepository.xls","Param");
+
+var $Excel=$Excel1.getData();
+
+if($BrowserLang == "N"){
+
+	var $j = 2;
+}
+else if($BrowserLang == "Y-JA"){
+	
+	var $j = 3;
+	}
+
+else if($BrowserLang == "Y-EN"){
+		
+		var $j = 3;
+	}
+
+
+var $Nofiledirectory=$Excel[2][$j];
+var $WEEKLY=$Excel[3][$j];
+var $BackupConfigdone=$Excel[4][$j];
+var $Backupsuccestaken=$Excel[5][$j];
+var $Save=$Excel[6][$j];
+var $BackupNow=$Excel[7][$j];
+var $BackupFileName=$Excel[8][$j];
+var $PANSBKM=$Excel[9][$j];
+var $BackupNow=$Excel[10][$j];
+var $SanoviDRMmetadatafailed=$Excel[11][$j];
+var $Admin=$Excel[12][$j];
+var $CurrentEvents=$Excel[13][$j];
+var $AdvancedFilter=$Excel[14][$j];
+var $Warning=$Excel[15][$j];
+var $CLOSED=$Excel[16][$j];
+var $INFO=$Excel[17][$j];
+var $WIP=$Excel[18][$j];
+var $Apply=$Excel[19][$j];
+var $EventName=$Excel[20][$j];
+

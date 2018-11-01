@@ -1,0 +1,1678 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are the part of  APP PFR solution screen wise fetching and comparing data from Db and GUI. 
+ ** @AuthorName : Govinda Mengji
+ ** Created Date : Nov 2013
+ ************************************************************************/
+
+/**
+* Function is for Functional Group creation for APP_PFR solution.
+*@param :null
+*@return : null
+*@Author: Govinda Mengji
+*/
+function Creation_APP_PFR_Group() {
+	$groupCreation = Create_FG($groupName, $groupDescription, $SolutionSignature, $primaryComponents, $remoteComponents, $primaryDatasets, $remoteDatasets, $primaryProtections, $remoteProtections);
+	if ($groupCreation.get("flag") == 0) {
+		_log("Same group name already exists");
+	} else {
+		_setValue(_textbox("interval"), "300");
+		_setSelected(_select("protlist"), $fileNameTextPathPR);
+		_setSelected(_select("remoteSources"), $fileNameTextPathDR);
+		_click(_button("//»//"));
+		_click(_button($Save));
+		
+		_click(_link($License));
+		_click(_checkbox($Recovery));
+		_click(_checkbox($Test));
+		_click(_button("licensebutton"));
+		
+		_click(_link($RPORTO));
+		_setValue(_textbox("rpoint1"), "180");
+		_click(_button("apply"));
+		
+		_click(_button($Finish));
+        _wait(5000);
+        navigateToGroups();
+        if (_exists(_link($obj_viewall))){
+    		_click(_link($obj_viewall));
+    	}
+		if (_exists(_link($groupName))) {
+			_assertExists("Group created succesfully");
+		} else {
+			_fail("Group not created succesfully.So that stopping execution.");
+		}
+	}
+}// End Of APP_FG_PFR_Group_Creation
+
+/**
+* Function is for Post Group Creation Discovery > Groups > Solution Details > Show Advanced Configuration Post SO.
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function Post_Group_Creation_Post_SO(){
+	
+	Post_Group_Creation_Details($groupName);
+}
+
+/**
+* Function is for Post Group Creation Discovery > Groups > Solution Details > Show Advanced Configuration before SO.
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function Post_Group_Creation(){
+	
+	Post_Group_Creation_Details($groupName);
+}
+
+/**
+* Function is for Post Group Creation Discovery > Groups > Solution Details.
+*@param : $groupName
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function Post_Group_Creation_Details($groupName){
+	navigateToGroups();
+	_click(_link($groupName));
+	_click(_link($SolutionDetails));
+	
+	var $replicationInterval= _getCellText(_textbox("interval"));
+	_assertExists("Replication Interval at GUI",$replicationInterval);
+	
+	var $mapProtected=_getCellText(_option(0));
+	_assertExists("Source and Destenation Path from GUI", $mapProtected);
+	
+}
+
+/**
+* Function is for Verification of replication status in replication page after SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function APP_PFR_Replication_Post_SO() {
+	PFR_Replication_status($groupName,$compIPDR,$remoteUserNameValDR,$remotePwdValDR,"SO");
+}
+
+/**
+* Function is for Verification of replication status in replication page before SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function APP_PFR_Replication() {
+	PFR_Replication_status($groupName,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+}
+
+
+/**
+* Function is for Verification of the all RPO detail from RPO/RTO screen for APP PFR solution Post SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function APP_PFR_Rpo_Post_SO() {
+
+	 APP_PFR_Rpo_Status($groupName,$datasetNameDR,$compIPDR,$remoteUserNameValDR,$remotePwdValDR);
+	
+} // End of APP_Rpo_Post_SO()
+
+/**
+* Function is for Verification of the all RPO detail from RPO/RTO screen for APP PFR solution before SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*
+*/
+function APP_PFR_Rpo() {
+
+APP_PFR_Rpo_Status($groupName,$datasetNamePR,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+
+}// End of APP_Rpo()
+
+/**
+* Function is for Verification of the all RPO detail from RPO/RTO screen for APP PFR solution.
+*@param : $groupName,$datasetName,$compIP,$remoteUserNameVal,$remotePwdVal
+*@return : $dbRecoveryPoint
+*@Author: Govinda Mengji
+*
+*/
+function APP_PFR_Rpo_Status($groupName,$datasetName,$compIP,$remoteUserNameVal,$remotePwdVal) {
+
+	navigateToRPO($groupName);
+	
+	//PR
+    var $ApplicationFilesModificationTimeStampGUI= _getText(_div(1, _near(_div($ApplicationFilesModificationTimestamp))));
+    _assertExists("Application Files Modification Timestamp from GUI" ,$ApplicationFilesModificationTimeStampGUI);
+ 
+    $ApplicationFilesModificationTimeStampGUI=$ApplicationFilesModificationTimeStampGUI.split($Timestamp)[1].split($Secondary)[0].trim().toString();
+
+	
+    if($BrowserLang == "N"){
+    	var $applicationFilesModificationTimestampGUI = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss")
+    	.parse($ApplicationFilesModificationTimeStampGUI).getTime();
+	}
+	else{
+		var $applicationFilesModificationTimestampGUI = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+    	.parse($ApplicationFilesModificationTimeStampGUI).getTime();
+	}
+    
+    _assertExists("Application Files Modification Timestamp from GUI", $applicationFilesModificationTimestampGUI);
+    
+    //DR    
+    var $LastReplicatedApplicationFileTimeStampGUI= _getText(_div(1, _near(_div($LastReplicatedApplicationFileTimestamp))));
+    _assertExists("Last Replicated Application File Timestamp from GUI",$LastReplicatedApplicationFileTimeStampGUI);
+    $LastReplicatedApplicationFileTimeStampGUI=$LastReplicatedApplicationFileTimeStampGUI.split($Timestamp)[1].split($Secondary)[0].trim().toString();
+    
+    
+    if($BrowserLang == "N"){
+    	var $lastReplicatedApplicationFileTimestampGUI = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss")
+    	.parse($LastReplicatedApplicationFileTimeStampGUI).getTime();
+	}
+	else{
+		var $lastReplicatedApplicationFileTimestampGUI = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+    	.parse($LastReplicatedApplicationFileTimeStampGUI).getTime();
+	}
+    
+    _assertExists("Last Replicated Application File Timestamp from GUI", $lastReplicatedApplicationFileTimestampGUI);
+   
+ 	 _click(_link($Admin));
+     navigateToDiscovery()
+   _click(_link($Subsystems));
+   _click(_link($Datasets));
+   _click(_link($datasetName));
+   
+   var $applicationPath1 = _getCellText(_cell(1,_near(_cell($ApplicationSubSystemPathLocation))));
+   var $application=$applicationPath1.split(",");
+   var $applicationPath=$application[0];
+   //$path = "$applicationPath"; 
+   
+   var $sshCommand = "echo > " + $applicationPath +"/file100.txt";
+   $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+    
+   navigateToRPO($groupName);
+
+   $count = 1;
+
+		while($count<10){
+			_wait(30000);
+			$count++;	
+		}
+			   
+	//PR
+    var $ApplicationFilesModificationTimeStamp=_getText(_div(1, _near(_div($ApplicationFilesModificationTimestamp))));
+    _assertExists("Application Files Modification Timestamp from GUI" ,$ApplicationFilesModificationTimeStamp);
+  
+    $ApplicationFilesModificationTimeStamp=$ApplicationFilesModificationTimeStamp.split($Timestamp)[2].trim();
+    
+  	
+    if($BrowserLang == "N"){
+    	var $applicationFilesModificationTimestamp = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss")
+    	    .parse($ApplicationFilesModificationTimeStamp).getTime();
+	}
+	else{
+		var $applicationFilesModificationTimestamp = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+	    .parse($ApplicationFilesModificationTimeStamp).getTime();
+	}
+    
+    _assertExists("Last Replicated Application File Timestamp from GUI", $applicationFilesModificationTimestamp);
+    
+    //DR    
+    var $LastReplicatedApplicationFileTimeStamp=_getText(_div(1, _near(_div($LastReplicatedApplicationFileTimestamp))));
+    $LastReplicatedApplicationFileTimeStamp=$LastReplicatedApplicationFileTimeStamp.split($Timestamp)[2].trim();
+    _assertExists("Last Replicated Application File Timestamp from GUI",$LastReplicatedApplicationFileTimeStamp);
+
+    
+  	
+    if($BrowserLang == "N"){
+    	var $lastReplicatedApplicationFileTimestamps = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss")
+    	    .parse($LastReplicatedApplicationFileTimeStamp).getTime();
+	}
+	else{
+		var $lastReplicatedApplicationFileTimestamps = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+	    .parse($LastReplicatedApplicationFileTimeStamp).getTime();
+	}
+    
+    _assertExists("Last Replicated Application File Timestamp from GUI", $lastReplicatedApplicationFileTimestamps);
+    
+    _assertTrue($applicationFilesModificationTimestampGUI<=$applicationFilesModificationTimestamp, "Application Files Modification Timestamp is Equal in GUI and db");
+    _assertTrue($lastReplicatedApplicationFileTimestampGUI<=$lastReplicatedApplicationFileTimestamps, "Last Replicated Application File Timestamp is Equal in GUI and db");
+    	 
+// Calling Calulate_Rpo function to verify RPO calculation from gui
+	$dbRpo = Calulate_Rpo($ApplicationFilesModificationTimeStamp,$LastReplicatedApplicationFileTimeStamp);
+    $recoveryPointinDB = $dbRpo.get("recoveryPointDB");
+    
+    $dbRecoveryPoint = new java.util.Properties();
+ 	$dbRecoveryPoint.put("recoveryPointDB", $recoveryPointinDB);
+	return $dbRpo;
+	return $dbRecoveryPoint;
+	
+}// End Of APP PFR RPO
+
+
+/**
+* Function is for Verification of the all RTO detail from RPO/RTO screen for APP PFR solution
+*@param : null
+*@return : $dbRto
+*@Author: Govinda Mengji
+*
+*/
+
+function APP_PFR_Rto() {
+	navigateToRTO($groupName);
+
+	// verification of current RTO :
+	//wait added -anita
+	_wait(30000);
+		
+	var $step1 = _getText(_svg_tspan(15, _near(_svg_tspan($RemoteSiteHealthCheck))));
+	_assertExists("$step1", $step1);
+	
+	//var $stp1=$step1.split(" ");
+	var $stp1=$step1.split(" ");
+	var $stepName1= parseInt($stp1[0]);
+	//var $stepName1= $stp1[0];
+
+	var $step2 = _getText(_svg_tspan(16, _near(_svg_tspan($StopPFRServices))));
+	_assertExists("$step2", $step2);
+	var $stp2=$step2.split(" ");
+	var $stepName2= parseInt($stp2[0]);
+	//var $stepName2= $stp2[0];
+	_assertExists("$stepName2", $stp2[0]);
+
+	var $step3 = _getText(_svg_tspan(17, _near(_svg_tspan($StoptheapplicationonPrimary))));
+	_assertExists("$step3", $step3);
+	var $stp3=$step3.split(" ");
+	var $stepName3= parseInt($stp3[0]);
+	//var $stepName3= $stp3[0];
+	_assertExists("$stepName3", $stp3[0]);
+	
+	var $step4 = _getText(_svg_tspan(18, _near(_svg_tspan($CheckApplicationSubSystem))));
+	_assertExists("$step4", $step4);
+	var $stp4=$step4.split(" ");
+	var $stepName4= parseInt($stp4[0]);
+	//var $stepName4= $stp4[0];
+	_assertExists("$stepName4", $stp4[0]);
+	
+	var $step5 = _getText(_svg_tspan(19, _near(_svg_tspan($Starttheapplication))));
+	_assertExists("$step5", $step5);
+	var $stp5=$step5.split(" ");
+	var $stepName5= parseInt($stp5[0]);
+	//var $stepName5= $stp5[0];
+	_assertExists("$stepName5", $stp5[0]);
+	
+	var $expectedCompletionTime = Math.floor($stepName1 + $stepName2 + $stepName3 + $stepName4 + $stepName5);
+	
+	_assertExists("Expected completion time", $expectedCompletionTime);
+
+	// Calling function Calculate_Rto from Group_manager.sah
+	$dbRto = Calculate_Rto($expectedCompletionTime);
+	return $dbRto;
+
+} // End of APP_PFR RTO
+
+
+/**
+* Function is for Verification of details in Manage-Manage DR Solution screen for APP_PFR solution Post SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function APP_PFR_Managedrsolution_PostSO() {
+	APP_PFR_Managedrsolution_Status($groupName,"SO");
+} // End of APP_PFR_Managedrsolution_PostSO()
+
+/**
+* Function is for Verification of details in Manage-Manage DR Solution screen for APP_PFR solution before SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function APP_PFR_Managedrsolution() {
+	APP_PFR_Managedrsolution_Status($groupName);
+}// End of APP_PFR_Managedrsolution()
+
+
+/**
+* Function is for Verification of details in Manage-Manage DR Solution screen for APP_PFR solution.
+*@param : $groupName,$WFType 
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function APP_PFR_Managedrsolution_Status($groupName,$WFType){
+	_click(_link($Manage));
+	_click(_link($GroupsListView));
+	_click(_link($groupName));
+	_click(_link($ManageDRSolution));
+
+	// calling Group_ManageGroupInformation to verify the PR and DR site status
+	Group_Managedrsolution($WFType);
+
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($ProtectionSchemes));
+	_wait(1000);
+	_click(_link($sernamePR, _near(_cell($systemTypeProtection))));
+	
+	var $filesetName=_getCellText(_cell(1,_near(_cell($ProtectionSchemeFilesetName))));
+
+	// Getting value of Pair name from GUI
+	_click(_link($Manage));
+	_click(_link($GroupsListView));
+	_click(_link($groupName));
+	_click(_link($ManageDRSolution));
+ 
+	var $filesetNameGUI=_getCellText(_cell(1,_near(_cell($FilesetName))));
+	
+	_assertEqual($filesetName,$filesetNameGUI, "Validating FilesetName");
+
+
+	var $protectionMechanism = _getCellText(_cell(1, _near(_cell($ProtectionMechanism))));
+	_assertExists("Protection Mechanism is:", $protectionMechanism);
+	_assertEqual($systemTypeProtection, $protectionMechanism, "Validating Protection Mechanism in GUI");
+	
+	var $replicationStatusGui = _getText(_cell(1, _near(_cell($ReplicationStatus))));
+	_assertExists("Replication Status:", $replicationStatusGui);
+	
+	
+ 
+}// end Of APP_PFR_Managedrsolution_Status()
+
+/**
+* Function is for Validation of logs in Monitor > GroupSnapshot screen for APPPFR solution post SO.
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function APP_PFR_Groupsnapshot_Post_SO() {
+	
+	APP_PFR_Groupsnapshot_Status($groupName,$datasetNameDR,$compIPDR,$remoteUserNameValDR,$remotePwdValDR,"SO");
+
+} // End of APP_Groupsnapshot_Post_SO()
+
+
+/**
+* Function is for Validation of logs in Monitor > GroupSnapshot screen for APPPFR solution before SO.
+*@param : null
+**@return : null
+*@Author: Govinda Mengji
+*
+*/
+function APP_PFR_Groupsnapshot() {
+	
+	APP_PFR_Groupsnapshot_Status($groupName,$datasetNamePR,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+}// End of APP_Groupsnapshot()
+
+/**
+* Function is for Validation of logs in Monitor > GroupSnapshot screen for APPPFR solution.
+*@param :$groupName,$datasetName,$compIP,$remoteUserNameVal,$remotePwdVal,$WFType
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function APP_PFR_Groupsnapshot_Status($groupName,$datasetName,$compIP,$remoteUserNameVal,$remotePwdVal,$WFType) {
+	Popup_Handler();
+	_click(_link($Monitor));
+	_click(_link($groupName));
+	_click(_link($GroupSnapshot));
+
+	// verifying Recovery Point
+	if ($WFType == "SO") {
+		if (_exists(_cell($NotsupportedinSwitchovermode))) {
+			_log("So done successfully");
+		} else {
+			_log("Gui not showing correct value");
+		}
+		// calling APP_PFR_RPO_Post_SO function
+		
+		APP_PFR_Rpo_Post_SO();
+
+	} else {
+		// calling APP_PFR_RPO function
+		 APP_PFR_Rpo();
+	}
+	
+	var $recoveryPointGui1 = _getText(_span(1, _near(_span($DRDataConsistentupto), _near(_cell("Continuity")))));
+	 var $date = $recoveryPointGui1;
+     var $dateString = $date.toString();
+     var $recoveryPointGui = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+ 	_assertExists("Recovery Point DR Data Consistent up to:", $recoveryPointGui);
+ 	if ($recoveryPointinDB == $recoveryPointGui){
+	_assertEqual($recoveryPointinDB, $recoveryPointGui, "Validating Recovery Point DR Data Consistent upto correct in GUI");
+}
+ 	else {
+ 		_log("Validating Recovery Point DR Data Consistent is not  correct in GUI");
+ 	}
+	// Verfing Recovery time
+	if ($WFType == "SO") {
+		if (_exists(_cell($NotsupportedinSwitchovermode))) {
+			_log("Not supported in Switchover mode");
+		}
+	} else {
+		Popup_Handler();
+		_click(_link($Monitor));
+		_click(_link($groupName));
+		_click(_link($GroupSnapshot));
+		var $recoveryTimeGui1 = (_getText(_cell(5, _near(_span($Esttimetorecover, _near((_cell($RecoveryTime)))))))).split($Esttimetorecover);
+		var $recoveryTimeGui = $recoveryTimeGui1[1];
+		_assertExists("Recovery Time  Est. time to recover:", $recoveryTimeGui);
+		// calling function to calculate rto for Recovery Time
+		var $dbRto = APP_PFR_Rto($groupName);
+		Popup_Handler();
+		_click(_link($Monitor));
+		_click(_link($groupName));
+		_click(_link($GroupSnapshot));
+		_assertEqual($dbRto.get("actualRtoDB"), $recoveryTimeGui, "Validating Recovery Time  Est. time to recover correct in GUI");
+	}
+	Popup_Handler();
+	_click(_link($Monitor));
+	_click(_link($groupName));
+	_click(_link($GroupSnapshot));
+	var $continuityOperation = _getText(_cell(1, _near(_cell($ContinuityOperation))));
+	_assertExists("Continuity Operation:", $continuityOperation);
+
+	//PR
+    var $ApplicationFilesModificationTimeStampGUI=_getCellText(_cell(1,_near(_cell($ApplicationFilesModificationTimestamp1))));
+    _assertExists("Application Files Modification Timestamp from GUI" ,$ApplicationFilesModificationTimeStampGUI);
+  
+    var $applicationFilesModificationTimestampGUI = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($ApplicationFilesModificationTimeStampGUI).getTime();
+	_assertExists("Application Files Modification Timestamp from GUI", $applicationFilesModificationTimestampGUI);
+    
+    
+    //DR    
+    var $LastReplicatedApplicationFileTimeStampGUI=_getCellText(_cell(1,_near((_cell($LastReplicatedApplicationFileTimestamp1)))));
+    _assertExists("Last Replicated Application File Timestamp from GUI",$LastReplicatedApplicationFileTimeStampGUI);
+   
+    var $lastReplicatedApplicationFileTimestampGUI = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($LastReplicatedApplicationFileTimeStampGUI).getTime();
+ 	_assertExists("Last Replicated Application File Timestamp from GUI", $lastReplicatedApplicationFileTimestampGUI);
+    
+  navigateToDiscovery()
+   _click(_link($Subsystems));
+   _click(_link($Datasets));
+   _click(_link($datasetName));
+   
+   var $applicationPath1 = _getCellText(_cell(1,_near(_cell($ApplicationSubSystemPathLocation))));
+   var $application=$applicationPath1.split(",");
+   var $applicationPath=$application[0];
+   //$path = "$applicationPath"; 
+   
+    var $sshCommand = "echo > " + $applicationPath +"/file01.txt";
+	 $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+    
+	
+   
+	_click(_link($Monitor));
+	_click(_link($groupName));
+	_click(_link($GroupSnapshot));
+
+	 $count = 0;
+		while($count<10){
+			_wait(30000);
+			$count++;	
+		}
+	//PR
+    var $ApplicationFilesModificationTimeStamp=_getCellText(_cell(1,_near(_cell($ApplicationFilesModificationTimestamp1))));
+    _assertExists("Application Files Modification Timestamp from GUI" ,$ApplicationFilesModificationTimeStamp);
+  
+    
+    var $applicationFilesModificationTimestamp = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($ApplicationFilesModificationTimeStamp).getTime();
+  	_assertExists("Last Replicated Application File Timestamp from GUI", $applicationFilesModificationTimestamp);
+    
+    
+    //DR    
+    var $LastReplicatedApplicationFileTimeStamp=_getCellText(_cell(1,_near((_cell($LastReplicatedApplicationFileTimestamp1)))));
+    _assertExists("Last Replicated Application File Timestamp from GUI",$LastReplicatedApplicationFileTimeStamp);
+
+    var $lastReplicatedApplicationFileTimestamp = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($LastReplicatedApplicationFileTimeStamp).getTime();
+  	_assertExists("Last Replicated Application File Timestamp from GUI", $lastReplicatedApplicationFileTimestamp);
+    
+    
+  _assertTrue($applicationFilesModificationTimestampGUI<=$applicationFilesModificationTimestamp, "Application Files Modification Timestamp is Equal in GUI and db");
+ 
+  _assertTrue($lastReplicatedApplicationFileTimestampGUI<=$lastReplicatedApplicationFileTimestamp, "Last Replicated Application File Timestamp is Equal in GUI and db");
+ 
+}
+// End Of APP PFRGroupsnapshot()
+
+
+/**
+* Function is for verification of details in Manage-Group Information screen for APP_PFR solution Before SO
+*@param : null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+function APP_PFR_Continuity_Workflows_Post_SO() {
+	Continuity_Workflows($groupName,$datasetNameDR,$compIPDR,$remoteUserNameValDR,$remotePwdValDR, "ReverseNormalCopy");
+}// End of APP_Groupinformation()
+
+
+/**
+* Function is for verification of details in Manage-Group Information screen for APP_PFR solution Before SO
+*@param : null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+function APP_PFR_Continuity_Workflows_Pre_SO() {
+	Continuity_Workflows($groupName,$datasetNamePR,$compIPPR,$remoteUserNameValPR,$remotePwdValPR, "NormalCopy");
+}// End of Continuity_Workflows()
+
+
+
+function Continuity_Workflows($groupName,$datasetName,$compIP,$remoteUserNameVal,$remotePwdVal,$WFType) 
+{
+	NavigateToRGDetailsPage($groupName);
+	_click(_link("icon-right-arrow ex-col-arrow collapsed", _near(_link($WFType))));
+
+	// PR Side
+	var $applicationFilesModificationTimestampGUI = _getText(_heading5($ApplicationFilesModificationTimestamp));
+	var $applicationFilesModificationTimestampGUInew = $applicationFilesModificationTimestampGUI.split($Timestamp);
+	var $modifiedTimestampValueFromGUI =$applicationFilesModificationTimestampGUInew[1];
+	
+	var $i = 0;
+	while ($i < 10) {
+		if ($modifiedTimestampValueFromGUI == "N/A") {
+			_wait(30000);
+		} else {
+			break;
+			_log("Go Ahead");
+		}
+		$i++;
+	}
+
+	var $applicationFilesModificationGUITimestamp = new java.text.SimpleDateFormat(
+			$ddMMMyyyyHHmmss).parse($modifiedTimestampValueFromGUI)
+			.getTime();
+
+	// DR Side
+
+	var $lastReplicatedApplicationFileTimeStampGUI = _getText(_heading5($LastReplicatedApplicationFileTimestamp));
+	var $lastReplicatedApplicationFileTimeStampGUInew = $lastReplicatedApplicationFileTimeStampGUI.split($Timestamp);
+	var $replicatedTimestampValueFromGUI = $lastReplicatedApplicationFileTimeStampGUInew[1];
+	var $lastReplicatedApplicationFileGUITimeStamp = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($replicatedTimestampValueFromGUI).getTime();
+	_assertTrue($applicationFilesModificationGUITimestamp <= $ApplicationFilesModificationTimeStamp);
+	
+	_click(_link($datasetName));
+	_click(_link($Yes));
+	var $applicationPath1 = _getText(_cell(1,_near(_cell($ApplicationSubSystemPathLocation))));
+	var $application = $applicationPath1.split(",");
+	var $applicationPath = $application[0];
+	// $path = "$applicationPath";
+
+	var $sshCommand = "echo > " + $applicationPath + "/file01.txt";
+	$status = SecuredShellConnection($compIP, $remoteUserNameVal,
+			$remotePwdVal, $sshCommand);
+
+	NavigateToRGDetailsPage($groupName);
+	_click(_link("icon-right-arrow ex-col-arrow collapsed", _near(_link($WFType))));
+		$count = 0;
+	while ($count < 5) {
+		_wait(30000);
+		$count++;
+	}
+		// PR Side
+	var $filesModificationTimeStamp = _getText(_heading5($ApplicationFilesModificationTimestamp));
+	var $filesModificationTimeStampnew = $filesModificationTimeStamp.split($Timestamp);
+	var $modifiedFileTimestampValueFromGUI = $filesModificationTimeStampnew[1];
+	var $ApplicationFilesModificationTimeStamp = new java.text.SimpleDateFormat(
+			$ddMMMyyyyHHmmss).parse($modifiedFileTimestampValueFromGUI)
+			.getTime();
+
+	// DR Side
+
+	var $filesReplicatedTimeStamp = _getText(_heading5($LastReplicatedApplicationFileTimestamp));
+	var $filesReplicatedTimeStampnew = $filesReplicatedTimeStamp.split($Timestamp);
+	var $replicatedFileTimestampValueFromGUI = $filesReplicatedTimeStampnew[1];
+	var $LastReplicatedApplicationFileTimeStamp = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($replicatedFileTimestampValueFromGUI).getTime();
+
+	_assertTrue($lastReplicatedApplicationFileGUITimeStamp <= $LastReplicatedApplicationFileTimeStamp);
+
+}//End of Continuity Workflows
+
+
+
+
+/**
+* Function is for verification of details in Manage-Group Information screen for APP_PFR solution Post SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function APP_PFR_Groupinformation_Post_SO() {
+	APP_PFR_Groupinformation_Details($groupName,$datasetNameDR,$compIPDR,$remoteUserNameValDR,$remotePwdValDR,"SO");
+}// End of APP_Groupinformation_Post_SO()
+
+/**
+* Function is for verification of details in Manage-Group Information screen for APP_PFR solution Before SO
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function APP_PFR_Groupinformation() {
+	APP_PFR_Groupinformation_Details($groupName,$datasetNamePR,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+}// End of APP_Groupinformation()
+
+
+/**
+* Function is for verification of details in Manage-Group Information screen for APP_PFR solution Before SO
+*@param : $groupName,$userPR, $pwdPR, $internalLogon,$APPListenerIPPR, $dbSidSelect,$userDR, $pwdDR, $internalLogon,$APPListenerIPDR, $dbSidSelect,$WFType
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function APP_PFR_Groupinformation_Details($groupName,$datasetName,$compIP,$remoteUserNameVal,$remotePwdVal,$WFType)
+{
+
+	_click(_link($Manage));
+	_click(_link($GroupsListView));
+	_click(_link($groupName));
+	_click(_link($GroupInformation));
+  // calling Group_ManageGroupInformation to verify the PR and DR site status
+    Group_Managegroupinformation($groupName, $WFType);
+      
+//PR
+     
+ 	var $i=0;
+	while($i<10){
+		var $ApplicationFilesModificationTimeStampGUI=_getCellText(_cell(1,_near(_cell($ApplicationFilesModificationTimestamp))));
+	     _assertExists("Application Files Modification Timestamp from GUI" ,$ApplicationFilesModificationTimeStampGUI);
+	if($ApplicationFilesModificationTimeStampGUI =="N/A"){
+		_wait(30000);
+	}
+	else
+		{
+		break;
+		_log("Go Ahead");
+		}
+	$i++;
+	}
+   
+     var $applicationFilesModificationTimestampGUI = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($ApplicationFilesModificationTimeStampGUI).getTime();
+ 	_assertExists("Application Files Modification Timestamp from GUI", $applicationFilesModificationTimestampGUI);
+     
+     
+     //DR    
+     var $LastReplicatedApplicationFileTimeStampGUI=_getCellText(_cell(1,_near((_cell($LastReplicatedApplicationFileTimestamp)))));
+     _assertExists("Last Replicated Application File Timestamp from GUI",$LastReplicatedApplicationFileTimeStampGUI);
+    
+     var $lastReplicatedApplicationFileTimestampGUI = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($LastReplicatedApplicationFileTimeStampGUI).getTime();
+  	_assertExists("Last Replicated Application File Timestamp from GUI", $lastReplicatedApplicationFileTimestampGUI);
+     
+   navigateToDiscovery()
+    _click(_link($Subsystems));
+    _click(_link($Datasets));
+    _click(_link($datasetName));
+    
+    var $applicationPath1 = _getCellText(_cell(1,_near(_cell($ApplicationSubSystemPathLocation))));
+    var $application=$applicationPath1.split(",");
+    var $applicationPath=$application[0];
+    //$path = "$applicationPath"; 
+    
+     var $sshCommand = "echo > " + $applicationPath +"/file00.txt";
+ 	 $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+    
+ 	_click(_link($Manage));
+	_click(_link($GroupsListView));
+	_click(_link($groupName));
+	_click(_link($GroupInformation));
+
+	 $count = 0;
+		while($count<10){
+			_wait(30000);
+			$count++;	
+		}
+	 //PR
+     var $ApplicationFilesModificationTimeStamp=_getCellText(_cell(1,_near(_cell($ApplicationFilesModificationTimestamp))));
+     _assertExists("Application Files Modification Timestamp from GUI" ,$ApplicationFilesModificationTimeStamp);
+   
+     
+     var $applicationFilesModificationTimestamp = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($ApplicationFilesModificationTimeStamp).getTime();
+   	_assertExists("Last Replicated Application File Timestamp from GUI", $applicationFilesModificationTimestamp);
+     
+     
+     //DR    
+     var $LastReplicatedApplicationFileTimeStamp=_getCellText(_cell(1,_near((_cell($LastReplicatedApplicationFileTimestamp)))));
+     _assertExists("Last Replicated Application File Timestamp from GUI",$LastReplicatedApplicationFileTimeStamp);
+
+     var $lastReplicatedApplicationFileTimestamp = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($LastReplicatedApplicationFileTimeStamp).getTime();
+   	_assertExists("Last Replicated Application File Timestamp from GUI", $lastReplicatedApplicationFileTimestamp);
+     
+     
+    _assertTrue($applicationFilesModificationTimestampGUI<=$applicationFilesModificationTimestamp, "Application Files Modification Timestamp is Equal in GUI and db");
+ 
+   _assertTrue($lastReplicatedApplicationFileTimestampGUI<=$lastReplicatedApplicationFileTimestamp, "Last Replicated Application File Timestamp is Equal in GUI and db");
+ 
+}
+
+
+
+/**
+* Function is to File Creation on PR for APP_PFR Solution
+* *@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function File_Creation_PR(){
+	File_Creation($datasetNamePR,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	
+}
+/**
+* Function is to File Creation for APP_PFR Solution
+* *@param : $datasetNamePR,$compIP,$remoteUserNameVal,$remotePwdVal
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function File_Creation($datasetNamePR,$compIP,$remoteUserNameVal,$remotePwdVal){
+	
+	  navigateToDiscovery()
+	   _click(_link($Subsystems));
+	   _click(_link($Datasets));
+	   _click(_link($datasetNamePR));
+	   
+	   var $applicationPath1 = _getCellText(_cell(1,_near(_cell($ApplicationSubSystemPathLocation))));
+	   var $application=$applicationPath1.split(",");
+	   var $applicationPath=$application[0];
+	   
+	  var $sshCommand = "echo > " + $applicationPath +"/file00.txt";
+	  $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+      _wait(100);
+	  
+	  var $sshCommand = "echo > " + $applicationPath +"/file01.txt";
+	  $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+      _wait(100);
+       
+      var $sshCommand = "echo > " + $applicationPath +"/file02.txt";
+	  $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+      _wait(100);
+	  
+      var $sshCommand = "echo > " + $applicationPath +"/file03.txt";
+	  $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	  _wait(100);
+	  
+	  var $sshCommand = "echo > " + $applicationPath +"/file04.txt";
+	  $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	  _wait(100);
+	  
+	  var $sshCommand = "echo > " + $applicationPath +"/file05.txt";
+	  $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	   
+}
+
+
+	///////////////SFR Test Cases
+	
+function SFR_sync_staus($compIP, $remoteUserNameVal, $remotePwdVal, $localAgentPath, $agentStatus,$agentCheck) {
+
+	// Verify date and time in DRM server
+	var $sshCommand = '.././tmp/compare-main.sh -i 172.168.20.74 -s /opt/grp1/ -t softwares -d /opt/grp1/ -f /tmp/exclude.txt';
+	var $number = SecuredShellConnection("192.168.20.74", "root", "daily1234", $sshCommand);
+	//_log($number);
+	var $num=$number.split(" ");
+	_log($num[2],"Total number of count");
+	
+	if($num[2] == "10")
+	{
+		_log("Pass");
+	}
+	else
+{
+		_log("Fail");
+	}
+}
+
+
+// End of Get_Local_Agent_Event
+
+
+function delete_files_DR($compIP, $remoteUserNameVal, $remotePwdVal, $localAgentPath, $agentStatus,$agentCheck) {
+
+	// Verify date and time in DRM server
+	var $sshCommand = 'rm -rf /opt/grp1/*';
+	var $number = SecuredShellConnection("172.168.20.74", "root", "daily1234", $sshCommand);
+	
+}
+
+function delete_two_files_PR($compIP, $remoteUserNameVal, $remotePwdVal, $localAgentPath, $agentStatus,$agentCheck) {
+
+	// Verify date and time in DRM server
+	var $sshCommand = 'rm -rf /opt/grp1/file1.txt file2.txt';
+	var $number = SecuredShellConnection("192.168.20.74", "root", "daily1234", $sshCommand);
+	
+}
+
+
+function Check_number_of_files_PRDR($compIP, $remoteUserNameVal, $remotePwdVal, $localAgentPath, $agentStatus,$agentCheck) {
+
+	// Verify date and time in DRM server
+	var $sshCommand = 'ls /opt/grp1 | wc -l';
+	var $numberPR = SecuredShellConnection("192.168.20.74", "root", "daily1234", $sshCommand);
+	_log($numberPR);
+    
+	
+    
+    var $sshCommand = 'ls /opt/grp1 | wc -l';
+    var $numberDR = SecuredShellConnection("172.168.20.74", "root", "daily1234", $sshCommand);
+    _log($numberDR);
+
+    if($numberPR == $numberDR){
+    	_log("Pass");
+    }
+    else{
+    	_log("Fail");
+    }
+
+}
+
+function delete_three_files_PR($compIP, $remoteUserNameVal, $remotePwdVal, $localAgentPath, $agentStatus,$agentCheck) {
+
+	// Verify date and time in DRM server
+	var $sshCommand = 'rm -rf /opt/grp1/file3.txt file4.txt file5.txt';
+	var $number = SecuredShellConnection("192.168.20.74", "root", "daily1234", $sshCommand);
+	
+}
+
+
+
+function SFR_Actions(){
+	_click(_link($Test));
+	_click(_link($TestListView));
+	_click(_link($apppfr));
+	_click(_link($NormalFullCopy));
+	_click(_link($EditWorkflow));
+	_click(_span($CreatePFRFileset));
+    _click(_button($infoBtn));
+	_click(_link($ActionProperties));
+	_click(_label($AdvancedConfiguration));
+	}	
+	
+function Add_publish(){	
+	_setValue(_textbox("sourceFolder"), "/opt/grp1");
+	_wait(1000);
+	_setValue(_textbox("sourceFolder[1]"), "*.txt");
+	_click(_button($Add1));
+	_click(_div($myModal));
+	_click(_span($SaveNow));
+	_click(_link($Publish));
+	_click(_div($PublishWorkflow));
+	_click(_link($Goback));
+
+}
+
+function Click_sync_deletefiles(){
+_click(_checkbox("syncDeleteFiles"));
+_click(_div($myModal));
+_click(_span($SaveNow));
+_click(_link($Publish));
+_click(_div($PublishWorkflow));
+_click(_link($Goback));
+}
+///////////////////////////////SFR test cases
+
+function Execute_files(){
+_click(_radio("#"));
+_click(_radio("#[2]"));
+}
+
+function  Execute_directories() {
+_click(_radio("#"));
+_click(_radio("#[3]"));
+}
+
+function Execute_both(){
+_click(_radio("#"));
+_click(_radio("#[4]"));
+}
+
+function Include_Files(){
+_click(_radio("#[1]"));
+_click(_radio("#[2]"));
+}
+
+function  Include_directories() {
+_click(_radio("#[1]"));
+_click(_radio("#[3]"));
+}
+
+function Include_both(){
+_click(_radio("#[1]"));
+_click(_radio("#[4]"));
+}
+
+function Execute_files_CaseSensitive(){
+_click(_radio("#"));
+_click(_radio("#[2]"));
+_click(_checkbox("passCriteria"));
+}
+
+function Execute_directories_CaseSensitive(){
+_click(_radio("#"));
+_click(_radio("#[3]"));
+_click(_checkbox("passCriteria"));
+_click(_checkbox("passCriteria"));
+}
+
+function Execute_both_CaseSensitive(){
+_click(_radio("#"));
+_click(_radio("#[4]"));
+_click(_checkbox("passCriteria"));
+_click(_checkbox("passCriteria"));
+}
+
+function Include_files_CaseSensitive() {
+_click(_radio("#[1]"));
+_click(_radio("#[2]"));
+_click(_checkbox("passCriteria"));
+}
+
+function Include_directories_CaseSensitive() {
+_click(_radio("#[1]"));
+_click(_radio("#[3]"));
+_click(_checkbox("passCriteria"));
+_click(_checkbox("passCriteria"));
+}
+
+function Include_both_CaseSensitive() {
+_click(_radio("#[1]"));
+_click(_radio("#[4]"));
+_click(_checkbox("passCriteria"));
+_click(_checkbox("passCriteria"));
+}
+
+function Execute_files_Recursive(){
+_click(_radio("#"));
+_click(_radio("#[2]"));
+_click(_checkbox("passCriteria"));
+_click(_checkbox("passCriteria[1]"));
+}
+
+function Execute_directories_Recursive() {
+_click(_radio("#"));
+_click(_radio("#[3]"));
+_click(_checkbox("passCriteria[1]"));
+_click(_checkbox("passCriteria[1]"));
+}
+
+function Execute_both_Recursive(){
+_click(_radio("#"));
+_click(_radio("#[4]"));
+_click(_checkbox("passCriteria[1]"));
+_click(_checkbox("passCriteria[1]"));
+}
+
+function Include_files_Recursive(){
+_click(_radio("#[1]"));
+_click(_radio("#[2]"));
+_click(_div($FilesDirectoriesBoth));
+_click(_checkbox("passCriteria[1]"));
+_click(_checkbox("passCriteria[1]"));
+}
+
+function Include_directories_Recursive() {
+_click(_radio("#[1]"));
+_click(_radio("#[3]"));
+_click(_checkbox("passCriteria[1]"));
+_click(_checkbox("passCriteria[1]"));
+}
+
+function Include_both_Recursive(){
+_click(_radio("#[1]"));
+_click(_radio("#[4]"));
+_click(_checkbox("passCriteria[1]"));
+_click(_checkbox("passCriteria[1]"));
+}
+
+
+
+//=================================================================================
+
+
+
+/**
+* Function is for verification of details in under continuity workflows after SO
+*@param : null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+function APP_PFR_Continuity_Workflows_Post_SO() {
+	Continuity_Workflows($groupName,$datasetNameDR,$compIPDR,$remoteUserNameValDR,$remotePwdValDR, "ReverseNormalCopy");
+}// End of APP_PFR_Continuity_Workflows_Post_SO()
+
+
+/**
+* Function is for verification of details under continuity workflows Before SO
+*@param : null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+function APP_PFR_Continuity_Workflows_Pre_SO() {
+	Continuity_Workflows($groupName,$datasetNamePR,$compIPPR,$remoteUserNameValPR,$remotePwdValPR, "NormalCopy");
+}// End of APP_PFR_Continuity_Workflows_Pre_SO()
+
+/**
+* Function is for verification of details under continuity workflows
+*@param : null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+
+function Continuity_Workflows($groupName,$datasetName,$compIP,$remoteUserNameVal,$remotePwdVal,$WFType) 
+{
+	NavigateToRGDetailsPage($groupName);
+	_click(_link("icon-right-arrow ex-col-arrow collapsed", _near(_link($WFType))));
+	
+	//_call(window.scrollTo(0,1000));
+	//_click(_link("ex-executing-workflow-detail-3282", _near(_link("NormalFullCopy"))))
+	//_click(_link("/ex-executing-workflow-detail/", _near(_link($WFType))));
+	
+	// PR Side
+
+	var $applicationFilesModificationTimestampGUI = _getText(_heading5($ApplicationFilesModificationTimestamp));
+	var $applicationFilesModificationTimestampGUInew = $applicationFilesModificationTimestampGUI.split($Timestamp);
+	_log($applicationFilesModificationTimestampGUInew[1]);
+	
+	var $modifiedTimestampValueFromGUI =$applicationFilesModificationTimestampGUInew[1];
+	
+	var $i = 0;
+	while ($i < 10) {
+		if ($modifiedTimestampValueFromGUI == "N/A") {
+			_wait(30000);
+		} else {
+			break;
+			_log("Go Ahead");
+		}
+		$i++;
+	}
+	if($BrowserLang == "N"){
+		var $applicationFilesModificationGUITimestamp = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss")
+		.parse($modifiedTimestampValueFromGUI).getTime();
+	}
+	else{
+		var $applicationFilesModificationGUITimestamp = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+		.parse($modifiedTimestampValueFromGUI).getTime();
+	}
+	
+
+	// DR Side
+
+	var $lastReplicatedApplicationFileTimeStampGUI = _getText(_heading5($LastReplicatedApplicationFileTimestamp));
+	var $lastReplicatedApplicationFileTimeStampGUInew = $lastReplicatedApplicationFileTimeStampGUI.split($Timestamp);
+	var $replicatedTimestampValueFromGUI = $lastReplicatedApplicationFileTimeStampGUInew[1];
+	
+	if($BrowserLang == "N"){
+		var $lastReplicatedApplicationFileGUITimeStamp = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss")
+		.parse($replicatedTimestampValueFromGUI).getTime();
+	}
+	else{
+		var $lastReplicatedApplicationFileGUITimeStamp = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+		.parse($replicatedTimestampValueFromGUI).getTime();
+	}
+	
+	
+	
+	_click(_link($datasetName));
+	_click(_link($Yes));
+	var $applicationPath1 = _getText(_cell(1,_near(_cell($ApplicationSubSystemPathLocation))));
+	var $application = $applicationPath1.split(",");
+	var $applicationPath = $application[0];
+	// $path = "$applicationPath";
+
+	var $sshCommand = "echo > " + $applicationPath + "/file01.txt";
+	$status = SecuredShellConnection($compIP, $remoteUserNameVal,
+			$remotePwdVal, $sshCommand);
+
+	NavigateToRGDetailsPage($groupName);
+	_click(_link("icon-right-arrow ex-col-arrow collapsed", _near(_link($WFType))));
+		$count = 0;
+	while ($count < 5) {                    
+		_wait(30000);
+		$count++;
+	}
+		// PR Side
+	var $filesModificationTimeStamp = _getText(_heading5($ApplicationFilesModificationTimestamp));
+	var $filesModificationTimeStampnew = $filesModificationTimeStamp.split($Timestamp);
+	var $modifiedFileTimestampValueFromGUI = $filesModificationTimeStampnew[1];
+	
+	if($BrowserLang == "N"){
+		var $ApplicationFilesModificationTimeStamp = new java.text.SimpleDateFormat(
+		"dd MMM, yyyy HH:mm:ss").parse($modifiedFileTimestampValueFromGUI).getTime();
+	}
+	else{
+		var $ApplicationFilesModificationTimeStamp = new java.text.SimpleDateFormat(
+		"yyyy/MM/dd HH:mm:ss").parse($modifiedFileTimestampValueFromGUI).getTime();
+	}
+	// DR Side
+
+	var $filesReplicatedTimeStamp = _getText(_heading5($LastReplicatedApplicationFileTimestamp));
+	var $filesReplicatedTimeStampnew = $filesReplicatedTimeStamp.split($Timestamp);
+	var $replicatedFileTimestampValueFromGUI = $filesReplicatedTimeStampnew[1];
+		
+	if($BrowserLang == "N"){
+		var $LastReplicatedApplicationFileTimeStamp = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss")
+		       .parse($replicatedFileTimestampValueFromGUI).getTime();
+	}
+	else{
+		var $LastReplicatedApplicationFileTimeStamp = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+	       .parse($replicatedFileTimestampValueFromGUI).getTime();
+	}
+	
+	_assertTrue($applicationFilesModificationGUITimestamp <= $ApplicationFilesModificationTimeStamp);
+	_assertTrue($lastReplicatedApplicationFileGUITimeStamp <= $LastReplicatedApplicationFileTimeStamp);
+
+}//End of Continuity Workflows
+
+/**
+* Function is for Checking the Remote /Local-PFR service status  for PR DR.
+*@param :$compIP, $remoteUserNameVal, $remotePwdVal, $localAgentPath
+*@return : null
+*@Author: anita --added protection schema status after Agent installation
+*
+**/
+
+function Status_Remote_PFR_SilentMode_PR() {
+	Status_Remote_PFR_SilentMode($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $RemoteAgentPathPR);
+}
+
+function Status_Remote_PFR_SilentMode($compIP, $remoteUserNameVal, $remotePwdVal, $RemoteAgentPath) {
+	
+	// checking all agent PFR status
+	_wait(10000);
+	var $sshCommand = 'sh ' + $RemoteAgentPath + 'bin/PFR.sh status';
+	$agentStatusString = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+
+	_assertExists( "PFR agent Status", $agentStatusString);
+
+	if ($agentStatusString == 'PFRService is running.') {
+		var $remoteAgentStatus = "PFRService is running.";
+		_assertExists(" Status is: ",$remoteAgentStatus);
+	} else if ($agentStatusString == 'PFRService is not running.') {
+		var $remoteAgentStatus = "PFRService is not running.";
+		_assertExists(" Status is: ", $remoteAgentStatus);
+		_assertExists( 'PFRService not started autmatically after agent instalation,Now starting agent using sahi.');
+		_wait(10000);
+		var $sshCommand = 'sh ' + $RemoteAgentPath + 'bin/PFR.sh start';
+		$agentStartString = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+
+		_assertExists("agentStartString", $agentStartString);
+		_wait(10000);
+		// If not running Started though sahi
+		var $sshCommand = 'sh ' + $RemoteAgentPath + 'bin/PFR.sh status';
+		$agentStatus = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+
+		_assertExists($systemTypeDataset, "agentStatus", $agentStatus);
+
+		if ($agentStatus ==  'PFRService is running.') {
+			var $remoteAgentStatus = "PFRService is running.";
+			_assertExists("Status is: ", $remoteAgentStatus);
+			_assertEqual("PFRService is running.", $remoteAgentStatus, "Validating SFR Service is running or not from server");
+		} else {
+			_log("Service Not installed successfully");
+			_fail("Service Not installed successfully.So that stopping execution.Kindly look in to the logs.");
+		}
+	} 
+	
+}
+
+function Status_Remote_PFR_SilentMode_DR() {
+	Status_Remote_PFR_SilentMode($compIPDR, $remoteUserNameValDR, $remotePwdValDR, $RemoteAgentPathDR);
+}
+
+function Status_Remote_PFR_SilentMode($compIP, $remoteUserNameVal, $remotePwdVal, $RemoteAgentPath) {
+	
+	// checking all agent PFR status
+	_wait(10000);
+	var $sshCommand = 'sh ' + $RemoteAgentPath + 'bin/PFR.sh status';
+	$agentStatusString = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+
+	_assertExists( "PFR agent Status", $agentStatusString);
+
+	if ($agentStatusString == 'PFRService is running.') {
+		var $remoteAgentStatus = "PFRService is running.";
+		_assertExists(" Status is: ",$remoteAgentStatus);
+	} else if ($agentStatusString == 'PFRService is not running.') {
+		var $remoteAgentStatus = "PFRService is not running.";
+		_assertExists(" Status is: ", $remoteAgentStatus);
+		_assertExists( 'PFRService not started autmatically after agent instalation,Now starting agent using sahi.');
+		_wait(10000);
+		var $sshCommand = 'sh ' + $RemoteAgentPath + 'bin/PFR.sh start';
+		$agentStartString = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+
+		_assertExists("agentStartString", $agentStartString);
+		_wait(10000);
+		// If not running Started though sahi
+		var $sshCommand = 'sh ' + $RemoteAgentPath + 'bin/PFR.sh status';
+		$agentStatus = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+
+		_assertExists($systemTypeDataset, "agentStatus", $agentStatus);
+
+		if ($agentStatus ==  'PFRService is running.') {
+			var $remoteAgentStatus = "PFRService is running.";
+			_assertExists("Status is: ", $remoteAgentStatus);
+			_assertEqual("PFRService is running.", $remoteAgentStatus, "Validating SFR Service is running or not from server");
+		} else {
+			_log("Service Not installed successfully");
+			_fail("Service Not installed successfully.So that stopping execution.Kindly look in to the logs.");
+		}
+	} 
+	
+} //end of Status_Remote_PFR_SilentMode
+
+///
+
+
+
+/**
+
+* Function is for Verification of the all RTO detail from RPO/RTO screen for APP PFR solution
+
+*@param : null
+
+*@return : $dbRto
+
+*@Author: anita
+
+*
+
+*/
+
+ 
+
+function APP_PFR_Rto_new() {
+
+       navigateToRTO($groupName);
+
+ 
+
+       // verification of current RTO :
+
+       //wait added -anita
+
+       _wait(30000);
+
+      
+
+       _mouseOver(_svg_rect(12));
+
+       var $step1 = RTO_Calculate();
+
+      
+
+       _mouseOver(_svg_rect(13));
+
+       var $step2 = RTO_Calculate();
+
+      
+
+       _mouseOver(_svg_rect(14));
+
+       var $step3 = RTO_Calculate();
+
+      
+
+       _mouseOver(_svg_rect(15));
+
+       var $step4 = RTO_Calculate();
+
+ 
+
+      
+
+       _mouseOver(_svg_rect(16));
+
+       var $step5 = RTO_Calculate();
+
+      
+
+       var $expectedCompletionTime = Math.floor($step1 + $step2 + $step3 + $step4 + $step5);
+
+      
+
+       _assertExists("Expected completion time", $expectedCompletionTime);
+
+ 
+
+       // Calling function Calculate_Rto from Group_manager.sah
+
+       $dbRto = Calculate_Rto($expectedCompletionTime);
+
+       return $dbRto;
+
+ 
+
+} // End of APP_PFR RTO
+
+ 
+
+/**
+
+* Function is for Verification of  in RTO
+
+*@param :
+
+*@return :
+
+*@Author: Govinda Mengji
+
+*@Reaseon: RTO Calulation for converting Hours and miniuts in sec
+
+*/
+
+ 
+
+function RTO_Calculate() {
+
+    
+
+$RalHMS = _getText(_span("fusioncharts-tooltip-element"));
+
+    _log($RalHMS, "Value");
+
+      $RalHMSsplit = $RalHMS.split(" ");
+
+    _log($RalHMSsplit , "RalHMSsplit");
+
+     $RalLength =$RalHMSsplit.length;
+
+    _log($RalLength, "Lenght");
+
+ 
+
+       if($RalLength=="6"){
+
+              
+
+               var $hours = parseInt($RalHMSsplit[0] * 3600);
+
+               _log($hours , "Hours into sec");
+
+              
+
+               var $Minutes = parseInt($RalHMSsplit[2] * 60);
+
+               _log($Minutes , "Minutes into sec");
+
+              
+
+               var $Seconds = parseInt($RalHMSsplit[4]);
+
+               _log($Seconds , "Seconds");
+
+              
+
+               $RalHMSTotal= parseInt($hours+$Minutes+$Seconds);
+
+               return $RalHMSTotal;
+
+              
+
+       }
+
+ 
+
+       else if($RalLength=="4"){
+
+      
+
+               var $hoursorMinutesnum  = $RalHMSsplit[0];
+
+               _log($hoursorMinutesnum , "Hours or Minutes in number");
+
+              
+
+               var $hoursorMinutesstr = $RalHMSsplit[1];
+
+               _log($hoursorMinutesstr , "Hours or Minutes in Character");
+
+              
+
+               var $Minutesorsecondsnum =$RalHMSsplit[2];
+
+               _log($Minutesorsecondsnum , "Minutes or seconds in number");
+
+              
+
+               var $Minutesorsecondsstr =$RalHMSsplit[3];
+
+               _log($Minutesorsecondsstr , "Minutes or seconds in Character");
+
+              
+
+                  if($hoursorMinutesstr == "Hours")
+
+                  {
+
+                     var $hoursorINsecMin = parseInt($hoursorMinutesnum * 3600);
+
+                    _log($hoursorINsecMin , "Hours into sec");
+
+                    }
+
+                     else {
+
+                         var $hoursorINsecMin = parseInt($hoursorMinutesnum * 60);
+
+                         _log($hoursorINsecMin , "Minutes into sec");
+
+                     }
+
+                 
+
+                   if($Minutesorsecondsstr=="Minutes"){
+
+      
+
+                      var $Minutesinsec = parseInt($Minutesorsecondsnum * 60);
+
+                      _log($Minutesinsec , "Minutes into sec");
+
+                     
+
+                  }
+
+                  else{
+
+                      var $Minutesinsec = parseInt($Minutesorsecondsnum);
+
+                      _log($Minutesinsec , "Seconds");
+
+                  }
+
+                
+
+              $hoursorMinutesoesecTotal =  parseInt($hoursorINsecMin+$Minutesinsec);
+
+               return $hoursorMinutesoesecTotal;
+
+                
+
+           }
+
+ 
+
+              else if ($RalLength=="2"){
+
+               var $HoursorMintorSecnum = ($RalHMSsplit[0]);
+
+               var $HoursorMintorSecstr =  ($RalHMSsplit[1]);
+
+              
+
+               if($HoursorMintorSecstr == "Hours"){
+
+                   var $HoursorMintorSec = parseInt($HoursorMintorSecnum * 3600);
+
+                    _log($HoursorMintorSec , "Hours into sec");
+
+               
+
+               }
+
+               else if ($HoursorMintorSecstr == "Minutes"){
+
+                   var $HoursorMintorSec = parseInt($HoursorMintorSecnum * 60);
+
+                   _log($HoursorMintorSec , "Minutes into seconds");
+
+               }
+
+               else {
+
+                   var $HoursorMintorSec = parseInt($HoursorMintorSecnum);
+
+                   _log($HoursorMintorSec , "Seconds");
+
+               }
+
+              
+
+               $HoursorMintorSecnumsingleTotal = parseInt($HoursorMintorSec);
+
+                return $HoursorMintorSecnumsingleTotal;
+
+          
+
+           }
+
+ 
+
+  }
+
+ 
+
+//END_RTO_Calculate
+
+///
+/**
+* Function is for Checking the /Local-PFR Agent status  for PR DR.
+*@param :$compIPPR, $remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR
+*@return : null
+*@Author: anita --PFR Agent status 
+*
+**/
+
+function Status_Local_PFRAgent_SilentMode_PR() {
+	Status_Local_PFRAgent_SilentMode($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR);
+}
+
+
+function Status_Local_PFRAgent_SilentMode($compIP, $remoteUserNameVal, $remotePwdVal, $localAgentPath) {
+	
+	// checking all agent PFR agent status
+	
+	var $sshCommand = 'sh ' + $localAgentPath + 'DRMAgents'+'/PFRAgent.sh status';
+	$agentStatusString = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	_wait(10000);
+	_assertExists( "PFR agent Status", $agentStatusString);
+
+	if ($agentStatusString == 'PFRAgent is running.') {
+		var $pfrAgentStatus = "PFRAgent is running.";
+		_assertExists(" Status is: ",$pfrAgentStatus);
+	} 
+	else {
+		var $pfrAgentStatus = "PFRAgent is not running.";
+		_assertExists(" Status is: ", $pfrAgentStatus);
+		_assertExists( 'PFRAgent not started autmatically after agent instalation,Now starting agent using sahi.');
+		var $sshCommand = 'sh ' + $localAgentPath + 'DRMAgents'+'/PFRAgent.sh start';
+		$agentStartString = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+		_wait(10000);
+		_assertExists("agentStartString", $agentStartString);
+	} 
+	
+}//end of status of local pfr agent 
+
+function Status_Local_PFRAgent_SilentMode_DR() {
+	Status_Local_PFRAgent_SilentMode($compIPDR, $remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR);
+}
+
+function Status_Local_PFRAgent_SilentMode($compIP, $remoteUserNameVal, $remotePwdVal, $localAgentPath) {
+	
+	// checking all agent PFR agent status
+	
+	var $sshCommand = 'sh ' + $localAgentPath + 'DRMAgents'+'/PFRAgent.sh status';
+	$agentStatusString = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	_wait(10000);
+	_assertExists( "PFR agent Status", $agentStatusString);
+
+	if ($agentStatusString == 'PFRAgent is running.') {
+		var $pfrAgentStatus = "PFRAgent is running.";
+		_assertExists(" Status is: ",$pfrAgentStatus);
+	} 
+	else {
+		var $pfrAgentStatus = "PFRAgent is not running.";
+		_assertExists(" Status is: ", $pfrAgentStatus);
+		_assertExists( 'PFRAgent not started autmatically after agent instalation,Now starting agent using sahi.');
+		var $sshCommand = 'sh ' + $localAgentPath + 'DRMAgents'+'/PFRAgent.sh start';
+		$agentStartString = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+		_wait(10000);
+		_assertExists("agentStartString", $agentStartString);
+	} 
+	
+}//end of status of local pfr agent
+
+/**
+* Function is for Checking the /Remote-PFR Service status  for PR DR.
+*@param :$compIPPR, $remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR
+*@return : null
+*@Author: anita --PFR Service status 
+*
+**/
+
+function Status_Remote_PFRService_SilentMode_PR() {
+	Status_Remote_PFRService_SilentMode($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $RemoteAgentPathPR);
+}
+
+function Status_Remote_PFRService_SilentMode_DR() {
+	Status_Remote_PFRService_SilentMode($compIPDR, $remoteUserNameValDR, $remotePwdValDR, $RemoteAgentPathDR);
+}
+
+function Status_Remote_PFRService_SilentMode($compIP, $remoteUserNameVal, $remotePwdVal, $RemoteAgentPath) {
+	
+	// checking all agent PFR agent status
+	
+	var $sshCommand = 'sh ' + $RemoteAgentPath + 'bin/PFR.sh status';
+	var $agentStatusString = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	_wait(10000);
+	_assertExists( "PFR Service Status", $agentStatusString);
+
+	if ($agentStatusString == 'PFRService is running.') {
+		var $pfrAgentStatus = "PFRService is running.";
+		_assertExists(" Status is: ",$pfrAgentStatus);
+	} 
+	else {
+		var $pfrAgentStatus = "PFRService is not running.";
+		_assertExists(" Status is: ", $pfrAgentStatus);
+		_assertExists( 'PFRService not started automatically after agent instalation,Now starting agent using sahi.');
+		var $sshCommand = 'sh ' + $RemoteAgentPath + 'bin/PFR.sh start';
+		var $agentStartString = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+		_wait(10000);
+		_assertExists("agentStartString", $agentStartString);
+	} 
+	
+}//end of 
+
+ 

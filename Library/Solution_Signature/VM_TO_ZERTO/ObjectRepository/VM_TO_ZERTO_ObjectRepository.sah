@@ -1,0 +1,105 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains APP PFR Solution specific
+ ** AuthorName : 
+ ** Created Date : 
+ ***********************************************************************************************/
+
+var $Excel1=_getExcel($SAHI_HOME + "\\Library\\Solution_Signature\\VM_TO_ZERTO\\ObjectRepository\\VM_TO_ZERTO_ObjectRepository.xls","Param");
+
+var $Excel=$Excel1.getData();
+
+//This user Input required to Select language
+if($BrowserLang == "N"){
+   // Selected language is ENGLISH
+	var $j = 2;
+}
+else if($BrowserLang == "Y-JA"){
+	// Selected language is JP
+	var $j = 3;
+}
+
+else if($BrowserLang == "Y-EN"){
+	// Selected language is ENGLISH
+		var $j = 3;
+}
+
+////////////////////Solution\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+var $Save=$Excel[4][$j];
+var $Cancel=$Excel[5][$j];
+var $msSite=$Excel[6][$j];
+var $msType=$Excel[7][$j];
+var $msName=$Excel[8][$j];
+var $vCenterServer=$Excel[9][$j];
+var $Ping=$Excel[10][$j];
+var $userName2=$Excel[11][$j];
+var $password2=$Excel[12][$j];
+var $TestCredentials=$Excel[13][$j];
+var $isVault=$Excel[14][$j];
+var $credObj=$Excel[15][$j];
+var $SafeName=$Excel[16][$j];
+var $ObjectName=$Excel[17][$j];
+var $vCenterPort=$Excel[18][$j];
+var $Edit=$Excel[19][$j];
+var $Delete=$Excel[20][$j];
+
+var $ManagementService=$Excel[21][$j];
+var $AddManagementService=$Excel[22][$j];
+var $ManagementServiceDiscovery=$Excel[23][$j];
+var $ManagementServiceList=$Excel[24][$j];
+var $Active=$Excel[25][$j];
+var $reportMgmtStatus =$Excel[26][$j];
+var $CredentialCheckPassed =$Excel[27][$j];
+var $EditCredentials=$Excel[28][$j];
+var $dependentMgmtServiceName =$Excel[29][$j];
+var $ZertoVirtualManagerIP = $Excel[30][$j];
+var $zertoServer = $Excel[31][$j];
+var $CredentialCheckMsg =$Excel[32][$j];
+var $Update =$Excel[33][$j];
+
+var $VMRecoverywithZerto =$Excel[34][$j];
+var $appname =$Excel[35][$j];
+var $AddTier =$Excel[36][$j];
+var $SelectTier =$Excel[37][$j];
+var $Application =$Excel[38][$j];
+var $AddServer =$Excel[39][$j];
+var $mgmt_svc_select =$Excel[40][$j];
+var $addServerModal =$Excel[41][$j];
+var $vpgnameselect =$Excel[42][$j];
+var $DiscoverVMs =$Excel[43][$j];
+var $Apply =$Excel[44][$j];
+var $discovery = $Excel[45][$j];
+var $ApplicationRecovery = $Excel[46][$j];
+var $CreateApplicationGroup = $Excel[47][$j];
+var $ViewAll = $Excel[48][$j];
+var $ApplicationGroup = $Excel[49][$j];
+var $Groups = $Excel[50][$j];
+var $CreateGroupErrorMsg = $Excel[51][$j];
+var $Custom = $Excel[52][$j];
+var $Web = $Excel[53][$j];
+var $Database = $Excel[54][$j];
+var $tiertextcustominput = $Excel[55][$j];
+var $custompng =  $Excel[56][$j];
+var $Wouldyouliketodelete= $Excel[57][$j];
+var $Subsystems = $Excel[58][$j];
+var $imgwrenchtextblacksettings = $Excel[59][$j];
+var $MovetoMaintenance = $Excel[60][$j];
+var $GroupModeChangeAlertMsg = $Excel[61][$j];
+var $glyphicon_trash = $Excel[62][$j];
+var $deleteGroupConf = $Excel[63][$j];
+var $Confirm = $Excel[64][$j];
+var $Status = $Excel[65][$j];
+var $UNKNOWN = $Excel[66][$j];
+var $remoteaccess = $Excel[67][$j];
+var $Relationship = $Excel[68][$j];
+var $relationshipContainer = $Excel[69][$j];
+var $RecoveryGroup = $Excel[70][$j];
+var $DRImpaired =$Excel[71][$j];
+var $CurrentStatus =$Excel[72][$j];	
+var $ChangeContinuityState =$Excel[73][$j];	
+var $GroupState =$Excel[74][$j];	
+	
+	
+	
+

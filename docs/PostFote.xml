@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?><ws:workflow xmlns:ws="http://www.sanovi.com/panaces/workflow/">
+    <userDef size="0"/>
+    <name>PostFailoverTestExercise</name>
+    <version>7.2 43941</version>
+    <description>null</description>
+    <approverList/>
+    <action-list>
+        <action id="0" successPathId="1" failurePathId="1">
+            <registeredName>VmwareVcRemoveVMFromInventory</registeredName>
+            <name>RemoveVMFromInventory</name>
+            <description>VmwareVcRemoveVMFromInventory action</description>
+            <deletable>false</deletable>
+            <operationType>26</operationType>
+            <actionFailureEvent severity="INFO"/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:VmwareVcRemoveVMFromInventory mgmtServiceName="DR_MANAGEMENT_SERVICE" dcName="DR_DATACENTER_NAME" vmName="DR_VM_NAME"/>
+            </privateProperties>
+            <joinId>7812</joinId>
+            <version>7.2 43941</version>
+        </action>
+        <action id="1" successPathId="2" failurePathId="2">
+            <registeredName>VmwareVcHostUnmountDatastore</registeredName>
+            <name>UnmountDatastore</name>
+            <description>UnmountDatastore</description>
+            <deletable>false</deletable>
+            <operationType>26</operationType>
+            <syncName>TEST_DR-QAESXi-DR_Templates|Data_Datastore_For_VMs.UnMountDatastore</syncName>
+            <actionFailureEvent severity="INFO"/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:VmwareVcHostMountDatastore mgmtServiceName="DR_MANAGEMENT_SERVICE" clusterName="DR_CLUSTER_NAME" dcName="DR_DATACENTER_NAME" datastoreName="DR_DATASTORE_NAME" clusterReq="true"/>
+            </privateProperties>
+            <joinId>7813</joinId>
+            <version>7.2 43941</version>
+        </action>
+        <action id="2" successPathId="3" failurePathId="3">
+            <registeredName>NetAppCloneUnmap</registeredName>
+            <name>NetApp Clone Unmap</name>
+            <description>Removes a previously-configured mapping</description>
+            <deletable>false</deletable>
+            <operationType>27</operationType>
+            <actionFailureEvent severity="INFO"/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:NetAppAction operOnService="TEST_DR-QAESXi-CG2" operOnValueType="STATIC" cloneLunPath="/vol/om1/PS_DR_ESXi_172_1_205_vol/PS_PR_ESXi_172.7.103" cloneInitiatorGroup="PS_DR-ESXi_172.1.205"/>
+            </privateProperties>
+            <joinId>7814</joinId>
+            <version>7.2 43941</version>
+        </action>
+        <action id="3" successPathId="4" failurePathId="4">
+            <registeredName>NetAppCloneLunOffLine</registeredName>
+            <name>NetApp Clone LunOff Line</name>
+            <description>Brings clone lun offline</description>
+            <deletable>false</deletable>
+            <operationType>27</operationType>
+            <actionFailureEvent severity="INFO"/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:NetAppAction operOnService="TEST_DR-QAESXi-CG2" operOnValueType="STATIC" cloneLunPath="/vol/om1/PS_DR_ESXi_172_1_205_vol/PS_PR_ESXi_172.7.103"/>
+            </privateProperties>
+            <joinId>7815</joinId>
+            <version>7.2 43941</version>
+        </action>
+        <action id="4" successPathId="5" failurePathId="5">
+            <registeredName>NetAppCloneOffline</registeredName>
+            <name>NetApp Clone Off line</name>
+            <description>Take clone offline</description>
+            <deletable>false</deletable>
+            <operationType>27</operationType>
+            <actionFailureEvent severity="INFO"/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:NetAppAction operOnService="TEST_DR-QAESXi-CG2" operOnValueType="STATIC" cloneName="om1"/>
+            </privateProperties>
+            <joinId>7816</joinId>
+            <version>7.2 43941</version>
+        </action>
+        <action id="5" successPathId="6" failurePathId="6">
+            <registeredName>NetAppDestroyClone</registeredName>
+            <name>NetApp Destroy Clone</name>
+            <description>Delete Clone: delete clone volume</description>
+            <deletable>false</deletable>
+            <operationType>27</operationType>
+            <actionFailureEvent severity="INFO"/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:NetAppAction operOnService="TEST_DR-QAESXi-CG2" operOnValueType="STATIC" cloneName="om1" volumeName="/vol/om1/PS_DR_ESXi_172_1_205_vol"/>
+            </privateProperties>
+            <joinId>7817</joinId>
+            <version>7.2 43941</version>
+        </action>
+        <action id="6" successPathId="7" failurePathId="7">
+            <registeredName>NetAppLunMap</registeredName>
+            <name>Net App Lun Map</name>
+            <description>Lunmap- make a LUN accessible to initiators in the specified group, at the LUN ID specified</description>
+            <deletable>false</deletable>
+            <operationType>27</operationType>
+            <actionFailureEvent severity="INFO"/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:NetAppAction operOnService="TEST_DR-QAESXi-CG2" operOnValueType="STATIC" lunPath="/vol/PS_DR_ESXi_172_1_205_vol/PS_PR_ESXi_172.7.103" lunID="1" iGroupID="PS_DR-ESXi_172.1.205"/>
+            </privateProperties>
+            <joinId>7818</joinId>
+            <version>7.2 43941</version>
+        </action>
+        <action id="7" successPathId="8" failurePathId="8">
+            <registeredName>Custom</registeredName>
+            <name>PLACEHOLDER_unmapClone</name>
+            <uniqueName/>
+            <description>Unmap the datastore clone</description>
+            <deletable>false</deletable>
+            <actionFailureEvent severity="INFO"/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction type="cmd" etcComputationType="userDefined">
+                    <serverName/>
+                    <command/>
+                    <timeout>180</timeout>
+                    <sudoUsername/>
+                    <execDir/>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>7819</joinId>
+            <version>7.2 43941</version>
+        </action>
+        <action id="8" successPathId="9" failurePathId="9">
+            <registeredName>Custom</registeredName>
+            <name>PLACEHOLDER_offlineClone</name>
+            <uniqueName/>
+            <description>Offline the Clone LUN</description>
+            <deletable>false</deletable>
+            <actionFailureEvent severity="INFO"/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction type="cmd" etcComputationType="userDefined">
+                    <serverName/>
+                    <command/>
+                    <timeout>180</timeout>
+                    <sudoUsername/>
+                    <execDir/>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>7820</joinId>
+            <version>7.2 43941</version>
+        </action>
+        <action id="9" successPathId="10" failurePathId="10">
+            <registeredName>Custom</registeredName>
+            <name>PLACEHOLDER_destroyClone</name>
+            <uniqueName/>
+            <description>Destroy the clone</description>
+            <deletable>false</deletable>
+            <actionFailureEvent severity="INFO"/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction type="cmd" etcComputationType="userDefined">
+                    <serverName/>
+                    <command/>
+                    <timeout>180</timeout>
+                    <sudoUsername/>
+                    <execDir/>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>7821</joinId>
+            <version>7.2 43941</version>
+        </action>
+        <action id="10" final="true">
+            <registeredName>Custom</registeredName>
+            <name>PLACEHOLDER_mapOrginalLunToESXClusters</name>
+            <uniqueName/>
+            <description>Map the original Datastore on the DR to ESXi Cluster</description>
+            <deletable>false</deletable>
+            <actionFailureEvent severity="INFO"/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction type="cmd" etcComputationType="userDefined">
+                    <serverName/>
+                    <command/>
+                    <timeout>180</timeout>
+                    <sudoUsername/>
+                    <execDir/>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>7822</joinId>
+            <version>7.2 43941</version>
+        </action>
+    </action-list>
+</ws:workflow>

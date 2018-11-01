@@ -1,0 +1,161 @@
+
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are the part of NetApp SnapMirror solution generating events.
+ ** AuthorName : Padmavathi 
+ ** Created Date : July 2014
+ ************************************************************************/
+/**
+ *Function is for remote agent stop the NetAPP_SnapMirror agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Padmavathi
+ */
+
+function NetAPP_SnapMirror_Remote_PR_SnapMirror_Agent_Stop_Event() {
+	var $server = Get_Remote_Agent_Event($NetAppcompIPPR, "NetAppAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemEvent016", "SnapMirror agent on primary server is down.", "Critical");
+}// End of Remote_PR_PFR_Agent_Stop_Event()
+
+/**
+ *Function is for remote agent stop the SnapMirror agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :Padmavathi
+ */
+function NetAPP_SnapMirror_Remote_DR_SnapMirror_Agent_Stop_Event() {
+	var $server = Get_Remote_Agent_Event($NetAppcompIPDR, "NetAppAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemEvent017", "SnapMirror agent on DR server is down.", "Critical");
+}// Remote_DR_PFR_Agent_Stop_Event
+
+/**
+ *Function is for remote agent start the SnapMirror agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Padmavathi
+ */
+function NetAPP_SnapMirror_Remote_PR_SnapMirror_Agent_Start_Event() {
+	var $server = Get_Remote_Agent_Event($NetAppcompIPPR, "NetAppAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemEvent018", "SnapMirror agent on primary server is up.", "Information");
+}// End of Remote_PR_PFR_Agent_Start_Event
+
+/**
+ *Function is for remote agent start the SnapMirror agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :Padmavathi
+ */
+function NetAPP_SnapMirror_Remote_DR_SnapMirror_Agent_Start_Event() {
+	var $server = Get_Remote_Agent_Event($NetAppcompIPDR, "NetAppAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemEvent019", "SnapMirror agent on the DR server is up.", "Information");
+}// End of Remote_DR_PFR_Agent_Start_Event
+
+
+/**
+* Function is for Remote agent stop the SnapMirror linux agent from back end for PR. (Current DR)
+*@param : null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+function NetAPP_SnapMirror_Remote_PR_Linux_Agent_Stop_Event_SnapMirror_OS() {
+	var $server = Get_Remote_Agent_Event($NetAppcompIPPR, "LinuxOSAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemEvent027", "Dataset Inactive on Primary Server.", "Critical");
+}// End of Local_PR_LinuxAgent_Stop
+
+/**
+* Function is for Remote agent stop the SnapMirror linux agent from back end for DR.(Current PR)
+*@param : null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+function NetAPP_SnapMirror_Remote_DR_Linux_Agent_Stop_Event_SnapMirror_OS() {
+	var $server = Get_Remote_Agent_Event($NetAppcompIPDR, "LinuxOSAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemEvent029", "Dataset Inactive on DR Server.", "Critical");
+	
+}// End of Local_DR_LinuxAgent_Stop
+
+/**
+* Function is for Remote agent start the SnapMirror linux agent from back end for PR. (Current DR)
+*@param : null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+
+function NetAPP_SnapMirror_Remote_PR_Linux_Agent_Start_Event_SnapMirror_OS() {
+	var $server = Get_Remote_Agent_Event($NetAppcompIPPR, "LinuxOSAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemEvent028", "Dataset Active on Primary Server.", "Information");
+}// End of Local_PR_LinuxAgent_Start
+
+/**
+* Function is for Remote agent start the SnapMirror linux agent from back end for DR.(Current PR)
+*@param : null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+function NetAPP_SnapMirror_Remote_DR_Linux_Agent_Start_Event_SnapMirror_OS() {
+	var $server = Get_Remote_Agent_Event($NetAppcompIPDR, "LinuxOSAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemEvent030", " 	Dataset Active on DR Server.", "Information");
+	
+}// End of Local_DR_LinuxAgent_Start
+
+
+
+/**
+* Function is for Remote agent stop the Dataset linux agent from back end for PR. (Current DR)
+*@param : null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+function NetAPP_SnapMirror_Remote_PR_Linux_Agent_Stop_Event_DS_OS() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "LinuxOSAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemEvent007", "OS agent is down on primary server.", "Critical");
+}// End of Local_PR_LinuxAgent_Stop
+
+/**
+* Function is for Remote agent stop the Dataset linux agent from back end for DR.(Current PR)
+*@param : null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+function NetAPP_SnapMirror_Remote_DR_Linux_Agent_Stop_Event_DS_OS() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "LinuxOSAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemEvent008", "OS agent is down on DR server.", "Critical");
+	
+}// End of Local_DR_LinuxAgent_Stop
+
+/**
+* Function is for Remote agent start the Dataset linux agent from back end for PR. (Current DR)
+*@param : null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+
+function NetAPP_SnapMirror_Remote_PR_Linux_Agent_Start_Event_DS_OS() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "LinuxOSAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemEvent009", "OS agent is up on primary server.", "Information");
+}// End of Local_PR_LinuxAgent_Start
+
+/**
+* Function is for Remote agent start the Dataset linux agent from back end for DR.(Current PR)
+*@param : null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+function NetAPP_SnapMirror_Remote_DR_Linux_Agent_Start_Event_DS_OS() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "LinuxOSAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemEvent010", "OS agent is up on DR server.", "Information");
+	
+}// End of Local_DR_LinuxAgent_Start
+
+
+
+

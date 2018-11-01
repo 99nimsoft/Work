@@ -1,0 +1,782 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are the part of  DB2 HADR solution screen wise fetching and comparing data from DB and GUI. 
+ **@AuthorName : Anantha Sakthi
+ ** Created Date : October 2013
+ ************************************************************************/
+
+/**
+ * Function is for Group Creation of DB2_HADR.
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+function Create_DB2_HADR_Group() {
+	
+	$groupCreation = Create_FG($groupName, $groupDescription, $SolutionSignature, $primaryComponents, $remoteComponents, $primaryDatasets, $remoteDatasets, $primaryProtections, $remoteProtections);
+	if ($groupCreation.get("flag") == 0) 
+	{
+		_assertExists("Same group name already exists");
+	} 
+	else 
+	{
+		_click(_button($Submit)); 
+		
+		_click(_link($License));
+		_wait(5000);
+		_click(_checkbox("Recovery"));
+		_click(_checkbox("Test"));
+		_wait(1000);
+		_click(_button("licensebutton"));	
+		
+		_click(_link($obj_RPORTO));
+		_setValue(_textbox("rpoint1"), "180");
+		_click(_button("apply"));
+		
+		_click(_button($Finish));
+		navigateToGroups();
+		if (_exists(_link($groupName))) {
+			_assertExists("Group created succesfully");
+		} else {
+			_fail("Group not created succesfully.");
+		}	
+	}
+}
+
+
+
+/**
+ * This function is used to add Ral action for DB2 and save.
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author : Anantha Sakthi
+ */
+function Add_RAL_DB2TakeOVer($workflowType,$dataset) {
+	
+    if ($workflowType == "Failover"){
+    	NavigateToViewAllWorkflowsPage($groupName);
+    	editWorkflowType($workflowType);    
+    } else {
+		navigateDrillListing($groupName);
+		editWorkflowType($workflowType);
+    }
+
+      _click(_span("glyphIon"));
+      _click(_link("select2-choice"));
+      _setValue(_textbox(10), "DB2");
+      _click(_span("DB2"));
+      _click(_span("glyphicon icon-blue-plus plusIconRals", _near(_span($DB2Takeover))));
+      _click(_span("glyphIon"));
+      _dragDrop(_image("notifications_green.png[3]"), _image("notifications_yellow.png[3]"));
+       _dragDrop( _image("notifications_red.png[2]"), _image("notifications_yellow.png[3]"));
+       _doubleClick(_div($DB2TakeoverDB2));
+       _click(_link($ActionProperties));
+       _setSelected(_select("datasetName"), $dataset);
+       
+       if ($workflowType == "Failover"){
+    	   _click(_checkbox("force"));
+       }
+       _click(_button("close", _near(_heading4($DB2Takeover))));
+
+       publishWorkflow();
+      // _click(_link("Go back"));
+}
+
+
+/**
+ * Function is for Verification of details in Group Information screen for DB2
+ * HADR solution before SO.
+ * 
+ * @param :null
+ * @return : null
+ * @Author: Anantha Sakthi
+ * 
+ */
+function DB2_HADR_GroupInformation() {
+	DB2_HADR_GroupInformation_Status("NC");
+}// End of DB2_HADR__GroupInformation()
+
+/**
+ * Function is used to get the current log & time details from backend for DB2
+ * HADR
+ * 
+ * @param :$WFType --
+ *            WorkFlow Type $state -- "PR/DR" $compIP, $user, $pwd
+ * @return : null
+ * @Author: Anantha Sakthi
+ * 
+ */
+
+function Get_DB_CurrentLogAndTime($WFType,$state,$compIP, $user, $pwd){
+	
+	if($WFType == "SO" && $state == "PR" || $WFType == "NC" && $state == "DR"){
+		
+		var $l_fileNameTime = "TimeStamp.txt";
+
+
+	    // CONNECTION to DR and get the timestamp values
+		
+		var $sshCommand = "rm -rf /home/" + $user +"/" + $l_fileNameTime;
+		$status = SecuredShellConnection($compIP, $user, $pwd, $sshCommand);
+		
+	  	var $sshCommand = "db2 +a +e +q +v -x -s +o -z " + $l_fileNameTime + " -x GET SNAPSHOT FOR DATABASE ON " + $dataBaseName;
+		$status = SecuredShellConnection($compIP, $user, $pwd, $sshCommand);
+				
+		var $sshCommand = "grep -R \"Rollforward last committed timestamp\" " + $l_fileNameTime;
+		$status = SecuredShellConnection($compIP, $user, $pwd, $sshCommand);
+
+		var $l_lastAppliedLog = $status.split("=");
+		var $l_lastAppliedLogDB = $l_lastAppliedLog[1].trim();
+	   	var $TimeStampDB = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss").parse($l_lastAppliedLogDB));
+		var $TimeStampDB1 = $TimeStampDB.split(":");
+		var $TimeStampDB_DR = $TimeStampDB1[0]+":"+$TimeStampDB1[1]+":"+$TimeStampDB1[2];
+		_assertExists("Transaction Time DB",$TimeStampDB_DR);
+
+
+		var $sshCommand = "grep -R \"Primary log position(file, page, LSN)\" " + $l_fileNameTime;
+		$status = SecuredShellConnection($compIP, $user, $pwd, $sshCommand);
+			
+		var $statusSplitPR = $status.split("=");	
+		var $l_lastAppliedLogDB = $statusSplitPR[1].split(",");
+		return [$l_lastAppliedLogDB[0],$TimeStampDB_DR];
+		
+	} else {		
+		
+		// Get PR log Details from db Using JDBC connection.
+		
+		$db = Get_DB2_Db_Connection_URL($compIP,$dataBaseName,$user, $pwd);
+		
+		var $currentLogDBPR = $db.select("SELECT FIRSTLOG FROM SYSIBMADM.\"DB_HISTORY\" WHERE OBJECTTYPE='D' AND OPERATION='X' AND END_TIME IS NULL AND ( ENTRY_STATUS='Y' OR ENTRY_STATUS='A') ORDER BY EID DESC FETCH FIRST 1 ROWS ONLY");
+		
+			
+		var $currentLogTimeDBPRPath = $db.select("SELECT LOCATION FROM SYSIBMADM.\"DB_HISTORY\" WHERE OBJECTTYPE='D' AND OPERATION='X' AND END_TIME IS NULL AND ( ENTRY_STATUS='Y' OR ENTRY_STATUS='A') ORDER BY EID DESC FETCH FIRST 1 ROWS ONLY");
+		
+			
+		 var $sshCommand = "stat " + $currentLogTimeDBPRPath + " | grep Modify";
+		 $status = SecuredShellConnection($compIP, $user, $pwd, $sshCommand);
+	
+		 var $statusSplitPR = $status.split("Modify:");	
+			var $l_lastAppliedLog = $statusSplitPR[1].split(".");
+			var $currentLogTimeDBPR = $l_lastAppliedLog[0].trim();	
+		
+			
+		   	var $TimeStampDB = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse($currentLogTimeDBPR));
+		    	var $TimeStampDB1=$TimeStampDB.split(":");
+		    	var $TimeStampDB_PR=$TimeStampDB1[0]+":"+$TimeStampDB1[1]+":"+$TimeStampDB1[2];
+		  
+		    return [$currentLogDBPR,$TimeStampDB_PR];
+	}   
+  
+} 
+	
+/**
+ * Function is used to validate the timeStamp details with Db & GUi.
+ * 
+ * @param :$WFType --
+ *            WorkFlow Type
+ * @return : null
+ * @Author: Anantha Sakthi
+ * 
+ */
+
+function ValidateTimeStampDetails($WFType){
+	
+	
+	// -------------------------PR validation-----------------------------------------------------------------------------
+	
+	if($WFType == "SO"){
+		var $getCurrentLogAndTimePR = Get_DB_CurrentLogAndTime($WFType,"DR",$compIPDR, $userDR, $pwdDR); // call
+														    // the
+														    // function
+														    // to
+														    // get
+														    // the
+														    // DB
+														    // details
+	} else {
+		var $getCurrentLogAndTimePR = Get_DB_CurrentLogAndTime($WFType,"PR",$compIPPR, $userPR, $pwdPR); // call
+														    // the
+														    // function
+														    // to
+														    // get
+														    // the
+														    // DB
+														    // details
+	}
+	
+	
+	var $currentLogDBPR = $getCurrentLogAndTimePR[0];
+	var $TimeStampDB_PR = $getCurrentLogAndTimePR[1];
+	
+
+	
+	_assertExists("PR Transaction Time DB",$TimeStampDB_PR);	
+	_assertExists("PR Current log from DB",$currentLogDBPR);
+	
+	var $l_interval= 0;
+	while(true){
+		
+	       // PR
+  	
+	    var $currentLogFileGUIlabel = _getText(_heading5($CurrentLog));
+    	var $currentLogFileGUIValue = $currentLogFileGUIlabel.split($Log);
+    	var $currentLogGuiPR =$currentLogFileGUIValue[1];
+    	_assertExists("Curretn Log from Gui" , $currentLogGuiPR);
+
+    	
+    	var $currentLogFileGUIlabel = _getText(_heading5($CurrentLogTimestamp));
+      	var $currentLogFileGUIValue = $currentLogFileGUIlabel.split($Timestamp);
+      	var $currentLogTimeGuiPR =$currentLogFileGUIValue[1];
+    	_assertExists("Current Timestamp from Gui", $currentLogTimeGuiPR);
+		
+		if($currentLogTimeGuiPR == $TimeStampDB_PR && $currentLogGuiPR == $currentLogDBPR) {
+			break;
+		} 
+		
+		if($l_interval == 11){
+			break;
+		}
+		_wait("60000");
+		$l_interval++;
+	}
+	
+
+		_assertEqual($currentLogTimeGuiPR,$TimeStampDB_PR,"Validation between GUi time stamp & DB time stamp");
+		_assertEqual($currentLogGuiPR,$currentLogDBPR,"Validation between GUi Current log & DB current log");	
+
+// -------------------------DR validation-----------------------------------------------------------------------------
+
+		if($WFType == "SO"){
+			var $getCurrentLogAndTimeDR = Get_DB_CurrentLogAndTime($WFType,"P" +
+					"R",$compIPPR, $userPR, $pwdPR); // call
+									    // the
+									    // function
+									    // to
+									    // get
+									    // the
+									    // DB
+									    // details
+		} else {
+			var $getCurrentLogAndTimeDR = Get_DB_CurrentLogAndTime($WFType,"DR",$compIPDR, $userDR, $pwdDR); // call
+															    // the
+															    // function
+															    // to
+															    // get
+															    // the
+															    // DB
+															    // details
+		}
+
+
+
+
+var  $l_lastAppliedLogDB = $getCurrentLogAndTimeDR[0];
+var  $TimeStampDB_DR = $getCurrentLogAndTimeDR[1];
+
+_assertExists("DR Transaction Time DB",$TimeStampDB_DR);	
+_assertExists("DR Last applied log from DB",$l_lastAppliedLogDB);
+
+var $l_interval = 0;
+while(true){
+
+   // DR
+   var $lastAppliedLogGui = _getText(_heading5($LastLogApplied));
+   
+	var $lastAppliedLogGui1 = $lastAppliedLogGui.split($Applied);
+	var $lastAppliedLogGuiDR = $lastAppliedLogGui1[1];
+	
+  _assertExists("Last log applied into DR from Gui", $lastAppliedLogGuiDR);
+
+  
+  var $lastAppliedTimeStampGuiDR = _getText(_heading5($LogAppliedTimestamp));
+  
+	var $lastAppliedTimeStampGui1 = $lastAppliedTimeStampGuiDR.split($Timestamp);
+	var $lastAppliedTimeStampGuiDR = $lastAppliedTimeStampGui1[1];
+  
+  _assertExists("Last log applied timestamp into DR from Gui", $lastAppliedTimeStampGuiDR);
+
+if($lastAppliedLogGuiDR == $l_lastAppliedLogDB && $lastAppliedTimeStampGuiDR == $TimeStampDB_DR) {
+	break;
+} 
+
+if($l_interval == 11){
+	break;
+}
+_wait("60000");
+$l_interval++;
+}
+
+_assertEqual($lastAppliedTimeStampGuiDR,$TimeStampDB_DR,"Validation between GUi time stamp & DB time stamp");
+_assertEqual($lastAppliedLogGuiDR,$l_lastAppliedLogDB,"Validation between GUi applied log & applied log");	
+
+}
+
+/**
+ * Function is forGroup Information of DB2 before SO.
+ * 
+ * @param :
+ *            $WFType -- WorkFlow Type
+ * @return : null Author:Ananth
+ * 
+ */
+
+function DB2_HADR_GroupInformation_Status($WFType) {
+ 
+	_click(_link($Manage));
+	_click(_link($GroupsListView));
+	_click(_link($groupName));
+	_click(_link($GroupInformation));
+	
+	
+	// calling Group_ManageGroupInformation to verify the PR and DR site
+	// status
+      Group_Managegroupinformation($groupName, $WFType);
+      
+    // -------------------------PR
+    // validation-----------------------------------------------------------------------------
+     	
+      ValidateTimeStampDetails($WFType);
+	   	
+}
+
+
+/**
+ * Function is for Group Snapshot status check for DB2_HADR.
+ * 
+ * @param :
+ *            $WFType -- WorkFlow Type
+ * @return : null Author: Anantha Sakthi
+ * 
+ */
+function DB2_HADR_GroupSnapshot_Status($WFType){
+
+	_click(_link($Monitor));
+
+	_click(_link($groupName));
+	_click(_link($GroupSnapshot));
+	
+	if ($WFType == "SO") {
+		if (_exists(_cell($NotsupportedinSwitchovermode))) {
+			_log("So done successfully");
+		} else {
+			_log("Gui not showing correct value");
+		}
+	}
+	$dbRecoveryPoint = DB2_HADR_RPO($WFType);
+
+	var $recoveryPointGui1 = _getText(_span(1, _near(_span($DRDataConsistentupto), _near(_cell("Continuity")))));
+	 var $date = $recoveryPointGui1;
+     var $dateString = $date.toString();
+     var $recoveryPointGui = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+	
+	_assertExists("Recovery Point DR Data Consistent up to:", $recoveryPointGui);
+	if ($dbRecoveryPoint == $recoveryPointGui){
+	_assertEqual($dbRecoveryPoint , $recoveryPointGui, "Comparing Recovery Point DR Data Consistent upto from DB and GUI");
+	}
+	else {
+ 		_log("Validating Recovery Point DR Data Consistent is not  correct in GUI");
+ 	}
+	if($WFType != "SO") {
+		_click(_link($Monitor));
+		_click(_link($groupName));
+		_click(_link($GroupSnapshot));
+		var $recoveryTimeGui1 = _getText(_cell(5, _near(_span("Est. time to recover:", _near((_cell("Recovery Time"))))))).split("Est. time to recover:");
+		var $recoveryTimeGui = $recoveryTimeGui1[1];
+		_assertExists("Recovery Time  Est. time to recover:", $recoveryTimeGui);
+
+		// calling function to calculate rto for Recovery Time
+			$dbRto = DB2_HADR_Rto();
+	
+		_click(_link($Monitor));
+		_click(_link($groupName));
+		_click(_link($GroupSnapshot));
+		_assertEqual($dbRto.get($actualRtoDB), $recoveryTimeGui, "Comparing Recovery Time  Est. time to recover from DB and GUI");
+	}
+
+	_click(_link($Monitor));
+	_click(_link($groupName));
+	_click(_link($GroupSnapshot));
+	var $continuityOperation = _getText(_cell(1, _near(_cell($ContinuityOperation))));
+	_assertExists("Continuity Operation:", $continuityOperation);
+	
+	ValidateTimeStampDetails($WFType);
+
+ 
+}
+
+/**
+ * Function is for Verification of replication status in replication page after
+ * SO
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author: Anantha Sakthi
+ * 
+ */
+function DB2_HADR_Replication_Post_SO() {
+	DB2_HADR_Replication($compIPPR, $userPR, $pwdPR);
+}// End of DB2_HADR_Replication_Post_SO()
+
+
+/**
+ * Function is for Verification of replication status in replication page before
+ * SO
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author: Anantha Sakthi
+ * 
+ */
+
+function DB2_HADR_Replication_Staus() {
+	DB2_HADR_Replication($compIPDR, $userDR, $pwdDR);
+}// End of DB2_HADR_Replication()
+
+/**
+ * Function is for Verification of replication status in replication page
+ * 
+ * @param :
+ *            $hostIP, $hostUserName, $hostPassword
+ * @return : null
+ * @Author: Anantha Sakthi
+ * 
+ */
+function DB2_HADR_Replication($compIP, $user, $pwd) {
+
+	NavigateToRGDetailsPage($groupName);
+	_click(_link($Replication));
+	_click(_button($RefreshReplica));
+	_wait(2000,_button($RefreshReplica));
+    
+
+    var $primaryRemoteServicesGUI = _getText(_preformatted(0));
+    
+    // Get the LSN & Log details from DB
+    
+	var $l_fileNameTime = "TimeStamp.txt";
+
+    // CONNECTION to DR and get the timestamp values
+	
+	var $sshCommand = "rm -rf /home/" + $user +"/" + $l_fileNameTime;
+	$status = SecuredShellConnection($compIP, $user, $pwd, $sshCommand);
+	
+  	var $sshCommand = "db2 +a +e +q +v -x -s +o -z " + $l_fileNameTime + " -x GET SNAPSHOT FOR DATABASE ON " + $dataBaseName;
+  	$status = SecuredShellConnection($compIP, $user, $pwd, $sshCommand);
+    	
+	// -----PR----
+	var $sshCommand = "grep -R \"Primary log position(file, page, LSN) = \" " + $l_fileNameTime;
+	$status = SecuredShellConnection($compIP, $user, $pwd, $sshCommand);
+
+	var $statusSplitPR = $status.split("=");
+	var $LSN_DBPR = $statusSplitPR[1].replace(/,/g," ");
+	var $LSN_DB = $LSN_DBPR.split(" ");
+	var $file_DBPR = $LSN_DB[0];
+	var $page_DBPR = $LSN_DB[1];
+	var $LSN_DBPR = "0x" + $LSN_DB[2];
+	
+	var $patt1=new RegExp($file_DBPR);
+	var $outFile = $patt1.test($primaryRemoteServicesGUI);
+	var $patt1=new RegExp($page_DBPR);
+	var $outPage = $patt1.test($primaryRemoteServicesGUI);
+	var $patt1=new RegExp($LSN_DBPR);
+	var $outLSN = $patt1.test($primaryRemoteServicesGUI);
+
+	if ($outFile == true && $outPage == true && $outLSN == true) {
+		_assertTrue(true);
+		
+	} else {
+		_assertTrue(false);
+	}
+
+	 
+	// -----DR----
+	var $sshCommand = "grep -R \"Standby log position(file, page, LSN) = \" " + $l_fileNameTime;
+	$status = SecuredShellConnection($compIP, $user, $pwd, $sshCommand);
+
+	var $statusSplitDR = $status.split("=");
+	var $LSN_DBDR = $statusSplitDR[2].replace(/,/g," ");
+	var $LSN_DB = $LSN_DBDR.split(" ");
+	var $file_DBDR = $LSN_DB[0];
+	var $page_DBDR = $LSN_DB[1];
+	var $LSN_DBDR = "0x" + $LSN_DB[2];
+	
+	var $patt1=new RegExp($file_DBDR);
+	var $outFile = $patt1.test($primaryRemoteServicesGUI);
+	var $patt1=new RegExp($page_DBDR);
+	var $outPage = $patt1.test($primaryRemoteServicesGUI);
+	var $patt1=new RegExp($LSN_DBDR);
+	var $outLSN = $patt1.test($primaryRemoteServicesGUI);
+	
+	if ($outFile == true && $outPage == true && $outLSN == true) {
+		_assertTrue(true);
+		
+	} else {
+		_assertTrue(false);
+	}
+
+	
+}// end of DB2_HADR_Replication_Staus
+
+
+/**
+ * Function is for Verification of the all RPO detail from RPO/RTO screen for
+ * DB2 HADR solution before SO
+ * 
+ * @param :
+ *            $WFType -- WorkFlow ype
+ * @return : null
+ * @Author: Anantha Sakthi
+ * 
+ */
+
+function DB2_HADR_RPO($WFType) {
+	return DB2_HADR_RPO_Status($WFType);
+}// End of DB2_HADR_RPO()
+
+/**
+ * Function is for Verification of the all RPO detail from RPO/RTO screen for
+ * DB2 HADR solution .
+ * 
+ * @param :
+ *            $WFType -- WorkFlowType
+ * @return : $dbRecoveryPoint
+ * @Author: Anantha Sakthi
+ * 
+ */
+
+function DB2_HADR_RPO_Status($WFType) {
+
+		navigateToRPO($groupName);
+
+	    // -------------------------PR validation-----------------------------------------------------------------------------
+	 	
+	
+		var $getCurrentLogAndTimePR = Get_DB_CurrentLogAndTime($WFType,"PR",$compIPPR, $userPR, $pwdPR); // call
+														    // the
+														    // function
+														    // to
+														    // get
+														    // the
+														    // DB
+														    // details
+		
+		var $TimeStampDB_PR = $getCurrentLogAndTimePR[1];
+		
+		_assertExists("Transaction Time PR from DB",$TimeStampDB_PR);	
+		
+		var $l_interval= 0;
+		while(true){
+			_wait("60000");
+		       // PR
+			var $currentLogTimeGuiPR = "";
+		  if(_exists(_div("col-lg-7", _near(_div("Transaction Time", _near(_strong("Primary"))))))){
+			    $currentLogTimeGuiPR = _getText(_div("col-lg-7", _near(_div("Transaction Time", _near(_strong("Primary"))))));		    
+			    
+		    	_assertExists("Transaction Time PR from Gui", $currentLogTimeGuiPR);
+
+		  }
+					
+			if($currentLogTimeGuiPR == $TimeStampDB_PR ) {
+				break;
+			} 
+			
+			if($l_interval == 11){
+				break;
+			}
+			
+			$l_interval++;
+		}
+		
+	
+			_assertEqual($currentLogTimeGuiPR,$TimeStampDB_PR,"Validation the transaction time between GUI & DB for PR");
+		
+	
+	// -------------------------DR validation-----------------------------------------------------------------------------
+	
+	
+		var $getCurrentLogAndTimeDR = Get_DB_CurrentLogAndTime($WFType,"DR",$compIPDR, $userDR, $pwdDR); // call
+														    // the
+														    // function
+														    // to
+														    // get
+														    // the
+														    // DB
+														    // details
+		
+		var $TimeStampDB_DR = $getCurrentLogAndTimeDR[1];
+
+		_assertExists("Transaction Time DR Time DB",$TimeStampDB_DR);	
+		
+		var $l_interval = 0;
+		while(true){
+			_wait($60000);
+		   // DR
+			var $lastAppliedTimeStampGuiDR = "";
+			 if(_exists(_div("col-lg-7", _near(_div("Transaction Time", _near(_strong("Remote"))))))){
+				  $lastAppliedTimeStampGuiDR = _getText(_div("col-lg-7", _near(_div("Transaction Time", _near(_strong("Remote"))))));
+				  _assertExists("Transaction Time DR from Gui", $lastAppliedTimeStampGuiDR);
+
+			 }
+				if($lastAppliedTimeStampGuiDR == $TimeStampDB_DR) {
+					break;
+				} 
+		
+		if($l_interval == 11){
+			break;
+		}
+		
+		$l_interval++;
+		}
+		
+		
+		_assertEqual($lastAppliedTimeStampGuiDR,$TimeStampDB_DR,"Validation the transaction time between GUI & DB for DR");
+			
+		// Calling Calulate_Rpo function to verify RPO calculation from
+		// gui
+		$dbRpo = Calulate_Rpo($TimeStampDB_PR, $TimeStampDB_DR);
+
+	var $recoveryPointinDB = $dbRpo.get("recoveryPointDB");
+
+	return $recoveryPointinDB;
+
+}// end of DB2_HADR_RPO_Status()
+
+/**
+ * Function is for Updating Agent property file to install the DRM server in
+ * silent Mode at PR.
+ * 
+ * @param :null
+ * @return : null
+ * @Author: Anantha Sakthi
+ * 
+ */
+function Update_PropertyFile_LocalAgentDB2_PR() {
+	Update_local_Agent_propertyFile($agentBuildPR, $compIPPR, $remoteUserNameValPR, $remotePwdValPR, $panacesAgentNodeAddressPR, $localAgentPathPR,$userPR,$db2ResultDirPR);
+}
+
+/**
+ * Function is for Updating Agent property file to install the DRM server in
+ * silent Mode at DR.
+ * 
+ * @param :null
+ * @return : null
+ * @Author: Anantha Sakthi
+ * 
+ */
+function Update_PropertyFile_LocalAgentDB2_DR() {
+	Update_local_Agent_propertyFile($agentBuildDR, $compIPDR, $remoteUserNameValDR, $remotePwdValDR, $panacesAgentNodeAddressDR, $localAgentPathDR,$userDR,$db2ResultDirDR);
+}
+
+/**
+ * Function is for Verification of the all RTO detail from RPO/RTO screen for
+ * DB2 HADR solution.
+ * 
+ * @param :$groupName
+ * @return : $dbRto
+ * @Author: Anantha Sakthi
+ * 
+ */
+
+function DB2_HADR_Rto() {
+	navigateToRTO($groupName);
+
+	// verification of current RTO :
+	
+
+	
+    //Custom action for Remote
+    _mouseOver(_svg_rect(11));
+    var $stepName1 = RTO_Calculate();
+
+    _mouseOver(_svg_rect(12));
+    var $stepName2 = RTO_Calculate();
+    
+    _mouseOver(_svg_rect(13));
+    var $stepName3 = RTO_Calculate();
+    
+    _mouseOver(_svg_rect(14));
+    var $stepName4 = RTO_Calculate();
+	
+    /*
+	var $step1 = (_getText(_svg_tspan(12, _near(_svg_tspan($CustomactionforProductionPrecheck)))));
+	var $stp1=$step1.split(" ");
+	
+	var $step2 = (_getText(_svg_tspan(13, _near(_svg_tspan($CustomactionforRemotePrecheck)))));
+	var $stp2=$step2.split(" ");
+	var $stepName2= parseInt($stp2[0]);
+	
+	var $step3 = (_getText(_svg_tspan(14, _near(_svg_tspan($CustomactionforFailOver)))));
+	var $stp3=$step3.split(" ");
+	var $stepName3= parseInt($stp3[0]);
+	
+	var $step4 = (_getText(_svg_tspan(15, _near(_svg_tspan($DB2Takeover)))));
+	var $stp4=$step4.split(" ");
+	var $stepName4= parseInt($stp4[0]);
+
+*/
+	var $expectedCompletionTime = Math.floor($stepName1 + $stepName2 + $stepName3 + $stepName4);
+	_assertExists("Expected_Completion_Time:", $expectedCompletionTime);
+
+	// calling to calculate rto function
+	var $dbRto = Calculate_Rto($expectedCompletionTime);
+	return $dbRto;
+} // End Of DB2_HADR_Rto()
+
+/**
+ * Function is for Verification of details in Group Information screen for DB2
+ * HADR solution after SO.
+ * 
+ * @param :null
+ * @return : null
+ * @Author: Anantha Sakthi
+ * 
+ */
+
+function DB2_HADR_GroupInformation_Post_SO() {
+	DB2_HADR_GroupInformation_Status("SO");
+}// End of DB2_HADR_Groupinformation_Post_SO()
+
+/**
+ * Function is for Verification of details in Group Information screen for DB2
+ * HADR solution after SO.
+ * 
+ * @param :null
+ * @return : null
+ * @Author: Anantha Sakthi
+ * 
+ */
+
+function DB2_HADR_RNC_Groupsnapshot_Monitor_0021() {
+	DB2_HADR_GroupSnapshot_Status("SO");
+}// End of DB2_HADR_RNC_Groupsnapshot_Monitor_0021()
+
+
+/**
+ * Function is for verifying the continuity worklows
+ * 
+ * @param :null
+ * @return : null
+ * @Author: Anantha Sakthi
+ * 
+ */
+
+function DB2_Continuity_Workflows($WFType) 
+{
+	NavigateToRGDetailsPage($groupName);
+	_click(_link("icon-right-arrow ex-col-arrow collapsed", _near(_link($WFType))));
+
+	if($WFType == "NormalCopy"){
+		ValidateTimeStampDetails("NC");
+	} else {
+		ValidateTimeStampDetails("SO");
+	}	
+
+}//End of Continuity Workflows

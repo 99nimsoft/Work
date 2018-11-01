@@ -1,0 +1,55 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the for System Events test parameter
+ ** AuthorName : ANita
+ ** Created Date : Dec 2016
+ ***********************************************************************************************/
+
+
+if($BrowserLang == "N"){
+	var  $l_symEvent = _readExcelFile($SAHI_HOME+"\\conf\\SystemEvents\\SystemEvents_Parameter.xls","SystemEvents");
+}
+else if($BrowserLang == "Y-JA"){
+	var  $l_symEvent = _readExcelFile($SAHI_HOME+"\\conf\\SystemEvents\\SystemEvents_Parameter.xls","SystemEvents_JA");
+	}
+
+else if($BrowserLang == "Y-EN"){
+	var  $l_symEvent = _readExcelFile($SAHI_HOME+"\\conf\\SystemEvents\\SystemEvents_Parameter.xls","SystemEvents_EN");
+	}
+
+
+//This user Input required to Login the DRM server
+var $username = $l_symEvent[3][2]; // DRM server GUI user name 
+var $password = $l_symEvent[4][2]; // DRM server GUI pwd
+
+var $groupName = $l_symEvent[5][2];
+var $groupName1 = $l_symEvent[5][3];
+
+var $userName_super = $l_symEvent[8][2];
+var $userPswd_super = $l_symEvent[8][3];
+
+var $userName_admin = $l_symEvent[9][2];
+var $userPswd_admin = $l_symEvent[9][3];
+
+var $userName_oper = $l_symEvent[10][2];
+var $userPswd_oper = $l_symEvent[10][3];
+
+var $userName_notif = $l_symEvent[11][2];
+var $userPswd_notif = $l_symEvent[11][3];
+
+var $notifLstName = $l_symEvent[12][2];
+var $snmpFWDLstName = $l_symEvent[13][2];
+
+var $notifLstadmn = $l_symEvent[12][3];
+var $snmpFWDLstadmn = $l_symEvent[13][3];
+
+var $trapdestIP = $l_symEvent[14][2];
+var $udpPort1 = $l_symEvent[15][2];  
+var $udpPort2 = $l_symEvent[15][3];
+
+var $metabackupPath = $l_symEvent[16][2];
+
+
+	
+	

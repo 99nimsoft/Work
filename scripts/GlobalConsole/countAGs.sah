@@ -1,0 +1,32 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : 
+ ** AuthorName : Gaurav
+ ** Created Date : June 2018
+ ************************************************************************/
+
+_log("=================================Pre-Condition===================================","Custom1");
+
+_include("../../Library/Solution_Signature/Include/APP_PFR_Include.sah");
+_include("../../conf/DRMInstallation_Parameter.sah");
+_include("../../Library/Common/CommonRepository/CommonDRM_ObjRepository.sah");
+_include("../../Library/Common/CommonRepository/CommonGUINavigation_ObjRepository.sah");
+_include("../../Library/Common/CommonRepository/GroupOperation_ObjRepository.sah");
+_include("../../Library/Solution_Signature/APP_PFR/ObjectRepository/APPPFR_ObjectRepository.sah");
+_include("../../Library/Solution_Signature/APP_PFR/ObjectRepository/AppPFR_Event_ObjectRepository.sah");
+_include("../../conf/APP_PFR/APP_PFR_Remote_Agent_Parameter.sah");
+_include("../../conf/APP_PFR/UserSelected_APP_PFR_Testcase.sah");
+_include("../../Library/Database/APPSubSystem/ObjectRepository/APPSubSystem_ObjectRepository.sah");
+_include("../../Library/Replication/PFR/ObjectRepository/PFR_ObjectRepository.sah");
+
+_include("../../Library/GlobalConsole/GC_Functions.sah");
+_include("../../conf/GlobalConsole/GlobalConsole_OverridingParameters.sah");
+
+
+$drmServer=$ROServer;
+$securedUrl=$SecuredURL;
+$urlPortNo=$UrlPortNO;
+
+Login_001();
+count_AG_RG();

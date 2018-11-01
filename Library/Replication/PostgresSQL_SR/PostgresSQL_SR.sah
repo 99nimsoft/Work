@@ -1,0 +1,38 @@
+function Create_PostgresSR_ProtectionschemePR(){
+	Create_PostgresSR_Protectionscheme($systemTypeProtection,$mgmtHostPostgreSQLSRPR, $sernamePR,$postgresHome,$postgresData);
+}
+
+function Create_PostgresSR_ProtectionschemeDR(){
+	
+	Create_PostgresSR_Protectionscheme($systemTypeProtection,$mgmtHostPostgreSQLSRDR, $sernameDR,$postgresHome,$postgresData);
+}
+
+function Create_PostgresSR_Protectionscheme($systemTypeProtection,$mgmtHostPostgreSQLSR, $sername,$postgresHome,$postgresData){
+	navigateToDiscovery();
+	_click(_link($obj_subsystems));
+	_click(_link($ProtctionSchemes));
+
+	// Validation of Protection scheme.
+	if (_exists(_link($sername))) {
+		_assertExists("Protection Scheme already exists");
+	} else {
+	_setSelected(_select("systemType"),$systemTypeProtection);
+	_click(_button($GO));
+	_setSelected(_select("mgmtHost_PostgreSQLSR"), $mgmtHostPostgreSQLSR);
+	_setValue(_textbox("sername"), $sername);
+	_setValue(_textbox("OtherReplicatorInputElement_0"), $postgresHome);
+	_setValue(_textbox("OtherReplicatorInputElement_1"),$postgresData);
+	_wait(2000);
+	_click(_button($Save));
+	}
+	_click(_link($obj_subsystems));
+	_click(_link($ProtctionSchemes));
+	// Validation after creating Protection Scheme
+	if (_exists(_link($sername))){
+		_assertExists($ProtctionSchemesCreated);
+	} else {
+		_assertEqual("Protection Scheme created",_lastAlert()); 	
+		_fail($ProtctionSchemesNotCreated);
+	} 
+	
+}

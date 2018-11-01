@@ -1,0 +1,327 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the remote agent test cases which are the part of  DB2 HADR solution. 
+ ** AuthorName : Anantha Sakthi
+ ** Created Date : October 2013
+ ************************************************************************/
+
+_log("=================================Pre-Condition===================================", "Custom1");
+
+// don't change the below line.
+_include("../Library/Solution_Signature/Include/DB2_HADR_Include.sah");
+
+// mentioned the correct parameter file name which user are going to execute
+// within the "" code.
+//_include("../conf/DRMInstallation_Parameter_New.sah");
+_include("../conf/DRMInstallation_Parameter.sah");
+_include("../Library/Common/CommonRepository/CommonDRM_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/CommonGUINavigation_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/GroupOperation_ObjRepository.sah");
+_include("../Library/Solution_Signature/DB2_HADR/ObjectRepository/DB2HADR_ObjectRepository.sah");
+_include("../Library/Solution_Signature/DB2_HADR/ObjectRepository/DB2HADR_Event_ObjectRepository.sah");
+_include("../conf/DB2/DB2_HADR_Local_Agent_Parameter.sah");
+_include("../conf/DB2/UserSelected_DB2_HADR_Testcase.sah");
+_include("../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+_include("../Library/Validation_Manager/ObjectRepository/Validation_Manager_ObjectRepository.sah");
+_include("../Library/Validation_Manager/Validation_Manager.sah");
+
+// *********************************************************************************************
+
+Agent_UnInstllation_001();
+AgentBuild_Copy_into_AgentHost_PR();
+AgentBuild_Copy_into_AgentHost_DR();
+
+Copy_Property_file();
+
+Update_DB2PropertyFile_LocalAgent_PR();
+Install_Local_Agent_SilentMode_PR();
+Update_DB2PropertyFile_LocalAgent_DR();
+Install_Local_Agent_SilentMode_DR();
+
+Login_001();
+
+_log("=================================Test========================================", "Custom1");
+
+if ($g_execute_DB2HADRAll == "Y" || $g_site_DB2HADR == "Y") {
+	var $test1 = _testcase("Site_0003", "Test description has to update");
+	$test1.start();
+	Site_0003();
+	$test1.end();
+}
+
+if ($g_execute_DB2HADRAll == "Y" || $g_componentLocal_DB2HADR == "Y") {
+	var $test2 = _testcase("Object_Manager/ Common/ Components/ Component_04 ", "Component Local Discovery");
+	$test2.start();
+	DB2_HADR_Component_Local_Discovery_0002();
+	$test2.end();
+}
+
+if ($g_execute_DB2HADRAll == "Y" || $g_datasetDiscovery_DB2HADR == "Y") {
+	var $test3 = _testcase("Continuity_Manager/ Template/ DB2/ Discover/ DB2_Discovery_02", "DB2 Dataset discovery data validation");
+	$test3.start();
+	DB2_HADR_Dataset_Discovery_0007();
+	$test3.end();
+}
+/*
+if ($g_execute_DB2HADRAll == "Y" || $g_datasetStatus_DB2HADR == "Y") {
+	var $test4 = _testcase("Continuity_Manager/ Template/ DB2_HADR_SR/ DB2_HADR_0011", "Dataset Status");
+	$test4.start();
+	DB2_HADR_Dataset_status_0011();
+	$test4.end();
+}
+*/
+if ($g_execute_DB2HADRAll == "Y" || $g_protectionScheme_DB2HADR == "Y") {
+	var $test5 = _testcase("Continuity_Manager/ Template/ DB2/ Discover/ DB2_Discovery_03 ", "DB2 HADR Protection scheme discovery validation");
+	$test5.start();
+	DB2_HADR_Protectionscheme_Discovery_0018();
+	$test5.end();
+}
+/*
+if ($g_execute_DB2HADRAll == "Y" || $g_protectionSchemeStatus_DB2HADR == "Y") {
+	var $test13 = _testcase("Object_Manager/ProtectionScheme/DataGaurd/OracleDG_Discovery0011", "Protection Scheme Status");
+	$test13.start();
+	DB2_HADR_Protectionscheme_status_0021();
+	$test13.end();
+}*/
+
+if ($g_execute_DB2HADRAll == "Y" || $g_groupCreation_DB2HADR == "Y") {
+	var $test7 = _testcase("Continuity_Manager/ Template/ DB2/ Discover/ DB2_Discovery_05", "Create DB2 HADR functional group");
+	$test7.start();
+	DB2_HADR_GroupCreation_001();
+	$test7.end();
+}
+
+if ($g_execute_DB2HADRAll == "Y" || $g_moveToManage_DB2HADR == "Y") {
+	var $test8 = _testcase("Continuity_Manager/Common/FG/Group/GroupCreation_0006", "Move Group to Manage");
+	$test8.start();
+	DB2_HADR_Move_Group_Manage_0006();
+	$test8.end();
+}
+if ($g_execute_DB2HADRAll == "Y" || $g_changeContinuityState_DB2HADR == "Y") {
+	var $test9 = _testcase("Continuity_Manager/Common/FG/Manage/Change_Continuity_State_0001", "Change Continuity State");
+	$test9.start();
+	DB2_HADR_Change_Continuity_State_0001();
+	$test9.end();
+}
+/*
+if ($g_execute_DB2HADRAll == "Y" || $g_componentStatus_DB2HADR == "Y") {
+	var $test10 = _testcase("Object_Manager/ Common/ Components/ Subsystem_Moinitoring_0001", "Checking Component Status");
+	$test10.start();
+	DB2_HADR_Component_Local_Status_0001();
+	$test10.end();
+}*/
+
+if ($g_execute_DB2HADRAll == "Y" || $g_contiunity_DB2HADR == "Y") {
+	var $test11 = _testcase("Continuity_Manager/Common/FG/Monitor/NormalCopy_0001 ", "Current Continuity Status");
+	$test11.start();
+	DB2_HADR_Contiunity_Status_0002();
+	$test11.end();
+}
+
+
+
+
+if ($g_execute_DB2HADRAll == "Y" || $g_importWorkFlow_DB2HADR == "Y") {
+	var $test10 = _testcase("Object_Manager/ Common/ Components/ Subsystem_Moinitoring_0001", "Update the workflow for switchOver, switchBack and failover");
+	$test10.start();	
+	EditWorkFlow_DB2_HADR();	
+	$test10.end();
+}
+
+if ($g_execute_DB2HADRAll == "Y" || $g_startNC_DB2HADR == "Y") {
+	var $test13 = _testcase("Continuity_Manager/Common/FG/Manage/NormalCopy_0001", "Start NormalCopy");
+	$test13.start();
+	DB2_HADR_Start_NormalCopy_0001();
+	$test13.end();
+}
+
+if ($g_execute_DB2HADRAll == "Y" || $g_monitorRelationship_DB2HADR == "Y") {
+	var $test14 = _testcase("Continuity_Manager/Common/FG/Monitor/Normal_Copy_0030", "Monitor RelationShip");
+	$test14.start();
+	DB2_HADR_Monitor_Relationship_0030();
+	$test14.end();
+}
+
+if ($g_execute_DB2HADRAll == "Y" || $g_groupInformation_DB2HADR == "Y") {
+	var $test15 = _testcase("Continuity_Manager/Common/FG/Manage/Continuity_Management_0007", "Continuty workflows");
+	$test15.start();
+	DB2_HADR_Continuity_workflows_NC_0007();
+	$test15.end();
+}
+
+if ($g_execute_DB2HADRAll == "Y" || $g_groupInformation_DB2HADR == "Y") {
+	var $test15 = _testcase("Continuity_Manager/Common/FG/Manage/Continuity_Management_0007", "RPO calculation");
+	$test15.start();
+	DB2_HADR_NC_DB2_HADR_RPO_0026();
+	$test15.end();
+}
+
+if ($g_execute_DB2HADRAll == "Y" || $g_groupInformation_DB2HADR == "Y") {
+	var $test15 = _testcase("Continuity_Manager/Common/FG/Manage/Continuity_Management_0007", "RTO Calculation");
+	$test15.start();
+	DB2_HADR_NC_DB2_HADR_RTO_0027();
+	$test15.end();
+}
+
+if ($g_execute_DB2HADRAll == "Y" || $g_groupInformation_DB2HADR == "Y") {
+	var $test15 = _testcase("Continuity_Manager/Common/FG/Manage/Continuity_Management_0007", "Replication");
+	$test15.start();
+	DB2_HADR_Replication_0001();
+	$test15.end();
+}
+
+
+
+if ($g_execute_DB2HADRAll == "Y" || $g_stopNC_DB2HADR == "Y") {
+	var $test22 = _testcase(" Continuity_Manager/ Common/ FG/ Manage/ Graceful_Shutdown_0002", "Stop NC ");
+	$test22.start();
+	DB2_HADR_Stop_NC_0002();
+	$test22.end();
+}
+
+if ($g_execute_DB2HADRAll == "Y" || $g_startSO_DB2HADR == "Y") {
+	var $test23 = _testcase("Continuity_Manager/ Common/ FG/ Tests/ SOSB_0011", "Start SO");
+	
+	$test23.start();
+	DB2_HADR_Start_SO_0011();
+	$test23.end();
+}
+
+if ($g_execute_DB2HADRAll == "Y" || $g_SOExecution_DB2HADR == "Y") {
+	var $test24 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0012", "SO Execution");
+	$test24.start();
+	DB2_HADR_SO_Execution_0012();
+	$test24.end();
+}
+
+if ($g_execute_DB2HADRAll == "Y" || $g_startRNC_DB2HADR == "Y") {
+	var $test26 = _testcase("Start_RNC_0033", "Start RNC");
+	$test26.start();
+	DB2_HADR_Start_RNC_0033();
+	$test26.end();
+}
+
+if ($g_execute_DB2HADRAll == "Y" || $g_groupInformation_DB2HADR == "Y") {
+	var $test15 = _testcase("Continuity_Manager/Common/FG/Manage/Continuity_Management_0007", "Continuty workflows");
+	$test15.start();
+	DB2_HADR_Continuity_workflows_SO_0007();
+	$test15.end();
+}
+
+if ($g_execute_DB2HADRAll == "Y" || $g_groupInformation_DB2HADR == "Y") {
+	var $test15 = _testcase("Continuity_Manager/Common/FG/Manage/Continuity_Management_0007", "RPO calculation");
+	$test15.start();
+	DB2_HADR_SO_DB2_HADR_RPO_0026();
+	$test15.end();
+}
+
+if ($g_execute_DB2HADRAll == "Y" || $g_groupInformation_DB2HADR == "Y") {
+	var $test15 = _testcase("Continuity_Manager/Common/FG/Manage/Continuity_Management_0007", "Replication");
+	$test15.start();
+	DB2_HADR_SO_Replication_0013();
+	$test15.end();
+}
+
+
+if ($g_execute_DB2HADRAll == "Y" || $g_stopRNC_DB2HADR == "Y") {
+	var $test32 = _testcase("Continuity_Manager/ Common/ FG/ Tests/ SOSB_0033", "Stop RNC");
+	$test32.start();
+	DB2_HADR_Stop_RNC_0033();
+	$test32.end();
+}
+
+if ($g_execute_DB2HADRAll == "Y" || $g_startSB_DB2HADR == "Y") {
+	var $test33 = _testcase("Continuity_Manager/ Common/ FG/ Tests/ SOSB_0034", "Start SB");
+	$test33.start();
+	DB2_HADR_Start_SB_0034();
+	$test33.end();
+}
+
+if ($g_execute_DB2HADRAll == "Y" || $g_SBExecution_DB2HADR == "Y") {
+	var $test34 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0035", "SB Execution");
+	$test34.start();
+	DB2_HADR_SB_Execution_0035();
+	$test34.end();
+}
+
+if ($g_execute_DB2HADRAll == "Y" || $g_DryRun_DB2HADR == "Y") {
+	var $test34 = _testcase("Continuity_Manager/Common/FG/Tests/DryRun", "Dry Run Execution");
+	$test34.start();
+	DB2_HADR_Dryrun_Report_Testcase();
+	$test34.end();
+}
+
+if ($g_execute_DB2HADRAll == "Y" || $g_localStopDB2_HADRAgent_DB2HADR == "Y") {
+	var $test36 = _testcase("Continuity_Manager/ Template/ DB2_HADR_SR/ DB2_HADR_0039", "Local Stop DB2_HADR Agent");
+	$test36.start();
+	DB2_HADR_Local_Stop_Agent_0039();
+	$test36.end();
+}
+
+if ($g_execute_DB2HADRAll == "Y" || $g_localStartDB2_HADRAgent_DB2HADR == "Y") {
+	var $test37 = _testcase("Continuity_Manager/ Template/ DB2_HADR_SR/ DB2_HADR_0038", "Local Start DB2_HADR Agent");
+	$test37.start();
+	DB2_HADR_Local_Start_Agent_0038();
+	$test37.end();
+}
+if($g_execute_DB2HADRAll == "Y"){
+	var $test50 = _testcase("APP_PFR/APP_PFR_Group_Health_Status_0101","Validation Manager execution");
+	$test50.start();
+	Validation_Manager_Execution();
+	$test50.end();
+	}
+/*
+if ($g_execute_DB2HADRAll == "Y" || $g_stopReplication_DB2HADR == "Y") {
+	var $test38 = _testcase("Continuity_Manager/ Template/ DB2_HADR_SR/ DB2_HADR_0051", "Stop Replication");
+	$test38.start();
+	DB2_HADR_Stop_replication_0051();
+	$test38.end();
+}
+
+if ($g_execute_DB2HADRAll == "Y" || $g_startReplication_DB2HADR == "Y") {
+	var $test39 = _testcase("Continuity_Manager/ Template/ DB2_HADR_SR/ DB2_HADR_0052", "Start Replication");
+	$test39.start();
+	DB2_HADR_Start_replication_0052();
+	$test39.end();
+}*/
+/*
+if ($g_execute_DB2HADRAll == "Y" || $g_startFO_DB2HADR == "Y") {
+	var $test40 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0001", "Start FO");
+	$test40.start();
+	DB2_HADR_Start_FO_0001();
+	$test40.end();
+}
+
+if ($g_execute_DB2HADRAll == "Y" || $g_FOExecution_DB2HADR == "Y") {
+	var $test41 = _testcase("Continuity_Manager/ Template/ DB2_HADR_SR/ DB2_HADR_0058", "FO Execution");
+	$test41.start();
+	DB2_HADR_FO_execution_0058();
+	$test41.end();
+}
+
+if ($g_execute_DB2HADRAll == "Y" || $g_continuityStatusFO_DB2HADR == "Y") {
+	var $test42 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0007", "Continuity Status FO");
+	$test42.start();
+	DB2_HADR_Continuity_Status_FO_0007();
+	$test42.end();
+}
+
+if ($g_execute_DB2HADRAll == "Y" || $g_rpoFO_DB2HADR == "Y") {
+	var $test43 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0003", "RPO FO");
+	$test43.start();
+	DB2_HADR_FO_RPO_0003();
+	$test43.end();
+}
+
+if ($g_execute_DB2HADRAll == "Y" || $g_monitorManageFO_DB2HADR == "Y") {
+	var $test44 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0006", "Monitor Manage FO");
+	$test44.start();
+	DB2_HADR_FO_Monitor_Manage_0006();
+	$test44.end();
+}
+*/
+_log("================================Post-Condition================================== ", "Custom1");
+
+Logout_001();
+

@@ -1,0 +1,277 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the LOCAL agent test cases which are the part of  DB2 HP3PAR solution. 
+ ** AuthorName : Saiteja M
+ ** Created Date : September 2016
+ ************************************************************************/
+
+_log("=================================Pre-Condition===================================", "Custom1");
+
+// don't change the below line.
+_include("../Library/Solution_Signature/Include/DB2_FDB_HP3PAR_Include.sah");
+
+// mentioned the correct parameter file name which user are going to execute
+// within the "" code.
+//_include("../conf/DRMInstallation_Parameter_New.sah");
+_include("../conf/DRMInstallation_Parameter.sah");
+_include("../Library/Common/CommonRepository/CommonDRM_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/CommonGUINavigation_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/GroupOperation_ObjRepository.sah");
+_include("../Library/Solution_Signature/DB2_FDB_HP3PAR/ObjectRepository/DB2_FDB_HP3PAR_ObjectRepository.sah");
+_include("../Library/Solution_Signature/DB2_FDB_HP3PAR/ObjectRepository/DB2_FDB_HP3PAR_Event_ObjectRepository.sah");
+_include("../conf/DB2_FDB_HP3PAR/DB2_FDB_HP3PAR_Local_Agent_Parameter.sah");
+_include("../conf/DB2_FDB_HP3PAR/UserSelected_DB2_FDB_HP3PAR_Testcase.sah");
+_include("../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+_include("../Library/Validation_Manager/ObjectRepository/Validation_Manager_ObjectRepository.sah");
+_include("../Library/Validation_Manager/Validation_Manager.sah");
+
+// *********************************************************************************************//
+
+Agent_UnInstllation_001();
+AgentBuild_Copy_into_AgentHost_PR();
+AgentBuild_Copy_into_AgentHost_DR();
+
+
+Copy_Property_file();
+
+Update_DB2PropertyFile_LocalAgent_PR();
+Install_Local_Agent_SilentMode_PR();
+Update_DB2PropertyFile_LocalAgent_DR();
+Install_Local_Agent_SilentMode_DR();
+
+
+Add_RepInf_getStatus_PR_DR();       //Adds Repinfo and getStatus TCL files in both machines
+Add_HP3PAR_Start_Stop_TCL_PR_DR();  //Adds start and stop TCL files in both local machines
+
+Creating_DB_PR();  //Creating DB in PR machine
+Creating_DB_DR();  //Creating DB in DR machine
+
+Login_001();
+
+_log("=================================Test========================================", "Custom1");
+
+ if ($g_execute_DB2FDBHP3PARAll == "Y" || $g_site_DB2FDBHP3PAR == "Y") {
+	var $test1 = _testcase("Site_0003", "Creating PR and DR site");
+	$test1.start();
+	Site_0003();
+	$test1.end();
+}
+
+ if ($g_execute_DB2FDBHP3PARAll == "Y" || $g_componentLocal_DB2FDBHP3PAR == "Y") {
+	var $test2 = _testcase("Object_Manager/ Common/ Components/ Component_04 ", "Component Local Discovery");
+	$test2.start();
+	DB2_FDB_HP3PAR_Component_Local_Discovery_0002();
+	$test2.end(); 
+} 
+
+if ($g_execute_DB2FDBHP3PARAll == "Y" || $g_datasetDiscovery_DB2FDBHP3PAR == "Y") {
+	var $test3 = _testcase("Continuity_Manager/ Template/ DB2/ Discover/ DB2_Discovery_02", "DB2 Dataset discovery data validation");
+	$test3.start();
+	DB2_FDB_HP3PAR_Dataset_Discovery_0007();
+	$test3.end();
+} 
+
+
+if ($g_execute_DB2FDBHP3PARAll == "Y" || $g_protectionScheme_DB2FDBHP3PAR == "Y") {
+	var $test5 = _testcase("Continuity_Manager/ Template/ DB2/ Discover/ DB2_Discovery_03 ", "DB2 HP3PAR Protection scheme discovery validation");
+	$test5.start();
+	DB2_HP3PAR_Protectionscheme_Discovery_0018();
+	$test5.end();
+}
+
+/*if ($g_execute_DB2FDBHP3PARAll == "Y" || $g_protectionSchemeStatus_DB2FDBHP3PAR == "Y") {
+	var $test13 = _testcase("Object_Manager/ProtectionScheme/HP3PAR/DB2_HP3PAR_PROTECTIONSCHEME_0021", "Protection Scheme Status");
+	$test13.start();
+	DB2_HP3PAR_Protectionscheme_status_0021();
+	$test13.end();
+}*/
+
+if ($g_execute_DB2FDBHP3PARAll == "Y" || $g_groupCreation_DB2FDBHP3PAR == "Y") {
+	var $test7 = _testcase("Continuity_Manager/ Template/ DB2/ Discover/ DB2_Discovery_05", "Create DB2 HP3PAR functional group");
+	$test7.start();
+	DB2_HP3PAR_GroupCreation_001();
+	$test7.end();
+}
+
+if ($g_execute_DB2FDBHP3PARAll == "Y" || $g_moveToManage_DB2FDBHP3PAR == "Y") {
+	var $test8 = _testcase("Continuity_Manager/Common/FG/Group/GroupCreation_0006", "Move Group to Manage");
+	$test8.start();
+	DB2_HP3PAR_Move_Group_Manage_0006();
+	$test8.end();
+}
+if ($g_execute_DB2FDBHP3PARAll == "Y" || $g_changeContinuityState_DB2FDBHP3PAR == "Y") {
+	var $test9 = _testcase("Continuity_Manager/Common/FG/Manage/Change_Continuity_State_0001", "Normal Inactive");
+	$test9.start();
+	Change_ContinuityStatus_Group_Normal_Inactive();
+	$test9.end();
+}
+
+
+
+
+//***************************************Group Conitnuity State in Normal Inactive********************************************************/
+
+
+
+
+Droping_DB_DR();
+
+
+
+	var $test10 = _testcase("Adding Repinfo.tcl/PR to BP","Publish_RepInfWorkflw (PR)");
+	$test10.start();
+		Add_RepInfoTCL_BP_RepInfoWorkflw_PR();
+	$test10.end();
+ 	
+     
+ 	var $test11 = _testcase("PR RepInfoTCL_Unknown_001","Checking the datalag and RepStatus in Monitor Replication page when Rep_state is UNKNOWN in Repinfo.tcl (PR)");
+ 	$test11.start();
+ 		Datalag_RepStatus_UNKNOWN_PR_001();
+ 	$test11.end();
+ 	
+
+    var $test12 = _testcase("PR RepInfoTCL_Datalag_001","When datalag is updated in RepInfo.tcl (PR)");
+    $test12.start();
+    	Datalag_Updated_PR_001();
+    $test12.end();  
+    
+ 
+ 	var $test13 = _testcase("Start_Replication_Button_ReplicationStatus_ACTIVE()","Verifying Replication status in GUI when Start Replicaiton button is clicked");
+ 	$test13.start();
+ 		Start_Replication_Button_ReplicationStatus_ACTIVE();
+ 	$test13.end();
+ 	
+ 	
+ 	var $test14 = _testcase("Stop_Replication_Button_ReplicationStatus_INACTIVE()","Verifying Replication status in GUI when Stop Replicaiton button is clicked");
+ 	$test14.start();
+ 		Stop_Replication_Button_ReplicationStatus_INACTIVE();
+ 	$test14.end();
+ 
+
+ 	var $test15 = _testcase("ProtectionStatus_GetSatatusTCL_RepState_Uknown_PR()","When RepState is UNKNOWN in getStatus.tcl (PR)");
+ 	$test15.start();
+ 		ProtectionStatus_GetSatatusTCL_RepState_Uknown_PR();
+ 	$test15.end();
+
+
+ 	var $test16 = _testcase("ProtectionStatus_GetSatatusTCL_RepState_Active_PR()","When RepState is ACTIVE in getStatus.tcl (PR)");
+ 	$test16.start();
+ 		ProtectionStatus_GetSatatusTCL_RepState_Active_PR();
+ 	$test16.end();
+ 	
+ 	
+ 	var $test17 = _testcase("PR GetSatatusTCL_INACTIVE_001","When RepState is INACTIVE in getStatus.tcl (PR)");
+ 	$test17.start();
+ 		ProtectionStatus_GetSatatusTCL_RepState_INActive_PR();
+ 	$test17.end();
+
+ 	
+ 	var $test18 = _testcase("DB2_HP3PAR_ProtectionScheme_UNKNOWN_Event_PR()","Checking the Event BCSDB2FullDBHP3PAR005 When RepState is UNKNOWN in GetStatus.tcl (PR)");
+ 	$test18.start();
+ 		DB2_HP3PAR_ProtectionScheme_UNKNOWN_Event_PR();
+ 	$test18.end(); 
+
+ 	
+	var $test19 = _testcase("DB2_HP3PAR_ProtectionScheme_INACTIVE_Event_PR()","Checking the Event BCSDB2FullDBHP3PAR001 When RepState is INACTIVE in GetStatus.tcl (PR)");
+	$test19.start();
+		DB2_HP3PAR_ProtectionScheme_INACTIVE_Event_PR();
+	$test19.end();
+	
+	
+	var $test20 = _testcase("DB2_HP3PAR_Datalag_Deviated_Event_PR()","Checking the Event BCSMGR_DATALAG1 When Datalag is Deviated in RepInfo.TCL (PR)");
+	$test20.start();
+		DB2_HP3PAR_Datalag_Deviated_Event_PR();
+	$test20.end();
+	
+
+ 
+//***************************************Group Conitnuity State in SwitchOver Inactive********************************************************//
+ 
+
+	
+
+Creating_DB_DR();
+ 	
+Change_ContinuityStatus_Group_SO();
+
+Droping_DB_PR();
+
+
+ 	var $test21 = _testcase("Adding Repinfo.tcl/DR to BP","Publish_RepInfWorkflw (DR)");
+ 	$test21.start();
+ 		Add_RepInfoTCL_BP_RepInfoWorkflw_DR();
+ 	$test21.end();
+ 	
+
+ 	var $test22 = _testcase("DR RepInfoTCL_Unknown_001","Checking the datalag and RepStatus in Monitor Replication page when Rep_state is UNKNOWN in Repinfo.tcl (DR)");
+ 	$test22.start();
+ 		Datalag_RepStatus_UNKNOWN_DR_001();
+ 	$test22.end();
+ 	
+
+    var $test23 = _testcase("DR RepInfoTCL_Datalag_001","When datalag is updated in RepInfo.tcl (DR)");
+    $test23.start();
+    	Datalag_Updated_DR_001();     
+    $test23.end();
+    
+
+ 	var $test24 = _testcase("Start_Replication_Button_ReplicationStatus_ACTIVE()","Verifying Replication status in GUI when Start Replicaiton button is clicked");
+ 	$test24.start();
+ 		Start_Replication_Button_ReplicationStatus_ACTIVE();
+ 	$test24.end();
+ 	
+ 	
+ 	var $test25 = _testcase("Stop_Replication_Button_ReplicationStatus_INACTIVE()","Verifying Replication status in GUI when Stop Replicaiton button is clicked");
+ 	$test25.start();
+ 		Stop_Replication_Button_ReplicationStatus_INACTIVE();
+ 	$test25.end();
+ 	
+
+ 	var $test26 = _testcase("ProtectionStatus_GetSatatusTCL_RepState_Uknown_DR()","When RepState is UNKNOWN in getStatus.tcl (DR)");
+ 	$test26.start();
+ 		ProtectionStatus_GetSatatusTCL_RepState_Uknown_DR();
+ 	$test26.end();
+ 	
+ 	
+ 	var $test27 = _testcase("ProtectionStatus_GetSatatusTCL_RepState_Active_DR()","When RepState is ACTIVE in getStatus.tcl (DR)");
+ 	$test27.start();
+ 		ProtectionStatus_GetSatatusTCL_RepState_Active_DR();
+ 	$test27.end();
+ 	
+ 	
+ 	var $test28 = _testcase("ProtectionStatus_GetSatatusTCL_RepState_INActive_DR()","When RepState is INACTIVE in getStatus.tcl (DR)");
+ 	$test28.start();
+ 		ProtectionStatus_GetSatatusTCL_RepState_INActive_DR();
+ 	$test28.end();
+
+ 	
+	var $test29 = _testcase("DB2_HP3PAR_ProtectionScheme_UNKNOWN_Event_DR()","Checking the Event BCSDB2FullDBHP3PAR005 When RepState is UNKNOWN in GetStatus.tcl (DR)");
+	$test29.start();
+		DB2_HP3PAR_ProtectionScheme_UNKNOWN_Event_DR();
+	$test29.end(); 
+
+	
+	var $test30 = _testcase("DB2_HP3PAR_ProtectionScheme_INACTIVE_Event_DR()","Checking the Event BCSDB2FullDBHP3PAR001 When RepState is INACTIVE in GetStatus.tcl (DR)");
+	$test30.start();
+		DB2_HP3PAR_ProtectionScheme_INACTIVE_Event_DR();
+		edit_getStatusTcl_HP3PAR_DR_Active_GetStatus_rep();
+	$test30.end();
+
+	
+	var $test31 = _testcase("DB2_HP3PAR_Datalag_Deviated_Event_DR()","Checking the Event BCSMGR_DATALAG1 When Datalag is Deviated in RepInfo.TCL (DR)");
+	$test31.start();
+		DB2_HP3PAR_Datalag_Deviated_Event_DR();
+	$test31.end();
+ 	
+
+	var $test50 = _testcase("APP_PFR/APP_PFR_Group_Health_Status_0101","Validation Manager execution");
+	$test50.start();
+	Validation_Manager_Execution();
+	$test50.end();
+ 
+_log("======================Post-Condition================================== ", "Custom1");
+
+Logout_001();
+
+

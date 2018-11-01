@@ -1,0 +1,118 @@
+var $l_MssqllogshippingInputs = _readExcelFile($SAHI_HOME + "\\conf\\MSSQL_LOG_SHIPPING\\MSSQL_LOG_SHIPPING_Parameter.xls","Local");
+
+// DRM username & password
+
+var $username = $l_MssqllogshippingInputs[2][2]; // DRM server GUI user name e.g. "abc"
+var $password = $l_MssqllogshippingInputs[3][2]; // DRM server GUI pwd
+
+// Connectivity of mssql
+
+var $database= $l_MssqllogshippingInputs[6][2];
+var $userPR = $l_MssqllogshippingInputs[7][2]; // for mssql db connection
+var $pwdPR = $l_MssqllogshippingInputs[8][2];  // for mssql db connection
+var $userDR = $l_MssqllogshippingInputs[9][2];  // for mssql db connection
+var $pwdDR = $l_MssqllogshippingInputs[10][2];  // for mssqldb connection
+
+//This user Input required to create the Site
+var $locationPR = "PR"; // PR Site Location
+var $incharge = "drmadmin"; // Site Incharge
+var $addressPR = "Mumbai"; // PR site Address
+var $locationDR = "DR"; // DR Site Location
+var $addressDR = "Bangalore";// DR site Address
+
+// This user Input required to create the Component for Local or remote 
+var $systemType= "Windows";
+var $osType = "Windows";
+var $compNamePR= $l_MssqllogshippingInputs[2][5];
+var $compNameDR= $l_MssqllogshippingInputs[3][5];
+var $compIPPR= $l_MssqllogshippingInputs[4][5];
+var $compIPDR= $l_MssqllogshippingInputs[5][5];
+
+var $credList= "Add new credential";
+var $remoteUserNameValPR= $l_MssqllogshippingInputs[32][2]; 
+var $remotePwdValPR= $l_MssqllogshippingInputs[34][2];
+var $remoteUserNameValDR= $l_MssqllogshippingInputs[33][2]; 
+var $remotePwdValDR= $l_MssqllogshippingInputs[35][2];
+var $agentType = "Local";
+var $compsitePR = $locationPR;  
+var $compsiteDR = $locationDR;  
+
+// This user Input required to create the dataset 
+var $systemTypeDataset= "MSSQL";
+var $datasetNamePR= $l_MssqllogshippingInputs[13][2];
+var $datasetNameDR= $l_MssqllogshippingInputs[14][2];
+var $instanceName= $l_MssqllogshippingInputs[15][2];  
+var $usernamedb= $l_MssqllogshippingInputs[16][2];       
+var $port= $l_MssqllogshippingInputs[17][2];         
+
+// This user Input required to create the protection Scheme
+var $systemTypeProtection = "PFR";
+var $sernamePR =  $l_MssqllogshippingInputs[20][2];
+var $sernameDR = $l_MssqllogshippingInputs[21][2];
+var $mgmtHostPFRPR = $compNamePR + " ("  + $compIPPR + ")";
+var $mgmtHostPFRDR = $compNameDR + " ("  + $compIPDR + ")";
+
+// This user Input required to create the Group
+var $groupName = $l_MssqllogshippingInputs[24][2];
+var $groupDescription = "MSSQL";
+if($BrowserLang != "Y"){
+	var $SolutionSignature ="MSSQL with Log Shipping";// Solution type
+}
+else{
+	var $SolutionSignature= "ログシッピングを使用したMSSQL";
+}
+var $SolutionSignature ="MSSQL with Log Shipping";
+var $undoPR=$l_MssqllogshippingInputs[25][2];
+var $undoDR=$l_MssqllogshippingInputs[26][2];
+var $backupPR=$l_MssqllogshippingInputs[27][2];
+var $backupDR=$l_MssqllogshippingInputs[28][2];
+
+//workflow path
+var $WFPath = $l_MssqllogshippingInputs[31][2]; // Location of SO/SB/FO xml file
+var $WFPathForPFR = "/Oracle/OracleArLogPFR/";
+var $fileNC = "MSSQL-LogShipping-Dummy.xml";
+var $fileRNC = "MSSQL-LogShipping-Dummy.xml"; 
+var $fileSO = "MSSQL-LogShipping-SO.xml"; // Location of SO xml file
+var $fileSB = "MSSQL-LogShipping-SB.xml"; // Location of SB xml file
+var $fileFO = "MSSQL-LogShipping-FO.xml"; // Location of FO xml file
+var $filePFRral= "BCS-OracleArLogPFR-SetupPFRReplication.xml"; //Location of PFR fileset Ral 
+var $pstoolPath = $SAHI_HOME + "\\tools\\PsExec" ;//pstool file path
+
+//for Panaces agent property file for remote agents
+var $sourcePath= $SAHI_HOME + "\\tools\\sed";
+var $MsSqlAgentWindowCheck=$l_MssqllogshippingInputs[9][5];
+var $PfrAgentCheck=$l_MssqllogshippingInputs[10][5];
+var $UserInstallDir=$l_MssqllogshippingInputs[11][5];
+var $UserInputResultJarMsSql=$l_MssqllogshippingInputs[12][5];
+var $UserInputResultPrimaryPanacesServerIP=$l_MssqllogshippingInputs[13][5];
+var $UserInputResultSecondaryPanacesServerIP=$l_MssqllogshippingInputs[14][5];
+var $AgentStartYes=$l_MssqllogshippingInputs[15][5];
+
+
+//for installing agents
+var $fileName=$l_MssqllogshippingInputs[18][5];//Panaces agent property file path
+var $installexepath=$l_MssqllogshippingInputs[22][5];//keep the path of install.exe same in pr and dr
+var $pfrexepath=$l_MssqllogshippingInputs[23][5];//keep the path of PFR.exe same in pr and dr
+
+//Edit Tcl File 
+var $fileNamePR=$l_MssqllogshippingInputs[23][5];
+var $fileNameDR=$l_MssqllogshippingInputs[24][5]; 
+var $backupPathPR=$l_MssqllogshippingInputs[25][5];
+var $backupPathDR=$l_MssqllogshippingInputs[26][5];
+var $undoPathPR=$l_MssqllogshippingInputs[27][5];
+var $undoPathDR=$l_MssqllogshippingInputs[28][5];   
+
+//Common
+var $dependentComponentNamePR= $compNamePR;
+var $dependentComponentNameDR= $compNameDR;
+var $primaryComponents=$compNamePR;
+var $remoteComponents=$compNameDR;
+var $primaryDatasets=$datasetNamePR;
+var $remoteDatasets=$datasetNameDR;
+var $primaryProtections=$sernamePR;
+var $remoteProtections=$sernameDR;
+var $databaseName= $database;
+var $ipPR= $compIPPR;
+var $ipDR=$compIPDR;
+var $installbinpath=$fileName;
+var $datasetType=$systemTypeDataset;

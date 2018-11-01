@@ -1,0 +1,139 @@
+/**
+* Function is for Deploy Panaces Upgarde server in silent Mode
+*@param : null
+*@return : null
+*@Author: Sujata
+*
+*/
+
+function Upgrade_DRM_SERVER() {
+	
+	panaces_status();
+	panaces_stop();
+	panaces_status();
+	Panaces_Build_Copy_into_DRM_Server();
+	update_Panaces_Server_propertyFile("Y");
+	Install_Panaces_Server_SilentMode();
+	//panaces_status();
+	//panaces_start();
+		
+}
+
+	function panaces_start(){
+	
+	var $sshCommand = 'sh' + ' ' + $EAMSROOT + 'bin/' + 'panaces start';
+	 $panacesStatusString = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	
+	var $panacesStatusString = $panacesStatusString.split(",");
+	var $panacesServerStatus = $panacesStatusString[0];
+	_assertExists("panacesServerStatus", $panacesServerStatus);
+	var $tomcatServerStatus = $panacesStatusString[1];
+	_assertExists("TomcatServerStatus", $tomcatServerStatus);
+	var $agentNodeStatus = $panacesStatusString[3];
+	_assertExists("AgentNodeStatus", $agentNodeStatus);
+	
+	if ($panacesServerStatus == "Panaces server is running") 
+	{
+		var $panacesStatus = "Panaces Server is  Running";
+		_assertExists("Panaces Server Status is: ", $panacesStatus);
+		
+	} 
+	}
+function panaces_stop(){
+	
+	var $sshCommand = 'sh' + ' ' + $EAMSROOT + 'bin/' + 'panaces stop';
+	$panacesStatusString = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	
+	var $panacesStatusString = $panacesStatusString.split(",");
+	var $panacesServerStatus = $panacesStatusString[0];
+	_assertExists("panacesServerStatus", $panacesServerStatus);
+	var $tomcatServerStatus = $panacesStatusString[1];
+	_assertExists("TomcatServerStatus", $tomcatServerStatus);
+	var $agentNodeStatus = $panacesStatusString[3];
+	_assertExists("AgentNodeStatus", $agentNodeStatus);
+	
+	if ($panacesServerStatus == "Panaces server is not running") 
+	{
+		var $panacesStatus = "Panaces Server is not Running";
+		_assertExists("Panaces Server Status is: ", $panacesStatus);
+		
+	} 
+}
+	function panaces_status(){
+		
+		var $sshCommand = 'sh' + ' ' + $EAMSROOT + 'bin/' + 'panaces status';
+		$panacesStatusString = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+		
+		var $panacesStatusString = $panacesStatusString.split(",");
+		var $panacesServerStatus = $panacesStatusString[0];
+		_assertExists("panacesServerStatus", $panacesServerStatus);
+		var $tomcatServerStatus = $panacesStatusString[1];
+		_assertExists("TomcatServerStatus", $tomcatServerStatus);
+		var $agentNodeStatus = $panacesStatusString[3];
+		_assertExists("AgentNodeStatus", $agentNodeStatus);
+		
+		if ($panacesServerStatus == "Panaces server is not running") 
+		{
+			var $panacesStatus = "Panaces Server is not Running";
+			_assertExists("Panaces Server Status is: ", $panacesStatus);
+			
+		} 
+		
+	}
+		
+		
+		function Download_Binary_Files() {	
+			//Testcases for copy the file
+			var $sshCommand =  "mkdir -p " + "/opt/upgrade" ;
+			$status = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+			_log($status);
+			
+			var $sshCommand =  "chmod 777" + "/opt/upgrade" ;
+			$status = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+			_log($status);
+			var $upgrade_path="/opt/upgrade";
+			var $sshCommand = "wget -r -nd -P " + $upgrade_path + " " + $g_buildUrl + "SanoviDRM/Server/install.bin";
+			$status = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+			
+			var $sshCommand = "wget -r -nd -P " + $upgrade_path + " " + $g_buildUrl + "SanoviDRM/Server/PanacesServerInstaller.properties	";
+			$status = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+			var $sshCommand =  "chmod 777 *" + "/opt/upgrade" ;
+			$status = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+		}
+		
+		
+		
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+	
+	

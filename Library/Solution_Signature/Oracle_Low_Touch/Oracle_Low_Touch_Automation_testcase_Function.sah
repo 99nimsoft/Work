@@ -1,0 +1,192 @@
+function AWS_Management_Service_001(){
+	try {
+		AWS_Management_Service();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0003(),Function: Create_Site_PR or Create_Site_DR ,execution got failed.kindly check the log for more details");
+		_fail("site not created succesfully.So that stopping execution.");
+	}
+}
+
+
+function Create_Primary_Server_Details_PR_002(){
+	try {
+		Create_Primary_Server_Details_PR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0003(),Function: Create_Site_PR or Create_Site_DR ,execution got failed.kindly check the log for more details");
+		_fail("site not created succesfully.So that stopping execution.");
+	}
+}
+
+
+function Create_Primary_Database_Details_PR_003(){
+	try {
+		Create_Primary_Database_Details_PR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0003(),Function: Create_Site_PR or Create_Site_DR ,execution got failed.kindly check the log for more details");
+		_fail("site not created succesfully.So that stopping execution.");
+	}
+}
+
+function Create_AWS_Information_004(){
+	try {
+		AWS_Details();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0003(),Function: Create_Site_PR or Create_Site_DR ,execution got failed.kindly check the log for more details");
+		_fail("site not created succesfully.So that stopping execution.");
+	}
+}
+
+
+
+
+
+function Oracle_Low_Component_Status_0005() {
+	try {
+		Open_NewWindow($drmServer);
+		Primary_Component($compnamePrimary);
+		//Verify_Component_Status_PR($agentType);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Component_Status_0001(),Function: Verify_Component_Status_PR or Verify_Component_Status_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+function Oracle_Low_Dataset_status_0006() {
+	try {
+		Primary_DataSet($DatasetPrimary);
+		//Close_Window();
+		//Verify_Dataset_Status_PR();
+		
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:OracleDG_Dataset_status_0011(),Function: Verify_Dataset_Status_PR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+///////////////
+
+
+function Verify_Oracle_Low_Touch_Provisioning_0007() {
+	try {
+		Verify_Oracle_Low_Touch_Provisioning();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:OracleDG_Dataset_status_0011(),Function: Verify_Dataset_Status_PR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+
+
+
+
+function Verify_Oracle_Low_AWS_Comp_Dataset_0008() {
+	try {
+		AmazonInstance_Component($primarysystemType,$AmazonInstanceIP);
+		AmazonInstance_DataSet($CompAmazonInstanceIP);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:OracleDG_Dataset_status_0011(),Function: Verify_Dataset_Status_PR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+
+
+function Oracle_Low_Touch_Provisioning_Execution_0009() {
+	try {
+		Go_to_exection_page();
+		Oracle_Low_Touch_Provisioning_Execution();
+		
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:OracleDG_Dataset_status_0011(),Function: Verify_Dataset_Status_PR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+
+
+function Oracle_Low_Dataset_status_0006() {
+	try {
+		Primary_DataSet($DatasetPrimary);
+		
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:OracleDG_Dataset_status_0011(),Function: Verify_Dataset_Status_PR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+function Oracle_Low_Dataset_status_0011() {
+	try {
+		Verify_Dataset_Status_PR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:OracleDG_Dataset_status_0011(),Function: Verify_Dataset_Status_PR ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		Verify_Dataset_Status_DR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:OracleDG_Dataset_status_0011(),Function: Verify_Dataset_Status_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function Oracle_Low_Verfiy_Protection_Schemes_status_0010() {
+	try {
+		Verfiy_Protection_Schemes_PR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:OracleDG_Dataset_status_0011(),Function: Verify_Dataset_Status_PR ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		Verfiy_Protection_Schemes_DR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:OracleDG_Dataset_status_0011(),Function: Verify_Dataset_Status_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+
+
+
+
+
+
+function Oracle_Low_Group_verification_0011() {
+	try {
+		Oracle_Low_Group_verification($primarysid);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:OracleDG_Dataset_status_0011(),Function: Verify_Dataset_Status_PR ,execution got failed.kindly check the log for more details");
+	}
+
+}

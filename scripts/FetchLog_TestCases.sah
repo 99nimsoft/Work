@@ -1,0 +1,69 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the Custom action test cases. 
+ ** AuthorName : Anantha Sakthi
+ ** Created Date : Aug 2014
+ ************************************************************************/
+
+
+_log("=================================Pre-Condition===================================", "Custom1");
+_include("../Library/Solution_Signature/Include/APP_PFR_Include.sah");
+_include("../Library/Common/Common_Function.sah");
+_include("../conf/DRMInstallation_Parameter.sah");
+_include("../conf/APP_PFR/APP_PFR_Remote_Agent_Parameter.sah");
+_include("../Library/Solution_Signature/Include/Fetchlog_Include.sah");
+_include("../Library/Common/CommonRepository/CommonDRM_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/CommonGUINavigation_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/GroupOperation_ObjRepository.sah");
+_include("../Library/FetchLog/ObjectRepository/FetchLog_ObjectRepository.sah");
+_include("../Library/Solution_Signature/APP_PFR/ObjectRepository/APPPFR_ObjectRepository.sah");
+_include("../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+_include("../Library/RAL/RAL_CommonFunction.sah");
+
+
+
+
+
+Login_001();
+
+createUsers_0001();
+preConditionForRAL_GroupCreation();
+
+_log("=================================Test========================================", "Fetchlog");
+
+
+var $test1 = _testcase("Assigning Groups To Users_0001", "Assigning Groups To Users");
+$test1.start();
+Assign_Group_User_0001();
+$test1.end();
+
+
+var $test2 = _testcase("Login_Different_User_0002", "Login_Different_User");
+$test2.start();
+Login_Different_User_0002();
+$test2.end();
+
+
+Login_001();
+
+
+
+var $test3 = _testcase("Checking  of   Fetch Log in CLI Mode_0003", "Fetch Log in CLI Mode");
+$test3.start();
+FetchLog_CLI_Mode_0003();
+$test3.end();
+
+
+var $test4 = _testcase("Checking  of   Fetch Log in Windows Mode_0004", "Fetch Log in Windows Mode");
+$test4.start();
+FetchLog_Windows_Mode_0004();
+$test4.end();
+
+
+
+
+
+_log("================================Post-Condition================================== ", "Custom1");
+
+Logout_001();

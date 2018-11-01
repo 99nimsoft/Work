@@ -1,0 +1,5 @@
+
+var  $l_sshkey = _readExcelFile("../../../conf/SSh_key/SshKey_Inputs.xls","SShKeyManage");
+
+var $username=$l_StartProcessRAL[10][3];
+var $password=$l_StartProcessRAL[11][3];

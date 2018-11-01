@@ -1,0 +1,573 @@
+
+function MySQL_Component_Local_Discovery_0002() {
+	try {
+		Create_Local_ComponentPR();
+		Create_Local_ComponentDR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Component_Local_Discovery_0002(),Function: Create_Local_ComponentPR or Create_Local_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("component not created succesfully.So that stopping execution.");
+	}
+}
+
+function MySQL_Component_Remote_Discovery_0018() {
+	try {
+		Create_Remote_ComponentPR();
+		Create_Remote_ComponentDR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Component_Remore_Discovery_0018(),Function: Create_Remote_ComponentPR or Create_Remote_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("component not created succesfully.So that stopping execution.");
+	}
+}
+
+function MySQL_Dataset_Discovery_0007() {
+	try {
+		Create_Mysql_DatasetPR();
+		Create_Mysql_DatasetDR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:MySQL_Dataset_Discovery_0007(),Function: Create_Mysql_DatasetPR or Create_Mysql_DatasetPR ,execution got failed.kindly check the log for more details");
+		_fail("dataset not created succesfully.So that stopping execution.");
+	}
+
+}
+
+function MySQL_Dataset_status_0011() {
+	try {
+		Get_Dataset_Status_Gui_PR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:MySQL_Dataset_status_0011(),Function: Get_Dataset_Status_Gui_PR ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		Get_Dataset_Status_Gui_DR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:MySQL_Dataset_status_0011(),Function: Get_Dataset_Status_Gui_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MySQL_Protectionscheme_Discovery_0018() {
+	try {
+		Create_Mysql_ProtectionschemePR();
+		Create_Mysql_ProtectionschemeDR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MySQL_Protectionscheme_Discovery_0018(),Function: Create_Mysql_ProtectionschemePR or Create_Mysql_ProtectionschemeDR ,execution got failed.kindly check the log for more details");
+		_fail("Protection Schemes not created succesfully.So that stopping execution.");
+	}
+}
+
+function MySQL_Protectionscheme_status_0021() {
+	try {
+		Get_Protectionscheme_Status_Gui_PR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MySQL_Protectionscheme_status_0021(),Function: Get_Protectionscheme_Status_Gui_PR ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		Get_Protectionscheme_Status_Gui_DR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MySQL_Protectionscheme_status_0021(),Function: Get_Protectionscheme_Status_Gui_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Mysql_GroupCreation_0022() {
+	try {
+		Mysql_Create_FG();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Mysql_GroupCreation_0022(),Function: Mysql_Create_FG ,execution got failed.kindly check the log for more details");
+		_fail("Group not created succesfully.So that stopping execution.");
+	}
+
+}
+
+function MySQL_Move_Group_Manage_0006() {
+	try {
+		Move_To_Manage_Group($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Move_Group_Manage_0006(),Function: Move_To_Manage_Group ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+
+}
+
+function MySQL_Change_Continuity_State_0001() {
+	try {
+		Change_ContinuityStatus_Group($groupName, "Normal Inactive");
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Change_Continuity_State_0001(),Function: Change_ContinuityStatus_Group ,execution got failed.kindly check the log for more details");
+		_fail("Current group state is not correct,so that stopping execution");
+	}
+}
+
+function MySQL_Component_Status_0001() {
+	try {
+		Verify_Component_Status_PR($agentType);
+		Verify_Component_Status_DR($agentType);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Component_Status_0001(),Function: Verify_Component_Status_PR or Verify_Component_Status_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MySQL_Contiunity_Status_0002() {
+	try {
+		Verify_Continuity_Status($groupName, "DR Sync In Progress");
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Contiunity_Status_0002(),Function: Verify_Continuitystatus_Before_NC ,execution got failed.kindly check the log for more details");
+	}
+}
+function Mysql_consolution_0029() {
+	try {
+		Group_Managedrsolution();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Continuity_Management_0015(),Function: Group_Managedrsolution ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MySQL_Import_FO_0057() {
+	try {
+		Import_WF_FO();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Import_FO_0057(),Function: Import_WF_FO ,execution got failed.kindly check the log for more details");
+		_fail("workflow not imported succesfully.So that stopping execution.");
+	}
+}
+
+function MySQL_Start_NormalCopy_0001() {
+	try {
+		Execute_NC($groupName);// In Common > Group_Operation.sah
+		Verify_Continuitystatus_In_NC();// In Common > Group_Operation.sah
+		 $count = 0;
+			while($count<10){
+				_wait(30000);
+				$count++;	
+			}
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_NormalCopy_0001(),Function: Execute_NC or Verify_Continuitystatus_In_NC ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MySQL_Monitor_Relationship_0030() {
+	try {
+		Monitor_Relationship($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Monitor_Relationship_0030(),Function: Monitor_Relationship ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+function MySQL_Continuity_Workflows_0001() {
+	try {
+		Mysql_Continuity_Workflows("NormalCopy");
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Groupsnapshot_Monitor_0001(),Function: Mysql_groupsnapshot ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MySQL_NC_MySQL_Replication_0028() {
+	try {
+		Mysql_Replication();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: NC_MySQL_Replication_0028(),Function: Mysql_Replication ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MySQL_NC_MySQL_RPO_0026() {
+	try {
+		Mysql_Rpo();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: NC_MySQL_RPO_0026(),Function: Mysql_Rpo ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MySQL_NC_MySQL_RTO_0027() {
+	try {
+		Mysql_Rto($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: NC_MySQL_RTO_0027(),Function: Mysql_Rto ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MySQL_Import_SOSB_0007() {
+	try {
+		Import_WF_SO();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Import_SOSB_0007(),Function: Import_WF_SO ,execution got failed.kindly check the log for more details");
+		_fail("workflow not imported succesfully.So that stopping execution.");
+	}
+	try {
+		Import_WF_SB();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Import_SOSB_0007(),Function: Import_WF_SB ,execution got failed.kindly check the log for more details");
+		_fail("workflow not imported succesfully.So that stopping execution.");
+	}
+}
+
+function MySQL_Stop_NC_0002() {
+	try {
+		Stop_NC($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_NC_0002(),Function: Stop_NC ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MySQL_Start_SO_0011() {
+	try {
+		Start_SO($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_SO_0011(),Function: Start_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MySQL_SO_Execution_0012() {
+	try {
+		Verify_Continuity_Status($groupName, "Switchover In Progress");
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SO_Execution_0012(),Function: Verify_Continuitystatus_In_SO ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		SO_Execution_Status($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SO_Execution_0012(),Function: SO_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("SO workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+}
+
+function MySQL_SO_Replication_0013() {
+	try {
+		Verify_Continuity_Status($groupName, "DR Resync In Progress");
+		Mysql_Replication_Post_SO();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SO_Replication_0013(),Function: Verify_Continuitystatus_After_SO or Mysql_Replication_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MySQL_Start_RNC_0033() {
+	try {
+		Execute_Reverse_Normal_Copy($groupName);
+		Verify_Continuity_Status($groupName, "DR Resync In Progress");
+		 $count = 0;
+			while($count<10){
+				_wait(30000);
+				$count++;	
+			}
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_RNC_0033(),Function: Execute_Reverse_Normal_Copy or Mysql_Managedrsolution_PostSO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MySQL_Continuity_Workflows_SO_0002() {
+	try {
+		Mysql_Continuity_Workflows("ReverseNormalCopy");
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_RNC_0033(),Function: RNC_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("RNC workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+}
+
+function MySQL_RNC_GroupSnapshot_Monitor_0021() {
+	try {
+		Mysql_GroupSnapshot_Post_SO();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: RNC_Groupsnapshot_Monitor_0021(),Function: Mysql_GroupSnapshot_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MySQL_RNC_Rpo_Monitor_0023() {
+	try {
+		Mysql_Rpo_Post_SO();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: RNC_Rpo_Monitor_0023(),Function: Mysql_Rpo_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MySQL_RNC_Replication_0024() {
+	try {
+		Mysql_Replication_Post_SO();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: RNC_Replication_0024(),Function: Mysql_Replication_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MySQL_Stop_RNC_0033() {
+	try {
+		RNC_Execution_Status($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_RNC_0033(),Function: RNC_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("RNC workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+	try {
+		Stop_Reverse_Normal_Copy($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Stop_RNC_0033(),Function: Stop_Reverse_Normal_Copy ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MySQL_Start_SB_0034() {
+	try {	
+		Verify_Continuity_Status($groupName, "DR Resync In Progress");
+		Start_SB($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_SB_0034(),Function: Verify_Continuitystatus_Stop_RNC or Start_SB ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MySQL_SB_Execution_0035() {
+	try {
+		Verify_Continuitystatus_In_SB();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SB_Execution_0035(),Function: Verify_Continuitystatus_In_SB ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		SB_Execution_Status($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SB_Execution_0035(),Function: SB_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("SB workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+}
+
+function MySQL_SB_Monitor_Manage_0038() {
+	try {
+		Verify_Continuity_Status($groupName, "DR Sync In Progress");
+		Mysql_Managedrsolution();
+		Mysql_Replication();
+		Mysql_Groupsnapshot();
+		Group_Managegroupinformation($groupName, $WFType);
+		Mysql_Rpo();
+		Mysql_Rto($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SB_Monitor_Manage_0038(),Function: managedrsolution or Replication or Groupsnapshot or Managegroupinformation or RPO or RTO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MYSQL_SR_Dryrun_Report_Testcase() {
+	try {
+		Dryrun_for_Diffrent_Workflows("NormalFullCopy");
+		Dryrun_for_Diffrent_Workflows("NormalCopy");
+		Dryrun_for_Diffrent_Workflows("Switchover");
+		Dryrun_for_Diffrent_Workflows("ReverseNormalCopy");
+		Dryrun_for_Diffrent_Workflows("Switchback");
+		Dryrun_for_Diffrent_Workflows("Failover");
+		Dryrun_for_Diffrent_Workflows("FallbackResync");
+		Dryrun_for_Diffrent_Workflows("Fallback");
+} catch ($e) {
+	_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: MYSQL_SR_Dryrun_Report_Testcase(),Function: MYSQL_SR_Dryrun_Report,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MySQL_Start_FO_0001() {
+	try {
+		Stop_NC($groupName);
+		Start_FO($groupName);
+		Verify_Continuitystatus_In_FO();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_FO_0001(),Function: Stop_NC or Start_FO or Verify_Continuitystatus_In_FO  ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MySQL_FO_execution_0058() {
+	try {
+		FO_Execution_Status($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: FO_execution_0058(),Function: FO_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("Fail over workflow execution faild.So that stopping execution.Kindly check the logs for further details");
+	}
+}
+
+function MySQL_FO_RPO_0003() {
+	try {
+		Calculate_RPO_Post_FO($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: FO_RPO_0003(),Function: Calculate_RPO_Post_FO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MySQL_FO_Monitor_Manage_0006() {
+	try {
+		Groupsnapshot_Post_FO($groupName);
+		Groupinformation_Post_FO($groupName);
+		Replication_Post_FO($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: FO_Monitor_Manage_0006(),Function: Groupsnapshot_Post_FO or Groupinformation_Post_FO or Replication_Post_FO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MySQL_Continuity_Status_FO_0007() {
+	try {
+		Verify_Continuitystatus_After_FO();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Continuity_Status_FO_0007(),Function: Verify_Continuitystatus_After_FO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MySQL_Remote_Stop_linux_Agent_0030() {
+	try {
+		Mysql_Remote_PR_Linux_Agent_Stop_Event();
+		Mysql_Remote_DR_Linux_Agent_Stop_Event();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Stop_linux_Agent_0030(),Function: Mysql_Remote_PR_Linux_Agent_Stop_Event or Mysql_Remote_DR_Linux_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MySQL_Remote_Start_linux_Agent_0031() {
+	try {
+		Mysql_Remote_PR_Linux_Agent_Start_Event();
+		Mysql_Remote_DR_Linux_Agent_Start_Event();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Start_linux_Agent_0031(),Function: Mysql_Remote_PR_Linux_Agent_Start_Event or Mysql_Remote_DR_Linux_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MySQL_Remote_Stop_Mysql_Agent_0039() {
+	try {
+		Mysql_Remote_PR_Mysql_Agent_Stop_Event();
+		Mysql_Remote_DR_Mysql_Agent_Stop_Event();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Stop_Mysql_Agent_0039(),Function: Mysql_Remote_PR_Mysql_Agent_Stop_Event or Mysql_Remote_DR_Mysql_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MySQL_Remote_Start_Mysql_Agent_0038() {
+	try {
+		Mysql_Remote_PR_Mysql_Agent_Start_Event();
+		Mysql_Remote_DR_Mysql_Agent_Start_Event();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Start_Mysql_Agent_0038(),Function: Mysql_Remote_PR_Mysql_Agent_Start_Event or Mysql_Remote_DR_Mysql_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MySQL_Local_Start_Mysql_Agent_0038() {
+	try {
+		Mysql_Local_PR_Mysql_Agent_Start_Event();
+		Mysql_Local_DR_Mysql_Agent_Start_Event();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Local_Start_Mysql_Agent_0038(),Function: Mysql_Local_PR_Mysql_Agent_Start_Event or Mysql_Local_DR_Mysql_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function MySQL_Local_Stop_Mysql_Agent_0039() {
+	try {
+		Mysql_Local_PR_Mysql_Agent_Stop_Event();
+		Mysql_Local_DR_Mysql_Agent_Stop_Event();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Local_Stop_Mysql_Agent_0039(),Function: Mysql_Local_PR_Mysql_Agent_Stop_Event or Mysql_Local_DR_Mysql_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Mysql_Stop_replication_0051() {
+	try {
+		Mysql_Stop_Replication_event();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Mysql_Stop_replication_0051(),Function: Mysql_Stop_Replication_event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Mysql_Start_replication_0052() {
+	try {
+		Mysql_Start_Replication_event();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Mysql_Start_replication_0052(),Function: Mysql_Start_Replication_event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+// ID: Continuity_Manager/ Template/ MySQL_SR/ MySQL_0007  =MySQL_Dataset_Discovery_0007
+// ID: Continuity_Manager/ Template/ MySQL_SR/ MySQL_0011 = MySQL_Dataset_status_0011
+// ID: Continuity_Manager/ Template/ MySQL_SR/ MySQL_0018 = MySQL_protectionscheme_Discovery_0018
+//ID: Continuity_Manager/ Template/ MySQL_SR/ MySQL_0021  = MySQL_Protectionscheme_status_0021
+// Continuity_Manager/Template/MySQL_SR/MYSQL_0022 = Mysql_GroupCreation_0022
+// Continuity_Manager/Common/FG/Group/GroupCreation_0006 = Move_Group_Manage_0006
+// Continuity_Manager/Common/FG/Manage/Change_Continuity_State_0001 = Change_Continuity_State_0001
+// Continuity_Manager/Common/FG/Manage/Continuity_Management_0015 = Continuity_Management_0015
+// Continuity_Manager/Common/FG/Manage/NormalCopy_0001 = Start_NormalCopy_0001
+//ID: Continuity_Manager/ Template/ MySQL_SR/ MySQL_0026  =NC_MySQL_RPO_0026
+// ID: Continuity_Manager/ Template/ MySQL_SR/ MySQL_0027 = NC_MySQL_RTO_0027
+// ID: Continuity_Manager/ Template/ MySQL_SR/ MySQL_0028  =NC_MySQL_Replication_0028
+// ID: Continuity_Manager/ Template/ MySQL_SR/ MySQL_0029  =Mysql_Manage_DRsolution_0029
+// Continuity_Manager/Common/FG/Tests/SOSB_0007 = Import_SOSB_0007
+// Continuity_Manager/Common/FG/Monitor/Switchover_0001 = Start_Switchover_0001
+// Continuity_Manager/Common/FG/Tests/SOSB_0012 = SO_Execution_0012
+// Continuity_Manager/Common/FG/Tests/SOSB_0013 =SO_Replication_0013
+// Continuity_Manager/Common/FG/Tests/SOSB_0035 = SB_Execution_0035
+// Continuity_Manager/Common/FG/Tests/SOSB_0036 = SB_Replication_0036
+// Continuity_Manager/Common/FG/Tests/SOSB_0038 = SB_Monitor_Manage_0038
+//ID: Continuity_Manager/ Template/ MySQL_SR/ MySQL_0057= Import_FO_0057
+// Continuity_Manager/Common/FG/Monitor/Failover_0001 =Start_FO_0001
+// ID: Continuity_Manager/ Template/ MySQL_SR/ MySQL_0058  = FO_execution_0058
+// Continuity_Manager/Common/FG/Monitor/Failover_0003 = FO_RPO_0003
+// Continuity_Manager/Common/FG/Monitor/Failover_0006 = FO_Monitor_Manage_0006
+// Continuity_Manager/Common/FG/Monitor/Failover_0007 = Continuity_Status_FO_0007
+//ID: Continuity_Manager/ Template/ MySQL_SR/ MySQL_0030  = MySQL_Stop_linux_Agent_0030
+// ID: Continuity_Manager/ Template/ MySQL_SR/ MySQL_0031  = MySQL_Start_linux_Agent_0031
+// ID: Continuity_Manager/ Template/ MySQL_SR/ MySQL_0038  = MySQL_0038
+// ID: Continuity_Manager/ Template/ MySQL_SR/ MySQL_0039  = MySQL_0039
+// ID: Continuity_Manager/ Template/ MySQL_SR/ MySQL_0051  = Mysql_Stop_replication_0051
+// ID: Continuity_Manager/ Template/ MySQL_SR/ MySQL_0052  = Mysql_Start_replication_0052
+// Usability/Landing_Page/Landing_Page_Recovery_Test_0018 = Login_001
+// Object_Manager/Common/Components/Component_Discovery_0002 = Component_Discovery_0002
+// Object_Manager/Common/Components/Component_Discovery_0018 = Component_Discovery_0018
+// Continuity_Manager/Common/FG/Monitor/MON_0002 =Contiunity_Status_0002
+// Continuity_Manager/Common/FG/Monitor/Normal_Copy_0030 = Monitor_Relationship_0030
+// Object_Manager/Common/Components/Subsystem_Moinitoring_0001 =Component_Status_0001
+// Continuity_Manager/Common/FG/Manage/Continuity_Management_0007=GroupInformation_Manage_0007
+// Continuity_Manager/Common/FG/Monitor/MON_0001 = Groupsnapshot_Monitor_0001
+// Continuity_Manager/Common/FG/Tests/SOSB_0021 = RNC_Groupsnapshot_Monitor_0021
+// Continuity_Manager/Common/FG/Tests/SOSB_0022 = RNC_Groupinformation_Monitor_0022
+// Continuity_Manager/Common/FG/Tests/SOSB_0023 = RNC_Rpo_Monitor_0023
+// Continuity_Manager/Common/FG/Tests/SOSB_0024 = RNC_Replication_0024
+// Usability/Landing_Page/Landing_Page_Recovery_Test_0018 = Logout_001
+// Continuity_Manager/ Common/ FG/ Tests/ SOSB_0011 =Start_SO_0011
+// Continuity_Manager/ Common/ FG/ Tests/ SOSB_0034 =Start_SB_0034
+// Continuity_Manager/ Common/ FG/ Tests/ SOSB_0033 =Stop_RNC_0033
+// Continuity_Manager/ Common/ FG/ Manage/ Graceful_Shutdown_0002 =Stop_NC_0002
+// Frame_Work/ Site_Manager/ Site_0003 = Site_0003
+

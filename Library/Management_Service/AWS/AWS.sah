@@ -1,0 +1,1032 @@
+
+/**
+* Function is Check the available options under "Management Service Type" drop-down list
+*@param :  null
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+
+function checkMgmtTypeAvailability() {
+	
+	add_MgmtService();
+	_assertExists(_cell("Management Service Discovery"));
+	_assertEqual(_getText(_select("msType").options[1]), "VCENTER");
+	_assertEqual(_getText(_select("msType").options[2]), "AWS");
+	_assertExists("AWS");
+	
+}
+
+/**
+* Function is to Check the available fields after selecting "AWS" option from Management
+ Service Type drop-downCheck the available fields
+*@param :  null
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+
+function checkavailablefieldsForAWS() {
+
+	
+	add_MgmtService();
+	_setSelected(_select("msType"), "AWS");
+	_assertExists(_cell("Site", _in(_table("report"))));
+	_assertExists(_select("msSite", _near(_cell("Site"))));
+	_assertExists(_cell("Management Service Type:", _in(_table("report"))));
+	_assertExists(_select("msType", _near(_cell("Management Service Type:"))));
+	_assertExists(_cell("Management Service Name:", _in(_table("report"))));
+	_assertExists(_textbox("msName", _near(_cell("Management Service Name:"))));
+	_assertExists(_cell("Agent Node component:", _in(_table("report"))));
+	_assertExists(_select("compName", _near(_cell("Agent Node component:"))));
+	_assertExists((_cell("Amazon Region:", _in(_table("report")))));
+	_assertExists(_select("regions", _near(_cell("Amazon Region:"))));
+
+	_assertExists((_cell("Aws Access Id:", _in(_table("report")))));
+	_assertExists(_textbox("aws_access_id", _near(_cell("Aws Access Id:"))));
+	_assertExists((_cell("Aws Secret Key:", _in(_table("report")))));
+	_assertExists(_password("aws_secret_key", _near(_cell("Aws Secret Key:"))));
+	_assertExists(_button("Test Credentials"));
+	_assertExists(_submit("Save"));
+	
+}
+
+/**
+* Function is to verify "Test Credentials" button with Valid data
+*@param :  $component, $regions, $awsaccessid,$awssecretkey
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+
+function verifyTestCredentialsWithValidData($component, $regions, $awsaccessid,
+		$awssecretkey) {
+
+	testCredential($component, $regions, $awsaccessid, $awssecretkey);
+	_assertExists(_span("Credential Check Passed"));
+	
+}
+
+/**
+* Function is to Verify "Test Credentials" button with InValid data
+*@param :  $component, $regions,$invalidAwsaccessid, $invalidAwssecretkey
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+
+function verifyTestCredentialsWithInvalidData($component, $regions,
+		$invalidAwsaccessid, $invalidAwssecretkey) {
+
+		testCredential($component, $regions, $invalidAwsaccessid,
+			$invalidAwssecretkey);
+	_assertExists(_span("Credential Check Failed"));
+	
+}
+
+/**
+* Function is to Verify "Test Credentials" button without entering component
+*@param :  $regions, $awsaccessid,$awssecretkey
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+
+function verifyTestCredentialsButtonWithoutAgent($regions, $awsaccessid,
+		$awssecretkey) {
+
+
+	add_MgmtService();
+	_setSelected(_select("msType"), "AWS");
+	_setSelected(_select("regions"), $regions);
+	_setValue(_textbox("aws_access_id"), $awsaccessid);
+	_setValue(_password("aws_secret_key"), $awssecretkey);
+	_click(_button("Test Credentials"));
+
+	_assertEqual("Please select agent node component", _lastAlert());
+	
+}
+
+/**
+* Function is to Verify "Test Credentials" button without region
+*@param :  $component, $awsaccessid,$awssecretkey
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+
+function verifyTestCredentialsButtonWithoutRegion($component, $awsaccessid,
+		$awssecretkey) {
+
+
+	add_MgmtService();
+	
+	_setSelected(_select("msType"), "AWS");
+	_setSelected(_select("compName"), $component);
+	_setValue(_textbox("aws_access_id"), $awsaccessid);
+	_setValue(_password("aws_secret_key"), $awssecretkey);
+	_click(_button("Test Credentials"));
+	_assertEqual("Please select AWS region", _lastAlert());
+	
+}
+
+/**
+* Function is to Verify "Test Credentials" button without entering accessId
+*@param :  $component, $regions,$awssecretkey
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+
+function verifyTestCredentialsButtonWithoutAwsAccessid($component, $regions,
+		$awssecretkey) {
+
+	
+	add_MgmtService();	
+	
+	_setSelected(_select("msType"), "AWS");
+	_setSelected(_select("compName"), $component);
+	_setSelected(_select("regions"), $regions);
+	_setValue(_password("aws_secret_key"), $awssecretkey);
+	_click(_button("Test Credentials"));
+	_assertEqual("Please enter AWS Access ID", _lastAlert());
+	
+}
+
+/**
+* Function is to Verify "Test Credentials" button without entering SecretKey
+*@param : $component, $regions,	$awsaccessid
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+
+function verifyTestCredentialsButtonWithoutAwsSecretKey($component, $regions,
+		$awsaccessid) {
+
+	
+	add_MgmtService();
+	_setSelected(_select("msType"), "AWS");
+	_setSelected(_select("compName"), $component);
+	_setSelected(_select("regions"), $regions);
+	_setValue(_textbox("aws_access_id"), $awsaccessid);
+	_click(_button("Test Credentials"));
+	_assertEqual("Please enter AWS Secret Key", _lastAlert());
+	
+}
+
+/**
+* Function is to Verify Saving AWS Management Service with valid data and check status
+*@param : $msSite, $msType, $msName, $component, $regions,$awsaccessid, $awssecretkey
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+
+function verifySaveAwsAgent($msSite, $msType, $msName, $component, $regions,
+		$awsaccessid, $awssecretkey) {
+
+	
+
+	if(_exists(_link($msName))){
+		
+		_log("already exists");
+	}
+	
+	var $sshCommand = "date";
+	$date = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	var $serverTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("EEE MMM dd HH:mm:ss Z yyyy").parse($date));
+	_assertExists("Server Time", $serverTime);
+	
+
+	CreateAWSAccount($msSite, $msType, $msName, $component, $regions, $awsaccessid,
+			$awssecretkey);
+	
+	Event_VerificationForAws($serverTime,  $nameOfevent, $description);
+	
+if (_exists(_lastAlert())) {
+
+		_log("not created");
+	}
+
+	else {
+		_assertExists(_cell("Management Service List"));
+		_assertExists(_link($msName));
+		_assertExists(_cell("AWS", _near(_link($msName)),
+				_under(_tableHeader("Type"))));
+		var $AwsStatus = _getText(_cell(4, _near(_cell($msName),
+				_under(_tableHeader("Status")))));
+		// status new
+		_assertEqual("UNKNOWN", $AwsStatus);
+		// status after sometime
+		_wait(60000);
+	
+		_assertEqual("ACTIVE", _getText(_cell(4, _near(_cell($msName),
+				_under(_tableHeader("Status"))))));
+		
+		verifySaveAwsAgent_inDb($msSite, $msType, $msName, $component, $regions,
+				$awsaccessid, $awssecretkey);
+		
+	}
+	
+}
+
+/**
+* Function is to Verify Saving AWS Management Service in DB
+*@param : $msSite, $msType, $msName, $component, $regions,$awsaccessid, $awssecretkey,$typeId
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+
+function verifySaveAwsAgent_inDb($msSite, $msType, $msName, $component, $regions,
+		$awsaccessid, $awssecretkey,$typeId) {
+
+	$props = Get_Mysql_Db_Connection_URL($hostUserNamePR, $hostPasswordPR,
+			$hostIPPR, $hostPortPR, "panaces");
+
+	var db = _getDB("com.mysql.jdbc.Driver", $props.get("databaseconnection"),
+			$props);
+	var $q = "Select * from mgmt_service where name=" + "'" + $msName
+			+ "'";
+	var $awsAccount = db.select($q);
+	for ( var $i = 0; $i < $awsAccount.length; $i++) {
+		var $row = $awsAccount[$i];
+		var $name = $row["name"];
+		var $type_id = $row["type_id"];
+		var $status = $row["status"];
+		var $default_status = $row["default_status"];
+	
+
+		if ($name == $msName) {
+			_assertEqual($typeId, $type_id);
+			_assertEqual("ACTIVE", $status);
+			_assertEqual("UNKNOWN", $default_status);
+		
+
+		} else {
+
+			_log("account doesn't exists in db");
+		}
+	}
+}
+
+
+/**
+* Function is to Verify Saving AWS Management Service with Invalid data and check status
+*@param : $msSite, $msType, $msName,$component, $regions, $invalidAwsaccessid, $invalidAwssecretkey
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+
+function verifySaveAwsAgentWithInvalidData($msSite, $msType, $msName,
+		$component, $regions, $invalidAwsaccessid, $invalidAwssecretkey) {
+
+	
+	CreateAWSAccount($msSite, $msType, $msName, $component, $regions,
+			$invalidAwsaccessid, $invalidAwssecretkey);
+	if (_exists(_lastAlert())) {
+
+		_log("Account Not Saved");
+
+	} else {
+		_assertExists(_cell("Management Service List"));
+		_assertExists(_link($msName));
+		_assertExists(_cell("AWS", _near(_link($msName)),
+				_under(_tableHeader("Type"))));
+		var $AwsStatus = _getText(_cell(4, _near(_cell($msName),
+				_under(_tableHeader("Status")))));
+		// status new
+		_assertEqual("UNKNOWN", $AwsStatus);
+		// status after sometime
+		_wait(50000);
+		
+
+		_assertEqual("INACTIVE", _getText(_cell(4, _near(_cell($msName),
+				_under(_tableHeader("Status"))))));
+	}
+	
+}
+
+/**
+* Function is to Check the status of AWS Management Service with Invalid access id
+*@param : $msSite, $msType, $msName,$component, $regions, $invalidAwsaccessid, $awssecretkey
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+
+function verifySaveAwsAgentWithInvalidAccessId($msSite, $msType, $msName,
+		$component, $regions, $invalidAwsaccessid, $awssecretkey) {
+
+
+	CreateAWSAccount($msSite, $msType, $msName, $component, $regions,
+			$invalidAwsaccessid, $awssecretkey);
+
+	if (_exists(_lastAlert())) {
+
+		_log("Account Not Saved");
+
+	} else {
+		_assertExists(_cell("Management Service List"));
+		_assertExists(_link($msName));
+		_assertExists(_cell("AWS", _near(_link($msName)),
+				_under(_tableHeader("Type"))));
+		var $AwsStatus = _getText(_cell(4, _near(_cell($msName),
+				_under(_tableHeader("Status")))));
+		// status new
+		_assertEqual("UNKNOWN", $AwsStatus);
+		// status after sometime
+		_wait(50000);
+		
+		_assertEqual("INACTIVE", _getText(_cell(4, _near(_cell($msName),
+				_under(_tableHeader("Status"))))));
+	}
+	
+}
+
+/**
+* Function is to Check the status of AWS Management Service with Invalid secretkey
+*@param : $msSite, $msType, $msName,$component, $regions, $awsaccessid, $invalidAwssecretkey
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+function verifySaveAwsAgentWithInvalidSecretKey($msSite, $msType, $msName,
+		$component, $regions, $awsaccessid, $invalidAwssecretkey) {
+	
+	CreateAWSAccount($msSite, $msType, $msName, $component, $regions, $awsaccessid,
+			$invalidAwssecretkey);
+	if (_exists(_lastAlert())) {
+
+		_log("Account Not Saved");
+
+	} else {
+
+	_assertExists(_cell("Management Service List"));
+	_assertExists(_link($msName));
+	_assertExists(_cell("AWS", _near(_link($msName)),
+			_under(_tableHeader("Type"))));
+	var $AwsStatus = _getText(_cell(4, _near(_cell($msName),
+			_under(_tableHeader("Status")))));
+	// status new
+	_assertEqual("UNKNOWN", $AwsStatus);
+	// status after sometime
+	_wait(50000);
+	
+
+	_assertEqual("INACTIVE", _getText(_cell(4, _near(_cell($msName),
+			_under(_tableHeader("Status"))))));
+	}
+	
+}
+
+/**
+* Function is to Validate AWS agent in Agent lists page
+*@param : $msName
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+
+
+function presenceOfAwsAgentInAgentList($msName) {
+
+	
+	_click(_link("Admin"));
+	_click(_link("Go to Agents"));
+	_assertExists(_cell($msName + "(Mgmt Service)",
+			_near(_tableHeader("Component/Mgmt Service"))));
+	
+}
+
+/**
+* Function is to Validate AWS agent connectivity
+*@param : $msName
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+function verifyAwsAgentConnectivityStopInAgentList($msName) {
+
+	
+	_click(_link("Admin"));
+	_click(_link("Go to Agents"));
+
+	_assertExists(_cell($msName + "(Mgmt Service)"));
+	_click(_link("Stop", _near(_cell($msName + "(Mgmt Service)"),
+			_under(_tableHeader("Status")))));
+	_wait(15000);
+	var $awsStatus = _getText(_cell(3, _near(_cell($msName + "(Mgmt Service)"),
+			_under(_tableHeader("Status")))));
+
+	_assertEqual("Not connected Start", $awsStatus);
+	
+}
+
+/**
+* Function is to Validate AWS agent connectivity start
+*@param : $msName
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+
+function verifyAwsAgentConnectivityStartInAgentList($msName) {
+
+	
+
+	_click(_link("Admin"));
+	_click(_link("Go to Agents"));
+
+	_assertExists(_cell($msName + "(Mgmt Service)"));
+	_click(_link("Start", _near(_cell($msName + "(Mgmt Service)"),
+			_under(_tableHeader("Status")))));
+	_wait(15000);
+	var $awsStatus = _getText(_cell(3, _near(_cell($msName + "(Mgmt Service)"),
+			_under(_tableHeader("Status")))));
+	_assertEqual("Connected Stop", $awsStatus);
+	
+}
+
+/**
+* Function is to check the details after clicking on Existing AWS A/C
+*@param : $msType,$msName, $msSite,$component, $regions,$awsaccessid
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+
+function AWSDetails($msType,$msName, $msSite,$component, $regions,
+		$awsaccessid) {
+
+	
+	discoverMgmtService();
+	_click(_link($msName));
+	_assertExists(_table("report"));
+	_assertExists(_cell($msType));
+	_assertExists(_cell($msName));
+	_assertExists(_cell($msSite));
+	_assertExists(_cell($component));
+	_assertExists(_cell($regions));
+	_assertExists(_cell($awsaccessid));
+	_assertExists(_button("« Go Back"));
+	
+}
+
+/**
+* Function is to check the navigation after clicking on "<<Go Back" button from Management Service Details page
+*@param : $msName
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+function checkGoBackButton($msName) {
+
+	
+	discoverMgmtService();
+
+	_assertExists($msName);
+	_click(_link($msName));
+	_click(_button("« Go Back"));
+	_assertExists(_cell("Management Service List"));
+	
+}
+
+/**
+* Function is to  check the deletion of AWS Management Service
+*@param :  $msName2
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+
+function deleteAWSService($msName2) {
+
+	
+	discoverMgmtService();
+
+	if (_exists(_link($msName2))) {
+		
+		_click(_image("Delete", _near(_link($msName2))));
+		_expectConfirm("Would you like to delete  " + $msName2 + " ?", true);
+		_assertNotExists(_link($msName2));
+		
+		//check in DB
+		deletedAWSDetailsInDb($msName2);
+	}
+
+	else {
+
+		_log($msName2 + "service doesn't exists");
+	}
+	
+}
+
+/**
+* Function is to  Check the Deleted AWS Management Service details  in Database
+*@param :  $msName2
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+
+function deletedAWSDetailsInDb($msName2) {
+	$props = Get_Mysql_Db_Connection_URL($hostUserNamePR, $hostPasswordPR,
+			$hostIPPR, $hostPortPR, "panaces");
+
+	var db = _getDB("com.mysql.jdbc.Driver", $props.get("databaseconnection"),
+			$props);
+	var $q = "Select * from mgmt_service where name=" + "'" + $msName2
+			+ "'";
+	var $awsAccount = db.select($q);
+
+	_assertEqual([],$awsAccount);
+
+	
+}
+
+/**
+* Function is to  Check the navigation after clicking edit icon against AWS A/C
+*@param :  $msName
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+
+function navigationAfterclickingEdit($msName) {
+
+	
+	discoverMgmtService();
+	_assertExists(_link($msName));
+	_assertExists(_image("Edit", _near(_link($msName))));
+
+	_click(_image("Edit", _near(_link($msName))));
+	_assertExists(_cell("Edit Management Service"));
+	
+}
+
+/**
+* Function is to  Check the edit link for AWS A/C
+*@param :  $msName, $changeRegions,$changeAwsaccessid
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+
+function editAws($msName, $changeRegions,$changeAwsaccessid) {
+
+	discoverMgmtService();
+	if (_exists(_link($msName))) {
+
+		_click(_image("Edit", _near(_cell($msName1))));
+		_setSelected(_select("awsRegion"),$changeRegions);
+		_setValue(_textbox("awsAccessId"), $changeAwsaccessid);
+		_click(_submit("Save"));
+		
+		_assertExists(_link($msName, _in(_table("pts"))));
+	} else {
+
+		_log($msName + "service doesn't exists");
+	}
+	}
+
+
+/*// Check the edited data in DB for AWS A/C
+function verifyEditedAwsFieldsInDB($msName, $changeRegions,$changeAwsaccessid) {
+	
+	$props = Get_Mysql_Db_Connection_URL($hostUserNamePR, $hostPasswordPR,
+			$hostIPPR, $hostPortPR, "panaces");
+
+	var db = _getDB("com.mysql.jdbc.Driver", $props.get("databaseconnection"),
+			$props);
+	var $q = "Select * from mgmt_service where name=" + "'" + $msName
+			+ "'";
+	var $awsAccount = db.select($q);
+	for ( var $i = 0; $i < $awsAccount.length; $i++) {
+		var $row = $awsAccount[$i];
+		var $name = $row["name"];
+		var $type_id = $row["type_id"];
+		var $status = $row["status"];
+		var $default_status = $row["default_status"];
+	
+
+		if ($name == $msName) {
+			_assertEqual($typeId, $type_id);
+			_assertEqual("ACTIVE", $status);
+			_assertEqual("UNKNOWN", $default_status);
+		
+
+		} else {
+
+			_log("account doesn't exists in db");
+		}
+	}
+}*/
+
+/**
+* Function is to  check the creation of AWS A/C with already existing Service Name
+*@param :  $msSite, $msType, $msName1,$component, $regions, $awsaccessid, $awssecretkey
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+
+function accountCreationWithExistingServiceName($msSite, $msType, $msName1,
+		$component, $regions, $awsaccessid, $awssecretkey) {
+
+	CreateAWSAccount($msSite, $msType, $msName1, $component, $regions, $awsaccessid,
+			$awssecretkey);
+
+	_assertExists(_lastAlert());
+	_assertEqual(
+			"Management Service discovery failed due to: Management Service already exists with same name : "
+					+ $msName1, _lastAlert());
+	
+}
+
+/**
+* Function is to  check DiscoverDetails
+*@param :  $msName, $instanceName
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+
+function DiscoverDetailsLink($msName, $instanceName) {
+
+	
+	discoverMgmtService();
+	if(_exists(_link($msName))){
+	_click(_link("Discover Details", _near(_link($msName))));
+	_assertExists(_table("report"));
+	if (_exists(_cell($instanceName))) {
+		_cell($msName, _near(_tableHeader("Instance Name")));
+		_click(_checkbox(0, _near(_cell($instanceName))));
+
+		_click(_submit("Save VM Details"));
+		_assertExists(_tableHeader("Instance Name",
+				_in(_table("report"))));
+		_assertExists(_tableHeader("Instance Id", _in(_table("report"))));
+		_assertExists(_tableHeader("Instance Private IP",
+				_in(_table("report"))));
+
+		
+	} }else {
+
+		_log("unable to discover details");
+	}
+	
+}
+
+/**
+* Function is to check view Saved VM list
+*@param :  $msName
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+
+function viewSavedVmList($msName) {
+
+	
+	discoverMgmtService();
+	_click(_link("Discover Details", _near(_link($msName))));
+	if (_exists(_link("View Saved Vm List"))) {
+
+		_click(_link("View Saved Vm List"));
+
+		_assertExists(_cell($instanceName,
+				_near(_tableHeader("Instance Name"))));
+		_assertExists(_cell($instanceIp,
+				_near(_tableHeader("Instance Private IP"))));
+		_assertExists(_cell($instanceId,
+				_near(_tableHeader("Instance Id"))));
+	}
+
+	else {
+
+		_fail();
+	}
+	
+}
+
+/**
+* Function is to verify component list for Saved VM
+*@param :  null
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+
+function VerifyComponents() {
+
+	
+	navigateToDiscovery();
+	_click(_link("Subsystems"));
+
+	_assertExists(_cell($instanceIp));//_near removed
+	
+}
+
+/**
+* Function is to delete from components
+*@param :  $instanceIp
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+
+function deleteComponentFromComponents($instanceIp) {
+	
+	navigateToDiscovery();
+	_click(_link("Subsystems"));
+	if (_exists(_cell($instanceIp))) {
+		var $componentName = _getText(_link(0, _near(_cell($instanceIp))));
+		_log($componentName);
+
+		_expectConfirm("Would you like to delete  " + $componentName + " ?",
+				false);
+		_click(_image("Delete", _near(_cell($instanceIp))));
+
+		_assertExists(_cell($instanceIp));
+		_expectConfirm("Would you like to delete  " + $componentName + " ?",
+				true);
+		_click(_image("Delete", _near(_cell($instanceIp))));
+
+		_assertNotExists(_cell($instanceIp));
+
+	} else {
+
+		_fail();
+	}
+
+	}
+
+/**
+* Function is to check component availability after deleted  from discovery details
+*@param :  $instanceIp, $msName
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+
+
+function VerifyComponentsInDiscoveryDetails($instanceIp, $msName) {
+
+	discoverMgmtService();
+	_click(_link("Discover Details", _near(_link($msName))));
+	_assertExists(_cell($instanceIp, _near(_tableHeader("Instance Private IP"))));
+	
+}
+
+/**
+* Function is to  capture Event Generation time from Database
+*@param :   $msName1
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+
+function getEventGenerationtimeFromDb($msName1) {
+	$props = Get_Mysql_Db_Connection_URL($hostUserNamePR, $hostPasswordPR,
+			$hostIPPR, $hostPortPR, "panaces");
+
+	var db = _getDB("com.mysql.jdbc.Driver", $props.get("databaseconnection"),
+			$props);
+	var $q = "Select  from mgmt_service where name=" + "'" + $msName2
+			+ "'";
+	var $awsAccount = db.select($q);
+
+	_assertEqual([],$awsAccount);
+
+	
+}
+
+
+
+function Event_VerificationForAws($serverTime,$eventName,$EventDescription){
+	_click(_link("Monitor"));
+	_click(_link("Current Events:"));
+	_click(_link("View All Events"));
+	var $i = 0;
+
+	var $flag = 0;
+
+	while ($i < 30) {
+		 _wait(10000);
+			_call(top.location.reload());
+		   if(_exists(_cell($eventName,_under(_tableHeader("Event Name"),700))) == true) {			  
+				
+				var $Time = _getText(_cell(5, _near(_cell($eventName))));
+				_assertExists("Time", $Time);
+				var $GuiTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($Time).getTime();
+				_assertExists("GuiTime", $GuiTime);
+				var $DbTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($serverTime).getTime();
+				_assertExists("DbTime", $DbTime);
+				var $timedifference = $GuiTime - $DbTime;
+				if ($timedifference > 0) {
+					_log("Event generate Successfully.");
+				var $description = _getText(_cell(6, _near(_cell($eventName))));
+				_assertExists("description", $description);
+				var $event = $description.split(":");
+				var $eventdesGui = $event[0].trim();
+				_assertExists("event Description", $eventdesGui);
+				_log($eventdesGui);
+				_log($EventDescription);
+				$eventdesGui = $eventdesGui.trim();
+				 $EventDescription = $EventDescription.trim();
+			
+				if ($eventdesGui == $EventDescription) {
+						_log("event description correct.");
+						$flag = 1;						
+						break;
+					}
+				}				   
+		   } else {
+			   _log("Event not yet generated successfully.");
+		   }
+		   $i++;
+		   _log($i);
+	 }	
+
+
+	if ($flag == 1) {
+		_assertTrue(1 == 1, "event Generated succesfully");
+	} else {
+		_assertTrue(1 == 0, "event not Generated succesfully");
+	}
+	}
+
+
+
+
+
+
+/**
+* Function is creating aws app fg .
+*@param :  $groupName, $groupDescription, $SolutionSignature, $primaryComponents, $remoteComponents
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+function Create_FG($groupName, $groupDescription, $SolutionSignature, $primaryComponents, $remoteComponents) {
+	navigateToDiscovery();
+	_click(_link("Groups"));
+	var $flag;
+	if (_exists(_link($groupName))) {
+		$flag = 0;
+	} else {
+		$flag = 1;
+		_setSelected(_select("createGroup"),"Functional Group");
+		_wait(1000);
+		_click(_button("/Go/"));
+		_setValue(_textbox("groupName"), $groupName);
+		_setValue(_textarea("groupDescription"), $groupDescription);	
+		if($subscriber != ""){
+			_setSelected(_select("subscriberId"), $subscriber);
+		}
+		_setSelected(_select("solutionType"), $SolutionSignature);
+		_click(_button("/Next/"));		
+		_wait(1000);
+		_click(_link("Server Component"));
+		_click(_checkbox($primaryComponents, _near(_cell($primaryComponents, _under(_tableHeader("PrimaryComponent"))))));
+		//_checkbox("primaryComponents", _near(_cell("APP_DR_AWS_105", _near(_tableHeader("PrimaryComponent")))));
+		_click(_checkbox($remoteComponents, _near(_cell($remoteComponents, _under(_tableHeader("RemoteComponent"))))));
+		_click(_submit("Save"));
+		_wait(2000);
+		_click(_button("/Next/"));
+		_wait(1000);
+	}
+	var $groupCreation = new java.util.Properties();
+	$groupCreation.put("flag", $flag);
+	return $groupCreation;
+} // End of groupCreation()
+
+
+/**
+* Function is for group creation .
+*@param :  null.
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+function Creation_AWS_StatelessApp_Group() {
+	$groupCreation = Create_FG($groupName, $groupDescription, $SolutionSignature, $primaryComponents, $drremoteComponents);
+	if ($groupCreation.get("flag") == 0) {
+		_log("Same group name already exists");
+	} else {
+		_click(_link("License"));
+		_click(_checkbox("Recovery"));
+		_click(_checkbox("Test"));
+		_click(_button("Save[2]"));
+		_click(_button("Finish"));
+        _wait(5000);
+		navigateToDiscovery();
+		_click(_link("Groups"));
+		if (_exists(_link($groupName))) {
+			_assertExists("Group created succesfully");
+		} else {
+			_fail("Group not created succesfully.So that stopping execution.");
+		}
+	}
+}
+
+/**
+* Function is for Checking Group details after post group creation.
+*@param :  $groupName.
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+function AWS_Post_Group_Creation_Details($groupName){
+	navigateToDiscovery();
+	_click(_link("Groups"));
+	
+	_click(_link($groupName));
+		_assertExists(_cell($groupName, _near(_strong("Group Name"))));
+	_assertExists(_cell($groupName, _near(_strong("Description"))));
+	_assertExists(_cell($SolutionSignature, _near(_strong("DR Solution Signature"))));
+	_log("Post group creation verification done");
+	
+	
+}
+
+/**
+* Function is for Moving Group From Maintenance to Manage.
+*@param :  $groupName.
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+
+function Move_To_Manage_Group($groupName) {
+	navigateToDiscovery();
+	_click(_link("Groups"));
+	_click(_image("movetomaintenance_enabled.gif", _near(_link($groupName))));
+	_wait(5000);
+	if (_exists(_link("Click here to Manage Group"))) {
+		_log("group is in maintenance mode");
+		_click(_link("Click here to Manage Group"));
+		_wait(1000);
+		if (_exists(_cell("MAINTENANCE"))) {
+			_assertExists(_cell("MAINTENANCE", _near(_cell("Current Status:"))));
+		} else {
+			_assertExists(_cell("UNMANAGED", _near(_cell("Current Status:"))));
+		}
+		_wait(1000);
+		_click(_button("Manage Group"));
+		_wait(1000);
+		navigateToDiscovery();
+		_click(_link("Groups"));
+		_click(_image("movetomaintenance_enabled.gif", _near(_link($groupName))));
+		_wait(5000);
+		if (_exists(_link("Click here to Move to Maintenance"))) {
+			_log("Group is moved to manage");
+		} else {
+			_fail("Group is still Unmanaged,so that stopping the execution.");
+		}
+	} else {
+		_log("Group Is already managed");
+	}
+
+} // End of moveToManageGroup()
+
+/**
+* Function is for Continuity Status of the Group.
+*@param :  $groupName,$cstate.
+*@return : null
+*@Author: Karimulla Shakhadari
+*
+*/
+
+function Change_ContinuityStatus_Group($groupName, $cstate) {
+	_wait(1000);
+	navigateToDiscovery();
+	_click(_link("Groups"));
+	_click(_image("movetomaintenance_enabled.gif", _near(_link($groupName))));
+	_wait(5000);
+	_click(_link("Click here to change Continuity State"));
+	_setSelected(_select("cstate"), $cstate);
+	_click(_button("Continue"));
+	navigateToDiscovery();
+	_click(_link("Groups"));
+	_click(_image("movetomaintenance_enabled.gif", _near(_link($groupName))));
+	_wait(5000);
+	_click(_link("Click here to change Continuity State"));
+	var $currentState1 = _getText(_cell(1, _near(_cell("Current Group State:"))));
+	var $currentState2 = $currentState1.replace("(", " ");
+	var $currentState = $currentState2.replace(")", "");
+	if ($currentState == $cstate) {
+		_log("Current state selected is same in current group state");
+	} else {
+		_fail("Current group state is not correct,so that stopping execution");
+	}
+	_click(_button("/Cancel/"));
+}
+// End of changeContinuityStatusGroup()
+
+
+
+

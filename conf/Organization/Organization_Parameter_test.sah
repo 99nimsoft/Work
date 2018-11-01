@@ -1,0 +1,28 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : organization
+ ** Objective : This script contains all the organization required Parameters
+ ** AuthorName : N.vinod
+ ** Created Date : March 2016
+ ***********************************************************************************************/
+var $l_OraInputs = _readExcelFile($SAHI_HOME + "\\conf\\Organization\\Organization_Parameter.xls","Install");
+
+
+//This user Input required to Login the DRM server
+var $username = $l_OraInputs[3][2]; // DRM server GUI user name e.g. "swati"
+var $password = $l_OraInputsR[4][2]; // DRM server GUI pwd
+
+
+//This is DRM backend Login details
+
+var $Drm_ip=$l_OraInputs[7][2];//Drm ip address
+var $Drm_username=$l_OraInputs[8][2];//DRM username
+var $Drm_passwd=$l_OraInputs[9][2];//DRM password
+
+
+
+//This is Organization creation required fields
+var $Overwritten=$l_OraInputs[10][2];//This is required for overwritten Already login DRM credentials
+var $Subscriber_id=$l_OraInputs[11][2];//This is required for Creating a organization
+var $Subscriber_Name=$l_OraInputs[12][2];//This is required for Creating a organization
+var $Description=$l_OraInputs[13][2];//This is required for Creating a organization

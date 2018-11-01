@@ -1,0 +1,277 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the remote agent test cases which are the part of MSSQL solution. 
+ ** AuthorName : Omprakash.V
+ ** Created Date : SEP 2016
+ ************************************************************************/
+
+//don't change the below line.
+_include("../Library/Solution_Signature/Include/MSSQL_ALWAYS_ON_Include.sah");
+
+// mentioned the correct parameter file name which user are going to execute within the "" code.
+_include("../conf/DRMInstallation_Parameter.sah");
+_include("../Library/Common/CommonRepository/CommonDRM_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/CommonGUINavigation_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/GroupOperation_ObjRepository.sah");
+_include("../Library/Solution_Signature/MSSQL_ALWAYS_ON/ObjectRepository/MSSQL_ALWAYS_ON_ObjectRepository.sah");
+_include("../Library/Solution_Signature/MSSQL_ALWAYS_ON/ObjectRepository/MSSQL_ALWAYS_ON_Event_ObjectRepository.sah");
+_include("../conf/MSSQL_ALWAYS_ON/MSSQL_ALWAYS_ON_Remote_Agent_Parameter.sah");
+_include("../conf/MSSQL_ALWAYS_ON/UserSelected_MSSQL_ALWAYS_ON_TestCase.sah");
+
+//_include("../Common/Operation_On_FG/Common_GUI_Navigation.sah");
+
+_include("../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+_include("../Library/Validation_Manager/ObjectRepository/Validation_Manager_ObjectRepository.sah");
+_include("../Library/Validation_Manager/Validation_Manager.sah");
+
+_log("=================================Pre-Condition===================================", "Custom1");
+
+WorkFlow_copy_001();
+
+Login_001();
+
+_log("=================================Test========================================", "Custom1");
+
+
+
+if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_site == "Y") {
+	var $test1 = _testcase("Site_0003", "Site Creation");
+	$test1.start();
+	Site_0003();
+	$test1.end();
+}
+
+
+if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_ComponentRemoteDiscovery == "Y") {
+	var $test2 = _testcase("Object_Manager/Common/Components/Component_04", "Creation of Component");
+	$test2.start();
+	MSSQL_ALWAYS_ON_Component_Remote_Discovery_0001();
+	$test2.end();
+}
+
+   
+if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_DatasetDiscovery == "Y") {
+	var $test3 = _testcase("Object_Manager/Dataset/Mssql/MSSQL_DatasetDiscovery0002", "Creation of Datasets");
+	$test3.start();
+	MSSQL_ALWAYS_ON_Dataset_Discovery_0002();
+	$test3.end();
+}
+
+
+if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_Group_Creation == "Y") {
+	var $test4 = _testcase("Continuity_Manager/Common/FG/Group/GroupCreation_0004", "Group Creation");
+	$test4.start();
+	MSSQL_ALWAYS_ON_GroupCreation_0004();
+	$test4.end();
+}
+
+if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_Move_Group_Manage == "Y") {
+	var $test5 = _testcase("Continuity_Manager/Common/FG/Group/GroupCreation_0005", "Move Group to Managed state");
+	$test5.start();
+	MSSQL_ALWAYS_ON_Move_Group_Manage_0005();
+	$test5.end();
+}
+
+
+if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_Change_Continuity_State == "Y") {
+	var $test6 = _testcase("Continuity_Manager/Common/FG/Manage/Change_Continuity_State_0006", "Change Continuity State to normal inactive");
+	$test6.start();
+	Change_ContinuityStatus_Group_Normal_Inactive(); 
+	$test6.end();
+}
+
+if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_Contiunity_Status == "Y") {
+	var $test7= _testcase("Continuity_Manager/Common/FG/Monitor/NormalCopy_0008 ", "Current Continuity Status");
+	$test7.start();
+	MSSQL_ALWAYS_ON_Contiunity_Status_0008();
+	$test7.end();
+}
+
+if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_Start_NormalCopy == "Y") {
+	var $test8 = _testcase("Continuity_Manager/Common/FG/Manage/NormalCopy_0009", "Start NormalCopy");
+	$test8.start();
+	MSSQL_ALWAYS_ON_Start_NormalCopy_0009();
+	$test8.end();
+}
+
+
+if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_Group_Snapshot == "Y") {
+	var $test9 = _testcase("Replication_NC_0012", "Replication Monitoring Page after NC");
+	$test9.start();
+	MSSQL_ALWAYS_ON_Replication_Flow_NC_0012();
+	$test9.end();
+}
+
+if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_NC_RPO == "Y") {
+	var $test10 = _testcase("Continuity_Manager/Common/FG/Monitor/RPO_0013", "RPO Monitoring page");
+	$test10.start();
+	MSSQL_ALWAYS_ON_NC_RPO_0013();
+	$test10.end();
+}
+
+if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_NC_RTO == "Y") {
+	var $test11 = _testcase("Continuity_Manager/Common/FG/Monitor/RTO_0014", "RTO monitoring page");
+	$test11.start();
+	MSSQL_ALWAYS_ON_NC_RTO_0014();
+	$test11.end();
+}
+
+if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_Stop_NC == "Y") {
+	var $test12 = _testcase("Continuity_Manager/Common/FG/Monitor/Switchover_0015", "Stop Normal Copy");
+	$test12.start();
+	MSSQL_ALWAYS_ON_Stop_NC_0015();
+	$test12.end();
+}
+
+if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_Start_SO == "Y") {
+	var $test13 = _testcase("Continuity_Manager/Common/FG/Monitor/Switchover_0016", "Start SwitchOver");
+	$test13.start();
+	MSSQL_ALWAYS_ON_Start_SO_0016();
+	$test13.end();
+}
+
+if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_SO_Execution == "Y") {
+	var $test14 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0017", "Verify SO Execution status");
+	$test14.start();
+	MSSQL_ALWAYS_ON_SO_Execution_0017();
+	$test14.end();
+}
+
+if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_SO_Replication == "Y") {
+	var $test15 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0018 ", "Verify the Continuity Status");
+	$test15.start();
+    MSSQL_ALWAYS_ON_SO_Continuity_Status_0018();
+    $test15.end();
+}
+
+/*if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_Start_RNC == "Y") {
+	var $test16 = _testcase("Start_RNC_0019", "Start RNC");
+	$test16.start();
+	MSSQL_ALWAYS_ON_Start_RNC_0019();
+	$test16.end();
+}
+
+//Checking the RNC_Execution
+if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_RNC_GroupInformation == "Y") {
+	var $test17 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0020", "RNC Execution");
+	$test17.start();
+	MSSQL_ALWAYS_ON_RNC_Execution_0020();
+	$test17.end();
+}*/
+
+
+//Calling Replication of SO
+if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_RNC_GroupSnapshot == "Y") {
+	var $test18 = _testcase("RNC_GroupSnapshot_Monitor_0022", "Replication Monitoring Page after RNC");
+	$test18.start();
+	MSSQL_ALWAYS_ON_Replication_Flow_RNC_0022();
+	$test18.end();
+}
+
+if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_RNC_Rpo_Monitor == "Y") {
+	var $test19 = _testcase("RNC_Rpo_Monitor_0023", "RNC RPO");
+	$test19.start();
+	MSSQL_ALWAYS_ON_RNC_RPO_Monitor_0023();
+	$test19.end();
+}
+
+/*if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_Stop_RNC == "Y") {
+	var $test20 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0024 ", "Stop RNC");
+	$test20.start();
+	MSSQL_ALWAYS_ON_Stop_RNC_0024();
+	$test20.end();
+}*/
+
+/////////EVENTS///////
+
+/*if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_Remote_Stop_MSSQL_Agent_SO_InActive == "Y") {
+	var $test21 = _testcase("Remote_Stop_MSSQL_Agent_SO_InActive0025", "Stop MSSQL Agent Switchover Inactive");
+	$test21.start();
+	MSSQL_ALWAYS_ON_Remote_Stop_MSSQL_Agent_SO_InActive_0025();
+	$test21.end();
+}
+
+
+if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_Remote_Start_MSSQL_Agent_SO_InActive == "Y") {
+	var $test22 = _testcase("Remote_Start_MSSQL_Agent_SO_InActive0026", "Start MSSQL Agent Switchover Inactive");
+	$test22.start();
+	MSSQL_ALWAYS_ON_Remote_Start_MSSQL_Agent_SO_InActive_0026();
+	$test22.end();
+}
+
+if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_Remote_Stop_Windows_OS_Agent_SO_InActive == "Y") {
+	var $test23 = _testcase("MSSQL/MSSQL_ALWAYS_ON/Mssql_ALWAYS_ON_0027", "Stop Windows OS Agent Switchover Inactive");
+	$test23.start();
+	MSSQL_ALWAYS_ON_Remote_Stop_Windows_OS_Agent_SO_InActive_0027();
+	$test23.end();
+}
+
+if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_Remote_Start_Windows_OS_Agent == "Y") {
+	var $test24 = _testcase("MSSQL/MSSQL_ALWAYS_ON/Mssql_ALWAYS_ON_0028", "Start Windows OS Agent Switchover Inactive");
+	$test24.start();
+	MSSQL_ALWAYS_ON_Remote_Start_Windows_OS_Agent_SO_InActive_0028();
+	$test24.end();
+}*/
+
+
+if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_Start_SB == "Y") {
+	var $test25 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0029", "Start SB");
+	$test25.start();
+	MSSQL_ALWAYS_ON_Start_SB_0029();
+	$test25.end();
+}
+if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_SB_Execution == "Y") {
+	var $test26 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0030 ", "Verify SB Execution status ");
+	$test26.start();
+	MSSQL_ALWAYS_ON_SB_Execution_0030();
+	$test26.end();
+}
+
+///////////////////DRYRUN REPORT SCRIPT/////////////////////////////////////
+
+if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $MSSQL_ALWAYS_ON_Dryrun_Report == "Y") {
+	var $test26 = _testcase("Continuity_Manager/Common/FG/DryRun_Report_Function", "verify Dry run reports");
+	$test26.start();
+	MSSQL_ALWAYS_ON_Dryrun_Report_Testcase();
+    $test26.end();
+}
+
+/*if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_Remote_Stop_MSSQL_Agent == "Y") {
+	var $test27 = _testcase("Continuity_Manager/Template/MSSQL_TrnLog/Monitor/MSSQL_Event0005 ", "Stop MSSQL Agent Normal Inactive");
+	$test27.start();
+	MSSQL_ALWAYS_ON_Remote_Stop_MSSQL_Agent_0039();
+	$test27.end();
+}
+
+if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_Remote_Start_MSSQL_Agent == "Y") {
+	var $test28 = _testcase("Continuity_Manager/Template/MSSQL/MSSQL_ALWAYS_ON/Mssql_ALWAYS_ON_049", "Start MSSQL Agent Normal Inactive");
+	$test28.start();
+	MSSQL_ALWAYS_ON_Remote_Start_MSSQL_Agent_0038();
+	$test28.end();
+}
+
+if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_Remote_Stop_Windows_OS_Agent == "Y") {
+	var $test29 = _testcase("Continuity_Manager/Template/MSSQL_TrnLog/Monitor/MSSQL_Event0001 ", "Stop Windows OS Agent Normal Inactive");
+	$test29.start();
+	MSSQL_ALWAYS_ON_Remote_Stop_Windows_OS_Agent_0046();
+	$test29.end();
+}
+
+if ($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_MSSQL_ALWAYS_ON_Remote_Start_Windows_OS_Agent == "Y") {
+	var $test30 = _testcase("Continuity_Manager/Template/MSSQL/MSSQL_ALWAYS_ON/Mssql_ALWAYS_ON_045", "Start Windows OS Agent Normal Inactive");
+	$test30.start();
+	MSSQL_ALWAYS_ON_Remote_Start_Windows_OS_Agent_0045();
+	$test30.end();
+}*/
+if($g_MSSQL_ALWAYS_ON_executeAll == "Y" || $g_Validation_Manager_Execution == "Y"){
+	var $test50 = _testcase("APP_PFR/APP_PFR_Group_Health_Status_0101","Validation Manager Execution");
+	$test50.start();
+	Validation_Manager_Execution();
+	$test50.end();
+	}
+
+
+_log("================================Post-Condition================================== ", "Custom1");
+
+Logout_001();

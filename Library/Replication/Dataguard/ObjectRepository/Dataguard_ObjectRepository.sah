@@ -1,0 +1,98 @@
+
+/****************************** MSSQL_PFR ******************************/
+
+var $Excel1=_getExcel($SAHI_HOME + "\\Library\\Replication\\Dataguard\\ObjectRepository\\Dataguard_ObjectRepository.xls","Dataguard");
+
+
+
+var $Excel=$Excel1.getData();
+
+if($BrowserLang == "N"){
+
+	var $j = 2;
+}
+else if($BrowserLang == "Y-JA"){
+	
+	var $j = 3;
+	}
+
+else if($BrowserLang == "Y-EN"){
+		
+		var $j = 3;
+	}
+
+
+var $OR_Datagaurd_ProtectionSchemealreadyexists=$Excel[2][$j];
+var $OR_Datagaurd_systemType=$Excel[3][$j];
+var $OR_Datagaurd_mgmtHost_DG=$Excel[4][$j];
+var $OR_Datagaurd_sername=$Excel[5][$j];
+var $OR_Datagaurd_mgmtHostDG=$Excel[6][$j];
+var $OR_Datagaurd_credList=$Excel[7][$j];
+var $OR_Datagaurd_usernameval=$Excel[8][$j];
+var $OR_Datagaurd_pwdval=$Excel[9][$j];
+var $OR_Datagaurd_CredentialCheckPassed=$Excel[10][$j];
+var $OR_Datagaurd_Status=$Excel[11][$j];
+var $OR_Datagaurd_existingSID=$Excel[12][$j];
+var $OR_Datagaurd_dgDiscoveryPort=$Excel[13][$j];
+var $OR_Datagaurd_dgDiscoverySID=$Excel[14][$j];
+var $OR_Datagaurd_SIDGUI=$Excel[15][$j];
+var $OR_Datagaurd_strFour=$Excel[16][$j];
+var $OR_Datagaurd_dgDiscoveryHostIp=$Excel[17][$j];
+var $OR_Datagaurd_osAuthenticate=$Excel[18][$j];
+var $OR_Datagaurd_dbAuthenticate=$Excel[19][$j];
+var $OR_Datagaurd_dgDiscoveryUsername=$Excel[20][$j];
+var $OR_Datagaurd_dgDiscoveryPassword=$Excel[21][$j];
+var $OR_Datagaurd_dgDiscoveryDest=$Excel[22][$j];
+var $OR_Datagaurd_ReplicationPair=$Excel[23][$j];
+var $OR_Datagaurd_ProtectionSchemecreated=$Excel[24][$j];
+var $OR_Datagaurd_Protectionschemenotcreated=$Excel[25][$j];
+var $OR_Datagaurd_oracleDriver=$Excel[26][$j];
+var $OR_Datagaurd_queryName=$Excel[27][$j];
+var $OR_Datagaurd_DatabaseNameDB=$Excel[28][$j];
+var $OR_Datagaurd_DatabaseNameGUI=$Excel[29][$j];
+var $OR_Datagaurd_ValidatingDatabasenamefromDbandGui=$Excel[30][$j];
+var $OR_Datagaurd_PortNumber=$Excel[31][$j];
+var $OR_Datagaurd_IPaddressonwhichOraclelistens=$Excel[32][$j];
+var $OR_Datagaurd_ValidatingHostIP=$Excel[33][$j];
+var $OR_Datagaurd_queryRole=$Excel[34][$j];
+var $OR_Datagaurd_SyncStatusDB=$Excel[35][$j];
+var $OR_Datagaurd_DatabaseRoleGUI=$Excel[36][$j];
+var $OR_Datagaurd_ComparingRolefromDBandGui=$Excel[37][$j];
+var $OR_Datagaurd_queryProtectionMode=$Excel[38][$j];
+var $OR_Datagaurd_ProtectionModeDB=$Excel[39][$j];
+var $OR_Datagaurd_ProtectionModeGUI=$Excel[40][$j];
+var $OR_Datagaurd_ComparingProtectionModefromDBandGui=$Excel[41][$j];
+var $OR_Datagaurd_ReplicationPair=$Excel[42][$j];
+var $OR_Datagaurd_actionStatus=$Excel[43][$j];
+var $OR_Datagaurd_DataGuardAgentrunning=$Excel[44][$j];
+var $OR_Datagaurd_ACTIVE=$Excel[45][$j];
+var $OR_Datagaurd_ThereisnoDataGuardAgentrunning=$Excel[46][$j];
+var $OR_Datagaurd_UNKNOWN=$Excel[47][$j];
+var $OR_Datagaurd_INACTIVE=$Excel[48][$j];
+var $OR_Datagaurd_protectionschemeStatusDB=$Excel[49][$j];
+var $OR_Datagaurd_output=$Excel[50][$j];
+var $OR_Datagaurd_actionStatusis=$Excel[51][$j];
+var $OR_Datagaurd_DataGuardAgentisrunning=$Excel[52][$j];
+var $OR_Datagaurd_ComparingReplicationStatusfromDbandGUI=$Excel[53][$j];
+var $OR_Datagaurd_status=$Excel[54][$j];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

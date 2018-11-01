@@ -1,0 +1,75 @@
+_include("../Library/Common/Common_Function.sah");
+_include("../Library/Component/Component_Common.sah");
+_include("../Library/Common/Operation_On_FG/Group_Operation.sah");
+_include("../conf/DRMInstallation_Parameter.sah"); //drm 72
+_include("../Library/Common/CommonRepository/CommonDRM_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/CommonGUINavigation_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/GroupOperation_ObjRepository.sah");
+_include("../Library/Solution_Signature/Clone/ObjectRepository/Clone_ObjectRepository.sah");
+_include("../conf/CloneParameter/CloneParameter.sah");
+_include("../conf/CloneParameter/CloneParameter_Local.sah");
+_include("../Library/Component/WINDOWS/Windows.sah");
+_include("../Library/Database/MSSQL/MSSQL.sah");
+_include("../Library/Component/Component_Common.sah");
+_include("../Library/Solution_Signature/Include/Common_Automation_testcase_Function.sah");
+_include("../Library/Solution_Signature/Clone/Clone_AutomationTestCase.sah");
+_include("../Library/Solution_Signature/Clone/Clone_CommonFunction.sah");
+_include("../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+
+_log("=================================Pre-Condition===================================", "Custom1");
+///Please Note---Need to run  in  the  Separate DRM Server///
+Login_001();
+
+
+
+	var $test1 = _testcase("Create Remote Componenet_001", "Create New Component");
+	$test1.start();
+	OracleDG_Component_Remote_0001();
+	$test1.end();
+
+	
+	var $test2 = _testcase("Create Remote Dataset_002", "Create New Dataset");
+	$test2.start();
+	Create_Dataset_Oracle_0002();
+	$test2.end();
+
+	var $test3 = _testcase("Create Clone_003", "Create Clone Oracle");
+	$test3.start();
+	Create_Clone_Oracle_0003();
+	$test3.end();
+	
+/*
+	var $test4 = _testcase("Create Remote Componenet_002", "Create Clone Oracle");
+	$test3.start();
+	Create_Clone_Oracle_0003();
+	$test3.end();
+*/
+	var $test5 = _testcase("Create Local_MSSQL_Componenet_005", "Create New Component");
+	$test5.start();
+	MSSQL_Component_Local_0005();
+	$test5.end();
+	
+	var $test6 = _testcase("Create Local_MSSQL_Componenet_005", "Create New Component");
+	$test6.start();
+	MSSQL_Dataset_Discovery_0006();
+	$test6.end();
+	
+	
+	var $test7 = _testcase("Create Local_MSSQL_Componenet_005", "Create New Component");
+	$test7.start();
+	MSSQL_Dataset_Clone_0007();
+	$test7.end();
+	
+	var $test8 = _testcase("Create Local_MSSQL_Componenet_005", "Create New Component");
+	$test8.start();
+	MSSQL_Component_Remote_0008();
+	$test8.end();
+	
+	var $test9 = _testcase("Create Local_MSSQL_Componenet_005", "Create New Component");
+	$test9.start();
+	MSSQL_Dataset_Clone_0009();
+	$test9.end();
+	
+_log("================================Post-Condition================================== ", "Custom1");
+
+Logout_001();

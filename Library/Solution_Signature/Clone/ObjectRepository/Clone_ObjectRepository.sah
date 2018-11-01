@@ -1,0 +1,106 @@
+var $Excel1=_getExcel($SAHI_HOME + "\\Library\\Solution_Signature\\Clone\\ObjectRepository\\Clone_ObjectRepository.xls","Param");
+
+//APP PFR Event.sah web objects
+var $Excel=$Excel1.getData();
+
+var $g_selLang = $l_drmLogin[1][2];
+
+/*
+var $Excel1=_getExcel($SAHI_HOME + "\\Library\\Solution_Signature\\PostgresSQL\\ObjectRepository\\POSTGRES_ObjectRepository.xls","Param");
+
+var $Excel=$Excel1.getData();
+
+var $g_selLang = $l_drmLogin[1][2];
+*/
+var $Excel=$Excel1.getData();
+
+var $g_selLang = $l_drmLogin[1][2];
+if($BrowserLang == "N"){
+
+	var $j = 2;
+}
+else if($BrowserLang == "Y-JA"){
+	
+	var $j = 3;
+	}
+
+else if($BrowserLang == "Y-EN"){
+		
+		var $j = 3;
+	}
+////////////////////Solution\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+
+var $Datasets=$Excel[2][$j];
+var $targetComponentName=$Excel[3][$j];
+var $targetComponentName=$Excel[4][$j];
+var $Clone=$Excel[5][$j];
+var $Datasets=$Excel[6][$j];
+var $OracleLinux113clone=$Excel[7][$j];
+var $Edit=$Excel[8][$j];
+var $usernamevalneardivUserName=$Excel[9][$j];
+var $portvalneardivPortNoSSH=$Excel[10][$j];
+var $portnearcellPortonwhichOraclelistens1=$Excel[11][$j];
+var $usernamenearcellDatabaseUserName1=$Excel[12][$j];
+var $DependentComponent=$Excel[13][$j];
+var $Datasets=$Excel[14][$j];
+var $MSSQLPRlocal1clone=$Excel[15][$j];
+var $Edit=$Excel[16][$j];
+var $usernamenearcellUsernametoconnecttotheMSSQLdatabase=$Excel[17][$j];
+var $portnearcellPortnumberonwhichtheMSSQLServerlistens=$Excel[18][$j];
+var $ViewSubsystemList=$Excel[19][$j];
+var $Datasets=$Excel[20][$j];
+var $Edit=$Excel[21][$j];
+var $DependentComponent=$Excel[22][$j];
+var $DatabaseName=$Excel[23][$j];
+var $serverNamenearcellInstancename=$Excel[24][$j];
+var $usernamenearcellUsernametoconnecttotheMSSQLdatabase=$Excel[25][$j];
+var $portnearcellPortnumberonwhichtheMSSQLServerlistens=$Excel[26][$j];
+var $Subsystems=$Excel[27][$j];
+var $Datasets=$Excel[28][$j];
+var $systemType=$Excel[29][$j];
+var $Go=$Excel[30][$j];
+var $dependentComponentName=$Excel[31][$j];
+var $datasetType=$Excel[32][$j];
+var $datasetName=$Excel[33][$j];
+var $RegisterAgent=$Excel[34][$j];
+var $RegisterAgent=$Excel[35][$j];
+var $RegisterAgents=$Excel[36][$j];
+var $Subsystems=$Excel[37][$j];
+var $Datasets=$Excel[38][$j];
+var $systemType=$Excel[39][$j];
+var $Go=$Excel[40][$j];
+var $dependentComponentName=$Excel[41][$j];
+var $datasetType=$Excel[42][$j];
+var $datasetName=$Excel[43][$j];
+var $CONNECTED=$Excel[44][$j];
+var $credList=$Excel[45][$j];
+var $usernameval=$Excel[46][$j];
+var $pwdval=$Excel[47][$j];
+var $TestCredentials=$Excel[48][$j];
+var $existingSID=$Excel[49][$j];
+var $GetSIDS=$Excel[50][$j];
+var $dbPort=$Excel[51][$j];
+var $existingSID=$Excel[52][$j];
+var $GetSIDS=$Excel[53][$j];
+var $dbPort=$Excel[54][$j];
+var $dbSidSelect=$Excel[55][$j];
+var $output=$Excel[56][$j];
+var $uniq=$Excel[57][$j];
+var $dbSidSelect=$Excel[58][$j];
+var $osAuthenticate=$Excel[59][$j];
+var $dbAuthenticate=$Excel[60][$j];
+var $dbUserName=$Excel[61][$j];
+var $dbPassword=$Excel[62][$j];
+var $TestCredentials1=$Excel[63][$j];
+var $Success=$Excel[64][$j];
+var $Discover=$Excel[65][$j];
+var $Subsystems=$Excel[66][$j];
+var $Datasets=$Excel[67][$j];
+var $DatasetalreadyExists=$Excel[68][$j];
+var $oracleHome=$Excel[69][$j];
+var $Save=$Excel[70][$j];
+var $NOTDISCOVERED=$Excel[71][$j];
+var $Subsystems=$Excel[72][$j];
+var $Datasets=$Excel[73][$j];
+var $DatasetCreated=$Excel[74][$j];

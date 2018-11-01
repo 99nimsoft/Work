@@ -1,0 +1,66 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains Creation of Component(SOLARIS) for both remote and local agents. 
+ ** AuthorName : Swati Chowdhary
+ ** Created Date : Feb 2013
+ ************************************************************************/
+
+
+/**
+* Function is for Remote Component creation at PR.
+*@param :  null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function Create_Remote_ComponentPR($srdfCheck) {
+	Create_Remote_Component($systemType, $compNamePR, $compIPPR, $compsitePR, $remoteUserNameValPR, $remotePwdValPR);
+	if($srdfCheck == "Y"){
+		Create_Remote_Component($systemType, $compNameSrdfPR, $compIPSrdfPR, $compsitePR, $remoteUserNameValSrdfPR, $remotePwdValSrdfPR);
+	}
+}// End of RemoteComponentPR()
+
+/**
+* Function is for Remote Component creation at DR  .
+*@param :  null
+*@return : null
+*@Author: Govinda Mengji
+*/
+function Create_Remote_ComponentDR($srdfCheck) {
+	Create_Remote_Component($systemType, $compNameDR, $compIPDR, $compsiteDR, $remoteUserNameValDR, $remotePwdValDR);
+	if($srdfCheck == "Y"){
+		Create_Remote_Component($systemType, $compNameSrdfDR, $compIPSrdfDR, $compsiteDR, $remoteUserNameValSrdfDR, $remotePwdValSrdfDR);
+	}
+}// end of RemoteComponentDR()
+
+/**
+* Function is for Local Component creation at DR  .
+*@param :  null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function Create_Local_ComponentPR($srdfCheck) {
+	Create_Local_Component($systemType, $compNamePR, $compIPPR, $compsitePR);
+	if($srdfCheck == "Y"){
+		Create_Local_Component($systemType, $compNameSrdfPR, $compIPSrdfPR, $compsitePR);
+	}
+}// End of LocalComponentPR()
+
+/**
+* Function is for Local Component creation at DR  .
+*@param :  null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function Create_Local_ComponentDR($srdfCheck) {
+	Create_Local_Component($systemType, $compNameDR, $compIPDR, $compsiteDR);
+	if($srdfCheck == "Y"){
+		Create_Local_Component($systemType, $compNameSrdfDR, $compIPSrdfDR, $compsiteDR);
+	}
+}// End of LocalComponentDR()
+

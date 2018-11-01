@@ -1,0 +1,169 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains APP PFR Solution specific
+ ** AuthorName : 
+ ** Created Date : 
+ ***********************************************************************************************/
+
+var $Excel1=_getExcel($SAHI_HOME + "\\Library\\Solution_Signature\\APP_PFR\\ObjectRepository\\APPPFR_ObjectRepository.xls","Param");
+
+var $Excel=$Excel1.getData();
+
+if($BrowserLang != "Y"){
+	_setGlobal("Selected language is ","english");
+	var $j = 2;
+}
+else{
+	_setGlobal("Selected language is ","japanese");
+	var $j = 3;
+}
+////////////////////Solution\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+var $Save=$Excel[2][$j];
+var $License=$Excel[3][$j];
+var $Recovery=$Excel[4][$j];
+var $Test=$Excel[5][$j];
+var $licensebutton=$Excel[6][$j];
+var $RPORTO=$Excel[7][$j];
+var $Finish=$Excel[8][$j];
+var $SolutionDetails=$Excel[9][$j];
+var $ApplicationFilesModificationTimestamp=$Excel[10][$j];
+var $LastReplicatedApplicationFileTimestamp=$Excel[11][$j];
+var $Admin=$Excel[12][$j];
+var $Subsystems=$Excel[13][$j];
+var $Datasets=$Excel[14][$j];
+var $ApplicationSubSystemPathLocation=$Excel[15][$j];
+var $ApplicationFilesModificationTimestamp=$Excel[16][$j];
+var $LastReplicatedApplicationFileTimestamp=$Excel[17][$j];
+var $RemoteSiteHealthCheck=$Excel[18][$j];
+var $StopPFRServices=$Excel[19][$j];
+var $StoptheapplicationonPrimary=$Excel[20][$j];
+var $CheckApplicationSubSystem=$Excel[21][$j];
+var $Starttheapplication=$Excel[22][$j];
+var $Manage=$Excel[23][$j];
+var $GroupsListView=$Excel[24][$j];
+var $ManageDRSolution=$Excel[25][$j];
+var $Subsystems=$Excel[26][$j];
+var $ProtectionSchemes=$Excel[27][$j];
+var $ProtectionSchemeFilesetName=$Excel[28][$j];
+var $Manage=$Excel[29][$j];
+var $GroupsListView=$Excel[30][$j];
+var $ManageDRSolution=$Excel[31][$j];
+var $FilesetName=$Excel[32][$j];
+var $ProtectionMechanism=$Excel[33][$j];
+var $ReplicationStatus=$Excel[34][$j];
+var $Monitor=$Excel[35][$j];
+var $GroupSnapshot=$Excel[36][$j];
+var $NotsupportedinSwitchovermode=$Excel[37][$j];
+var $DRDataConsistentupto=$Excel[38][$j];
+var $NotsupportedinSwitchovermode=$Excel[39][$j];
+var $Monitor=$Excel[40][$j];
+var $GroupSnapshot=$Excel[41][$j];
+var $Esttimetorecover=$Excel[42][$j];
+var $Monitor=$Excel[43][$j];
+var $GroupSnapshot=$Excel[44][$j];
+var $RecoveryTime=$Excel[45][$j];
+var $Monitor=$Excel[46][$j];
+var $GroupSnapshot=$Excel[47][$j];
+var $ContinuityOperation=$Excel[48][$j];
+var $ApplicationFilesModificationTimestamp1=$Excel[49][$j];
+var $LastReplicatedApplicationFileTimestamp1=$Excel[50][$j];
+var $Subsystems=$Excel[51][$j];
+var $Datasets=$Excel[52][$j];
+var $ApplicationSubSystemPathLocation=$Excel[53][$j];
+var $Monitor=$Excel[54][$j];
+var $GroupSnapshot=$Excel[55][$j];
+var $ApplicationFilesModificationTimestamp1=$Excel[56][$j];
+var $LastReplicatedApplicationFileTimestamp1=$Excel[57][$j];
+var $ApplicationFilesModificationTimestamp=$Excel[58][$j];
+var $Timestamp=$Excel[59][$j];
+var $LastReplicatedApplicationFileTimestamp=$Excel[60][$j];
+var $Timestamp=$Excel[61][$j];
+var $Yes=$Excel[62][$j];
+var $ApplicationSubSystemPathLocation=$Excel[63][$j];
+var $ApplicationFilesModificationTimestamp=$Excel[64][$j];
+var $Timestamp=$Excel[65][$j];
+var $LastReplicatedApplicationFileTimestamp=$Excel[66][$j];
+var $Timestamp=$Excel[67][$j];
+var $Manage=$Excel[68][$j];
+var $GroupsListView=$Excel[69][$j];
+var $GroupInformation=$Excel[70][$j];
+var $ApplicationFilesModificationTimestamp=$Excel[71][$j];
+var $LastReplicatedApplicationFileTimestamp=$Excel[72][$j];
+var $Subsystems=$Excel[73][$j];
+var $Datasets=$Excel[74][$j];
+var $ApplicationSubSystemPathLocation=$Excel[75][$j];
+var $Manage=$Excel[76][$j];
+var $GroupsListView=$Excel[77][$j];
+var $GroupInformation=$Excel[78][$j];
+var $ApplicationFilesModificationTimestamp=$Excel[79][$j];
+var $LastReplicatedApplicationFileTimestamp=$Excel[80][$j];
+var $Subsystems=$Excel[81][$j];
+var $Datasets=$Excel[82][$j];
+var $ApplicationSubSystemPathLocation=$Excel[83][$j];
+var $Test=$Excel[84][$j];
+var $TestListView=$Excel[85][$j];
+var $apppfr=$Excel[86][$j];
+var $NormalFullCopy=$Excel[87][$j];
+var $EditWorkflow=$Excel[88][$j];
+var $CreatePFRFileset=$Excel[89][$j];
+var $infoBtn=$Excel[90][$j];
+var $ActionProperties=$Excel[91][$j];
+var $AdvancedConfiguration=$Excel[92][$j];
+var $Add1=$Excel[93][$j];
+var $myModal=$Excel[94][$j];
+var $SaveNow=$Excel[95][$j];
+var $Publish=$Excel[96][$j];
+var $PublishWorkflow=$Excel[97][$j];
+var $Goback=$Excel[98][$j];
+var $myModal=$Excel[99][$j];
+var $SaveNow=$Excel[100][$j];
+var $Publish=$Excel[101][$j];
+var $PublishWorkflow=$Excel[102][$j];
+var $Goback=$Excel[103][$j];
+var $FilesDirectoriesBoth=$Excel[104][$j];
+var $ApplicationFilesModificationTimestamp=$Excel[105][$j];
+var $Timestamp=$Excel[106][$j];
+var $LastReplicatedApplicationFileTimestamp=$Excel[107][$j];
+var $Timestamp=$Excel[108][$j];
+var $Yes=$Excel[109][$j];
+var $ApplicationSubSystemPathLocation=$Excel[110][$j];
+var $ApplicationFilesModificationTimestamp=$Excel[111][$j];
+var $Timestamp=$Excel[112][$j];
+var $LastReplicatedApplicationFileTimestamp=$Excel[113][$j];
+var $Timestamp=$Excel[114][$j];
+
+
+/////////////Datasets\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+var $Subsystems=$Excel[115][$j];
+var $Datasets=$Excel[116][$j];
+var $DatasetalreadyExists=$Excel[117][$j];
+var $Go=$Excel[118][$j];
+var $Add=$Excel[119][$j];
+var $Save=$Excel[120][$j];
+var $Subsystems=$Excel[121][$j];
+var $Datasets=$Excel[122][$j];
+var $Datasets=$Excel[123][$j];
+var $ApplicationSubSystemPathLocation=$Excel[124][$j];
+
+
+///////////////ProtectionScheme\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+var $Subsystems=$Excel[125][$j];
+var $ProtectionSchemes=$Excel[126][$j];
+var $Go=$Excel[127][$j];
+var $RegisterAgent=$Excel[128][$j];
+var $RegisterAgent=$Excel[129][$j];
+var $CONNECTED=$Excel[130][$j];
+var $Status=$Excel[131][$j];
+var $RegisterAgent=$Excel[132][$j];
+var $RegisterAgent=$Excel[133][$j];
+var $CONNECTED=$Excel[134][$j];
+var $Save=$Excel[135][$j];
+var $Subsystems=$Excel[136][$j];
+var $ProtectionSchemes=$Excel[137][$j];
+var $Subsystems=$Excel[138][$j];
+var $ProtectionSchemes=$Excel[139][$j];
+var $Subsystems=$Excel[140][$j];
+var $ProtectionSchemes=$Excel[141][$j];

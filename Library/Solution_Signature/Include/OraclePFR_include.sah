@@ -1,0 +1,12 @@
+_include("../../../Library/Common/Common_Function.sah");
+_include("../../../Library/Solution_Signature/Include/Common_Automation_testcase_Function.sah");
+_include("../../../Library/Component/Component_Common.sah");
+_include("../../../Library/Common/Operation_On_FG/Group_Operation.sah");
+_include("../../../Library/Component/LINUX/Linux.sah");
+_include("../../../Library/Database/Oracle/Oracle.sah");
+_include("../../../Library/Replication/PFR/Oracle_PFR.sah");
+_include("../../../Library/Solution_Signature/Oracle_PFR/Oracle_PFR_Solution.sah");
+_include("../../../Library/Solution_Signature/Oracle_PFR/Oracle_PFR_event.sah");
+_include("../../../Library/Solution_Signature/Oracle_PFR/Oracle_PFR_Automation_testcases_Function.sah");
+_include("../../../Library/Validation_Manager/ObjectRepository/Validation_Manager_ObjectRepository.sah");
+_include("../../../Library/Validation_Manager/Validation_Manager.sah");

@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?><ws:workflow xmlns:ws="http://www.sanovi.com/panaces/workflow/">
+    <userDef size="0"/>
+    <name>ActionGroupWF</name>
+    <version>7.1 35802</version>
+    <description>null</description>
+    <approverList/>
+    <action-list>
+        <action id="0" successPathId="1">
+            <registeredName>Custom</registeredName>
+            <name>Custom</name>
+            <uniqueName/>
+            <description>This is Custom action</description>
+            <timeToExecute>0</timeToExecute>
+            <recurrence>0</recurrence>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction etcComputationType="userDefined">
+                    <serverName/>
+                    <command/>
+                    <timeout>180</timeout>
+                    <sudoUsername/>
+                    <execDir/>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>6448</joinId>
+            <version>7.1 35802</version>
+        </action>
+        <action-group id="1" successPathId="2">
+            <registeredName>DefaultActionGroup</registeredName>
+            <name>ActionGrp1</name>
+            <uniqueName/>
+            <description>DefaultActionGroup action</description>
+            <deletable>false</deletable>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties/>
+            <action-list>
+                <action id="0" successPathId="1">
+                    <registeredName>GroupSiteHealthCheck</registeredName>
+                    <name>GroupSiteHealthCheck</name>
+                    <description>GroupSiteHealthCheck action</description>
+                    <deletable>false</deletable>
+                    <actionFailureEvent/>
+                    <userInputEvent severity="INFO"/>
+                    <userInputOnFailureEvent severity="CRITICAL"/>
+                    <privateProperties>
+                        <ws:groupSiteHealthCheck site="PRIMARY"/>
+                    </privateProperties>
+                    <joinId>6450</joinId>
+                    <version>7.1 35802</version>
+                </action>
+                <action id="1" successPathId="2">
+                    <registeredName>CheckPortInUse</registeredName>
+                    <name>CheckPortInUse</name>
+                    <uniqueName/>
+                    <description>CheckPortInUse action</description>
+                    <deletable>false</deletable>
+                    <operationType>8</operationType>
+                    <actionFailureEvent severity="INFO"/>
+                    <userInputEvent severity="INFO"/>
+                    <userInputOnFailureEvent severity="CRITICAL"/>
+                    <privateProperties>
+                        <ws:CheckPortInUse componentName="Production Server" componentType="dynamic" port="46001"/>
+                    </privateProperties>
+                    <joinId>6451</joinId>
+                    <version>7.1 35802</version>
+                </action>
+                <action id="2" final="true">
+                    <registeredName>StartProcess</registeredName>
+                    <name>StartProcess</name>
+                    <uniqueName/>
+                    <description>StartProcess action</description>
+                    <deletable>false</deletable>
+                    <operationType>8</operationType>
+                    <actionFailureEvent severity="INFO"/>
+                    <userInputEvent severity="INFO"/>
+                    <userInputOnFailureEvent severity="CRITICAL"/>
+                    <privateProperties>
+                        <ws:StartProcess componentName="Production Server" componentType="dynamic" command="ls /opt" waitFor="180"/>
+                    </privateProperties>
+                    <joinId>6452</joinId>
+                    <version>7.1 35802</version>
+                </action>
+            </action-list>
+        </action-group>
+        <action-group id="2" successPathId="3">
+            <registeredName>DefaultActionGroup</registeredName>
+            <name>ActionGrp2</name>
+            <uniqueName/>
+            <description>DefaultActionGroup action</description>
+            <deletable>false</deletable>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties/>
+            <action-list>
+                <action id="0" successPathId="1">
+                    <registeredName>GroupSiteHealthCheck</registeredName>
+                    <name>GroupSiteHealthCheck</name>
+                    <description>GroupSiteHealthCheck action</description>
+                    <etc>20</etc>
+                    <deletable>false</deletable>
+                    <actionFailureEvent severity="INFO"/>
+                    <userInputEvent severity="INFO"/>
+                    <userInputOnFailureEvent severity="CRITICAL"/>
+                    <privateProperties>
+                        <ws:groupSiteHealthCheck site="SECONDARY"/>
+                    </privateProperties>
+                    <joinId>6454</joinId>
+                    <version>7.1 35802</version>
+                </action>
+                <action id="1" successPathId="2">
+                    <registeredName>StartProcess</registeredName>
+                    <name>StartProcess</name>
+                    <uniqueName/>
+                    <description>StartProcess action</description>
+                    <deletable>false</deletable>
+                    <operationType>8</operationType>
+                    <actionFailureEvent severity="INFO"/>
+                    <userInputEvent severity="INFO"/>
+                    <userInputOnFailureEvent severity="CRITICAL"/>
+                    <privateProperties>
+                        <ws:StartProcess componentName="DR Server" componentType="dynamic" command="ls /opt" waitFor="180"/>
+                    </privateProperties>
+                    <joinId>6455</joinId>
+                    <version>7.1 35802</version>
+                </action>
+                <action id="2" final="true">
+                    <registeredName>CheckPortInUse</registeredName>
+                    <name>CheckPortInUse</name>
+                    <uniqueName/>
+                    <description>CheckPortInUse action</description>
+                    <deletable>false</deletable>
+                    <operationType>8</operationType>
+                    <actionFailureEvent severity="INFO"/>
+                    <userInputEvent severity="INFO"/>
+                    <userInputOnFailureEvent severity="CRITICAL"/>
+                    <privateProperties>
+                        <ws:CheckPortInUse componentName="DR Server" componentType="dynamic" port="46001"/>
+                    </privateProperties>
+                    <joinId>6456</joinId>
+                    <version>7.1 35802</version>
+                </action>
+            </action-list>
+        </action-group>
+        <action id="3" successPathId="4">
+            <registeredName>StartProcess</registeredName>
+            <name>StartProcess</name>
+            <uniqueName/>
+            <description>StartProcess action</description>
+            <deletable>false</deletable>
+            <operationType>8</operationType>
+            <actionFailureEvent severity="INFO"/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:StartProcess componentName="Production Server" componentType="dynamic" command="df -h" waitFor="180"/>
+            </privateProperties>
+            <joinId>6457</joinId>
+            <version>7.1 35802</version>
+        </action>
+        <action id="4" final="true">
+            <registeredName>Custom</registeredName>
+            <name>Custom</name>
+            <uniqueName/>
+            <description>Custom action</description>
+            <deletable>false</deletable>
+            <actionFailureEvent/>
+            <userInputEvent severity="INFO"/>
+            <userInputOnFailureEvent severity="CRITICAL"/>
+            <privateProperties>
+                <ws:scriptAction etcComputationType="userDefined">
+                    <serverName/>
+                    <command/>
+                    <sudoUsername/>
+                    <execDir/>
+                    <logFilePath/>
+                    <CustomActionDryrunConfig>
+                        <commandPath>null</commandPath>
+                    </CustomActionDryrunConfig>
+                </ws:scriptAction>
+            </privateProperties>
+            <joinId>6458</joinId>
+            <version>7.1 35802</version>
+        </action>
+    </action-list>
+</ws:workflow>

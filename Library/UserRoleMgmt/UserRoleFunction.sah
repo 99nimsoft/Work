@@ -1,0 +1,621 @@
+/**
+* Function is for Creating  Different Users
+*@param :  $a_user
+*@return : null
+* Author: Debabrat
+*/
+
+function CreateUser($a_user){
+	
+	_click(_link($Admin));
+	_click(_link($obj_GoToUser));
+	if(_exists(_link($a_user))){
+		_log("User exist with  name"+" "+$a_user);
+	}else{
+		_click(_link($CreateNewUser));
+		_setValue(_textbox("loginId"), $a_user);
+		_setValue(_password("newPassword"), "Sanovi123$");
+		_setValue(_password("confPassword"), "Sanovi123$");
+		
+	
+	
+	if($a_user == $supadmin){
+	_click(_radio("ucat"));
+     }
+	
+	if($a_user == $admin){
+		_click(_radio("ucat[1]"));
+	}
+	
+	if($a_user == $operator){
+		_click(_radio("ucat[2]"));
+	}
+	
+	if($a_user == $notification){
+		_click(_radio("ucat[3]"));
+	}
+	_setValue(_textbox("userFullName"), $a_user);
+	_setSelected(_select("homePage"), $obj_EventsListView);
+	_setValue(_textbox("email"), "auto@sanovi.com");
+	_click(_submit($obj_save));
+}
+
+}
+/**
+* Function is for Assigning groups  to Different Users
+*@param :  $a_user,$groupName
+*@return : null
+* Author: Debabrat
+*/
+
+function navigateUsers(){
+	_click(_link($obj_admin));
+	_click(_link($obj_GoToUser));
+}
+
+function navigateAgents(){
+	_click(_link($obj_admin));
+	_click(_link($obj_GotoAgent));
+}
+
+function navigateBackup(){
+	_click(_link($GotoBackup));
+	_click(_link($obj_GotoAgent));	
+}
+
+function navigateToComponents(){
+	navigateToDiscovery();
+	_click(_link($obj_subsystems));
+	_click(_link($obj_components));
+
+}
+function navigateToSite(){
+	navigateToDiscovery();
+	_click(_link($obj_site));
+
+}
+
+function navigateToEvents(){
+	_click(_link($obj_admin));
+	_click(_link($CurrentEvents));
+}
+
+function navigateToGroupDetails(){
+	_click(_link($obj_admin));
+	_click(_link($obj_discover));
+	_click(_link($obj_Groups_link));
+	
+}
+function  navigateToOpHistory(){
+	_click(_link($obj_admin));
+	_click(_link($GotoOperationalHistory));
+
+}
+function  navigateTonotification(){
+	_click(_link($obj_admin));
+	_click(_link($GotoNotification));
+}
+function navigateToServerFailOver(){
+	_click(_link($obj_admin));
+	_click(_link($GotoServerFailover));
+
+}
+function  navigateToLicense(){
+	navigateToGroupDetails();
+	_click(_link($GroupConfiguration));
+	_click(_link($License));
+}
+/**
+* Function is for Assigning groups  to Different Users
+*@param :  $a_user,$groupName
+*@return : null
+* Author: Debabrat
+*/
+
+function VerifyCreate_Userlink(){
+	navigateUsers();
+	if(_isVisible(_link($disableLink2))){
+		_log(" Create User Link is Disable");
+	}
+}
+
+/**
+* Function is for Assigning groups  to Different Users
+*@param :  $a_user,$groupName
+*@return : null
+* Author: Debabrat
+*/
+function VerifySystemOption_link(){
+	navigateUsers();
+	if(_isVisible(_link($disableLink1))){
+		_log("SetSystemoptions Link is Disable");
+	}
+}
+
+/**
+* Function is for Assigning groups  to Different Users
+*@param :  $a_user,$groupName
+*@return : null
+* Author: Debabrat
+*/
+function VerifyUserPreference_link(){
+	navigateUsers();
+	if(_isVisible(_link($disableLink))){
+		_log("SetSystemoptions Link is Disable");
+	}
+}
+
+
+function VerifyUserModifyProperties_link($a_user){
+	navigateUsers();
+	_click(_image("edit.png", _near(_link($a_user)))); 
+	if(_click(_select($remainingGroups))){}
+		if($a_user == $supadmin){
+			_log("It  should  allow  you  to  Click ");
+			_log("The  remaining group should be  enabled  Mode ");
+		//	_assertTrue(fasle);
+		}else{
+			_log("It  should be  in Disable Mode ");
+			_log("The  remaining group should be  enabled  Mode ");
+		}
+}
+
+/**
+* Function is for deleting Users
+*@param :  $a_user
+*@return : null
+* Author: Debabrat
+*/
+function VerifyDeleteUserLink($a_user){
+	navigateUsers();
+_click(_image("ico_delete_grey.gif", _near(_link($a_user))));
+if(_isVisible(_image("ico_delete_grey.gif"))){
+	_log("Not authorized");
+} else{
+	_log("User able  to  delete");
+	_assertTrue(false);
+}
+	
+}
+/**
+* Function is for Verifying Agents
+*@param :  $a_user
+*@return : null
+* Author: Debabrat
+*/
+function VerifyAgentsLink($a_user){
+	navigateAgents();
+	if($a_user == $operator){
+		if(_assertExists(_image($Thisoperationisdisabledforyourrole))){
+			_log("Link isDisabled");
+		}
+		else{
+			_log("Link isEnabledabled");
+			_assertTrue(false);
+		}
+
+		if(_assertExists(_link($Thisoperationisdisabledforyourrole+" [3]"))){
+			_log("Link isDisabled");
+		}else{
+			_log("Link isEnabledabled");
+			_assertTrue(false);
+		}
+
+	}else{
+		if(_assertExists(_image($EditAgentConfiguration))){
+			_click(_image($EditAgentConfiguration));
+			_click(_div("dialog0_close"));
+			_log("Its Editable");
+
+		}else{
+			_log("Link is Disable");
+			_assertTrue(false);
+		}
+		if(_click(_link("Stop[3]"))){
+			_log("Its Editable");
+			
+		}else{
+			_log("Link is Disable");
+			_assertTrue(false);
+		}
+		
+		_wait(60000);
+		
+		  if(_click(_link("Start"))){
+			  _log("Its Editable");
+			  }
+		  else{
+			  _log("Link is Disable");
+				_assertTrue(false);
+		  }
+		
+	}
+}
+
+
+function VerifyBackUpUsers($a_user){
+	navigateBackup();
+	
+	if($a_user == $operator){
+		if(_assertExists(_button($disableLink))){
+			_log("Button is Disabled");
+		}
+		else{
+			_log("Button isEnabledabled");
+			_assertTrue(false);
+		}
+
+	}else{
+		if(_assertExists(_button($BackupNow))){
+			_log("Button is Enabled");
+		}
+		else{
+			_log("Button is disabled");
+			_assertTrue(false);
+		}
+	}
+
+}
+
+function  Verify_Comp_DS_Ps_Status($a_user){
+	navigateToComponents();
+	if($a_user == $operator){
+		_click(_link($Components));
+		_assertExists(_button($disableLink));
+
+		_click(_link($Datasets));
+		_assertExists(_button($disableLink));
+
+		_click(_link($ProtectionSchemes));
+		_assertExists(_button($disableLink));
+	
+
+	}
+	else if($a_user != $operator){
+		_click(_link($Components));
+		_assertExists(_button($Go));
+
+		_click(_link($Datasets));
+		_assertExists(_button($Go));
+
+		_click(_link($ProtectionSchemes));
+		_assertExists(_button($Go));
+	}else{
+		_log($ButtonisEnabledDisabled);
+		_assertTrue(false);
+
+	}
+}
+
+function VerifyCredentialCheckStatus($a_user,$compIpPR){
+	navigateToComponents();
+	if($a_user == $operator){
+		if(!(_isVisible(_image("edit.png", _near(_link($compIpPR)))))){
+			_log("Button is Disabled");
+		}
+		else{
+			_log("Button isEnabled");
+			_assertTrue(false);
+		}
+	}else{
+		if((_isVisible(_image("edit.png", _near(_link($compIpPR)))))){
+			_log("Button is Enabledsabled");
+			_click(_image("edit.png", _near(_link($compIpPR))));
+			_click(_button($TestCredentials));
+			if(_assertExists(_span($CredentialCheckPassed))){
+				_log("Credential Check Passed");
+			}else{
+				_log("Credential Check Failed");
+				_assertTrue(false);
+			}
+		}
+		else{
+			_log("Button isDisabled");
+			_assertTrue(false);
+		}
+	}
+}
+
+function  VerifyEventsStatusCheck($a_user){
+	navigateToEvents();
+	if($a_user == $operator){
+		_setSelected(_select($lifeCycleOperation), "-Change State-");
+		_setSelected(_select($lifeCycleOperation), "Closed");
+		_setSelected(_select($lifeCycleOperation), "-Change State-");
+		_setSelected(_select($lifeCycleOperation), "Response in Progress");
+		
+	}else{	
+			_setSelected(_select($lifeCycleOperation), "-Change State-");
+			_setSelected(_select($lifeCycleOperation), "Closed");
+			_setSelected(_select($lifeCycleOperation), "-Change State-");
+			_setSelected(_select($lifeCycleOperation), "Response in Progress");
+		}
+		
+}
+
+function  VerifyDifferentTab($a_user){
+	//Navigating To Recovery Page
+	navigateToManageRecovery($groupName);
+	if($a_user == $operator){
+		if(!(_isVisible(_link($obj_editworkflow)))){
+			_log("Button is Disabled");
+		}
+		else{
+			_log("Button isEnabledabled");
+			_assertTrue(fasle);
+		}
+	}else{
+		if(_isVisible(_link($obj_editworkflow))){
+			_log("Button is Enabledsabled");
+		}
+		else{
+			_log("Button isDisabled");
+			_assertTrue(false);
+		}
+	}
+	//Navigating  to Manage view  all workflow
+	navigateToBPWorkflow();
+	if($a_user == $operator){
+		if(!(_isVisible(_link($obj_editworkflow)))){
+			_log("Button is Disabled");
+		}
+		else{
+			_log("Button isEnabledabled");
+			_assertTrue(fasle);
+		}
+	}else{
+		if(_isVisible(_link($obj_editworkflow))){
+			_log("Button is Enabledsabled");
+		}
+		else{
+			_log("Button isDisabled");
+			_assertTrue(false);
+		}
+	}
+	//Navigate To Drill Listing Page
+	navigateDrillListing($groupName);
+	if($a_user == $operator){
+		if(!(_isVisible(_link($obj_editworkflow)))){
+			_log("Button is Disabled");
+		}
+		else{
+			_log("Button isEnabledabled");
+			_assertTrue(fasle);
+		}
+	}else{
+		if(_isVisible(_link($obj_editworkflow))){
+			_log("Button is Enabledsabled");
+		}
+		else{
+			_log("Button isDisabled");
+			_assertTrue(false);
+		}
+	}
+}
+
+function Verifying_Group_Details(){
+	navigateToGroupDetails();
+	_click(_heading4($RecoveryGroups));
+	_click(_link($groupName));
+	_click(_link($GroupConfiguration));
+	
+	_click(_link($RPORTO));
+	_setValue(_textbox("desrpo1", _near(_strong($DesiredAppRPO))), "300");
+	_setValue(_cell("Seconds Minutes Hours", _near(_strong($AppRPOComputeInterval))),"100");
+	_setValue(_textbox("desrto1", _near(_cell($DesiredRTO))),"3600");
+	_setValue(_textbox("desdatalag1", _near(_strong($DesiredDataLagObjective))),"10240");
+	_click(_button($Save));
+	_assertEqual($SavedRPORTOConfiguration, _lastAlert());
+	
+}
+
+function  Verifying_Logs(){
+	delete_FetchLogs_BeforeFetch($logspath);
+	Fetch_Log($groupName);
+
+}
+
+function  Verify_Manage_Workflow($WfNm,$a_user){
+	navigateToManageRecovery($groupName);
+	_click(_link($obj_viewallworkflows));
+	if(($a_user!= $operator) && ($WfNm == "NormalFullCopy")){
+		_assertExists(_link($obj_editworkflow, _near(_link($NormalFullCopy))));
+	}
+	else if(($a_user == $operator) && ($WfNm == "NormalFullCopy")){
+		_assertNotExists(_link($obj_editworkflow, _near(_link($NormalFullCopy))));
+	}
+	else if(($a_user!= $operator) && ($WfNm == "NormalCopy")){
+		_assertExists(_link($obj_editworkflow, _near(_link($NormalCopy))));
+	}
+	else if(($a_user == $operator) && ($WfNm == "NormalCopy")){
+		_assertNotExists(_link($obj_editworkflow, _near(_link($NormalCopy))));
+	}
+	else if(($a_user!= $operator) && ($WfNm == "Failover")){
+		_assertExists(_link($obj_editworkflow, _near(_link($Failover))));
+	}
+	else if(($a_user == $operator) && ($WfNm == "Failover")){
+		_assertNotExists(_link($obj_editworkflow, _near(_link($Failover))));
+	}
+	else if(($a_user!= $operator) && ($WfNm == "Fallback")){
+		_assertExists(_link($obj_editworkflow, _near(_link($Fallback))));
+	}
+	else if(($a_user == $operator) && ($WfNm == "Fallback")){
+		_assertNotExists(_link($obj_editworkflow, _near(_link($Fallback))));
+	}
+	else if(($a_user!= $operator) && ($WfNm == "ReverseNormalCopy")){
+		_assertExists(_link($obj_editworkflow, _near(_link($ReverseNormalCopy))));
+	}
+	else if(($a_user == $operator) && ($WfNm == "ReverseNormalCopy")){
+		_assertNotExists(_link($obj_editworkflow, _near(_link($ReverseNormalCopy))));
+	}else{
+		_log("Button is Enabled/Disabled");
+		_assertTrue(false);
+	}
+}
+
+function  Verify_Operational_History($a_user){
+	navigateToOpHistory();
+	if($a_user!= $operator){
+		_click(_link($PurgeLogsNow));
+		_assertExists(_button($PurgeNow));
+
+		_click(_link($EditLogRetentionPeriod));
+		_assertExists(_button($SaveConfiguration));
+
+	}
+	else if($a_user == $operator){
+		_click(_link($PurgeLogsNow));
+		_assertExists(_button($disableLink));
+
+		_click(_link($EditLogRetentionPeriod));
+		//_assertExists(_link(_button($disableLink)));
+		_highlight(_button($disableLink1));
+	}else{
+		_log("Button is Enabled/Disabled");
+		_assertTrue(false);
+
+	}
+}
+
+
+function Verify_Sites($a_user){
+	navigateToSite();
+	if($a_user == $operator){
+		_assertExists(_link("disableLink"));
+		_assertExists(_image("This operation is disabled for your role ", _near(_link("SCC_Site"))));
+	}
+	else if($a_user!= $operator){
+			_assertExists(_link($CreateNewSite));
+			_assertExists(_image("Modify Site", _near(_link("SCC_Site"))));
+		}else{
+			_log("Button is Enabled/Disabled");
+			_assertTrue(false);
+
+		}
+
+	
+}
+
+function Verify_Notification_Status($a_user){
+	navigateTonotification();
+	if($a_user!=$operator){
+		_assertExists(_image("edit.png", _near(_link("AdminSCCNotificationList"))));
+		_assertExists(_image("edit.png", _near(_cell("SCCNotificationList"))));
+		_assertExists(_image("edit.png", _near(_link("MgmtSNMPTrapMSG"))));
+		_assertExists(_image("edit.png", _near(_link("AdminSNMPTrapMSG"))));
+	}
+	else if($a_user=$operator){
+		_assertExists(_image("edit_grey.gif", _near(_link("AdminSCCNotificationList"))));
+		_assertExists(_image("edit_grey.gif", _near(_link("SCCNotificationList"))));
+		_assertExists(_image("edit_grey.gif", _near(_link("MgmtSNMPTrapMSG"))));
+		_assertExists(_image("edit_grey.gif", _near(_link("AdminSNMPTrapMSG"))));
+	}else{
+		_log("Button is Enabled/Disabled");
+		_assertTrue(false);
+	}
+}
+
+function Verify_ServerFailOver_Status($a_user){
+	navigateToServerFailOver();
+	if($a_user!=$operator){
+		_click(_link($Configuration));
+		_assertExists(_button($Save));
+	}
+	else if($a_user ==$operator){
+		_click(_link($Configuration));
+		_assertExists(_button($smallbuttondisableLink));
+		}
+	else{
+		_log("Button is Enabled/Disabled");
+		_assertTrue(false);
+	}	
+}
+
+function  Verify_License_Status($a_user){
+	navigateToLicense();
+	if($a_user!=$operator){
+		_assertExists(_button($okbutton1));
+	}
+	else if($a_user ==$operator){
+		_assertExists(_button($licensebutton));
+		}
+	else{
+		_log("Button is Enabled/Disabled");
+		_assertTrue(false);
+	}	
+
+}
+
+function Verify_BusinessProcess_Status($a_user){
+	navigateToManageBP();
+	if($a_user!=$operator){
+		_assertExists(_link($CreateNew));
+	}
+	else if($a_user ==$operator){
+		_assertNotExists(_link($CreateNew));
+		}
+	else{
+		_log("Button is Enabled/Disabled");
+		_assertTrue(false);
+	}	
+
+}
+
+function Verify_Drill_Listing($a_user,$WfNm){
+	navigateDrillListing($groupName);
+	if(($a_user!= $operator) && ($WfNm == "Switchover")){
+		_assertExists(_link($obj_editworkflow, _near(_link($Switchover))));
+	}
+	else if(($a_user == $operator) && ($WfNm == "Switchover")){
+		_assertNotExists(_link($obj_editworkflow, _near(_link($Switchover))));
+	}
+	else if(($a_user!= $operator) && ($WfNm == "Switchback")){
+		_assertExists(_link($obj_editworkflow, _near(_link($Switchback))));
+	}
+	else if(($a_user == $operator) && ($WfNm == "Switchback")){
+		_assertNotExists(_link($obj_editworkflow, _near(_link($Switchback))));
+	}
+	else{
+		_log("Button is Enabled/Disabled");
+		_assertTrue(false);
+	}	
+}
+function Verify_DashBoard_HelpLink(){
+	_click(_link($Admin));
+	_click(_image($Cloud));
+	_assertExists(_label($Help));
+
+}
+
+function Verify_Prorperties_File(){
+	var $status= SecuredShellConnection("172.168.20.62", "root", "persqa123","sh /opt/panaces/bin/DRMSupportUserPasswordChange.sh");
+	 
+		var $sshCommand = "sed -i 's@Enter password for support:.*@Enter password for support:=Drmsupp123$@' " + "sh /opt/panaces/bin/DRMSupportUserPasswordChange.sh";
+	 $status= SecuredShellConnection("172.168.20.62", "root", "persqa123",$sshCommand);
+
+
+	// SecuredShellConnection("172.168.20.62", "root", "persqa123", "sed -i 's@Enter password for support:Drmsupt123@' sh /opt/panaces/bin/DRMSupportUserPasswordChange.sh");
+	
+   // var $CompStr="ADVANCED_SERVER_TYPE USER_MANAGEMENT MODE ADVANCED_SERVER_TYPE ADVANCED_SERVER_DOMAIN ADVANCED_SERVER_USER_NAME";
+	//var	$status1 = RemoteConnectionToWindows($serverIP, $serverUsername, $serverPassword,$sshCommand);
+
+
+	//var $status = RemoteConnectionToWindows($sshIP, $sshUserID, $sshPassword, $sshCommand, $error);
+
+	_log($status1);
+	//var	$status2 = SecuredShellConnection("172.168.20.62", "root", "persqa123","Sanovi123","Y");
+	//var	$status = $status1.replace(/\,/g, " ").trim();
+	 //if($status1.indexOf($CompStr) > -1)
+	//$grplog.match($compPR)
+	//var  $role=$status1.match($CompStr);
+	//_assertExists($role);
+
+	/* if(_containsText($status1,$CompStr)){
+    	 _log($Botharecomparedandequal);
+    	// _assertExist()
+     }
+     else{
+    	 _log($Botharecomaparedandnotequal);
+     }*/
+
+}

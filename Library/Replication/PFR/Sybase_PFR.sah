@@ -1,0 +1,192 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains Creation of Protection Scheme for both remote and local agents. 
+ ** AuthorName : Govinda Mengji
+ ** Created Date : July 2013
+ ************************************************************************/
+
+
+/**
+* Function is for Creating Protection Schemes in Sybase  solution for PR.
+*@param :  null
+*@return : null
+* Author: Govinda Mengji
+*
+*/
+		
+function Create_Sybase_PFR_ProtectionSchemePR() {
+   Create_Sybase_ProtectionScheme($systemTypeProtection, $sernamePR,  $mgmtHostPFRPR);
+   }//end of Sybase_ProtectionschemePR()
+   
+/**
+* Function is for Creating Protection Schemes in Sybase  solution for DR.
+*@param :  null
+*@return : null
+* Author: Govinda Mengji
+*
+*/
+function Create_Sybase_PFR_ProtectionSchemeDR() {
+   Create_Sybase_ProtectionScheme($systemTypeProtection, $sernameDR,  $mgmtHostPFRDR);
+   }//end of Sybase_ProtectionschemeDR() 
+
+/**
+* Function is for Creating Protection Schemes in Sybase  solution.
+*@param :  $systemType, $sername,  $mgmtHostPFR
+*@return : null
+* Author: Govinda Mengji
+*
+*/
+function Create_Sybase_ProtectionScheme($systemTypeProtection,$sername,$mgmtHostPFR)
+  {
+	navigateToDiscovery();
+	_click(_link($OR_Sybase_Subsystems));
+	_click(_link($OR_Sybase_ProtectionSchemes));
+	if (_exists(_link($sername))) {
+		_assertExists($OR_Sybase_Protectionschemealreadyexists);
+	} else {
+	_setSelected(_select($OR_Sybase_systemType), $systemTypeProtection);
+	_click(_button($OR_Sybase_Go));
+	
+	_setSelected(_select($OR_Sybase_mgmtHost_PFR2), $mgmtHostPFR);
+	_setValue(_textbox($OR_Sybase_sername), $sername);
+	if (_exists(_link($OR_Sybase_RegisterAgent))) 
+    {
+	_wait(5000);
+	_click(_link($OR_Sybase_RegisterAgent));
+	_wait(30000, _cell($OR_Sybase_CONNECTED));
+	} 
+	
+	var $status = _getCellText(_cell(1, _near(_cell($OR_Sybase_Status))));
+	if($status == $OR_Sybase_CONNECTED)
+	{
+    _wait(5000);
+	_assertExists($OR_Sybase_AgentisCONNECTED);
+	}
+	else
+	{
+	_fail($OR_Sybase_AgentisnotCONNECTED);
+	}
+	_clearLastAlert();
+	_click(_button($OR_Sybase_Save));
+	navigateToDiscovery();
+	_click(_link($OR_Sybase_Subsystems));
+	_click(_link($OR_Sybase_ProtectionSchemes));
+	if (_exists(_link($sername))) 
+	{
+	_assertExists($OR_Sybase_ProtectionSchemescreatedsuccesfully);
+	} 
+	else 
+	{
+		_assertEqual($OR_Sybase_ProtectionSchemecreated,_lastAlert()); 
+	_fail($OR_Sybase_ProtectionSchemesnotcreatedsuccesfully);
+	}
+}
+}
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+
+//************************************************************************************************************************************************************************//
+//***********************************************************************************
+
+
+/**
+* Function is for  get the local PFR agent status from backend for PR
+*@param :null
+*@return : null
+*@Author: Govinda
+*
+*/
+
+//Description: For Local Sybase agent get the status from backend for PR and DR
+function Get_Local_Protection_Status_DB_PR_PFR() {
+	return Get_Local_Protection_Status_DB_PFR($localAgentPathPR, $compIPPR, $remoteUserNameValPR, $remotePwdValPR);
+} // End of Get_Local_Protection_Status_DB_PR_PFR()
+
+
+/**
+* Function is for  get the local PFR agent status from backend for DR
+*@param :null
+*@return : null
+*@Author: Govinda
+*
+*/
+function Get_Local_Protection_Status_DB_DR_PFR() {
+	return Get_Local_Protection_Status_DB_PFR($localAgentPathDR, $compIPDR, $remoteUserNameValDR, $remotePwdValDR);
+} // End of Get_Local_Protection_Status_DB_DR_PFR()
+
+/**
+* Function is to get local Protection status from backend.
+*@param :$localAgentPath, $compIP, $remoteUserNameVal, $remotePwdVal
+*@return :$componentStatusDB
+*@Author: Govinda
+*
+*/
+function Get_Local_Protection_Status_DB_PFR($localAgentPath, $compIP, $remoteUserNameVal, $remotePwdVal) {
+	var $agentStatus = '../.' + $localAgentPath + "PFRAgent.sh status ";
+	$PFRAgentStatus = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $agentStatus);
+
+	_assertExists($OR_Sybase_PFRAgentStatus, $PFRAgentStatus);
+
+	if ($PFRAgentStatus == $OR_Sybase_PFRAgentisrunning) {
+		var $ProtectionStatus = $OR_Sybase_ACTIVE;
+		_assertExists($OR_Sybase_ProtectionStatusinDBis, $ProtectionStatus);
+
+	} else if ($PFRAgentStatus == $OR_Sybase_PFRAgentisnotrunning) {
+		var $ProtectionStatus = $OR_Sybase_UNKNOWN;
+		_assertExists($OR_Sybase_ProtectionStatusdb, $ProtectionStatus);
+
+	} else {
+		var $ProtectionStatus = $OR_Sybase_UNKNOWN;
+		_assertExists($OR_Sybase_ProtectionStatusdb, $ProtectionStatus);
+	}
+	var $ProtectionStatusDB = new java.util.Properties();
+	$ProtectionStatusDB.put($OR_Sybase_ProtectionStatusdb, $ProtectionStatus);
+
+	return $ProtectionStatusDB;
+}// End of Get_Local_Protection_Status_DB_Windows()
+
+
+////////////////////////////
+
+/**
+* Function is to get Local Windows agent status from backend and GUI for PR.
+*@param :null
+*@return :null
+*@Author: Govinda
+*
+*/
+
+function Verify_Protection_Status_PR_Sybase() {
+	_wait(5000);
+	Popup_Handler();
+
+	var $ProtectionStatus = Get_Local_Protection_Status_DB_PR_PFR();
+   
+	var $ProtectionStatusGui = Get_Protectionscheme_Status_Gui_PR();
+
+_assertEqual($ProtectionStatus.get($OR_Sybase_ProtectionStatusdb),$ProtectionStatusGui.get("status"), "Comparing Protection status from DB and GUI for PR");
+
+}// end of Verify_Component_Status_PR_Solaris()
+
+/**
+* Function is to get Local Solaris agent status from backend and GUI for DR.
+*@param :$agentType
+*@return :null
+*@Author: Govinda
+*
+*/
+
+function Verify_Protection_Status_DR_Sybase() {
+	_wait(5000);
+	Popup_Handler();
+	
+
+  var $ProtectionStatus = Get_Local_Protection_Status_DB_DR_PFR();
+	
+	var $ProtectionStatusGui = Get_Protectionscheme_Status_Gui_DR();
+	_assertEqual($ProtectionStatus.get($OR_Sybase_ProtectionStatusdb), $ProtectionStatusGui.get("status"), "Protection status not same in GUI and backend for DR");
+}// end of Verify_Protection_Status_DR_Windows()
+
+

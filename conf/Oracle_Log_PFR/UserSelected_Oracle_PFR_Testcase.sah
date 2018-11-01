@@ -1,0 +1,169 @@
+
+var $l_userInputsDataOracle_PFR = _readExcelFile($SAHI_HOME + "\\conf\\Oracle_Log_PFR\\Oracle_PFR_Parameter.xls","User Seleeted Case");
+var $userDataLengthOracle_PFR  = $l_userInputsDataOracle_PFR.length-1;
+
+var $flag = 0;
+for($i = 3 ; $i <= $userDataLengthOracle_PFR ; $i++){
+	if($l_userInputsDataOracle_PFR[$i][4] == "Y"){	
+		$flag=$flag+1;	
+	}
+}
+
+//-----------Execution of Individual Testcase------------------------------
+
+var $g_siteOracle_PFR = $l_userInputsDataOracle_PFR[17][4];
+var $g_agentNodeOracle_PFR = $l_userInputsDataOracle_PFR[18][4];
+var $g_componentRemoteDiscoveryOracle_PFR = $l_userInputsDataOracle_PFR[19][4];
+var $g_componentLocalDiscoveryOracle_PFR= $l_userInputsDataOracle_PFR[20][4];
+var $g_datasetDiscoveryOracle_PFR = $l_userInputsDataOracle_PFR[21][4];;
+var $g_datasetAutoDiscoveryOracle_PFR = $l_userInputsDataOracle_PFR[22][4];
+var $g_protectionSchemeDiscoveryOracle_PFR = $l_userInputsDataOracle_PFR[23][4];;
+var $g_protectionSchemeDetailsOracle_PFR = $l_userInputsDataOracle_PFR[24][4];
+var $g_groupCreationOracle_PFR = $l_userInputsDataOracle_PFR[25][4];
+var $g_moveGroupToManageOracle_PFR = $l_userInputsDataOracle_PFR[26][4];
+
+var $g_changeContinuityStateOracle_PFR = $l_userInputsDataOracle_PFR[27][4];
+var $g_postGroupCreationOracle_PFR = $l_userInputsDataOracle_PFR[28][4];
+var $g_componentStatusOracle_PFR = $l_userInputsDataOracle_PFR[29][4];
+var $g_datasetStatusOracle_PFR = $l_userInputsDataOracle_PFR[30][4];
+var $g_protectionSchemeStatusOracle_PFR = $l_userInputsDataOracle_PFR[31][4];
+
+var $g_continuityManagenentOracle_PFR = $l_userInputsDataOracle_PFR[32][4];
+var $g_importNCOracle_PFR = $l_userInputsDataOracle_PFR[33][4];
+var $g_importFOOracle_PFR = $l_userInputsDataOracle_PFR[34][4];
+var $g_startNCOracle_PFR = $l_userInputsDataOracle_PFR[35][4];
+var $g_monitorRelationshipOracle_PFR = $l_userInputsDataOracle_PFR[36][4];
+
+var $g_manageDRSolutionOracle_PFR = $l_userInputsDataOracle_PFR[37][4];
+var $g_groupInformationOracle_PFR = $l_userInputsDataOracle_PFR[38][4];;
+var $g_groupSnapshotOracle_PFR = $l_userInputsDataOracle_PFR[39][4];;
+var $g_replicationNCOracle_PFR = $l_userInputsDataOracle_PFR[40][4];
+var $g_rpoNCOracle_PFR = $l_userInputsDataOracle_PFR[41][4];
+var $g_rtoNCOracle_PFR = $l_userInputsDataOracle_PFR[42][4];
+var $g_importSOSBOracle_PFR = $l_userInputsDataOracle_PFR[43][4];
+var $g_stopNCOracle_PFR = $l_userInputsDataOracle_PFR[44][4];
+var $g_startSOOracle_PFR = $l_userInputsDataOracle_PFR[45][4];
+var $g_SOExecutionOracle_PFR = $l_userInputsDataOracle_PFR[46][4];
+
+var $g_replicationSOOracle_PFR = $l_userInputsDataOracle_PFR[47][4];
+var $g_importRNCOracle_PFR = $l_userInputsDataOracle_PFR[48][4];
+var $g_startRNCOracle_PFR = $l_userInputsDataOracle_PFR[49][4];
+var $g_groupInformaitionRNCOracle_PFR = $l_userInputsDataOracle_PFR[50][4];
+var $g_groupSnapshotOracle_PFR = $l_userInputsDataOracle_PFR[51][4];
+var $g_rpoRNCOracle_PFR = $l_userInputsDataOracle_PFR[52][4];
+var $g_replicationRNCOracle_PFR = $l_userInputsDataOracle_PFR[53][4];
+var $g_stopRNCOracle_PFR = $l_userInputsDataOracle_PFR[54][4];
+var $g_startSBOracle_PFR = $l_userInputsDataOracle_PFR[55][4];
+var $g_SBExecutionOracle_PFR = $l_userInputsDataOracle_PFR[56][4];
+
+var $g_monitorManageSBOracle_PFR = $l_userInputsDataOracle_PFR[57][4];
+var $g_remoteStopOracle_PFRAgent = $l_userInputsDataOracle_PFR[58][4];
+var $g_remoteStartOracle_PFRAgent = $l_userInputsDataOracle_PFR[59][4];
+var $g_localStopOracle_PFRAgent = $l_userInputsDataOracle_PFR[60][4];
+var $g_localStartOracle_PFRAgent = $l_userInputsDataOracle_PFR[61][4];
+var $g_replicaionStopOracle_PFR = $l_userInputsDataOracle_PFR[62][4];
+var $g_replicaionStartOracle_PFR = $l_userInputsDataOracle_PFR[63][4];
+var $g_startFOOracle_PFR = $l_userInputsDataOracle_PFR[64][4];
+var $g_FOExecutionOracle_PFR = $l_userInputsDataOracle_PFR[65][4];
+var $g_continuityStatusFOOracle_PFR = $l_userInputsDataOracle_PFR[66][4];
+
+var $g_rpoFOOracle_PFR = $l_userInputsDataOracle_PFR[67][4];
+var $g_monitorManageFOOracle_PFR = $l_userInputsDataOracle_PFR[68][4];
+
+//---------------For Executing All the Testcases------------------------
+var $g_executeOracle_PFRAll = $l_userInputsDataOracle_PFR[4][4];
+var $g_groupCreationOracle_PFR = $l_userInputsDataOracle_PFR[8][4];
+var $g_postGroupCreationOracle_PFR = $l_userInputsDataOracle_PFR[9][4];
+var $g_executeNCOracle_PFR = $l_userInputsDataOracle_PFR[10][4];
+var $g_executeSOSBOracle_PFR = $l_userInputsDataOracle_PFR[11][4];
+var $g_eventExecutionOracle_PFR = $l_userInputsDataOracle_PFR[12][4];
+var $g_executeFOOracle_PFR = $l_userInputsDataOracle_PFR[13][4];
+
+//--------------For Group Creation--------------------------------------
+
+if ($g_groupCreationOracle_PFR == "Y"){
+
+var $g_siteOracle_PFR = "Y";
+var $g_agentNodeOracle_PFR = "Y";
+	if($agentType == "Remote"){
+		var $g_componentRemoteDiscoveryOracle_PFR = "Y";
+	}else{
+		var $g_componentLocalDiscoveryOracle_PFR= "Y";
+	}
+var $g_datasetDiscoveryOracle_PFR = "Y";
+var $g_datasetAutoDiscoveryOracle_PFR = "Y";
+var $g_protectionSchemeDiscoveryOracle_PFR = "Y";
+var $g_protectionSchemeDetailsOracle_PFR = "Y";
+var $g_groupCreationOracle_PFR = "Y";
+var $g_moveGroupToManageOracle_PFR= "Y";
+var $g_changeContinuityStateOracle_PFR= "Y";
+}
+//-------------Post Group Creation-------------------------------------------------
+
+if ($g_postGroupCreationOracle_PFR == "Y"){
+var $g_postGroupCreationOracle_PFR= "Y";
+var $g_componentStatusOracle_PFR= "Y";
+var $g_datasetStatusOracle_PFR= "Y";
+var $g_protectionSchemeStatusOracle_PFR= "Y";
+var $g_continuityStatusOracle_PFR="Y";
+var $g_continuityManagenentOracle_PFR= "Y";
+}
+//-----------Start NC ,Import FO WorkFlow and Verify Screens During NC---------------
+
+if ($g_executeNCOracle_PFR == "Y"){
+var $g_importNCOracle_PFR= "Y";
+var $g_importFOOracle_PFR= "Y";
+var $g_startNCOracle_PFR= "Y";
+var $g_monitorRelationshipOracle_PFR= "Y";
+var $g_manageDRSolutionOracle_PFR= "Y";
+var $g_groupInformationOracle_PFR= "Y";
+var $g_groupSnapshotOracle_PFR= "Y";
+var $g_replicationNCOracle_PFR= "Y";
+var $g_rpoNCOracle_PFR= "Y";
+var $g_rtoNCOracle_PFR= "Y";
+}
+//------------Import SO and SB Workflow,stop NC and start SO,RNC and SB------------------------
+
+if ($g_executeSOSBOracle_PFR == "Y"){
+var $g_importSOSBOracle_PFR= "Y";
+var $g_stopNCOracle_PFR= "Y";
+var $g_startSOOracle_PFR= "Y";
+var $g_SOExecutionOracle_PFR= "Y";
+var $g_replicationSOOracle_PFR= "Y";
+var $g_importRNCOracle_PFR= "Y";
+var $g_startRNCOracle_PFR= "Y";
+var $g_groupInformaitionRNCOracle_PFR= "Y";
+var $g_groupSnapshotOracle_PFR= "Y";
+var $g_rpoRNCOracle_PFR= "Y";
+var $g_replicationRNCOracle_PFR= "Y";
+var $g_stopRNCOracle_PFR= "Y";
+var $g_startSBOracle_PFR= "Y";
+var $g_SBExecutionOracle_PFR= "Y";
+var $g_monitorManageSBOracle_PFR= "Y";
+}
+//------------Event for Agent and Replication start and Stop-------------------------
+if ($g_eventExecutionOracle_PFR == "Y"){	
+	if($agentType == "Remote"){
+var $g_remoteStopOracle_PFRAgent= "Y";
+var $g_remoteStartOracle_PFRAgent= "Y";
+	}else {
+var $g_localStopOracle_PFRAgent= "Y";
+var $g_localStartOracle_PFRAgent= "Y";
+	}
+var $g_replicaionStopOracle_PFR= "Y";
+var $g_replicaionStartOracle_PFR= "Y";
+}
+//--------------FO Execution-----------------------------------------------
+if($g_executeFOOracle_PFR == "Y"){
+var $g_startFOOracle_PFR= "Y";
+var $g_FOExecutionOracle_PFR= "Y";
+var $g_continuityStatusFOOracle_PFR= "Y";
+var $g_rpoFOOracle_PFR= "Y";
+var $g_monitorManageFOOracle_PFR= "Y";
+}
+
+
+
+if($flag == 0){
+	$g_executeOracle_PFRAll = "Y";
+}

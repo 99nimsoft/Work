@@ -1,0 +1,419 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the Local agent test cases which are the part of  Oracle_PFR solution. 
+ ** AuthorName : Automation Team
+ ** Created Date : June 2013
+ ************************************************************************/
+
+_log("=================================Pre-Condition===================================","Custom1");
+
+//don't change the below line.
+_include("../Library/Solution_Signature/Include/OraclePFR_include.sah");
+
+//mentioned the correct parameter file name which user are going to execute
+//within the "" code.
+_include("../conf/DRMInstallation_Parameter.sah");
+_include("../conf/Oracle_Log_PFR/Oracle_PFR_Local_Agent_Parameter.sah");
+_include("../conf/Oracle_Log_PFR/UserSelected_Oracle_PFR_Testcase.sah");
+_include("../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+_include("../Library/Solution_Signature/APP_PFR/APP_PFR_Solution.sah");//pfr status check
+
+//*************************************************************************************************************************************************
+// Notes: below test cases for Local agent
+
+WorkFlow_copy_001();
+
+/*
+UnInstall_Remote_Agent_SilentMode_PR();  //uninstalling remote Agent. Pfr Services for PR
+UnInstall_Remote_Agent_SilentMode_DR();  //uninstalling remote Agent. Pfr Services for DR
+Agent_UnInstllation_001();
+
+AgentBuild_Copy_into_PFRFile_PR();
+AgentBuild_Copy_into_PFRFile_DR();
+Copy_Property_file();  
+Update_PropertyFile_RemoteAgent_PR();
+Update_PropertyFile_RemoteAgent_DR(); 
+
+Install_Remote_Agent_SilentMode_PR();  // installing the PFR service 
+Install_Remote_Agent_SilentMode_DR();   // installing the PFR service 
+
+ //Notes: below test cases for Local Agent 
+
+AgentBuild_Copy_into_AgentHost_PR(); 
+AgentBuild_Copy_into_AgentHost_DR(); 
+Copy_Property_file();
+
+Update_PropertyFile_LocalAgent_PR();
+Update_PropertyFile_LocalAgent_DR();  
+
+Install_Local_Agent_SilentMode_PR();
+Install_Local_Agent_SilentMode_DR();  
+
+// checking the status of PFR service after installing local agents
+Status_Remote_PFR_SilentMode_PR(); 
+Status_Remote_PFR_SilentMode_DR();
+*/
+Login_001();
+
+_log("=================================Test========================================","Custom1");
+
+/*if($g_executeOracle_PFRAll == "Y" || $g_siteOracle_PFR == "Y"){
+var $test0 = _testcase("Site_0003","Create New Site");
+$test0.start(); 
+	Site_0003();
+$test0.end();
+}
+
+if($g_executeOracle_PFRAll == "Y" || $g_agentNodeOracle_PFR == "Y"){
+var $test1 = _testcase("Object_Manager/ Common/ Components/ Component_04","Create Agent Node");
+$test1.start();
+	Agent_node_001();
+$test1.end();
+}
+
+
+
+if($g_executeOracle_PFRAll == "Y" || $g_componentRemoteDiscoveryOracle_PFR == "Y"){
+var $test2 = _testcase("Object_Manager/ Common/ Components/ Component_04","Create New Component");
+$test2.start();
+	Oracle_PFR_Component_Local_Discovery_0002();
+$test2.end();
+}
+
+if($g_executeOracle_PFRAll == "Y" || $g_datasetDiscoveryOracle_PFR == "Y"){
+var $test3 = _testcase("Object_Manager/Dataset/Oracle/OraDiscovery_0006 ","Dataset Discovery");
+$test3.start();
+  Oracle_PFR_Dataset_Discovery_002();
+$test3.end();
+}
+
+
+if($g_executeOracle_PFRAll == "Y" || $g_datasetAutoDiscoveryOracle_PFR == "Y"){
+var $test4 = _testcase("Object_Manager/Dataset/Oracle/Ora_Auto_DatasetDiscovery0002","Oracle Auto Dataset Discovery");
+$test4.start();
+Oracle_PFR_Auto_DatasetDiscovery003();
+$test4.end();
+}
+
+
+if($g_executeOracle_PFRAll == "Y" || $g_protectionSchemeDiscoveryOracle_PFR == "Y"){
+var $test5 = _testcase("Object_Manager/ProtectionScheme/DataGaurd/Oracle_PFR_Discovery0002","Protection Scheme Discovery");
+$test5.start();
+Oracle_PFR_Protectionscheme_Discovery_004();
+$test5.end();
+}
+
+
+if($g_executeOracle_PFRAll == "Y" || $g_groupCreationOracle_PFR == "Y"){
+var $test6 = _testcase("Continuity_Manager/Common/FG/Group/GroupCreation_0001","Oracle_PFR Group Creation");
+$test6.start();
+Oracle_PFR_GroupCreation_005();
+$test6.end();
+}
+
+if($g_executeOracle_PFRAll == "Y" || $g_moveGroupToManageOracle_PFR == "Y"){
+	var $test6 = _testcase("Continuity_Manager/Common/FG/Group/GroupCreation_0006","Move Group to Manage");
+	$test6.start();
+		Oracle_PFR_Move_Group_Manage_006();
+	$test6.end();
+	}
+
+	if($g_executeOracle_PFRAll == "Y" || $g_moveGroupToManageOracle_PFR == "Y"){
+		var $test6 = _testcase("Continuity_Manager/Common/FG/Group/GroupCreation_0006","Execute NFC");
+		$test6.start();
+		Oracle_Execute_NFC();
+		$test6.end();
+		}
+	
+
+
+	if($g_executeOracle_PFRAll == "Y" || $g_postGroupCreationOracle_PFR == "Y"){
+	var $test8 = _testcase("Object_Manager/ProtectionScheme/DataGaurd/Oracle_PFR_Discovery_0010","Post Group Creation");
+	$test8.start();
+	 	//Oracle_PFR_Post_Group_Creation_008();
+	$test8.end();
+	}
+
+
+	if($g_executeOracle_PFRAll == "Y" || $g_importFOOracle_PFR == "Y"){
+	var $test9 = _testcase("Site_0003","Import FO");
+	$test9.start();
+		Oracle_PFR_Import_FO_009();
+	$test9.end();
+	}
+
+	if($g_executeOracle_PFRAll == "Y" || $g_componentStatusOracle_PFR == "Y"){
+	var $test10 = _testcase("Object_Manager/ Common/ Components/ Subsystem_Moinitoring_0001 ","Component Status");
+	$test10.start();
+		Oracle_PFR_Component_Status_0010();
+	$test10.end();
+	}
+
+	if($g_executeOracle_PFRAll == "Y" || $g_datasetStatusOracle_PFR == "Y"){
+	var $test11 = _testcase("Object_Manager/Dataset/Oracle/Ora_Auto_DatasetDiscovery0009","Dataset Status");
+	$test11.start();
+		Oracle_PFR_Dataset_status_0011();
+	$test11.end();
+	}
+	
+
+	if($g_executeOracle_PFRAll == "Y" || $g_continuityStatusOracle_PFR == "Y"){
+	var $test12 = _testcase("Continuity_Manager/Common/FG/Monitor/MON_0002","Continuity Status");
+	$test12.start();
+	 	Oracle_PFR_Contiunity_Status_0012();
+	$test12.end();
+	}
+
+   if($g_executeOracle_PFRAll == "Y" || $g_importNCOracle_PFR == "Y"){
+	var $test14 = _testcase("Import NC","Import NC");
+	$test14.start();
+	       Oracle_PFR_Import_NC_0014();
+	$test14.end();
+	}
+
+	if($g_executeOracle_PFRAll == "Y" || $g_startNCOracle_PFR == "Y"){
+	var $test15 = _testcase("Continuity_Manager/Common/FG/Manage/NormalCopy_0001","Start NC");
+	$test15.start();
+	 	Oracle_PFR_Start_NormalCopy_0015();
+	$test15.end();
+	}
+
+	if($g_executeOracle_PFRAll == "Y" || $g_protectionSchemeStatusOracle_PFR == "Y"){
+		var $test16 = _testcase("Object_Manager/ProtectionScheme/DataGaurd/Oracle_PFR_Discovery0011","Protection Scheme Status");
+		$test16.start();
+			Oracle_PFR_Protectionscheme_status_0016();
+		$test16.end();
+	}
+
+	if($g_executeOracle_PFRAll == "Y" || $g_monitorRelationshipOracle_PFR == "Y"){
+	var $test17 = _testcase("Site_0003","Monitor Relationship");
+	$test17.start();
+		Oracle_PFR_Relationship_0017();
+	$test17.end();
+	}
+
+	if($g_executeOracle_PFRAll == "Y" || $g_replicationNCOracle_PFR == "Y"){
+	var $test18 = _testcase("Continuity_Manager/Template/Oracle_Log/Oracle_PFR/Oracle_PFR_ProtectionMonitoring0001","NC Replication");
+	$test18.start();
+		Oracle_PFR_NC_Replication_0018();
+	$test18.end();
+	}
+
+	if($g_executeOracle_PFRAll == "Y" || $g_rpoNCOracle_PFR == "Y"){
+	var $test19 = _testcase("Continuity_Manager/Common/FG/Monitor/RPO_0008","NC RPO");
+	$test19.start();
+		Oracle_PFR_NC_RPO_0019();
+	$test19.end();
+	}
+
+	if($g_executeOracle_PFRAll == "Y" || $g_rtoNCOracle_PFR == "Y"){
+	var $test20 = _testcase("Continuity_Manager/Common/FG/Monitor/RTO_0004","NC RTO");
+	$test20.start();
+		Oracle_PFR_NC_RTO_0020();
+	$test20.end();
+	}
+	
+ //BUG
+	if($g_executeOracle_PFRAll == "Y" || $g_rtoNCOracle_PFR == "Y"){
+	var $test21 = _testcase("Continuity_Manager/Common/FG/Monitor/RTO_0004","NC Continuity workflows");
+	$test21.start();
+		Oracle_PFR_NC_Continuity_Workflows_0021();
+	$test21.end();
+	}
+	
+	if($g_executeOracle_PFRAll == "Y" || $g_stopNCOracle_PFR == "Y"){
+	var $test22 = _testcase("Site_0003","Stop NC");
+	$test22.start();
+		Oracle_PFR_Stop_NC_0022();
+	$test22.end();
+	}
+*/
+	if($g_executeOracle_PFRAll == "Y" || $g_importSOSBOracle_PFR == "Y"){
+	var $test23 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0007","Import SO & SB");
+	$test23.start();
+	   Oracle_PFR_Import_SOSB_0023();
+	$test23.end();
+	}
+/*
+	if($g_executeOracle_PFRAll == "Y" || $g_startSOOracle_PFR == "Y"){
+	var $test24 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0011","Start SO");
+	$test24.start();
+		Oracle_PFR_Start_SO_0024();
+	$test24.end();
+	}
+
+	if($g_executeOracle_PFRAll == "Y" || $g_SOExecutionOracle_PFR == "Y"){
+	var $test25 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0012","SO Execution Status");
+	$test25.start();
+		Oracle_PFR_SO_Execution_0025();
+	$test25.end();
+	}
+	
+	if($g_executeOracle_PFRAll == "Y" || $g_importRNCOracle_PFR == "Y"){
+	var $test26 = _testcase("Site_0003","Import RNC");
+	$test26.start();
+		Oracle_PFR_Import_RNC_0026();
+	$test26.end();
+	}
+
+	if($g_executeOracle_PFRAll == "Y" || $g_startRNCOracle_PFR == "Y"){
+	var $test27 = _testcase("Continuity_Manager/Template/Oracle_Log/Monitor/OraLog_RNC_0001","Start RNC");
+	$test27.start();
+		Oracle_PFR_Start_RNC_0027();
+	$test27.end();
+	}
+
+	if($g_executeOracle_PFRAll == "Y" || $g_replicationRNCOracle_PFR == "Y"){
+	var $test28 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0024","RNC Replication");
+	$test28.start();
+		Oracle_PFR_RNC_Replication_0028();
+	$test28.end();
+	}
+
+	if($g_executeOracle_PFRAll == "Y" || $g_rpoRNCOracle_PFR == "Y"){
+	var $test29 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0023","RNC RPO Monitor");
+	$test29.start();
+	Oracle_PFR_RNC_Rpo_0029();
+	$test29.end();
+	}
+	
+	
+	if($g_executeOracle_PFRAll == "Y" || $g_Oracle_PFR_Stop_RNC == "Y"){
+	var $test29 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0023","Oracle_PFR_Stop_RNC");
+	$test29.start();
+		Oracle_PFR_Stop_RNC_0033();
+	$test29.end();
+	}
+
+	
+	
+	if($g_executeOracle_PFRAll == "Y" || $g_remoteStopOracle_PFRAgent == "Y"){
+	var $test30 = _testcase("Continuity_Manager/Template/Oracle_Log/Oracle_PFR/Oracle_PFR_Object_Health_Events0001","Stopping Remote Agent");
+	$test30.start();
+	Oracle_PFR_Local_Stop_Oracle_PFR_Agent_SO_InActive_0039();
+	$test30.end();
+	}
+	
+	
+	
+	if($g_executeOracle_PFRAll == "Y" || $g_remoteStartOracle_PFRAgent == "Y"){
+	var $test31 = _testcase("Continuity_Manager/Template/Oracle_Log/Oracle_PFR/Oracle_PFR_Object_Health_Events0001","Starting Remote Agent");
+	$test31.start();
+	Oracle_PFR_Local_Start_Oracle_PFR_Agent_SO_InActive_0038();
+	$test31.end();
+	}
+
+	if($g_executeOracle_PFRAll == "Y" || $g_replicaionStopOracle_PFR == "Y"){
+	var $test32 = _testcase("Continuity_Manager/ Template/ Oracle_Log/ Oracle_PFR/ Oracle_PFR_Manage_Replication ","Stop Replication");
+	$test32.start();
+	Oracle_PFR_Local_Stop_PFR_Agent_0051_SO_InActive();
+	$test32.end();
+	}
+
+	if($g_executeOracle_PFRAll == "Y" || $g_replicaionStartOracle_PFR == "Y"){
+	var $test33 = _testcase("Continuity_Manager/ Template/ Oracle_Log/ Oracle_PFR/ Oracle_PFR_Manage_Replication ","Start Replication");
+	$test33.start();
+	Oracle_PFR_Local_Start_PFR_Agent_0052_SO_InActive();
+	$test33.end();
+	}
+
+	if($g_executeOracle_PFRAll == "Y" || $g_startSBOracle_PFR == "Y"){
+	var $test34 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0034","Start SB");
+	$test34.start();
+		Oracle_PFR_Start_SB_0034();
+	$test34.end();
+	}
+
+	if($g_executeOracle_PFRAll == "Y" || $g_SBExecutionOracle_PFR == "Y"){
+	var $test35 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0035","SB Execution");
+	$test35.start();
+		Oracle_PFR_SB_Execution_0035();
+	$test35.end();
+	}
+	
+///////////////////DRYRUN REPORT SCRIPT/////////////////////////////////////
+
+	if ($g_executeOracle_PFRAll == "Y" || $g_Oracle_PFR_Dryrun_Report == "Y") {
+		var $test26 = _testcase("Continuity_Manager/Common/FG/DryRun_Report_Function", "verify Dry run reports");
+		$test26.start();
+		Oracle_PFR_Dryrun_Report_Testcase();
+	    $test26.end();
+	}
+
+	if($g_executeOracle_PFRAll == "Y" || $g_remoteStopOracle_PFRAgent == "Y"){
+		var $test30 = _testcase("Continuity_Manager/Template/Oracle_Log/Oracle_PFR/Oracle_PFR_Object_Health_Events0001","Stopping Remote Agent");
+		$test30.start();
+		Oracle_PFR_Local_Stop_Oracle_PFR_Agent_0039();
+		$test30.end();
+		}
+		
+		
+		
+		if($g_executeOracle_PFRAll == "Y" || $g_remoteStartOracle_PFRAgent == "Y"){
+		var $test31 = _testcase("Continuity_Manager/Template/Oracle_Log/Oracle_PFR/Oracle_PFR_Object_Health_Events0001","Starting Remote Agent");
+		$test31.start();
+		Oracle_PFR_Local_Start_Oracle_PFR_Agent_0038();
+		$test31.end();
+		}
+
+		if($g_executeOracle_PFRAll == "Y" || $g_replicaionStopOracle_PFR == "Y"){
+		var $test32 = _testcase("Continuity_Manager/ Template/ Oracle_Log/ Oracle_PFR/ Oracle_PFR_Manage_Replication ","Stop Replication");
+		$test32.start();
+		Oracle_PFR_Local_Stop_PFR_Agent_0051();
+		$test32.end();
+		}
+
+		if($g_executeOracle_PFRAll == "Y" || $g_replicaionStartOracle_PFR == "Y"){
+		var $test33 = _testcase("Continuity_Manager/ Template/ Oracle_Log/ Oracle_PFR/ Oracle_PFR_Manage_Replication ","Start Replication");
+		$test33.start();
+		Oracle_PFR_Local_Start_PFR_Agent_0052();
+		$test33.end();
+		}*/
+
+/////////FailOVer
+
+/*
+	if($g_executeOracle_PFRAll == "Y" || $g_startFOOracle_PFR == "Y"){
+	var $test40 = _testcase("Continuity_Manager/ Common/ FG/ Monitor/ Failover_0001 ","Start FO");
+	$test40.start();
+		Oracle_PFR_Start_FO_0040();
+	$test40.end();
+	}
+
+	if($g_executeOracle_PFRAll == "Y" || $g_FOExecutionOracle_PFR == "Y"){
+	var $test41 = _testcase("Continuity_Manager/ Common/ FG/ Monitor/ Failover_0001 ","FO Execution");
+	$test41.start();
+		Oracle_PFR_FO_execution_0041();
+	$test41.end();
+	}
+
+	if($g_executeOracle_PFRAll == "Y" || $g_continuityStatusFOOracle_PFR == "Y"){
+	var $test42 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0007","Continuity Status During FO");
+	$test42.start();
+		Oracle_PFR_Continuity_Status_FO_0042();
+	$test42.end();
+	}
+
+	if($g_executeOracle_PFRAll == "Y" || $g_rpoFOOracle_PFR == "Y"){
+	var $test43 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0003","RPO during FO");
+	$test43.start();
+		Oracle_PFR_FO_RPO_0043();
+	$test43.end();
+	}
+
+	if($g_executeOracle_PFRAll == "Y" || $g_rpoFOOracle_PFR == "Y"){
+	var $test44 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0003","RPO during FO");
+	$test44.start();
+		Oracle_PFR_FO_RTO_0044();
+	$test44.end();
+	}
+
+	if($g_executeOracle_PFRAll == "Y" || $g_rpoFOOracle_PFR == "Y"){
+	var $test44 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0003","RPO during FO");
+	$test44.start();
+		Oracle_PFR_FO_Replication_0045();
+	$test44.end();
+	}*/
+
+_log("================================Post-Condition================================== ", "Custom1");

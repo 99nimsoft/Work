@@ -1,0 +1,146 @@
+
+
+if($BrowserLang == "N"){
+	var $l_MssqlalwaysonInputs = _readExcelFile($SAHI_HOME + "\\conf\\MSSQL_ALWAYS_ON\\MSSQL_ALWAYS_ON_Parameter.xls","Local");
+}
+else if($BrowserLang == "Y-JA"){
+	var $l_MssqlalwaysonInputs = _readExcelFile($SAHI_HOME + "\\conf\\MSSQL_ALWAYS_ON\\MSSQL_ALWAYS_ON_Parameter.xls","Local_JA");
+	}
+
+else if($BrowserLang == "Y-EN"){
+	var $l_MssqlalwaysonInputs = _readExcelFile($SAHI_HOME + "\\conf\\MSSQL_ALWAYS_ON\\MSSQL_ALWAYS_ON_Parameter.xls","Local_EN");
+	}
+
+
+
+// DRM GUI Details
+var $username = $l_MssqlalwaysonInputs[2][2]; // DRM server GUI user name e.g. "abc"
+var $password = $l_MssqlalwaysonInputs[3][2]; // DRM server GUI pwd
+
+//Connectivity of mssql
+var $database= $l_MssqlalwaysonInputs[6][2];
+var $userPR = $l_MssqlalwaysonInputs[7][2]; // for mssql db connection
+var $pwdPR = $l_MssqlalwaysonInputs[8][2];  // for mssql db connection
+var $userDR = $l_MssqlalwaysonInputs[9][2];  // for mssql db connection
+var $pwdDR = $l_MssqlalwaysonInputs[10][2];  // for mssqldb connection
+
+//This user Input required to create the Site
+if($BrowserLang == "N"){
+var $locationPR = "PR"; // PR Site Location
+var $incharge = "drmadmin"; // Site Incharge
+var $addressPR = "Mumbai"; // PR site Address
+var $locationDR = "DR"; // DR Site Location
+var $addressDR = "Bangalore";// DR site Address
+}
+else
+	{
+var $locationPR = "一次"; // PR Site Location
+var $incharge = "drmadmin"; // Site Incharge
+var $addressPR = "ムンバイ"; // PR site Address
+var $locationDR = "リモート"; // DR Site Location
+var $addressDR = "バンガロール";// DR site Address
+	}
+
+//workflow path
+
+var $WFPath = "MSSQL\\MSSQLAlwaysOn"; // Location of SO/SB/FO xml file
+var $fileSO = "BCS-MSSQLAlwaysOn-SO.xml"; // Location of SO xml file
+var $fileSB = "BCS-MSSQLAlwaysOn-SB.xml"; // Location of SB xml file
+var $fileFO = "BCS-MSSQLAlwaysOn-FO.xml"; // Location of FO xml file
+ 
+
+// This user Input required to create the Component for Local or remote 
+var $systemType= "Windows";
+var $osType = "Windows";
+var $compNamePR= $l_MssqlalwaysonInputs[2][5];     
+var $compNameDR= $l_MssqlalwaysonInputs[3][5];
+var $compNamePR2= $l_MssqlalwaysonInputs[2][7];    
+var $compNameDR2= $l_MssqlalwaysonInputs[3][7]; 
+var $compIPPR= $l_MssqlalwaysonInputs[4][5];
+var $compIPDR= $l_MssqlalwaysonInputs[5][5];    
+var $compIPPR2= $l_MssqlalwaysonInputs[4][7];
+var $compIPDR2= $l_MssqlalwaysonInputs[5][7];
+
+var $credList= "Add new credential";
+var $remoteUserNameValPR= $l_MssqlalwaysonInputs[6][5];
+var $remotePwdValPR= $l_MssqlalwaysonInputs[8][5];
+var $remoteUserNameValDR= $l_MssqlalwaysonInputs[7][5];
+var $remotePwdValDR= $l_MssqlalwaysonInputs[9][5];
+var $agentType = "Local";
+
+//Instance names
+$instancePR= $l_MssqlalwaysonInputs[32][2];
+$instanceNearestPR= $l_MssqlalwaysonInputs[33][2];
+$instanceDR1= $l_MssqlalwaysonInputs[34][2];
+$instanceDR2= $l_MssqlalwaysonInputs[35][2];
+
+// This user Input required to create the dataset 
+var $systemTypeDataset= "MSSQL";
+var $datasetNamePR= $l_MssqlalwaysonInputs[13][2]; //"MSSQL_PR_67";      
+var $datasetNameDR= $l_MssqlalwaysonInputs[14][2]; //"MSSQL_DR_50";   
+var $datasetName2PR= $l_MssqlalwaysonInputs[24][2]; //"MSSQL_PR_67";      
+var $datasetName2DR= $l_MssqlalwaysonInputs[25][2]; //"MSSQL_DR_50";   
+var $instanceName= $l_MssqlalwaysonInputs[15][2];  
+var $usernamedb= $l_MssqlalwaysonInputs[16][2];      
+var $port= $l_MssqlalwaysonInputs[17][2];   
+
+//Scenario input
+var $scenario= $l_MssqlalwaysonInputs[25][5];
+
+//Availability group name
+$availabilityGRPName=$l_MssqlalwaysonInputs[31][5]; 
+
+// This user Input required to create the Group
+var $groupName= $l_MssqlalwaysonInputs[20][2];
+var $groupDescription= "MSSQL";
+
+if($BrowserLang == "N"){
+var $SolutionSignature= "MSSQL with AlwaysON";
+}
+else{
+var $SolutionSignature= "AlwaysONを使用したMSSQL";
+}
+
+//
+var $pstoolPath = $SAHI_HOME + "\\tools\\PsExec"; //pstool file path
+
+
+//for Panaces agent property file for remote agents
+var $sourcePath= $SAHI_HOME + "\\tools\\sed";
+var $MsSqlAgentWindowCheck=$l_MssqlalwaysonInputs[12][5];
+var $PfrAgentCheck="1";
+var $UserInstallDirforLocal=$l_MssqlalwaysonInputs[13][5];
+var $UserInputResultJarMsSql=$l_MssqlalwaysonInputs[14][5];
+var $UserInputResultPrimaryPanacesServerIP=$l_MssqlalwaysonInputs[15][5];
+var $UserInputResultSecondaryPanacesServerIP=$l_MssqlalwaysonInputs[16][5];
+var $AgentStartYes=$l_MssqlalwaysonInputs[17][5];
+
+
+//for installing agents
+var $fileName=$l_MssqlalwaysonInputs[21][5];//Panaces agent property file path
+var $installexepath=$l_MssqlalwaysonInputs[22][5];//keep the path of install.exe same in pr and dr
+var $pfrexepath=$l_MssqlalwaysonInputs[23][5];//keep the path of PFR.exe same in pr and dr
+
+
+//Common
+var $compsitePR = $locationPR;  
+var $compsiteDR = $locationDR; 
+var $dependentComponentNamePR= $compNamePR;
+var $dependentComponentNameDR= $compNameDR;
+var $dependentComponentName2PR= $compNamePR2;
+var $dependentComponentName2DR= $compNameDR2;
+var $primaryComponents=$compNamePR;
+var $remoteComponents=$compNameDR;
+var $primaryDatasets=$datasetNamePR;
+var $remoteDatasets=$datasetNameDR;
+var $primaryComponents2=$compNamePR2;
+var $remoteComponents2=$compNameDR2;
+var $primaryDatasets2=$datasetName2PR;
+var $remoteDatasets2=$datasetName2DR;
+var $databaseName= $database;
+var $ipPR= $compIPPR;
+var $ipDR=$compIPDR;
+var $ipPR2= $compIPPR2;
+var $ipDR2=$compIPDR2;
+var $installbinpath=$fileName;
+var $datasetType=$systemTypeDataset;

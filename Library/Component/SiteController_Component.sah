@@ -1,0 +1,1438 @@
+/*************************************************************************
+ ** CompanyName : Sanovi an IBM.
+ ** Application Name : RO
+ ** Objective : This script common function for the Creation of SiteController agent. 
+ ** AuthorName : Anita Gaded
+ ** Created Date : Aug 2017
+ ************************************************************************/
+
+
+
+/****
+* Function is to Copy the Agent build to install the SC agent in silent Mode.
+*@param : $agentBuild, $compIP, $remoteUserNameVal, $remotePwdVal
+*@return : null
+*@Author: Anita
+*
+*/      
+
+function SiteController_Binary_Copy_PR() {
+	SiteController_Binary_Copy_AgentHost_PR();
+}
+
+
+function SiteController_Binary_Copy_AgentHost_PR(){
+	SiteController_Binary_Copy_AgentHost($agentBuildPR, $compIPPR, $remoteUserNameValPR, $remotePwdValPR,"PanacesAgentNodeInstaller.properties","SiteController.bin");
+}
+
+function SiteController_Binary_Copy_AgentHost_DR(){
+	SiteController_Binary_Copy_AgentHost($agentBuildDR, $compIPDR, $remoteUserNameValDR, $remotePwdValDR,"PanacesAgentNodeInstaller.properties","SiteController.bin");
+}
+
+function SiteController_Binary_Copy_AgentHost($agentBuild, $compIP, $remoteUserNameVal, $remotePwdVal,$proertyFile,$binFile) {
+	 
+	$DRMbuildAgent = $agentBuild + "/DRM_Build/Agents/" ; 
+	
+	var $sshCommand = 'ls ' + $DRMbuildAgent;
+	var $directoryCheck = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand,"Y");
+	_log($directoryCheck + "$directoryCheck");
+	$directoryCheck = $directoryCheck.match(/No such file or directory/);
+	
+	if ($directoryCheck != "No such file or directory") {
+	_log("Old agentBuild existing");
+	var $sshCommand = 'rm -rf ' + $DRMbuildAgent;
+	$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	} else {
+	_log("Directory not exists");
+	}
+
+	var $sshCommand =   "mkdir -p " + $DRMbuildAgent;
+	$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	 
+
+	if ($binFile == "SiteController.bin"){
+		var $sshCommand = "wget -r -nd -P " + $DRMbuildAgent + " " + $g_buildUrl + "/SanoviDRM/AgentNode/" + $proertyFile + ";echo EXIT Code : $?";
+		$statusString = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+		var $patt1=new RegExp("EXIT Code : 0");
+		 $outProperties = $patt1.test($statusString);
+		var $sshCommand = "wget -r -nd -P " + $DRMbuildAgent + " " + $g_buildUrl + "/SanoviDRM/AgentNode/Linux/VM/" +$binFile + ";echo EXIT Code : $?";
+		$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal,  $sshCommand);
+	} 
+
+	var $patt1=new RegExp("EXIT Code : 0");
+	var $outInstall = $patt1.test($status);
+	
+	if ($outProperties == true && $outInstall == true) {
+	_log("agentBuild copied successfully");
+	} else {
+	_log("agentBuild not copied successfully");
+	_fail("agentBuild not copied successfully,so that stopping execution");
+	}
+	
+	var $sshCommand = "chmod 777 "+ $DRMbuildAgent + "/*.*" ;
+	$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal,  $sshCommand);
+}
+
+// Copy SC prop file
+
+function Copy_SC_Property_file(){
+	_execute("cmd /c RMDIR /Q /S "+ $SAHI_HOME + "utility\\Propertyfile\\" ,"true");
+
+	_execute("cmd /c mkdir "+ $SAHI_HOME + "utility\\Propertyfile\\" ,"true");
+		
+	_log($SAHI_HOME + "tools\\Wget\\wget -r -nd -P " + $SAHI_HOME + "utility\\Propertyfile " + $g_buildUrl + $agentNodefilePath);
+	_execute($SAHI_HOME + "tools\\Wget\\wget -r -nd -P " + $SAHI_HOME + "utility\\Propertyfile " + $g_buildUrl + $agentNodefilePath ,true)
+			
+}
+// update SC property file PR
+function update_SiteController_propertyFile_PR(){
+	Update_SiteController_Agent_propertyFile($agentBuildPR, $compIPPR, $remoteUserNameValPR, $remotePwdValPR, $panacesAgentNodeAddressPR, $localAgentPathPR);
+}
+
+//update SC property file DR
+function update_SiteController_propertyFile_DR(){
+	Update_SiteController_Agent_propertyFile($agentBuildDR, $compIPDR, $remoteUserNameValDR, $remotePwdValDR, $panacesAgentNodeAddressDR, $localAgentPathDR);
+}
+
+/**
+* Function is for Updating SC Agent property file to install the DRM server in silent Mode.
+*@param :$agentBuild, $compIP, $remoteUserNameVal, $remotePwdVal, $panacesAgentNodeAddress, $localAgentPath
+*@return : null
+*@Author: Anita
+*
+*/
+
+function Update_SiteController_Agent_propertyFile($agentBuild, $compIP, $remoteUserNameVal, $remotePwdVal, $panacesAgentNodeAddress, $localAgentPath) {
+	
+	 $SCbuildAgent = $agentBuild + "/DRM_Build/Agents/" ; 	
+	 
+	 _log($SAHI_HOME + "tools\\sed\\bin\\sed -i \"s/=1/=0/\" " + $SAHI_HOME + "utility\\Propertyfile\\PanacesAgentNodeInstaller.properties");
+	 _execute($SAHI_HOME + "tools\\sed\\bin\\sed -i \"s/=1/=0/\" " + $SAHI_HOME + "utility\\Propertyfile\\PanacesAgentNodeInstaller.properties","true");
+	 
+	 _execute($SAHI_HOME + "tools\\sed\\bin\\sed -i \"s/MODIFY_SYSTEM_FILES=.*/MODIFY_SYSTEM_FILES=1"  + "/g\" \"" + $SAHI_HOME + "utility\\Propertyfile\\PanacesAgentNodeInstaller.properties","true");
+	 
+	 _execute($SAHI_HOME + "tools\\sed\\bin\\sed -i \"s/USER_INPUT_RESULT_PRIMARY_PANACES_SERVER_IP=.*/USER_INPUT_RESULT_PRIMARY_PANACES_SERVER_IP=" + $primaryPanacesServer + "/\" " + $SAHI_HOME + "utility\\Propertyfile\\PanacesAgentNodeInstaller.properties","true");
+
+	_execute($SAHI_HOME + "tools\\sed\\bin\\sed -i \"s/USER_INPUT_RESULT_SECONDARY_PANACES_SERVER_IP=.*/USER_INPUT_RESULT_SECONDARY_PANACES_SERVER_IP=" + $SecondaryPanacesServer + "/\" " + $SAHI_HOME + "utility\\Propertyfile\\PanacesAgentNodeInstaller.properties","true");
+
+	_execute($SAHI_HOME + "tools\\sed\\bin\\sed -i \"s/PANACES_AGENT_NODE_ADDRESS=.*/PANACES_AGENT_NODE_ADDRESS=" + $panacesAgentNodeAddress + "/\" " + $SAHI_HOME + "utility\\Propertyfile\\PanacesAgentNodeInstaller.properties","true");
+   
+	_execute($SAHI_HOME + "tools\\sed\\bin\\sed -i \"s/AGENTNODE_START_YES=.*/AGENTNODE_START_YES=1"  + "/g\" \"" + $SAHI_HOME + "utility\\Propertyfile\\PanacesAgentNodeInstaller.properties","true");
+	
+	var $propertiesString = _readFile($SAHI_HOME + "utility\\Propertyfile\\PanacesAgentNodeInstaller.properties");
+	
+	var $sshCommand = "echo \"" + $propertiesString +  "\" >" +$SCbuildAgent + "PanacesAgentNodeInstaller.properties";
+	$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	
+	var $sshCommand = "sed -i 's@USER_INSTALL_DIR=.*@USER_INSTALL_DIR=" + $localAgentPath + "@' " + $SCbuildAgent + "PanacesAgentNodeInstaller.properties";
+	$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	
+	//var $sshCommand = "dos2unix "+ $SCbuildAgent +"PanacesAgentNodeInstaller.properties "+ $SCbuildAgent +"PanacesAgentNodeInstaller.properties";
+
+	var $sshCommand = "sed -i " + "'s/\r$//'" + " " +$SCbuildAgent +"PanacesAgentNodeInstaller.properties";
+	$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+		
+}
+
+// uninstall SC agent
+
+function UnInstall_Local_Agent_SilentMode($flag, $agentBuild, $compIP, $remoteUserNameVal, $remotePwdVal, $localAgentPath) {
+
+	var $sshCommand = 'ls ' + $localAgentPath;
+	var $directoryCheck = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand,"Y");
+	_log($directoryCheck + "$directoryCheck");
+	$directoryCheck = $directoryCheck.match(/No such file or directory/);
+	
+	
+	if ($directoryCheck != "No such file or directory") {
+		_log("Old agentBuild existing");
+		var $sshCommand = 'sh ' + $localAgentPath + '/bin/'+ 'LinuxOSAgent.sh stop';
+		$agentStartString = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+		_assertExists("agentStartString", $agentStartString);
+		
+		var $sshCommand = 'sh ' + $localAgentPath + '/bin/'+ 'SiteController.sh stop';
+		$agentStartString1 = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+		_assertExists("agentStartString1", $agentStartString1);
+		
+		var $sshCommand = 'sh killall -9 java';
+		$agentStartString = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+		_assertExists("agentStartString", $agentStartString);
+		
+		// Verify all other agent status is running or not
+		var $sshCommand = "ps -ef|grep lax|grep -v grep|awk '{ print $2 }'";
+		$runningAgents = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+		
+		var $sshCommand = "ps -ef|grep java|grep -v grep|awk '{ print $2 }'";
+		$runningAgentsjava = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+		_assertExists("RunningAgent", $runningAgentsjava);
+
+		// if Verify agent is running then killing running process
+
+			if ( $runningAgents != "" ) {
+				var $sshCommand = "kill $(ps -ef|grep lax|grep -v grep|awk '{ print $2 }')";
+				$runningAgents = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+				_assertExists("RunningAgent", $runningAgents);
+			}
+
+			if ( $runningAgentsjava !="") {	
+				var $sshCommand = "kill $(ps -ef|grep java|grep -v grep|awk '{ print $2 }')";
+				$runningAgentsjava = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+				_assertExists("RunningAgent", $runningAgentsjava);
+				
+				}
+		// Verify agents
+		if ( $runningAgents == "" && $runningAgentsjava =="") {
+			_log("There is no Agent running");
+		} else {
+			_log("There is Agents are running and not killed properly");
+			_fail("There is Agents are running and not killed properly.So that stopping execution.Kindly look in to the logs.");
+		}
+
+		// uninstallation of Local Agent
+		var $sshCommand = 'sh' + ' ' + $localAgentPath  + '/UninstallerData/Uninstall_IBM_Resiliency_Orchestration_SiteController -i silent';
+		$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+
+		var $splitString = $status.split(",");
+		var $installationStatus = $splitString.pop().trim();
+		if($installationStatus != "Installation Complete."){
+			_log("Agent Not Uninstallation successfully");
+			_assertTrue(false);
+		} else {
+			_log("Uninstallation Done successfully");
+		}
+
+		_wait(5000);
+		// Deleting $localAgentPath
+		
+		var $sshCommand = 'rm -rf ' + $localAgentPath;
+		$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+		_assertExists("sshCommand", $sshCommand);
+
+
+	} else {
+		_log("there is no Agent Installed. ");
+	}
+
+	if ($flag == "0") {	
+		var $sshCommand = 'ls ' + $localAgentPath;
+		var $directoryCheck = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand,"Y");
+		_log($directoryCheck + "$directoryCheck");
+		$directoryCheck = $directoryCheck.match(/No such file or directory/);
+	
+		if ($directoryCheck != "No such file or directory") {
+				_log("agentBuild Folder exsiting");
+			// Deleting Agent Folder
+			var $sshCommand = 'rm -rf ' + $localAgentPath;
+			$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+			_log("Agent Build folder Deleted successfully");
+		} else {
+			_log("there is no Agent build Folder existing ");
+		}
+	}
+}
+
+// precheck before installation
+
+function Precheck_Befors_Local_Agent_Instalation($flag, $agentBuild, $compIP, $remoteUserNameVal, $remotePwdVal, $localAgentPath) {
+	// Verify Eamsserver status is running or not
+	var $sshCommand = "ps -ef|grep java |grep -v grep|awk '{ print $2 }'";
+	$runningAgents = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+
+	_assertExists("RunningAgent", $runningAgents);
+
+	// if Verify Eamsserver status is running then killing running process
+
+	if ($runningAgents != "") {
+		var $sshCommand = "kill $(ps -ef|grep java |grep -v grep|awk '{ print $2 }')";
+		$runningAgents = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+
+		_assertExists("RunningAgent", $runningAgents);
+	}
+	// Verify Panaces Server ,Tomcat Server and Agent Node
+	if ($runningAgents == "") {
+		_log("There is no Agent running");
+	} else {
+		_log("There is Agents are running and not killed properly");
+		_fail("There is Agents are running and not killed properly.So that stopping execution.Kindly look in to the logs.");
+	}
+
+	// Verify that LocalAgentPath or folder existing or not
+
+	var $sshCommand = 'ls ' + $localAgentPath;
+	var $directoryCheck = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand,"Y");
+	_log($directoryCheck + "$directoryCheck");
+	$directoryCheck = $directoryCheck.match(/No such file or directory/);
+	
+	if ($directoryCheck != "No such file or directory") {
+		_log("localAgentPath already exsiting");
+		UnInstall_Local_Agent_SilentMode($flag, $agentBuild, $compIP, $remoteUserNameVal, $remotePwdVal, $localAgentPath); // If $EAMSROOT or folder existing then uninstalling or
+		// deleting it.
+	} else {
+		_log("$EAMSROOT not exists,User can continue with Installation");
+	}
+}
+
+
+
+// Sc installation PR
+
+function SiteController_Instllation_SilentMode_PR(){
+	Install_SC_Agent_SilentMode($agentBuildPR, $compIPPR, $remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR);
+}
+
+//Sc installation DR
+
+function SiteController_Instllation_SilentMode_DR(){
+	Install_SC_Agent_SilentMode($agentBuildDR, $compIPDR, $remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR);
+}
+
+function Install_SC_Agent_SilentMode($agentBuild, $compIP, $remoteUserNameVal, $remotePwdVal, $localAgentPath) {
+	
+	var $DRMbuildAgent = $agentBuild + "DRM_Build/Agents/" ; 
+	 
+	var $agentLocation = $DRMbuildAgent;
+    
+	// calling precheck function before starting installation of drm server
+	Precheck_Befors_Local_Agent_Instalation("1", $agentBuild, $compIP, $remoteUserNameVal, $remotePwdVal, $localAgentPath);
+	// installation of Local Agent
+	var $sshCommand = 'sh' + ' ' + $agentLocation + 'SiteController.bin -f' + ' ' + $DRMbuildAgent + 'PanacesAgentNodeInstaller.properties';
+	$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+
+	var $splitString = $status.split(",");
+	var $installationStatus = $splitString.pop().trim();
+	if($installationStatus != "Installation Complete."){
+		_log("Agent Not installed successfully");
+		
+		_fail("Agent Not installed successfully.So that stopping execution.Kindly look in to the logs.");
+	} 	
+	else {
+	
+	// checking all agent status
+	_wait(30000);
+	var $sshCommand = "rm -f " + $localAgentPath + "/tools/mysql/mysql-connector-java-5.1.20-bin.jar;echo EXIT Code : $?";
+    //$status = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);	
+	SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+    
+    var $sshCommand = "wget -r -nd -P " + $localAgentPath + "/tools/mysql/" + " http://172.168.20.43/jenkins/job/DRM_Automation/ws/GPL/mysql-connector-java-5.1.20-bin.jar;echo EXIT Code : $?";
+    $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+
+	
+	var $sshCommand = 'sh ' + $localAgentPath + '/bin/SecurityUserInjection.sh';
+	SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	
+	var $sshCommand = 'sh ' + $localAgentPath + '/bin/SecurityUserInjection.sh';
+	Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	
+	var $sshCommand = 'sh chmod 777 ' + $localAgentPath + '/tools/mysql/*.jar';
+	SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	
+	var $sshCommand = 'ls -lrt ' + $localAgentPath + '/tools/mysql/';
+	SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+   
+	var $sshCommand = 'sh ' + $localAgentPath + "/bin/"+ 'LinuxOSAgent.sh status';
+	$agentLinux = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);	
+	_log($agentLinux);
+	
+	var $sshCommand = 'sh ' + $localAgentPath + "/bin/"+ 'LinuxOSAgentGeneric.sh status';
+	$agentStatus = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand,"Y");	
+	var $agentLinuxStatus = $agentStatus.match(/LinuxOSAgent running/);
+	_assertExists("LinuxOSAgentGeneric.sh Status", $agentLinuxStatus);
+		
+	var $sshCommand = 'sh ' + $localAgentPath + "/bin/"+ 'SiteController.sh status';
+	$agentSCStatus = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	_log($agentSCStatus);
+	
+	if ($agentLinuxStatus == 'LinuxOSAgent running' && $agentSCStatus == 'Site Controller Is Running') {
+		
+		_assertExists("Agent Type Local, LinuxOSAgent Status is: ", $agentLinuxStatus);
+		_assertExists("SiteController Status is: ", $agentSCStatus);
+		
+		} 
+	}
+}
+
+
+function mysqlConnectorJarReplacement($compIP, $remoteUserNameVal, $remotePwdVal, $localAgentPath){
+	var $sshCommand = "rm -f " + $localAgentPath + "/tools/mysql/mysql-connector-java-5.1.20-bin.jar;echo EXIT Code : $?";
+    //$status = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);	
+	SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+    
+    var $sshCommand = "wget -r -nd -P " + $localAgentPath + "/tools/mysql/" + " http://172.168.20.43/jenkins/job/DRM_Automation/ws/GPL/mysql-connector-java-5.1.20-bin.jar;echo EXIT Code : $?";
+    $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+
+	var $sshCommand = 'sh ' + $localAgentPath + '/bin/SecurityUserInjection.sh';
+	SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	
+	var $sshCommand = 'sh ' + $localAgentPath + '/bin/SecurityUserInjection.sh';
+	Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	
+	var $sshCommand = 'sh chmod 777 ' + $localAgentPath + '/tools/mysql/*.jar';
+	SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	
+	var $sshCommand = 'ls -lrt ' + $localAgentPath + '/tools/mysql/';
+	SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+}
+
+function SiteController_UnInstllation_PR(){
+	UnInstall_Local_Agent_SilentMode("0", $agentBuildPR, $compIPPR, $remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR);
+}
+
+function SiteController_UnInstllation_DR(){
+	UnInstall_Local_Agent_SilentMode("0", $agentBuildDR, $compIPDR, $remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR);
+}
+
+//Anita added Verify_SC_LinuxOSAgent_Status
+
+function Verify_SC_LinuxOSAgent_Status_PR(){
+	Verify_SC_LinuxOSAgent_Status($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR);
+}
+
+function Verify_SC_LinuxOSAgent_Status_DR(){
+	Verify_SC_LinuxOSAgent_Status($compIPDR, $remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR);
+}
+
+function Verify_SC_LinuxOSAgent_Status($compIP, $remoteUserNameVal, $remotePwdVal, $localAgentPath){
+
+	//var $sshCommand = 'sh ' + $localAgentPath + "/bin/"+ 'LinuxOSAgent.sh stop';
+	//var $sshCommand_start = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	var $sshCommand = 'killall -9 java';
+	SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	
+	var $sshCommand = "sed -i 's@RMI_SERVER_IP=.*@RMI_SERVER_IP=" + $compIP +"@' " + $localAgentPath + "/bin/panaces_env";
+	var $cmdstat =SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	_log($cmdstat);
+
+	/////////////////////////////////////////// SC ////////////////////////////////////////
+	var $sshCommand = 'sh ' + $localAgentPath + '/bin/'+ 'SiteController.sh start';
+	var $agentSCStatus = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	_log($agentSCStatus);
+	_assertEqual("/Starting Active MQ,Successfully Started Active MQ/",$agentSCStatus);
+	_wait(5000);	
+	var $sshCommand = 'sh ' + $localAgentPath + '/bin/'+ 'SiteController.sh status';
+    var $agentSCStatus = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	//_log($agentSCStatus); 
+	//$flag = _assertEqual("/Active MQ Is Running,Site Controller Is Running/",$agentSCStatus);
+	//_alert($flag);
+	if(_condition(_assertEqual("/Active MQ Is Running,Site Controller Is Running/",$agentSCStatus)==true)){
+	_assertExists($agentSCStatus);
+	}
+	else{
+		_fail("SiteController Failed start.. stopping further execution");
+	}
+	/////////////////////////////////////////////LINUX OS ////////////////////////////////////////
+	var $sshCommand = 'date; sh ' + $localAgentPath + '/bin/'+ 'LinuxOSAgent.sh start';
+	var $sshCommand_start = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	_log($sshCommand_start);
+	
+	/// Work around some time LInuxOSAgent.sh is starting backend /////////////////////////////
+	
+	var $sshCommand_start = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	_log($sshCommand_start.get("output").toString());
+	
+	_wait(5000);
+}
+
+function navigateToSiteController(){
+	_click(_link("Admin"));	
+	_click(_link("Discover"));
+	if(_exists(_link("/Site Controller/"))){
+		_click(_link("/Site Controller/"));
+		_wait(3000);
+	}
+	else{
+		_click(_link("/SiteController/"));
+	}
+	
+}
+
+//Anita added Verify_SC COM mode
+
+function SiteController_COM_MODE_PR(){
+	SiteController_COM_MODE($securedTLSFlag,$localAgentPathPR,$compIPPR, $remoteUserNameValPR, $remotePwdValPR);
+}
+
+function SiteController_COM_MODE_DR(){
+	SiteController_COM_MODE($securedTLSFlag,$localAgentPathDR,$compIPDR, $remoteUserNameValDR, $remotePwdValDR);
+}
+
+function SiteController_COM_MODE($securedTLSFlag,$localAgentPath,$compIP, $remoteUserNameVal, $remotePwdVal){
+	if ($securedTLSFlag=="yes"|| $securedTLSFlag=="YES" || $securedTLSFlag=="Yes" ){
+		_log("$securedTLSFlag= " + $securedTLSFlag);
+		_log("SC communicate mode with server is SECURE TLS with server");
+		var $sshCommand = "sed -i 's@COMMUNICATION_MODE=.*@COMMUNICATION_MODE=2@' " + $localAgentPath + "/installconfig/SiteController.cfg";
+		$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+		
+	}else{
+		_log("$securedTLSFlag= " + $securedTLSFlag);
+		_log("SC communicate mode with server is SSL with server");
+	}
+}
+
+//Anita added for Socket based Sitecontroller post installation 
+
+function SiteController_Socket_MODE_PR(){
+	SiteController_Socket_MODE($acpComTypeSocket,$localAgentPathPR,$compIPPR, $remoteUserNameValPR, $remotePwdValPR);
+}
+
+function SiteController_Socket_MODE_DR(){
+	SiteController_Socket_MODE($acpComTypeSocket,$localAgentPathDR,$compIPDR, $remoteUserNameValDR, $remotePwdValDR);
+}
+
+function SiteController_Socket_MODE($acpComTypeSocket,$localAgentPath,$compIP, $remoteUserNameVal, $remotePwdVal){
+	if ($acpComTypeSocket=="socket"){
+		_log("$acpComTypeSocket= " + $acpComTypeSocket);
+		_log("SC ACP communicate mode with server is Socket based");
+		var $sshCommand = "sed -i 's@ACP_COMMUNICATION_TYPE=.*@ACP_COMMUNICATION_TYPE=1@' " + $localAgentPath + "/installconfig/SiteController.cfg";
+		$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+		
+	}else{
+		_log("$acpComTypeSocket= " + $acpComTypeSocket);
+		_log("SC ACP communicate mode with server is default Active MQ based");
+	}
+}
+
+/***********************************************************************************************************************************************************/
+/***********************************************************************************************************************************************************/
+// Windows SC Installation 
+
+function editCFGFileForSiteController_PR(){
+	
+	var $cmd = "cmd /c copy \""+$SAHI_HOME + "utility\\WinInstaller\\EditSiteControllerCfg.vbs\" \""+$SAHI_HOME + "utility\\Sfr\\EditSiteControllerCfg_PR.vbs";
+	_execute($cmd,true);
+	var $valReplace = "SITE_CONTROLLER_CFG_PATH#"+$agentInstallationPathPR+"installconfig\\SiteController.cfg,"+"SITE_CONTROLLER_CFG_PATH#"+$agentInstallationPathPR+"installconfig\\SiteController.cfg";
+	editFile($SAHI_HOME +"Utility\\Sfr\\EditSiteControllerCfg_PR.vbs",$valReplace);
+}
+
+
+function editCFGFileForSiteController_DR(){
+	
+	var $cmd = "cmd /c copy \""+$SAHI_HOME + "utility\\WinInstaller\\EditSiteControllerCfg.vbs\" \""+$SAHI_HOME + "utility\\Sfr\\EditSiteControllerCfg_DR.vbs";
+	_execute($cmd,true);
+	var $valReplace = "SITE_CONTROLLER_CFG_PATH#"+$agentInstallationPathDR+"installconfig\\SiteController.cfg,"+"SITE_CONTROLLER_CFG_PATH#"+$agentInstallationPathDR+"installconfig\\SiteController.cfg";
+	editFile($SAHI_HOME +"Utility\\Sfr\\EditSiteControllerCfg_DR.vbs",$valReplace);
+}
+
+
+function uninstallSiteController_PR(){
+	
+	var $cmd = "";
+	var $output = "";
+	var $psPath = $SAHI_HOME +"tools\\PsExec\\";
+	
+	// ***********************************************  STOPPING SERVICES BEGIN
+	_log("Stopping Service IBMROWindowsOSAgent on :-"+$compIPPR,"Custom4");
+	
+	$cmd = $psPath+"psservice \\\\" + $compIPPR + " -u " + $remoteUserNameValPR + " -p " + $remotePwdValPR + " stop IBMROWindowsOSAgent";
+	
+	$output = fireWindowsCommandAndReadResponse($cmd);
+	
+	_log("output after firing command:-"+$cmd+" ,is--"+$output,"Custom4");
+	//
+	_log("Stopping Service IBMROSiteController on :-"+$compIPPR,"Custom4");
+	
+	$cmd = $psPath+"psservice \\\\" + $compIPPR + " -u " + $remoteUserNameValPR + " -p " + $remotePwdValPR + " stop IBMROSiteController";
+	
+	$output = fireWindowsCommandAndReadResponse($cmd);
+	
+	_log("output after firing command:-"+$cmd+" ,is--"+$output,"Custom4");
+	//                  
+	_log("Stopping Service IBMROActiveMQ on :-"+$compIPPR,"Custom4");
+	
+	$cmd = $psPath+"psservice \\\\" + $compIPPR + " -u " + $remoteUserNameValPR + " -p " + $remotePwdValPR + " stop IBMROActiveMQ";
+	
+	$output = fireWindowsCommandAndReadResponse($cmd);
+	
+	_log("output after firing command:-"+$cmd+" ,is--"+$output,"Custom4");            
+	// ***********************************************  STOPPING SERVICES END
+	
+	// ***********************************************  Uninstall Begin
+	_log("Uninstalling SiteController on:-"+$compIPPR,"Custom4");
+	
+	$cmd = $psPath+"psexec \\\\" + $compIPPR + " -u " + $remoteUserNameValPR + " -p " + $remotePwdValPR + " -s \""+$agentInstallationPathPR+"UninstallerData\\Uninstall IBM Resiliency Orchestration SiteController.exe\" -i silent";
+	
+	$output = fireWindowsCommandAndReadResponse($cmd);
+	
+	_log("output after firing command:-"+$cmd+" ,is--"+$output,"Custom4");
+	// ***********************************************  Uninstall End    
+	
+	// *********************************************** Delete SiteController folder
+//	$cmdDelFolder = $psPath+"psexec \\\\" + $compIPPR + " -u " + $remoteUserNameValPR + " -p " + $remotePwdValPR + " -s cmd /c RD /S /Q \""+"C:\\SiteController\\"+"\"";
+//	$output = fireWindowsCommandAndReadResponse($cmdDelFolder);
+//	_log($output);
+	//
+	
+	// ***********************************************  Restarting VM
+   /*	restartVM($compIPPR,$remoteUserNameValPR,$remotePwdValPR,$agentInstallationPathPR);   */
+	
+	
+//////////////////////////////////////////////////////////////////////////////////////////////////////	
+}
+function checkServicesStatus($argServiceName){
+	var $cmd = "";
+	var $output = "";
+	var $psPath = $SAHI_HOME +"tools\\PsExec\\";
+	$cmd = $psPath+"psexec \\\\" + $compIPDR + " -u " + $remoteUserNameValDR + " -p " + $remotePwdValDR + " -s -i cmd /c sc query "+	$argServiceName;
+	$output = fireWindowsCommandAndReadResponse($cmd);
+	_log($output);
+	if($output.indexOf("RUNNING") >= 0){
+		return true;
+	}
+	else{
+		return false;
+	}
+}
+
+function uninstallSiteController_DR(){
+	
+	var $cmd = "";
+	var $output = "";
+	var $psPath = $SAHI_HOME +"tools\\PsExec\\";
+	
+	// ***********************************************  STOPPING SERVICES BEGIN
+	
+	//if(checkServicesStatus("IBMROWindowsOSAgent") == true){
+			
+		_log("Stopping Service IBMROWindowsOSAgent on :-"+$compIPDR,"Custom4");
+		
+		$cmd = $psPath+"psservice \\\\" + $compIPDR + " -u " + $remoteUserNameValDR + " -p " + $remotePwdValDR + " stop IBMROWindowsOSAgent";
+		
+		$output = fireWindowsCommandAndReadResponse($cmd);
+		
+		_log("output after firing command:-"+$cmd+" ,is--"+$output,"Custom4");
+	//}
+	//
+	//if(checkServicesStatus("IBMROSiteController") == true){
+		
+		_log("Stopping Service IBMROSiteController on :-"+$compIPDR,"Custom4");
+		
+		$cmd = $psPath+"psservice \\\\" + $compIPDR + " -u " + $remoteUserNameValDR + " -p " + $remotePwdValDR + " stop IBMROSiteController";
+		
+		$output = fireWindowsCommandAndReadResponse($cmd);
+		
+		_log("output after firing command:-"+$cmd+" ,is--"+$output,"Custom4");
+	//}
+	// 
+	//if(checkServicesStatus("IBMROActiveMQ") == true){
+		
+		_log("Stopping Service IBMROActiveMQ on :-"+$compIPDR,"Custom4");
+		
+		$cmd = $psPath+"psservice \\\\" + $compIPDR + " -u " + $remoteUserNameValDR + " -p " + $remotePwdValDR + " stop IBMROActiveMQ";
+		
+		$output = fireWindowsCommandAndReadResponse($cmd);
+		
+		_log("output after firing command:-"+$cmd+" ,is--"+$output,"Custom4"); 
+	
+	//}
+	// ***********************************************  STOPPING SERVICES END
+	
+	// ***********************************************  Uninstall Begin
+	_log("Uninstalling SiteController on:-"+$compIPDR,"Custom4");
+	
+	$cmd = $psPath+"psexec \\\\" + $compIPDR + " -u " + $remoteUserNameValDR + " -p " + $remotePwdValDR + " -s \""+$agentInstallationPathDR+"UninstallerData\\Uninstall IBM Resiliency Orchestration SiteController.exe\" -i silent";
+	
+	$output = fireWindowsCommandAndReadResponse($cmd);
+	
+	_log("output after firing command:-"+$cmd+" ,is--"+$output,"Custom4");
+	// ***********************************************  Uninstall End    
+
+	// *********************************************** Delete SiteController folder
+//	$cmdDelFolder = $psPath+"psexec \\\\" + $compIPDR + " -u " + $remoteUserNameValDR + " -p " + $remotePwdValDR + " -s cmd /c RD /S /Q \""+"C:\\SiteController\\"+"\"";
+//	$output = fireWindowsCommandAndReadResponse($cmdDelFolder);
+//	_log($output);
+	//
+	
+	// ***********************************************  Restarting VM
+/*	restartVM($compIPDR,$remoteUserNameValDR,$remotePwdValDR,$agentInstallationPathDR);               */
+	
+}
+
+function editPropFileForSiteController_PR(){
+	
+	var $cmd = "cmd /c copy \""+$SAHI_HOME + "utility\\WinInstaller\\SiteControllerInstPropFile.properties\" \""+$SAHI_HOME + "utility\\Sfr\\SiteControllerInstPropFile_PR.properties";
+	_execute($cmd,true);
+	var $valReplace = "SITE_CONTROLLER_INSTALL_PATH#"+$agentInstallationPathPR+",PRIMARY_RO_SERVER_IP#"+$drmServer+",SECONDARY_RO_SERVER_IP#"+$drmServer+",VM_IP#"+$compIPPR;
+	editFile($SAHI_HOME +"Utility\\Sfr\\SiteControllerInstPropFile_PR.properties",$valReplace);
+}
+
+
+function editPropFileForSiteController_DR(){
+	
+	var $cmd = "cmd /c copy \""+$SAHI_HOME + "utility\\WinInstaller\\SiteControllerInstPropFile.properties\" \""+$SAHI_HOME + "utility\\Sfr\\SiteControllerInstPropFile_DR.properties";
+	_execute($cmd,true);
+	var $valReplace = "SITE_CONTROLLER_INSTALL_PATH#"+$agentInstallationPathDR+",PRIMARY_RO_SERVER_IP#"+$drmServer+",SECONDARY_RO_SERVER_IP#"+$drmServer+",VM_IP#"+$compIPDR;
+	editFile($SAHI_HOME +"Utility\\Sfr\\SiteControllerInstPropFile_DR.properties",$valReplace);
+}
+//
+        
+function installSiteController($argRemoteIP,$argRemoteUsername,$argRemotePassword,$argInstallerPath,$argNodeType){
+	
+	
+	var $cmd = "";
+	var $output = "";
+	var $psPath = $SAHI_HOME +"tools\\PsExec\\";
+	
+	// ***********************************************  Install Begin
+	_log("Installing SiteController on:-"+$argRemoteIP,"Custom4");
+	
+	if($argNodeType == "PR"){
+		$cmd = $psPath+"psexec \\\\" + $argRemoteIP+ " -u " + $argRemoteUsername + " -p " + $argRemotePassword + " -s -i "+$argInstallerPath+"SiteController.exe -f "+$argInstallerPath+"SiteControllerInstPropFile_PR.properties -i silent";
+	}
+	if($argNodeType == "DR"){
+		$cmd = $psPath+"psexec \\\\" + $argRemoteIP+ " -u " + $argRemoteUsername + " -p " + $argRemotePassword + " -s -i "+$argInstallerPath+"SiteController.exe -f "+$argInstallerPath+"SiteControllerInstPropFile_DR.properties -i silent";
+	}
+	                                                                                                                                                                                
+	$output = fireWindowsCommandAndReadResponse($cmd);
+	
+	_log("output after firing command:-"+$cmd+" ,is--"+$output,"Custom4");
+	// ***********************************************  Install End    
+	
+	// ***********************************************  STOPPING SERVICES BEGIN
+	_log("Stopping Service IBMROWindowsOSAgent on :-"+$argRemoteIP,"Custom4");
+	
+	$cmd = $psPath+"psservice \\\\" + $argRemoteIP+ " -u " + $argRemoteUsername + " -p " + $argRemotePassword + " stop IBMROWindowsOSAgent";
+
+	$output = fireWindowsCommandAndReadResponse($cmd);
+	
+	_log("output after firing command:-"+$cmd+" ,is--"+$output,"Custom4");
+	
+   _log("Stopping Service IBMROSiteController on :-"+$argRemoteIP,"Custom4");
+	
+	$cmd = $psPath+"psservice \\\\" + $argRemoteIP+ " -u " + $argRemoteUsername + " -p " + $argRemotePassword + " stop IBMROSiteController";
+	
+	$output = fireWindowsCommandAndReadResponse($cmd);
+	
+	_log("output after firing command:-"+$cmd+" ,is--"+$output,"Custom4");
+	
+	_log("Stopping Service IBMROActiveMQ on :-"+$argRemoteIP,"Custom4");
+	
+	$cmd = $psPath+"psservice \\\\" + $argRemoteIP+ " -u " + $argRemoteUsername + " -p " + $argRemotePassword + " stop IBMROActiveMQ";
+	
+	$output = fireWindowsCommandAndReadResponse($cmd);
+	
+	_log("output after firing command:-"+$cmd+" ,is--"+$output,"Custom4");      
+	          
+	// ***********************************************  STOPPING SERVICES END		
+
+	// ***********************************************  Restarting VM
+	//restartVM($compIPPR,$argRemoteUsername,$argRemotePassword,"");
+	                                                                           
+	// updating Sitecontrollercfg file
+	if($argNodeType == "PR"){
+		var $cmdupdateCFG = $psPath+"psexec \\\\" + $argRemoteIP + " -u " + $argRemoteUsername + " -p " + $argRemotePassword + " -s cmd /c "+$argInstallerPath+"EditSiteControllerCfg_PR.vbs";
+		$output = fireWindowsCommandAndReadResponse($cmdupdateCFG);
+		_log("output after firing command:-"+$cmdupdateCFG+" ,is--"+$output,"Custom4");
+	}
+	if($argNodeType == "DR"){
+		var $cmdupdateCFG = $psPath+"psexec \\\\" + $argRemoteIP + " -u " + $argRemoteUsername + " -p " + $argRemotePassword + " -s cmd /c "+$argInstallerPath+"EditSiteControllerCfg_DR.vbs";
+		$output = fireWindowsCommandAndReadResponse($cmdupdateCFG);
+		_log("output after firing command:-"+$cmdupdateCFG+" ,is--"+$output,"Custom4");
+	}
+	                                                                          
+	// ***********************************************  STARTING SERVICES BEGIN
+	_log("Starting Service IBMROActiveMQ on :-"+$argRemoteIP,"Custom4");
+	
+	$cmd = $psPath+"psservice \\\\" + $argRemoteIP+ " -u " + $argRemoteUsername + " -p " + $argRemotePassword + " start IBMROActiveMQ";
+	
+	$output = fireWindowsCommandAndReadResponse($cmd);
+	
+	_log("output after firing command:-"+$cmd+" ,is--"+$output,"Custom4");  
+	//
+	_log("Starting Service IBMROSiteController on :-"+$argRemoteIP,"Custom4");
+	
+	$cmd = $psPath+"psservice \\\\" + $argRemoteIP+ " -u " + $argRemoteUsername + " -p " + $argRemotePassword + " start IBMROSiteController";
+	
+	$output = fireWindowsCommandAndReadResponse($cmd);
+	
+	_log("output after firing command:-"+$cmd+" ,is--"+$output,"Custom4");
+	//    
+	_log("Starting Service IBMROWindowsOSAgent on :-"+$argRemoteIP,"Custom4");
+	
+	$cmd = $psPath+"psservice \\\\" + $argRemoteIP+ " -u " + $argRemoteUsername + " -p " + $argRemotePassword + " start IBMROWindowsOSAgent";
+	
+	$output = fireWindowsCommandAndReadResponse($cmd);
+	
+	_log("output after firing command:-"+$cmd+" ,is--"+$output,"Custom4");	          
+	// ***********************************************  STARTING SERVICES END	
+}
+
+
+function installSiteController_PR(){
+	installSiteController($compIPPR,$remoteUserNameValPR,$remotePwdValPR,$agentBuildPathPR,"PR");
+}
+
+function installSiteController_DR(){
+	installSiteController($compIPDR,$remoteUserNameValDR,$remotePwdValDR,$agentBuildPathDR,"DR");
+}
+
+function startAppOnVM($argPathOfExe){
+	var $cmd = "";
+	var $output = "";
+	var $psPath = $SAHI_HOME +"tools\\PsExec\\";
+	$cmd = $psPath+"psexec \\\\" + $compIPDR + " -u " + $remoteUserNameValDR + " -p " + $remotePwdValDR + " -d cmd /c "+$argPathOfExe;
+	$output = fireWindowsCommandAndReadResponse($cmd);
+	_log($output);
+}
+
+function restartVM($argVMIP,$argVMUserName,$argVMPassword,$argFolderPathToDelete){
+	
+	var $output = "";
+	var $psPath = $SAHI_HOME +"tools\\PsExec\\";
+	
+	//$cmdRestart = $psPath+"psexec \\\\" + $argVMIP + " -u " + $argVMUserName + " -p " + $argVMPassword + " -i 2 cmd /c shutdown /r";
+	$cmdRestart = $psPath+"psshutdown \\\\" + $argVMIP + " -u " + $argVMUserName + " -p " + $argVMPassword + " -r";
+	
+	_log("Firing command:-"+$cmdRestart+" ,to restart VM:-"+$argVMIP,"Custom4");
+	
+	$output = fireWindowsCommandAndReadResponse($cmdRestart);
+	
+	$count = 0;
+	while($count<50){
+		$output = fireWindowsCommandAndReadResponse("ping "+$argVMIP);
+		_log("Ping"+$output);
+		if($output.split("Lost = ")[1].split(" (")[0] > 0){
+			_log("System Down","Custom4");
+			break;
+		}
+		$count++;
+	}
+	$count = 0;
+	while($count<50){
+		$output = fireWindowsCommandAndReadResponse("ping "+$argVMIP);
+		_log("Ping"+$output);
+		if($output.split("Lost = ")[1].split(" (")[0] == 0){
+			_wait(60000);
+			_log("System Up","Custom4");
+			if($argFolderPathToDelete != ""){
+				_log("Deleting folder at path:-"+$argFolderPathToDelete,"Custom4");
+				$cmdDelFolder = $psPath+"psexec \\\\" + $argVMIP + " -u " + $argVMUserName + " -p " + $argVMPassword + " cmd /c RD /S /Q \""+$argFolderPathToDelete+"\"";
+				$output = fireWindowsCommandAndReadResponse($cmdDelFolder);
+				_log("Output after firing delete command:- RD /S /Q "+$argFolderPathToDelete+" ,is :-"+$output);
+			}
+			break;
+		}
+		$count++;
+	}
+}
+
+function installSiteControllerPRDR_(){
+	
+	
+	//*********************************************************   Pre Condition Start <No SFR, Agent should be installed on PR/DR>
+	
+	if($RemoteAgentPathPR != ""){
+		_log("Uninstalling Windows Agent on IP:-"+$compIPPR,"Custom4");
+		 create_batFile_For_AgentUnInstallation_PR();
+		_execute($SAHI_HOME + "utility\\Sfr\\UnInstall_Agent.bat","true");
+	}
+
+	if($RemoteAgentPathDR != ""){
+		_log("Uninstalling Windows Agent on IP:-"+$compIPDR,"Custom4");
+		 create_batFile_For_AgentUnInstallation_DR();
+		_execute($SAHI_HOME + "utility\\Sfr\\UnInstall_Agent.bat","true");
+	}
+	var $bln = findServiceStatus($compIPPR,$remoteUserNameValPR,$remotePwdValPR,"SFR");
+	//var $cmd = $SAHI_HOME+"\\tools\\PsExec\\psexec \\\\"+$compIPPR+" -u "+$remoteUserNameValPR+" -p "+$remotePwdValPR+" -n 60 sc query SFR";
+	//$val = fireWindowsCommandAndReadResponse($cmd);
+	//_log("checking status of SFR after firing command:- sc query SFR ;on PR site: "+$val,"Custom4");
+	//if($val.indexOf("STOPPED") >= 0 || $val.indexOf("RUNNING") >= 0){
+	if($bln == true){
+		create_batFile_For_SFR_UnInstallation_PR();
+		_execute($SAHI_HOME + "utility\\Sfr\\UnInstall_SFR.bat","true");
+	}
+	var $bln = findServiceStatus($compIPDR,$remoteUserNameValDR,$remotePwdValDR,"SFR");
+	//var $cmd = $SAHI_HOME+"\\tools\\PsExec\\psexec \\\\"+$compIPDR+" -u "+$remoteUserNameValDR+" -p "+$remotePwdValDR+" -n 60 sc query SFR";
+	//$val = fireWindowsCommandAndReadResponse($cmd);
+	//_log("checking status of SFR after firing command:- sc query SFR ;on DR site: "+$val,"Custom4");
+	//if($val.indexOf("STOPPED") >= 0 || $val.indexOf("RUNNING") >= 0){
+	if($bln == true){
+		create_batFile_For_SFR_UnInstallation_DR();
+		_execute($SAHI_HOME + "utility\\Sfr\\UnInstall_SFR.bat","true");
+	}
+	//*********************************************************   Pre Condition End <No SFR, Agent should be installed on PR/DR>
+
+	_log("Removing local Sfr directory","Custom4");
+	_execute("cmd /c RMDIR /Q /S "+ $SAHI_HOME + "utility\\Sfr" ,"true");                                          
+	_log("Creating a batch file to download Sitecontroller binaries to local Sfr folder","Custom4");
+	Create_Batch_File_For_WgetLocal("/SanoviDRM/AgentNode/Windows/VM/SiteController.exe"); 
+	_log("Executing the batch file to download SiteController in local Sfr folder","Custom4");
+	_execute($SAHI_HOME + "utility\\WgetCopy.bat","true");
+	_log("Creating a property file for PR which we need for Silent installation in local Sfr folder","Custom4");
+	editPropFileForSiteController_PR();
+	_log("Creating a property file for DR which we need for Silent installation in local Sfr folder","Custom4");
+	editPropFileForSiteController_DR();
+	_log("Creating a vbs file in Sfr for updating values in cfg file of Site Controller at PR site","Custom4");
+	editCFGFileForSiteController_PR();
+	_log("Creating a vbs file in Sfr for updating values in cfg file of Site Controller at DR site","Custom4");
+	editCFGFileForSiteController_DR();
+	_log("Copying all files present in local Sfr folder to PR Site","Custom4");
+	Copy_WindowsBinaries_To_RemoteMachine_PR();
+	_log("Copying all files present in local Sfr folder to DR Site","Custom4");
+	Copy_WindowsBinaries_To_RemoteMachine_DR();                                                                                              
+	
+	
+	_log("Uninstalling Site controller at PR Site","Custom4");
+	uninstallSiteController_PR();
+	restartVM($compIPPR,"Administrator","Sanovi123","");
+	_log("Installing Site controller at PR Site","Custom4");
+	installSiteController_PR();
+	_log("Uninstalling Site controller at DR Site","Custom4");
+	uninstallSiteController_DR();
+	restartVM($compIPDR,"Administrator","Sanovi123","");
+	_log("Installing Site controller at DR Site","Custom4");
+	installSiteController_DR();
+	                                      
+	restartVM($compIPPR,"Administrator","Sanovi123","");
+	restartVM($compIPDR,"Administrator","Sanovi123","");
+	
+	_log("starting powershell at PR and DR Site","Custom4");
+	startPowerShell_PR_DR($powerShellExePath_PR);
+//	startAppOnVM($powerShellExePath_PR);
+//	_log("starting powershell at DR Site","Custom4");
+//	startAppOnVM($powerShellExePath_DR);
+	
+
+	if(findServiceStatus($compIPPR,$remoteUserNameValPR,$remotePwdValPR,"IBMROActiveMQ") != true){
+		if(startService($compIPPR,$remoteUserNameValPR,$remotePwdValPR,"IBMROActiveMQ") != true){
+		_log("Service IBMROActiveMQ not running on PR Site, SiteController not installed successfully","FAILURE");
+		}
+	}
+
+	if(findServiceStatus($compIPPR,$remoteUserNameValPR,$remotePwdValPR,"IBMROSiteController") != true){
+		if(startService($compIPPR,$remoteUserNameValPR,$remotePwdValPR,"IBMROSiteController") != true){
+		_log("Service IBMROSiteController not running on PR Site, SiteController not installed successfully","FAILURE");
+		}
+	}
+
+	if(findServiceStatus($compIPPR,$remoteUserNameValPR,$remotePwdValPR,"IBMROWindowsOSAgent") != true){
+		if(startService($compIPPR,$remoteUserNameValPR,$remotePwdValPR,"IBMROWindowsOSAgent") != true){
+		_log("Service IBMROWindowsOSAgent not running on PR Site, SiteController not installed successfully","FAILURE");
+		}
+	}
+		
+	if(findServiceStatus($compIPDR,$remoteUserNameValDR,$remotePwdValDR,"IBMROActiveMQ") != true){
+		if(startService($compIPDR,$remoteUserNameValDR,$remotePwdValDR,"IBMROActiveMQ") != true){
+		_log("Service IBMROActiveMQ not running on DR Site, SiteController not installed successfully","FAILURE");
+		}
+	}
+
+	if(findServiceStatus($compIPDR,$remoteUserNameValDR,$remotePwdValDR,"IBMROSiteController") != true){
+		if(startService($compIPDR,$remoteUserNameValDR,$remotePwdValDR,"IBMROSiteController") != true){
+		_log("Service IBMROSiteController not running on DR Site, SiteController not installed successfully","FAILURE");
+		}
+	}
+
+	if(findServiceStatus($compIPDR,$remoteUserNameValDR,$remotePwdValDR,"IBMROWindowsOSAgent") != true){
+		if(startService($compIPDR,$remoteUserNameValDR,$remotePwdValDR,"IBMROWindowsOSAgent") != true){
+		_log("Service IBMROWindowsOSAgent not running on DR Site, SiteController not installed successfully","FAILURE");
+		}
+	}
+}
+
+
+function findServiceStatus($argIP,$argUserName,$argPassword,$argServiceName){
+	var $cmd = "";
+	var $output = "";
+	var $psPath = $SAHI_HOME +"tools\\PsExec\\";
+	$cmd = $psPath+"psservice \\\\" + $argIP + " -u " + $argUserName + " -p " + $argPassword + " query "+ $argServiceName + "| findstr STATE";
+	$output = fireWindowsCommandAndReadResponse($cmd);
+	_log($output);
+	if($output.indexOf("RUNNING") >= 0){
+		return true;
+	}
+	else{
+		return false;
+	}
+}
+
+function startService($argIP,$argUserName,$argPassword,$argServiceName){
+	var $cmd = "";
+	var $output = "";
+	var $psPath = $SAHI_HOME +"tools\\PsExec\\";
+	$cmd = $psPath+"psservice \\\\" + $argIP + " -u " + $argUserName + " -p " + $argPassword + " start "+ $argServiceName ;
+	$output = fireWindowsCommandAndReadResponse($cmd);
+	_log($output);
+	if($output.indexOf("RUNNING") >= 0){
+		return true;
+	}
+	else{
+		_wait(60000);
+		if(findServiceStatus($argIP,$argUserName,$argPassword,$argServiceName) != true)
+		{
+			$cmd = $psPath+"psservice \\\\" + $argIP + " -u " + $argUserName + " -p " + $argPassword + " start "+ $argServiceName ;
+			$output = fireWindowsCommandAndReadResponse($cmd);
+			
+			if($output.indexOf("RUNNING") >= 0){			
+				return true;
+			}
+			else{
+			_wait(180000);
+			if(findServiceStatus($argIP,$argUserName,$argPassword,$argServiceName) != true)
+			{
+		
+				return false;
+				}
+			}
+		}
+	}
+}
+
+// Common function for SFR Installation for windows 
+
+function install_SFR_PR_DR(){
+	
+	downloadWindowsBinaries();
+
+	extractZipFile($SAHI_HOME+ "utility\\Sfr\\Windows64_PFR_7.2.zip",$SAHI_HOME+ "utility\\Sfr");
+	extractZipFile($SAHI_HOME+ "utility\\Sfr\\rsync3.0.7-Windows-32bit.zip",$SAHI_HOME+ "utility\\Sfr\\rsync");
+	extractZipFile($SAHI_HOME+ "utility\\Sfr\\tar1.16-Windows-32bit.zip",$SAHI_HOME+ "utility\\Sfr\\tar");
+	fireWindowsCommandAndReadResponse("cd "+$SAHI_HOME+ "utility\\Sfr"+" && del *.zip && del *.zip.* && del *.properties && del *.bat && del *.vbs && del *.zip");
+	copySFRInstallationHelperFiles();
+	editPropertiesFileForSFR();
+	
+	Copy_WindowsBinaries_To_RemoteMachine_PR();
+	Copy_WindowsBinaries_To_RemoteMachine_DR();
+	
+	create_batFile_For_SFR_UnInstallation_PR();
+	_execute($SAHI_HOME + "utility\\Sfr\\UnInstall_SFR.bat","true");
+	batFileSFRInstallation_PR();
+	_execute($SAHI_HOME + "utility\\Sfr\\Install_SFR.bat","true");	
+	create_batFile_For_SFR_UnInstallation_DR();
+	_execute($SAHI_HOME + "utility\\Sfr\\UnInstall_SFR.bat","true");
+	batFileSFRInstallation_DR();
+	_execute($SAHI_HOME + "utility\\Sfr\\Install_SFR.bat","true");
+	
+	var $bln = findServiceStatus($compIPDR,$remoteUserNameValDR,$remotePwdValDR,"SFR");
+
+	if($bln == false){
+		_log("Failed to install SFR on DR site :-"+$compIPDR);
+	}
+	else{
+		_log("SFR installed at DR site :-"+$compIPDR);
+	}
+
+	var $bln = findServiceStatus($compIPPR,$remoteUserNameValPR,$remotePwdValPR,"SFR");
+
+	if($bln == false){
+		_log("Failed to install SFR on PR site :-"+$compIPPR);
+	}
+	else{
+		_log("SFR installed at PR site :-"+$compIPPR);
+	}
+	
+}
+
+function startPowerShell_PR_DR($argPathOfExe){
+	var $cmd = "";
+	var $output = "";
+	var $psPath = $SAHI_HOME +"tools\\PsExec\\";
+	$cmd = $psPath+"psexec \\\\" + $compIPDR + " -u " + $remoteUserNameValDR + " -p " + $remotePwdValDR + " -d cmd /c "+$argPathOfExe;
+	$output = fireWindowsCommandAndReadResponse($cmd);
+	_log($output);
+	$cmd = $psPath+"psexec \\\\" + $compIPPR + " -u " + $remoteUserNameValPR + " -p " + $remotePwdValPR + " -d cmd /c "+$argPathOfExe;
+	$output = fireWindowsCommandAndReadResponse($cmd);
+	_log($output);	
+}
+
+
+
+
+function installSiteControllerPRDR(){
+	
+	var $psPath = $SAHI_HOME +"tools\\PsExec\\";
+	
+//***********************************************************************Uninstalling PR and DR and restart VM    START **	
+	_log("Uninstalling Site controller at PR Site","Custom4");
+	uninstallSiteController_PR();
+	restartVM($compIPPR,$remoteUserNameValPR,$remotePwdValPR,"");
+	if(checkSCUninstalledSuccessfully($compIPPR,$remoteUserNameValPR,$remotePwdValPR) == false){
+		_log("Uninstallation on PR is not fully done , trying to uninstall one more time");
+		uninstallSiteController_PR();
+		restartVM($compIPPR,$remoteUserNameValPR,$remotePwdValPR,"");
+		if(checkSCUninstalledSuccessfully($compIPPR,$remoteUserNameValPR,$remotePwdValPR) == false){
+			_log("Services still exist on PR, Uninstalltion is not done fully, check logs and PR machine for more details","FAILURE");
+		}
+	}	
+	_log("Uninstalling Site controller at DR Site","Custom4");
+	uninstallSiteController_DR();
+	restartVM($compIPDR,$remoteUserNameValDR,$remotePwdValDR,"");
+	if(checkSCUninstalledSuccessfully($compIPDR,$remoteUserNameValDR,$remotePwdValDR) == false){
+		_log("Uninstallation on DR is not fully done , trying to uninstall one more time");
+		uninstallSiteController_DR();
+		restartVM($compIPDR,$remoteUserNameValDR,$remotePwdValDR,"");
+		if(checkSCUninstalledSuccessfully($compIPDR,$remoteUserNameValDR,$remotePwdValDR) == false){
+			_log("Services still exist on DR, Uninstalltion is not done fully, check logs and PR machine for more details","FAILURE");
+		}
+	}
+
+//***********************************************************************Uninstalling PR and DR and restart VM   END **
+
+//***********************************************************************Download sitecontroller binaries to local START **	
+	_log("Removing local Sfr directory","Custom4");
+	_execute("cmd /c RMDIR /Q /S "+ $SAHI_HOME + "utility\\Sfr" ,"true");                                          
+	_log("Creating a batch file to download Sitecontroller binaries to local Sfr folder","Custom4");
+	batchFileToWget("/SanoviDRM/AgentNode/Windows/VM/SiteController.exe"); 
+	_log("Executing the batch file to download SiteController in local Sfr folder","Custom4");
+	_execute($SAHI_HOME + "utility\\WgetCopy.bat","true");
+	_log("Creating a property file for PR which we need for Silent installation in local Sfr folder","Custom4");
+	editPropFileForSiteController_PR();
+	_log("Creating a property file for DR which we need for Silent installation in local Sfr folder","Custom4");
+	editPropFileForSiteController_DR();
+	_log("Creating a vbs file in Sfr for updating values in cfg file of Site Controller at PR site","Custom4");
+	editCFGFileForSiteController_PR();
+	_log("Creating a vbs file in Sfr for updating values in cfg file of Site Controller at DR site","Custom4");
+	editCFGFileForSiteController_DR();
+//***********************************************************************Download sitecontroller binaries to local END **	
+	
+//***********************************************************************Deleting SFR and SiteController folder at PR and DR site START **
+	$cmdDelFolder = $psPath+"psexec \\\\" + $compIPPR + " -u " + $remoteUserNameValPR + " -p " + $remotePwdValPR + " -s cmd /c RD /S /Q \""+$agentBuildPathPR+"\"";
+	$output = fireWindowsCommandAndReadResponse($cmdDelFolder);
+   _log($output);
+   
+   $cmdDelFolder = $psPath+"psexec \\\\" + $compIPDR + " -u " + $remoteUserNameValDR + " -p " + $remotePwdValDR + " -s cmd /c RD /S /Q \""+$agentInstallationPathPR+"\"";
+	$output = fireWindowsCommandAndReadResponse($cmdDelFolder);
+  _log($output);
+  		if($output.indexOf("handle is invalid") >= 0){
+  			_log("trying to delete site controller folder again");
+  			$output = fireWindowsCommandAndReadResponse($cmdDelFolder);
+  		   _log($output);
+  		}
+  		
+   $cmdDelFolder = $psPath+"psexec \\\\" + $compIPPR + " -u " + $remoteUserNameValPR + " -p " + $remotePwdValPR + " -s cmd /c RD /S /Q \""+$agentInstallationPathDR+"\"";
+	$output = fireWindowsCommandAndReadResponse($cmdDelFolder);
+  _log($output);
+	
+   $cmdDelFolder = $psPath+"psexec \\\\" + $compIPDR + " -u " + $remoteUserNameValDR + " -p " + $remotePwdValDR + " -s cmd /c RD /S /Q \""+$agentBuildPathDR+"\"";
+	$output = fireWindowsCommandAndReadResponse($cmdDelFolder);
+  _log($output);
+  
+   
+//***********************************************************************Deleting SFR and SiteController folder at PR and DR site END **
+	
+//***********************************************************************Copying binaries to PR and DR site START **
+    _log("Copying all files present in local Sfr folder to PR Site","Custom4");
+	Copy_WindowsBinaries_To_RemoteMachine_PR();
+	_log("Copying all files present in local Sfr folder to DR Site","Custom4");
+	Copy_WindowsBinaries_To_RemoteMachine_DR(); 
+//***********************************************************************Copying binaries to PR and DR site END **
+	
+//***********************************************************************Installing SC on PR site START **
+	_log("Installing Site controller at PR Site","Custom4");
+	installSiteController_PR();	
+	restartVM($compIPPR,$remoteUserNameValPR,$remotePwdValPR,"");
+	/*if(findServiceStatus($compIPPR,$remoteUserNameValPR,$remotePwdValPR,"IBMROActiveMQ") != true){
+		if(startService($compIPPR,$remoteUserNameValPR,$remotePwdValPR,"IBMROActiveMQ") != true){
+		_log("Service IBMROActiveMQ not running on PR Site, SiteController not installed successfully","FAILURE");
+		}
+	}
+
+	if(findServiceStatus($compIPPR,$remoteUserNameValPR,$remotePwdValPR,"IBMROSiteController") != true){
+		if(startService($compIPPR,$remoteUserNameValPR,$remotePwdValPR,"IBMROSiteController") != true){
+		_log("Service IBMROSiteController not running on PR Site, SiteController not installed successfully","FAILURE");
+		}
+	}
+
+	if(findServiceStatus($compIPPR,$remoteUserNameValPR,$remotePwdValPR,"IBMROWindowsOSAgent") != true){
+		if(startService($compIPPR,$remoteUserNameValPR,$remotePwdValPR,"IBMROWindowsOSAgent") != true){
+		_log("Service IBMROWindowsOSAgent not running on PR Site, SiteController not installed successfully","FAILURE");
+		}
+	}*/
+//***********************************************************************Installing SC on PR site END **
+	
+//***********************************************************************Installing SC on DR site START **
+	_log("Installing Site controller at DR Site","Custom4");
+	installSiteController_DR();
+	restartVM($compIPDR,$remoteUserNameValDR,$remotePwdValDR,"");
+	/*
+	if(findServiceStatus($compIPDR,$remoteUserNameValDR,$remotePwdValDR,"IBMROActiveMQ") != true){
+		if(startService($compIPDR,$remoteUserNameValDR,$remotePwdValDR,"IBMROActiveMQ") != true){
+		_log("Service IBMROActiveMQ not running on DR Site, SiteController not installed successfully","FAILURE");
+		}
+	}
+
+	if(findServiceStatus($compIPDR,$remoteUserNameValDR,$remotePwdValDR,"IBMROSiteController") != true){
+		if(startService($compIPDR,$remoteUserNameValDR,$remotePwdValDR,"IBMROSiteController") != true){
+		_log("Service IBMROSiteController not running on DR Site, SiteController not installed successfully","FAILURE");
+		}
+	}
+
+	if(findServiceStatus($compIPDR,$remoteUserNameValDR,$remotePwdValDR,"IBMROWindowsOSAgent") != true){
+		if(startService($compIPDR,$remoteUserNameValDR,$remotePwdValDR,"IBMROWindowsOSAgent") != true){
+		_log("Service IBMROWindowsOSAgent not running on DR Site, SiteController not installed successfully","FAILURE");
+		}
+	}*/	
+//***********************************************************************Installing SC on DR site END **
+	
+//************************************************************************Starting Powershell on PR and DR Site START**
+	_log("starting powershell at PR and DR Site","Custom4");
+	startPowerShell_PR_DR($powerShellExePath_PR);
+//************************************************************************Starting Powershell on PR and DR Site END**
+	
+}
+
+function batchFileToWget($filePath){
+	
+	var $cdToPath = "cd " + $SAHI_HOME + "tools\\Wget" + "\n";
+	
+	var $WgetExecute = "wget -r -nd -P " + $SAHI_HOME + "utility\\Sfr " + $g_buildUrl + $filePath +"\n";
+	
+	var $exitCode = "echo EXIT CODE : %errorlevel% > WgetCopyExitCode.txt" + "\n";
+	
+	var $pscpCommand = $cdToPath + $WgetExecute + $exitCode;
+	
+	writeToFile($pscpCommand,$SAHI_HOME + "utility\\WgetCopy.bat");
+
+}
+
+function checkServiceExistence($argIP,$argUserName,$argPassword,$argServiceName){
+	var $cmd = "";
+	var $output = "";
+	var $psPath = $SAHI_HOME +"tools\\PsExec\\";
+	$cmd = $psPath+"psservice \\\\" + $argIP + " -u " + $argUserName + " -p " + $argPassword + " query "+ $argServiceName + " | findstr STATE";
+	$output = fireWindowsCommandAndReadResponse($cmd);
+	_log($output);
+	if($output.indexOf("STATE") >= 0){
+		return true;
+	}
+	else{
+		return false;
+	}
+}
+
+function checkSCUninstalledSuccessfully($argIP,$argUserName,$argPassword){
+	
+	_log("Checking any serices related to SC exist on VM");
+	if(checkServiceExistence($argIP,$argUserName,$argPassword,"IBMROWindowsOSAgent") == true || 
+			checkServiceExistence($argIP,$argUserName,$argPassword,"IBMROSiteController") == true || 
+			checkServiceExistence($argIP,$argUserName,$argPassword,"IBMROActiveMQ") == true){
+		_log("SC services still exist");
+		return false;
+	}	
+	
+//	var $psPath = $SAHI_HOME +"tools\\PsExec\\";
+//	$cmd = $psPath+"psexec \\\\" + $argIP + " -u " + $argUserName + " -p " + $argPassword + " cmd /c if exist C:\\SiteController echo yes";
+//	$output = fireWindowsCommandAndReadResponse($cmd);
+//	
+//	if ($output == "yes"){	
+//		_log("Site controller folder exists");
+//		return false;
+//	}
+	
+	else{
+		return true;
+	}
+}
+
+
+
+
+function SC_Component_Local_Discovery() {
+	
+	try {
+		if(_exists(_cell($compIPPR, _near(_cell("/Windows/")))) == true){
+			_log("Component with PR IP already exists");
+		}
+		else{
+			Create_Local_ComponentPR();
+		}
+		
+		if(_exists(_cell($compIPDR, _near(_cell("/Windows/")))) == true){
+			_log("Component with DR IP already exists");
+		}
+		else{
+			Create_Local_ComponentDR();
+		}
+	} catch ($e) {
+		
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Component_Local_Discovery_0002(),Function: Create_Local_ComponentPR or Create_Local_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("component not created succesfully.So that stopping execution.");
+		
+	}
+}
+
+function checkComponentStatusOnGUI($argVMIP,$argComponentType){
+
+	$counter = 0;
+	
+	$a = _getText(_row("/"+$argVMIP+"/")).split("Windows "+$argComponentType)[1].trim().split(" ")[0];
+
+	while($a != "ACTIVE"){
+		if($counter == 10){
+			_log("waited for 5 mins component not active","FAILURE");
+			break;
+		}
+		_log("waiting for 30 seconds as SC component is not yet active");
+		_wait(30000);
+		$counter++;
+	}
+}
+
+function checkComponentStatusPRDR(){
+	checkComponentStatusOnGUI($compIPPR,"PR");
+	checkComponentStatusOnGUI($compIPDR,"DR");
+}
+
+/***********************************************************************************************************************************************************/
+/***********************************************************************************************************************************************************/
+
+
+
+
+function installSiteControllerPRDR_Ver2(){
+	
+	var $psPath = $SAHI_HOME +"tools\\PsExec\\";
+
+//***********************************************************************Uninstalling PR and DR and restart VM    START **	
+	_log("Uninstalling Site controller at PR Site","Custom4");
+	uninstallSiteController($compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	restartVM($compIPPR,$remoteUserNameValPR,$remotePwdValPR,"");
+	if(checkSCUninstalledSuccessfully($compIPPR,$remoteUserNameValPR,$remotePwdValPR) == false){
+		_log("Uninstallation on PR is not fully done , trying to uninstall one more time");
+		uninstallSiteController($compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+		restartVM($compIPPR,$remoteUserNameValPR,$remotePwdValPR,"");
+		if(checkSCUninstalledSuccessfully($compIPPR,$remoteUserNameValPR,$remotePwdValPR) == false){
+			_log("Services still exist on PR, Uninstalltion is not done fully, check logs and PR machine for more details","FAILURE");
+		}
+	}	
+	_log("Uninstalling Site controller at DR Site","Custom4");
+	uninstallSiteController($compIPDR,$remoteUserNameValDR,$remotePwdValDR);
+	restartVM($compIPDR,$remoteUserNameValDR,$remotePwdValDR,"");
+	if(checkSCUninstalledSuccessfully($compIPDR,$remoteUserNameValDR,$remotePwdValDR) == false){
+		_log("Uninstallation on DR is not fully done , trying to uninstall one more time");
+		uninstallSiteController($compIPDR,$remoteUserNameValDR,$remotePwdValDR);
+		restartVM($compIPDR,$remoteUserNameValDR,$remotePwdValDR,"");
+		if(checkSCUninstalledSuccessfully($compIPDR,$remoteUserNameValDR,$remotePwdValDR) == false){
+			_log("Services still exist on DR, Uninstalltion is not done fully, check logs and PR machine for more details","FAILURE");
+		}
+	}
+
+//***********************************************************************Uninstalling PR and DR and restart VM   END **
+
+//***********************************************************************Download sitecontroller binaries to local START **	
+	_log("Removing local Sfr directory","Custom4");
+	_execute("cmd /c RMDIR /Q /S "+ $SAHI_HOME + "utility\\Sfr" ,"true"); 
+	_log("Creating a batch file to download Sitecontroller binaries to local Sfr folder","Custom4");
+	batchFileToWget("/SanoviDRM/AgentNode/Windows/VM/SiteController.exe"); 
+	_log("Executing the batch file to download SiteController in local Sfr folder","Custom4");
+	_execute($SAHI_HOME + "utility\\WgetCopy.bat","true");
+	_log("Creating a property file for PR which we need for Silent installation in local Sfr folder","Custom4");
+	editPropFileForSiteController_PR();
+	_log("Creating a property file for DR which we need for Silent installation in local Sfr folder","Custom4");
+	editPropFileForSiteController_DR();
+	
+//***********************************************************************Download sitecontroller binaries to local END **	
+	
+//***********************************************************************Deleting SFR and SiteController folder at PR and DR site START **
+	$cmdDelFolder = $psPath+"psexec \\\\" + $compIPPR + " -u " + $remoteUserNameValPR + " -p " + $remotePwdValPR + " -s cmd /c RD /S /Q \""+$agentBuildPathPR+"\"";
+	$output = fireWindowsCommandAndReadResponse($cmdDelFolder);
+   _log($output);
+   
+   $cmdDelFolder = $psPath+"psexec \\\\" + $compIPDR + " -u " + $remoteUserNameValDR + " -p " + $remotePwdValDR + " -s cmd /c RD /S /Q \""+$agentInstallationPathPR+"\"";
+	$output = fireWindowsCommandAndReadResponse($cmdDelFolder);
+  _log($output);
+  		if($output.indexOf("handle is invalid") >= 0){
+  			_log("trying to delete site controller folder again");
+  			$output = fireWindowsCommandAndReadResponse($cmdDelFolder);
+  		   _log($output);
+  		}
+  		
+   $cmdDelFolder = $psPath+"psexec \\\\" + $compIPPR + " -u " + $remoteUserNameValPR + " -p " + $remotePwdValPR + " -s cmd /c RD /S /Q \""+$agentInstallationPathDR+"\"";
+	$output = fireWindowsCommandAndReadResponse($cmdDelFolder);
+  _log($output);
+	
+   $cmdDelFolder = $psPath+"psexec \\\\" + $compIPDR + " -u " + $remoteUserNameValDR + " -p " + $remotePwdValDR + " -s cmd /c RD /S /Q \""+$agentBuildPathDR+"\"";
+	$output = fireWindowsCommandAndReadResponse($cmdDelFolder);
+  _log($output);
+  
+   
+//***********************************************************************Deleting SFR and SiteController folder at PR and DR site END **
+	
+//***********************************************************************Copying binaries to PR and DR site START **
+    _log("Copying all files present in local Sfr folder to PR Site","Custom4");
+	Copy_WindowsBinaries_To_RemoteMachine_PR();
+	
+	_log("Copying all files present in local Sfr folder to DR Site","Custom4");
+	Copy_WindowsBinaries_To_RemoteMachine_DR(); 
+	
+//***********************************************************************Copying binaries to PR and DR site END **
+	
+//***********************************************************************Installing SC on PR site START **
+	_log("Installing Site controller at PR Site","Custom4");
+	installSiteController_Ver2($compIPPR,$remoteUserNameValPR,$remotePwdValPR,$agentBuildPathPR,"PR");
+//***********************************************************************Installing SC on PR site END **
+	
+//***********************************************************************Installing SC on DR site START **
+	_log("Installing Site controller at DR Site","Custom4");
+	installSiteController_Ver2($compIPDR,$remoteUserNameValDR,$remotePwdValDR,$agentBuildPathDR,"DR");
+//***********************************************************************Installing SC on DR site END **
+	
+//************************************************************************Starting Powershell on PR and DR Site START**
+	_log("starting powershell at PR and DR Site","Custom4");
+	startPowerShell_PR_DR($powerShellExePath_PR);
+//************************************************************************Starting Powershell on PR and DR Site END**
+	
+}
+
+
+
+
+
+function uninstallSiteController($argIP,$argUserName,$argPassword){
+	
+	var $cmd = "";
+	var $output = "";
+	var $psPath = $SAHI_HOME +"tools\\PsExec\\";
+	
+	// ***********************************************  STOPPING SERVICES BEGIN
+	_log("Stopping SiteController Services on :-"+$argIP,"Custom4");
+	
+	$cmd = $psPath+"psexec \\\\" + $argIP + " -u " + $argUserName + " -p " + $argPassword + " wmic service where \"name like 'IBM%'\" call stopservice";
+	
+	$output = fireWindowsCommandAndReadResponse($cmd);
+	
+	_log("output after firing command:-"+$cmd+" ,is--"+$output,"Custom4");
+	            
+	// ***********************************************  STOPPING SERVICES END
+	
+	// ***********************************************  Uninstall Begin
+	_log("Uninstalling SiteController on:-"+$argIP,"Custom4");
+	
+	$cmd = $psPath+"psexec \\\\" + $argIP + " -u " + $argUserName + " -p " + $argPassword + " -s \""+$agentInstallationPathPR+"UninstallerData\\Uninstall IBM Resiliency Orchestration SiteController.exe\" -i silent";
+	
+	$output = fireWindowsCommandAndReadResponse($cmd);
+	
+	_log("output after firing command:-"+$cmd+" ,is--"+$output,"Custom4");
+	// ***********************************************  Uninstall End    
+}
+
+
+
+
+function installSiteController_Ver2($argRemoteIP,$argRemoteUsername,$argRemotePassword,$argInstallerPath,$argNodeType){
+		
+	var $cmd = "";
+	var $output = "";
+	var $psPath = $SAHI_HOME +"tools\\PsExec\\";
+	
+	// ***********************************************  Install Begin
+	_log("Installing SiteController on:-"+$argRemoteIP,"Custom4");
+	
+	if($argNodeType == "PR"){
+		$cmd = $psPath+"psexec \\\\" + $argRemoteIP+ " -u " + $argRemoteUsername + " -p " + $argRemotePassword + " -s -i "+$argInstallerPath+"SiteController.exe -f "+$argInstallerPath+"SiteControllerInstPropFile_PR.properties -i silent";
+	}
+	if($argNodeType == "DR"){
+		$cmd = $psPath+"psexec \\\\" + $argRemoteIP+ " -u " + $argRemoteUsername + " -p " + $argRemotePassword + " -s -i "+$argInstallerPath+"SiteController.exe -f "+$argInstallerPath+"SiteControllerInstPropFile_DR.properties -i silent";
+	}
+	                                                                                                                                                                                
+	$output = fireWindowsCommandAndReadResponse($cmd);
+	
+	_log("output after firing command:-"+$cmd+" ,is--"+$output,"Custom4");
+	// ***********************************************  Install End    	
+}
+
+
+
+
+
+
+

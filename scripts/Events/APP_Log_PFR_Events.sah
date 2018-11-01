@@ -1,0 +1,50 @@
+
+_include("../../Library/Solution_Signature/Include/Events_common.sah");
+_include("../../conf/DRMInstallation_Parameter.sah");
+_include("../../conf/Events/APP_PFR_Events_Parameter.sah");
+
+
+Login_001(); // Login function 
+
+   for ($i = 12; $i <= $g_Events_APP_PFR.length - 1; $i++) {
+	
+	//for ($i = 14; $i <= 15; $i++) {
+	
+	
+	 $Agent = $g_Events_APP_PFR[$i][1];
+	 $EventName =  $g_Events_APP_PFR [$i][2];
+	 $Eventdes = $g_Events_APP_PFR[$i][3]; 
+	 $Image	= $g_Events_APP_PFR[$i][4]; 
+	 $PRorDR = $g_Events_APP_PFR[$i][5];
+	 
+	 //$PRorDR = $g_Events_APP_PFR[$i][5]; 
+	 //$PRoDR  = $PRorDR1.split(" ");
+	 //$PRorDR = $PRoDR[0];
+	 
+	 var $test1 = _testcase("Events_Test_Cases/TestCases","Events Testing");
+	 $test1.start();
+	 
+	 RaiseEvent_Get_Remote_Agent_Event($groupName, $EventName);
+	 
+	 
+/*	 if($SOActive == "Y") {
+		 if($PRorDR == "DR") {
+			 Event($AgentType,$compIPPR,$remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, $Agent,$groupName,$EventName, $Eventdes, $Image);
+		 } if($PRorDR == "PR"){
+			 Event($AgentType,$compIPDR,$remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, $Agent,$groupName,$EventName, $Eventdes, $Image);
+		 }
+	 }
+	 else {
+	 if($PRorDR == "PR"){
+			 Event($AgentType,$compIPPR,$remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, $Agent,$groupName,$EventName, $Eventdes, $Image);
+		 } 
+	 if($PRorDR == "DR"){
+			 Event($AgentType,$compIPDR,$remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, $Agent,$groupName,$EventName, $Eventdes, $Image);
+		 }	
+	 }
+	 if($PRorDR == "Polar"){
+		Event_polar($groupName,$EventName);
+			 }*/	 
+	
+	 $test1.end();		
+   }

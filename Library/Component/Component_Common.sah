@@ -1,0 +1,158 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script common function for the Creation of Component(LINUX) for both remote and local agents. 
+ ** AuthorName : Swati Chowdhary
+ ** Created Date : Feb 2013
+ ************************************************************************/
+
+
+
+/**
+* Function is for Remote Component creation.
+*@param :  $systemType, $compname, $compip, $compsite, $remoteUserNameVal, $remotePwdVal
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function Create_Remote_Component($systemType, $compname, $compip, $compsite, $remoteUserNameVal, $remotePwdVal) {
+	navigateToDiscovery();
+	_click(_link("Subsystems"));
+	_click(_link("Components"));
+	if (_exists(_link($compname) || _exists(_cell($compip)))) {
+		_log("component already exists");
+		
+		$compName = _getText(_link("/.*/", _leftOf(_cell($compip))));
+	} else {
+		_setSelected(_select("systemType"), $systemType);
+		_wait(1000);
+		_click(_button("/Go/"));
+		_setSelected(_select("ComponentType"), $systemType);
+		_setValue(_textbox("compip"), $compip);
+		_setValue(_textbox("compname"), $compname);
+		_click(_button("/Ping/"));
+		
+		if($subscriber != ""){
+			_setSelected(_select("subscriberId"), $subscriber);
+		}
+		_wait(1000);
+		var $ping = "Ping to $compip was successful.";
+		_assertExists($ping);
+		_setSelected(_select("compsite"), $compsite);
+		_setSelected(_select("credList"), "Add new credential");
+		_setValue(_textbox("usernameval"), $remoteUserNameVal);
+		_setValue(_password("pwdval"), $remotePwdVal);
+		_click(_button("Test Credentials"));
+		_wait(1000);
+		var $testCredentials = "Credential Check Passed";
+		_assertExists(_span($testCredentials));
+		_clearLastAlert();
+		_click(_button("/Save/"));
+		_wait(5000);
+		navigateToDiscovery();
+		_click(_link("Subsystems"));
+		_click(_link("Components"));
+		if (_exists(_link($compname))) {
+			_log("component created succesfully");
+			_wait(180000, _getText(_cell(6, _near(_link($compname))))!="UNKNOWN");
+		} else {
+			_assertEqual("component created succesfully",_lastAlert()); 
+			_fail("component not created succesfully.So that stopping execution.");
+		}
+	}
+	/// comp status check added by -anita
+	verifyComponentStatus($compname);
+}// end of RemoteComponent()
+
+/**
+* Function is for Local Component creation.
+*@param : $systemType, $compname, $compip, $compsite
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+
+function Create_Local_Component($systemType, $compname, $compip, $compsite) {
+	navigateToDiscovery();
+	_click(_link("Subsystems"));
+	_click(_link("Components"));
+	if (_exists(_link($compname))) {
+		_log("component already exists");
+	} else {
+		_setSelected(_select("systemType"), $systemType);
+		_wait(1000);
+		_click(_button("/Go/"));
+		_setSelected(_select("ComponentType"), $systemType);
+		_setValue(_textbox("compip"), $compip);
+		_setValue(_textbox("compname"), $compname);
+	
+		if($subscriber != ""){
+			_setSelected(_select("subscriberId"), $subscriber);
+		}
+		_click(_button("/Ping/"));
+		_wait(1000);
+		var $ping = "Ping to $compip was successful.";
+		_assertExists($ping);
+		_setSelected(_select("compsite"), $compsite);
+		_click(_checkbox("remoteaccess"));
+		_expectConfirm("Please install agents (if not already installed) on this server and start agents", true);
+		_wait(1000);
+		_clearLastAlert();
+		_click(_button("/Save/"));
+		_wait(5000);
+		navigateToDiscovery();
+		_click(_link("Subsystems"));
+		_click(_link("Components"));
+		if (_exists(_link($compname))) {
+			_log("component created succesfully");
+			_wait(180000, _getText(_cell(6, _near(_link($compname))))!="UNKNOWN");
+		} else {
+			_assertEqual("component created succesfully",_lastAlert()); 
+			_fail("component not created succesfully.So that stopping execution.");
+		}
+	}
+	/// comp status check added by -anita
+	verifyComponentStatus($compname);
+}// end Of LocalComponent()
+
+
+function verifyComponentStatus($compname){
+
+	navigateToDiscovery();
+	_click(_link("Subsystems"));
+	_click(_link("Components"));
+	if (_exists(_link($compname))) {
+		_click(_link($compname));
+		var $compStatus = _getText(_cell(1, _near(_cell("/Status/"))));		
+		if($compStatus !="UNKNOWN"){
+		_assertExists("Components status: ",$compStatus );
+		}
+		else{
+			_assertEqual("ACTIVE", $compStatus ,"Expected Vs Actual Component Status");
+		}
+	}
+}
+
+
+/**
+* Function is to create Agent Node.
+*@param : null
+*@return : null
+*@Author: Swati Choudhary
+*
+*/
+//Description: Agent Node Component creation
+function Create_Agent_Node_Component() {
+	navigateToDiscovery();
+	_click(_link("Subsystems"));
+	_click(_link("Components"));
+	if (_exists(_cell($drmServer))) {
+		_log("Agent Node already exists");
+	} else {
+		Create_Local_Component($systemTypeAgent, "DRM_Agent_Node", $drmServer, $locationPR);
+	}		
+	_wait(5000);
+	Popup_Handler();
+}
+

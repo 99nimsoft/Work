@@ -1,0 +1,622 @@
+// 1.Check the Availability of "Management service" tab in DRM UI
+function checkMgmtServiceTab() {
+	discoverMgmtService();
+	_assertExists(_link("Management Service"));
+	
+}
+
+// 2.Check the navigation after clicking on "Management Service" tab
+function checkMgmtServiceNavigation() {
+		discoverMgmtService();
+	_assertExists(_cell("Management Service List"));
+	}
+
+// 3.Check the availability of "Add Cloud" hyperlink in "Management Service
+// List" page
+
+function checkAddCloudLink() {
+		discoverMgmtService();
+	_assertExists(_link("Add Management Service",
+			_near(_cell("Management Service List"))));
+	}
+
+// 4. Check the availability of Management Services under "Management Service
+// listing" page before adding any Service
+function checkMgmtList() {
+	discoverMgmtService();
+	_assertExists(_table("pts"));
+	var $numRows = 0;
+	_set($numRows, _table("pts").rows.length - 1);
+	// check for empty list
+	_assertEqual(0, $numRows);
+	_assertEqual("Name", _getText(_tableHeader("Name", _in(_table("pts")))));
+	_assertEqual("Type", _getText(_tableHeader("Type", _in(_table("pts")))));
+	_assertEqual("Site", _getText(_tableHeader("Site", _in(_table("pts")))));
+	_assertEqual("Status", _getText(_tableHeader("Status", _in(_table("pts")))));
+	
+	}
+
+// 5.Check the navigation after clicking on "Add Cloud" hyperlink
+function checkAddcloudLink() {
+		add_MgmtService();
+	_assertExists(_cell("Management Service Discovery"));
+	}
+
+// 6.Check the availability of fields in "Management Service Discovery"page
+function checkAvailabilityOffields() {
+	add_MgmtService();
+	_assertExists(_cell("Site", _in(_table("report"))));
+	_assertExists(_select("msSite", _near(_cell("Site"))));
+	_assertExists(_cell("Management Service Type:", _in(_table("report"))));
+	_assertExists(_select("msType", _near(_cell("Management Service Type:"))));
+	_assertExists(_cell("Management Service Name:", _in(_table("report"))));
+	_assertExists(_textbox("msName", _near(_cell("Management Service Name:"))));
+	_assertExists(_cell("vCenter Server", _in(_table("report"))));
+	_assertExists(_textbox("vCenterServer", _near(_cell("vCenter Server"))));
+	_assertExists(_cell("Port", _in(_table("report"))));
+	_assertExists(_textbox("vCenterPort", _near(_cell("Port"))));
+	_assertExists(_cell("User Name", _in(_table("report"))));
+	_assertExists(_textbox("userName2", _near(_cell("User Name"))));
+	_assertExists(_cell("Password", _in(_table("report"))));
+	_assertExists(_password("password2", _near(_cell("Password"))));
+	_assertExists(_button("Test Credentials"));
+	_assertExists(_submit("Save"));
+	_assertExists(_link("View Management Service List"));
+	}
+
+// 7.Check the available options under "Management Service Type" drop-down list
+// in Management Service Discovery page
+
+function checkMgmtTypeAvailability() {
+	
+	add_MgmtService();
+	_assertExists(_cell("Management Service Discovery"));
+	_assertEqual(_getText(_select("msType").options[1]), "VCENTER");
+	_assertEqual(_getText(_select("msType").options[2]), "AWS");
+	_assertExists("AWS");
+	
+}
+// 8.Check the available options under "Amazon Region:" drop-down list in
+// Management Service Discovery page
+
+function checkAmazonRegionList() {
+	
+	add_MgmtService();
+	_assertExists(_cell("Management Service Discovery"));
+	_assertEqual(_getText(_select("msType").options[1]), "VCENTER");
+	_assertEqual(_getText(_select("msType").options[2]), "AWS");
+	_assertExists("AWS");
+	
+}
+
+// 9. Check the available fields after selecting "VCENTER" option fromManagement
+// Service Type drop-downCheck the available fields
+
+function checkavailablefields() {
+	add_MgmtService();
+	_setSelected(_select("msType", _near(_textbox("vCenterServer"))), "VCENTER");
+	_assertExists(_cell("Site", _in(_table("report"))));
+	_assertExists(_select("msSite", _near(_cell("Site"))));
+	_assertExists(_cell("Management Service Type:", _in(_table("report"))));
+	_assertExists(_select("msType", _near(_cell("Management Service Type:"))));
+	_assertExists(_cell("Management Service Name:", _in(_table("report"))));
+	_assertExists(_textbox("msName", _near(_cell("Management Service Name:"))));
+	_assertExists(_cell("vCenter Server", _in(_table("report"))));
+	_assertExists(_textbox("vCenterServer", _near(_cell("vCenter Server"))));
+	_assertExists(_cell("Port", _in(_table("report"))));
+	_assertExists(_textbox("vCenterPort", _near(_cell("Port"))));
+	_assertExists(_cell("User Name", _in(_table("report"))));
+	_assertExists(_textbox("userName2", _near(_cell("User Name"))));
+	_assertExists(_cell("Password", _in(_table("report"))));
+	_assertExists(_password("password2", _near(_cell("Password"))));
+	_assertExists(_button("Ping...", _near(_textbox("vCenterServer"))));
+	_assertExists(_button("Lookup by name...", _near(_textbox("vCenterServer"))));
+
+	_assertExists(_button("Test Credentials"));
+	_assertExists(_submit("Save"));
+	}
+
+// 10.Check the Port no in "Port" textfield after selecting the option "VCENTER"
+// from Management Service Drop-down
+
+function checkPort() {
+	
+	add_MgmtService();
+	_setSelected(_select("msType", _near(_textbox("vCenterServer"))), "VCENTER");
+
+	_assertEqual("443", _getText(_textbox("vCenterPort")));
+	
+}
+
+// 11.Verify "Test Credentials" button with Valid data
+
+function verifyTestCredentialsValidData($vCenterServer, $userName1, $password1) {
+	
+	add_MgmtService();
+	_setValue(_textbox("vCenterServer"), $vCenterServer);
+	_setValue(_textbox("userName2"), $userName1);
+	_setValue(_password("password2"), $password1);
+	_click(_button("Test Credentials"));
+	_assertExists(_span("Credential Check Passed"));
+	// _assertEqual("green", _span("Credential Check Passed").style.color);
+	
+}
+// 12.Verify "Test Credentials" button with InValid data
+
+function verifyTestCredentialsWithInvalidData($vCenterServer, $userName1,
+		$password1) {
+	add_MgmtService();
+	_setValue(_textbox("vCenterServer"), $vCenterServer);
+	_setValue(_textbox("userName2"), $userName1);
+	_setValue(_password("password2"), $password1);
+	_click(_button("Test Credentials"));
+	_assertExists(_span("Credential Check Failed"));
+
+	_assertEqual("red", __span("Credential Check Failed").style.color);
+	
+}
+
+// 13.Verify "Test Credentials" button without entering vCenter Server details
+
+function verifyTestCredentialsButtonWithoutServerDetails($userName1, $password1) {
+	add_MgmtService();
+	_setValue(_textbox("userName2"), $userName1);
+	_setValue(_password("password2"), $password1);
+	_click(_button("Test Credentials"));
+	_assertEqual("Please enter vCenter Server", _lastAlert());
+	
+}
+// 14.Verify "Test Credentials" button without entering User Name
+
+function verifyTestCredentialsButtonWithoutUserName($vCenterServer, $password1) {
+	
+	add_MgmtService();
+	_setValue(_textbox("vCenterServer"), $vCenterServer);
+	_setValue(_password("password2"), $password1);
+	_click(_button("Test Credentials"));
+	_assertEqual("Please enter username", _lastAlert());
+	
+}
+// 15.Verify "Test Credentials" button without entering Password
+
+function verifyTestCredentialsButtonWithoutPassword($vCenterServer, $userName1) {
+	
+	add_MgmtService();
+	_setValue(_textbox("vCenterServer"), $vCenterServer);
+	_setValue(_textbox("userName2"), $userName1);
+	_click(_button("Test Credentials"));
+	_assertEqual("Please enter password", _lastAlert());
+	}
+
+// 16.Verify field vCenter Server with invalid IPAddress
+
+function VerifyFieldInvalidIPAddress($vCenterServer) {
+	
+	add_MgmtService();
+	_setValue(_textbox("vCenterServer"), $vCenterServer);
+	}
+// 17.Verify field vCenter Server with invalid IPAddress
+
+function VerifyFieldInvalidIPAddress($vCenterServer) {
+	
+	add_MgmtService();
+	_setValue(_textbox("vCenterServer"), $vCenterServer);
+	
+}
+// 18.Verify "ping" button without IPAddress/Host name in vCenter Server details
+// field
+
+function VerifyPingButtonWithoutIp() {
+	
+	add_MgmtService();
+	_click(_button("Ping..."));
+	_assertExists(_span("Missing address param in request."));
+	
+	}
+// 19.Verify "ping" button with valid IPAddress/Host name in vCenter Server
+// details field
+
+function VerifyPingWithValidIp($vCenterServer) {
+	add_MgmtService();
+	_setValue(_textbox("vCenterServer"), $vCenterServer);
+	_click(_button("Ping..."));
+	_assertExists(_span("Ping to "+$vCenterServer+" was successful."));
+	
+}
+// 20.Verify "ping" button with Invalid IPAddress/Host name in vCenter Server
+// details field
+
+function VerifyPingWithInValidIp($InvalidVCenterServer) {
+	
+	add_MgmtService();
+	_setValue(_textbox("vCenterServer"), $InvalidVCenterServer);
+	_click(_button("Ping..."));
+	_wait(2000);
+	_assertExists(_span("Unable to ping" + $InvalidVCenterServer + "."));
+	}
+// 21.Verify Saving VCENTER Management Service with valid data
+
+function verifySaveVcenterWithValidData($msSite, $msType, $msName,
+		$vCenterServer, $userName1, $password1) {
+		// save account
+	saveVcs($msSite, $msType, $msName, $vCenterServer, $userName1, $password1);
+	
+	}
+// 22.Check the status of Newly created VCENTER Management Service
+
+function statusOfnewVcenterMgmtService($msSite, $msType, $msName,
+		$vCenterServer, $userName1, $password1) {
+		if (_exists(_link($msName))) {
+		var $vcsStatus = _getText(_cell(4, _near(_link($msName),
+				_under(_tableHeader("Status")))));
+
+		// status new
+		_assertEqual("UNKNOWN", $vcsStatus);
+		// status after sometime
+		_wait(20000);
+
+		_assertEqual("ACTIVE", _getText(_cell(4, _near(_link($msName),
+				_under(_tableHeader("Status"))))));
+	}
+	else{
+		
+		_log("vcenter does not exists");
+		
+	}
+	}
+// 23.Check the status of VCENTER Management Service with all valid details
+
+function statusOfnewVcenterMgmtServicevalid_details($msSite, $msType, $msName,
+		$vCenterServer, $userName1, $password1) {
+	
+		verifySaveVcenterWithValidData($msSite, $msType, $msName, $vCenterServer,
+			$userName1, $password1);
+	if (_exists(_link($msName))) {
+		var $vcsStatus = _getText(_cell(4, _near(_link($msName),
+				_under(_tableHeader("Status")))));
+		_assertEqual("UNKNOWN", $vcsStatus);
+
+		_wait(50000);
+
+		_assertEqual("ACTIVE", _getText(_cell(4, _near(_link($msName),
+				_under(_tableHeader("Status"))))));
+	}
+	}
+// 24.Check the status of VCENTER Management Service with all Invalid details
+
+function statusOfVcenterMgmtServiceInvalid_details($msSite, $msType, $vcsName1,
+		$InvalidVCenterServer, $wrongUserName, $wrongPassword) {
+		saveVcs($msSite, $msType, $vcsName1, $InvalidVCenterServer, $wrongUserName,
+			$wrongPassword);
+	//_assertNotExists(_lastAlert());
+	if (_exists(_link($vcsName1))) {
+		var $vcsStatus = _getText(_cell(4, _near(_link($vcsName1),
+				_under(_tableHeader("Status")))));
+
+		_assertEqual("UNKNOWN", $vcsStatus);
+
+		_wait(50000);
+
+		var $vcsStatus1 = _getText(_cell(4, _near(_link($vcsName1),
+				_under(_tableHeader("Status")))));
+		_assertEqual("INACTIVE", $vcsStatus1);
+	}
+	
+	}
+// 25.Check the status of VCENTER Management Service with Invalid UserName
+
+function statusOfVcenterMgmtServiceInvalidUser($msSite, $msType, $vcsName2,
+		$vCenterServer, $wrongUserName, $password1) {
+	
+	
+	statusOfVcenterMgmtServiceInvalid_details($msSite, $msType, $vcsName2,
+			$vCenterServer, $wrongUserName, $wrongPassword);
+
+}
+// 26.Check the status of VCENTER Management Service with Invalid Password
+
+function statusOfVcenterMgmtServiceInvalidPassword($msSite, $msType, $vcsName3,
+		$vCenterServer, $userName1, $wrongPassword) {
+
+	statusOfVcenterMgmtServiceInvalid_details($msSite, $msType, $vcsName3,
+			$vCenterServer, $userName1, $wrongPassword);
+
+}
+// 27.Check the status of VCENTER Management Service with Invalid Server
+
+function statusOfVcenterMgmtServiceInvalidServer($msSite, $msType, $vcsName4,
+		$InvalidVCenterServer, $userName1, $password1) {
+	
+
+	statusOfVcenterMgmtServiceInvalid_details($msSite, $msType, $vcsName3,
+			$InvalidVCenterServer, $userName1, $password1);
+
+}
+// 28.Check the VCENTER Agent presence soon after discovering VCENTER Management
+// service
+
+function vcenterAgentPresenceInAgentList($msName) {
+	// saveVcs( $msSite, $msType, $NewVcsName,
+	// $vCenterServer, $userName1, $password1);
+
+	_click(_link("Admin"));
+	_click(_link("Go to Agents"));
+	_assertExists(_cell($msName + "(Mgmt Service)",
+			_near(_tableHeader("Component/Mgmt Service"))));
+	
+}
+
+// 29.Check the VCENTER Agent status after discovering VCENTER Management
+// service
+
+function vcenterAgentStatusInAgentList($NewVcsName) {
+	
+	
+	_click(_link("Admin"));
+	_click(_link("Go to Agents"));
+
+	_assertExists(_cell($NewVcsName + "(Mgmt Service)",
+			_near(_tableHeader("Component/Mgmt Service"))));
+	var $vcsStatus = _getText(_cell(3, _near(_cell($NewVcsName
+			+ "(Mgmt Service)"), _under(_tableHeader("Status")))));
+
+	_assertEqual("Connected Stop", $vcsStatus);
+	
+}
+// 30.Check the VCENTER Agent type after discovering VCENTER Management service
+/*
+function vcenterAgentTypeInAgentList($NewVcsName) {
+
+	logIn($username, $password);
+	_click(_link("Admin"));
+	_click(_link("Go to Agents"));
+	_assertExists(_cell($NewVcsName + "(Mgmt Service)"));
+	var $vcsStatus = _getText(_cell(3, _near(_cell($NewVcsName
+			+ "(Mgmt Service)"),
+
+	_under(_tableHeader("Type")))));
+
+	_assertEqual("VCENTER", $vcsStatus);
+	_click(_link("Logout"));
+}
+*/
+// 31.Check the status of VCENTER Agent after stopping
+
+function vcenterAgentStatusAfterStopingAgent($NewVcsName) {
+	
+	_click(_link("Admin"));
+	_click(_link("Go to Agents"));
+	_assertExists(_cell($NewVcsName + "(Mgmt Service)"));
+	_click(_link("Stop", _near(_cell($NewVcsName + "(Mgmt Service)"),
+			_under(_tableHeader("Status")))));
+	_wait(10000);
+	var $vcsStatus = _getText(_cell(3, _near(_cell($NewVcsName
+			+ "(Mgmt Service)"), _under(_tableHeader("Status")))));
+
+	_assertEqual("Not connected Start", $vcsStatus);
+	}
+// 32.Check the status of VCENTER Agent after starting
+
+function vcenterAgentStatusAfterStartingAgent($NewVcsName) {
+	
+	_click(_link("Admin"));
+	_click(_link("Go to Agents"));
+	_assertExists(_cell($NewVcsName + "(Mgmt Service)"));
+	_click(_link("Start", _near(_cell($NewVcsName + "(Mgmt Service)"),
+			_under(_tableHeader("Status")))));
+	_wait(10000);
+	var $vcsStatus = _getText(_cell(3, _near(_cell($NewVcsName
+			+ "(Mgmt Service)"), _under(_tableHeader("Status")))));
+
+	_assertEqual("Connected Stop", $vcsStatus);
+	}
+
+// 33.Check the VCENTER Event in UI after Inavalidating The VCENTER A/C
+function vcenterEventAfterInavalidatingServer($InvalidVCenterServer, $msName) {
+	
+	discoverMgmtService();
+	if (_exists(_link($msName))) {
+
+		_click(_image("Edit", _near(_link($msName))));
+		_setValue(_textbox("vCenterServer"), $InvalidVCenterServer);
+		_click(_submit("Save"));
+
+		_wait(20000);
+		var $vcsStatus = _getText(_cell(4, _near(_link($msName),
+				_under(_tableHeader("Status")))));
+		_assertEqual("INACTIVE", $vcsStatus);
+	} else {
+
+		_log($msName + "service doesn't exists");
+	}
+	}
+// 34.Check the availability of VCENTER A/C details in Database after Creating a VCENTER A/C
+function vcenterAccountDetailsInDB($msName) {
+	$props = Get_Mysql_Db_Connection_URL($hostUserNamePR, $hostPasswordPR,
+			$hostIPPR, $hostPortPR, "panaces");
+
+	var db = _getDB("com.mysql.jdbc.Driver", $props.get("databaseconnection"),
+			$props);
+	var $q = "Select * from mgmt_service where name=" + "'" + $msName
+			+ "'";
+	var $vcsAccount = db.select($q);
+	for ( var $i = 0; $i < $vcsAccount.length; $i++) {
+		var $row = $vcsAccount[$i];
+		var $name = $row["name"];
+		var $type_id = $row["type_id"];
+		var $status = $row["status"];
+		var $default_status = $row["default_status"];
+	
+
+		if ($name == $msName) {
+			_assertEqual("1", $type_id);
+			_assertEqual("ACTIVE", $status);
+			_assertEqual("UNKNOWN", $default_status);
+		
+
+		} else {
+
+			_fail("account doesn't exists in db");
+		}
+	}
+	
+}
+
+// 35.check the details after clicking on Existing VCENTER A/C
+function vcenterDetails($msSite, $msType, $NewVcsName, $vCenterServer,
+		$userName1, $password1) {
+		discoverMgmtService();
+	if (_exists(_link($NewVcsName))) {
+		_click(_link($NewVcsName));
+		_assertContainsText("Management Service Details", _table("report"));
+		_assertExists(_cell("VCENTER", _near(_cell("Type :"))));
+		_assertExists(_cell($NewVcsName, _near(_cell("Name:"))));
+		_assertExists(_cell($msSite, _near(_cell("Site Name:"))));
+		_assertExists(_cell($vCenterServer, _near(_cell("vCenter Server"))));
+		_assertExists(_cell("443", _near(_cell("Port"))));
+		_assertExists(_cell($userName1, _near(_cell("User Name"))));
+	} else {
+		_log("link" + $NewVcsName + "doesn't exists");
+	}
+	}
+
+// 36.check the navigation after clicking on "<<Go Back" button from Management
+// Service Details page
+function checkGoBackButton($NewVcsName) {
+		_click(_link("Management Service"));
+	if (_exists(_link($NewVcsName))) {
+		_click(_link($NewVcsName));
+		_click(_button("« Go Back"));
+		_assertExists(_cell("Management Service List"));
+	}
+
+	else {
+
+		_log("link doesn't exists");
+	}
+	}
+
+// 37.check the deletion of VCENTER Management Service
+
+function deleteVcenter($NewVcsName) {
+	
+		discoverMgmtService();
+
+	if (_exists(_link($NewVcsName))) {
+
+		_click(_image("Delete", _near(_link($NewVcsName))));
+		_expectConfirm("Would you like to delete  " + $NewVcsName + " ?", true);
+		_assertNotExists(_link($NewVcsName));
+	}
+
+	else {
+
+		_log($NewVcsName + "service doesn't exists");
+	}
+	}
+// 38.Check the Deleted VCENTER Management Service details  in Database
+function deletedVcenterDetailsInDb($NewVcsName) {
+	$props = Get_Mysql_Db_Connection_URL($hostUserNamePR, $hostPasswordPR,
+			$hostIPPR, $hostPortPR, "panaces");
+
+	var db = _getDB("com.mysql.jdbc.Driver", $props.get("databaseconnection"),
+			$props);
+	var $q = "Select * from mgmt_service where name=" + "'" + $NewVcsName
+			+ "'";
+	var $vcsAccount = db.select($q);
+
+	_assertEqual([], $vcsAccount);
+
+	
+}
+// 39.Check the navigation after clicking edit icon against VCENTER A/C
+function navigationAfterclickingEdit($NewVcsName) {
+	
+	discoverMgmtService();
+	if (_exists(_link($NewVcsName))
+			&& _exists(_image("Edit", _near(_link($NewVcsName))))) {
+		_click(_image("Edit", _near(_link($NewVcsName))));
+		_assertExists(_cell("Edit Management Service"));
+	}
+	}
+
+// 40.Check the edit link for VCENTER A/C
+function editVcsName($changeVcenterServer, $NewVcsName,$changeUserName,$changePassword) {
+	discoverMgmtService();
+	if (_exists(_link($NewVcsName))) {
+
+		_click(_image("Edit", _near(_cell($NewVcsName))));
+		_setValue(_textbox("vCenterServer"), $changeVcenterServer);
+		_setValue(_textbox("userName2"), $changeUserName);
+		_setValue(_password("password2"), $changePassword);
+	
+		_click(_submit("Save"));
+		if (_exists(_link($NewVcsName))) {
+			
+			_click(_link($NewVcsName));
+			_assertExists(_cell($changeVcenterServer, _near(_cell("vCenter Server"))));
+			_assertExists(_cell($changeUserName, _near(_cell("User Name"))));
+		}
+		
+		
+	} else {
+
+		_log($NewVcsName + "service doesn't exists");
+	}
+	}
+// 41.Check the database after editing the VCENTER A/C details
+function checkVcsNameInDBAfterEdit($NewVcsName) {
+	
+	$props = Get_Mysql_Db_Connection_URL($hostUserNamePR, $hostPasswordPR,
+			$hostIPPR, $hostPortPR, "panaces");
+
+	var db = _getDB("com.mysql.jdbc.Driver", $props.get("databaseconnection"),
+			$props);
+	var $q = "Select * from mgmt_service where name=" + "'" + $NewVcsName
+			+ "'";
+
+	var $VcsdAcc = db.select($q);
+	_assertNotEqual([], $VcsdAcc);
+	
+}
+
+// 42.check the creation of VCENTER A/C with already existing IP/Host name
+function accountCreationWithExistingServer($msSite, $msType, $vcsName5,
+		$vCenterServer, $userName1, $password1) {
+	add_MgmtService();
+	_setSelected(_select("msSite"), $msSite);
+	_click(_cell("-Select- VCENTER AWS *"));
+	_setSelected(_select("msType"), $msType);
+	_setValue(_textbox("msName"), $vcsName5);
+	_setValue(_textbox("vCenterServer"), $vCenterServer);
+	_click(_button("Ping..."));
+	_setValue(_textbox("userName2"), $userName1);
+	_setValue(_password("password2"), $password1);
+	_click(_submit("Save"));
+	/*
+	 * _assertEqual( "Management Service discovery failed due to: PAN-OBJM-0024:
+	 * Management service " + $NewVcsName + " is already configured for given
+	 * ip/host: " + $vCenterServer + ". ", _lastAlert());
+	 */
+	_assertExists(_lastAlert());
+	}
+
+// 43check the creation of VCENTER A/C with already existing name
+function accountCreationWithExistingName($msSite, $msType, $NewVcsName,
+		$vCenterServer3, $userName1, $password1) {
+	add_MgmtService();
+	_setSelected(_select("msSite"), $msSite);
+	_click(_cell("-Select- VCENTER AWS *"));
+	_setSelected(_select("msType"), $msType);
+	_setValue(_textbox("msName"), $NewVcsName);
+	_setValue(_textbox("vCenterServer"), $vCenterServer3);
+	_click(_button("Ping..."));
+	_setValue(_textbox("userName2"), $userName1);
+	_setValue(_password("password2"), $password1);
+	_click(_submit("Save"));
+	_assertExists(_lastAlert());
+
+	_assertEqual(
+			"Management Service discovery failed due to: Management Service already exists with same name : "
+					+ $NewVcsName, _lastAlert());
+	}

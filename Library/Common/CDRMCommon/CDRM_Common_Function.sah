@@ -1,0 +1,189 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are used commonly 
+ **             for for all the solutions. 
+ ** AuthorName : Automation Team
+ ** Created Date : Aug 2014
+ ************************************************************************/
+/*---------------AWS Management Service Common Function-----------------------*/
+/**
+*This function is used for testing AWS Credentials.
+*@param :	$component - Agentnode component
+*           $regions
+*           $awsaccessid
+*           $awssecretkey
+
+*@return : null
+*@author : Karimulla Shakhadari
+*/
+function testCredential($component, $regions, $awsaccessid, $awssecretkey) {
+
+	add_MgmtService();
+	_setSelected(_select("msType"), "AWS");
+	_setSelected(_select("compName"), $component);
+	var $comp=_getSelectedText(_select("compName"));
+	_log($comp);
+	_setSelected(_select("regions"), $regions);
+	_setValue(_textbox("aws_access_id"), $awsaccessid);
+	_setValue(_password("aws_secret_key"),$awssecretkey);
+	_click(_button("Test Credentials"));
+	
+}
+
+/**
+*This function is used for Creating AWS Account Details.
+*@param :	$msSite - Agentnode component
+*           $msType
+*           $msName
+*           $component
+*           $regions
+*           $awsaccessid
+*           $awssecretkey
+
+*@return : null
+*@author : Karimulla Shakhadari
+*/
+function CreateAWSAccount($msSite, $msType, $msName, $component,
+		$regions, $awsaccessid, $awssecretkey) {
+	
+	add_MgmtService();
+	_setSelected(_select("msSite"), $msSite);
+	_setSelected(_select("msType"), $msType);
+	_setValue(_textbox("msName"), $msName);
+	_setSelected(_select("compName"), $component);
+	
+	
+	_setSelected(_select("regions"), $regions);
+	
+	_setValue(_textbox("aws_access_id"), $awsaccessid);
+	_setValue(_password("aws_secret_key"), $awssecretkey);
+	_click(_button("Test Credentials"));
+
+	_click(_submit("Save"));
+	
+}
+/**
+*This function is used for Adding Management service.
+*@param : null
+
+*@return : null
+*@author : Karimulla Shakhadari
+*/
+function add_MgmtService() {
+	navigateToDiscovery();
+	_click(_link("Management Service"));
+	_click(_link("Add Management Service"));
+}
+
+/**
+*This function is used for Management service discovery.
+*@param : null
+
+*@return : null
+*@author : Karimulla Shakhadari
+*/
+function discoverMgmtService() {
+	navigateToDiscovery();
+	_click(_link("Management Service"));
+}
+
+/*---------------VCENTER Common Function-----------------------*/
+
+/**
+*This function is used for Saving Vcenter Management service  details.
+*@param : $msSite-
+*         $msType
+*         $msName
+*         $vCenterServer
+*         $userName1
+*         $password1
+
+*@return : null
+*@author : Karimulla Shakhadari
+*/
+function saveVcs( $msSite, $msType, $msName,
+		$vCenterServer, $userName1, $password1) {
+
+	 discoverMgmtService();
+	 if(_exists(_link($msName))){
+		 _log("account already exists");
+		 
+	 }
+	 else{
+	_click(_link("Add Management Service"));
+	_setSelected(_select("msSite"), $msSite);
+	_setSelected(_select("msType"), $msType);
+	_setValue(_textbox("msName"), $msName);
+	_setValue(_textbox("vCenterServer"), $vCenterServer);
+	_click(_button("Ping..."));
+	_setValue(_textbox("userName2"), $userName1);
+	_setValue(_password("password2"), $password1);
+	// _click(_button("Test Credentials"));
+	_click(_submit("Save"));
+	 }
+}
+
+/*---------------UCSD Management Service Common Function-----------------------*/
+/**
+*This function is used for Saving UCSD Management service  details.
+*@param : $accountname
+*         $site
+*         $ucsdiphostname
+*         $key
+*@return : null
+*@author : Karimulla Shakhadari
+*/
+function saveUcsd($accountname, $site, $ucsdiphostname,
+		$key) {
+	
+	_click(_link("Add UCS Director"));
+	_setValue(_textbox("accountname"), $accountname);
+	_setSelected(_select("ucsdsite"), $site);
+	_setValue(_textbox("ucsdiphostname"), $ucsdiphostname);
+
+	_setValue(_password("ucsdaccesskey"), $key);
+	_click(_submit(" Save "));
+	
+	
+}
+
+/**
+*This function is used for Saving UCSD Management service discovery.
+*@param  : null
+*@return : null
+*@author : Karimulla Shakhadari
+*/
+function discoverUCSD() {
+	navigateToDiscovery();
+	_click(_link("Converged"));
+}
+
+/*---------------DB Related Function-----------------------*/
+function Get_Mysql_Db_Connection_URL($user, $pwd, $ip, $port, $database) {
+
+	// Conecting to the database using JDBC connectivity
+	var $databaseConnection = "jdbc:mysql://"+ $ip + ":" + $port + "/" + $database + "?" + $user + "&" + $pwd;
+	_log("databaseconnection", $databaseConnection);
+	var $props = new java.util.Properties();
+	
+	$props.put("user", $user);
+	$props.put("password", $pwd);
+	$props.put("databaseconnection", $databaseConnection);
+	
+	return $props;
+} // End of Mysql_Db_Connection()
+
+
+/**
+*This function is used ADCProfile discovery.
+*@param  : null
+*@return : null
+*@author : Karimulla Shakhadari
+*/
+
+
+function ADCProfile() {
+	navigateToDiscovery();
+	_click(_link("ADC Profile"));
+}

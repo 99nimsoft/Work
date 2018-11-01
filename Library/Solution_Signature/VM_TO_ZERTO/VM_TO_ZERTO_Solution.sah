@@ -1,0 +1,320 @@
+/*************************************************************************
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are the part of  APP PFR solution screen wise fetching and comparing data from Db and GUI. 
+ ** @AuthorName : Govinda Mengji
+ ** Created Date : Nov 2013
+ ************************************************************************/
+
+/** Objective : This script contains all the functions specifics to CMM Discovery Page
+ ** AuthorName : Anita
+ ** Created Date : Apr 2017
+ ************************************************************************/
+/**
+* Function is to vcenter PR , AWS DR in Management services
+*@param  :$siteNamePR,$msTypePR,$vcenterName,$vcenterIp,$vcenterusername,$vcenterpassword
+*@return : null
+*@Author: Anita
+*
+*/
+
+
+
+function ManagementService_Vcenter_CRUD($siteName,$msTypeInput,$vcenterName,$vCenterServerIP,$vcenterusername,$vcenterpassword){
+	Navigate_Management_Service();	
+	var $mangList = _getText(_table($reportMgmtStatus));
+	_log($mangList);
+	var $vcenterExists =$mangList.match($vcenterName);
+	_log($vcenterExists +"  Vcenter Name");
+	if($vcenterExists ==null){
+		Add_Management_Service();	
+		createVcenterMS($siteName,$msTypeInput,$vcenterName,$vCenterServerIP,$vcenterusername,"WrongPswd");
+		editVcenterMS($vcenterName,$msTypeInput,$vCenterServerIP,$vcenterusername,$vcenterpassword);
+		deleteMangService($vcenterName);
+	}
+	else{
+		_log("Already exists vcenter "+$siteName+" in Management Service. So used by other group so not disturbing this setup ");
+	}
+	
+}
+
+function CreateManagementService($siteName,$msTypeInput,$vcenterName,$vCenterServerIP,$vcenterusername,$vcenterpassword){
+
+	Navigate_Management_Service();	
+	var $mangList = _getText(_table($reportMgmtStatus));
+	_log($mangList);
+	var $vcenterExists =$mangList.match($vcenterName);
+	//_log($vcenterExists);
+	if($vcenterExists ==null){
+		var $msVentreResult= vCenter($siteName,$msTypeInput,$vcenterName,$vCenterServerIP,$vcenterusername,$vcenterpassword);
+		_log($msVentreResult);
+		if ($msVentreResult == $Active){
+			_log("Successfully Created vcenter "+$siteName+" in Management Service is ACTIVE");
+		}
+		else{
+			_log(" Created vcenter "+$siteName+" in Management Service is UNKNOWN");
+		}
+	}
+	else{
+		_log("Already exists vcenter "+$siteName+" in Management Service");
+	}
+		
+}
+
+function VerifyManagementServiceAgentStatus($msNamePR,$msNameDR){
+	ManagementServiceAgentStatus($msNamePR);
+	ManagementServiceAgentStatus($msNameDR);
+}
+
+function vCenter($siteName,$msTypeInput,$vcenterName,$vCenterServerIP,$vcenterusername,$vcenterpassword){
+	
+		_click(_link($AddManagementService));
+		createVcenterMS($siteName,$msTypeInput,$vcenterName,$vCenterServerIP,$vcenterusername,$vcenterpassword);
+		 var $msPRStatus = waitForManagmentServiceStatus($vcenterName,$Active);
+		return $msPRStatus;
+}
+////////////////////////
+
+/// create vcenter managememt service
+
+function createVcenterMS($siteName,$msTypeInput,$vcenterName,$vCenterServerIP,$vcenterusername,$vcenterpassword){
+	_assertExists(_cell($ManagementServiceDiscovery));	
+	_setSelected(_select($msSite), $siteName);
+	_setSelected(_select($msType), $msTypeInput);
+	_setValue(_textbox($msName), $vcenterName);
+	_setValue(_textbox($vCenterServer), $vCenterServerIP);
+	_click(_button($Ping));
+	_setValue(_textbox($vCenterPort), $vcenterMSPort);
+	_wait(5000,_isVisible(_span("Ping to "+$vCenterServerIP+" was successful.")));
+	var $pingTest=_getText(_span("Ping to "+$vCenterServerIP+" was successful."));
+	_assertExists($pingTest);
+	 
+	_setValue(_textbox($userName2), $vcenterusername);
+	if($ispswdVault =="yes"|| $ispswdVault=="YES"){
+		_log("Currently out of scope");
+	}else{
+		_setValue(_password($password2), $vcenterpassword);
+	}
+	
+	checkTestCred_Save(); // verify test cred n submit on save
+	
+	verifyManagementServiceExists($vcenterName,$msTypeInput);
+}
+// edit test cred Vcenter Managment service.
+
+function editVcenterMS($vcenterName,$msTypeInput,$vCenterServerIP,$vcenterusername,$vcenterpassword){
+	Navigate_Management_Service();
+	_assertExists(_image($Edit, _near(_link($vcenterName))));
+	_click(_image($Edit, _near(_link($vcenterName))));
+	_wait(3000);
+	_click(_link($EditCredentials));
+	_log("Updating with correct password");
+	_setValue(_password($password2), $vcenterpassword);	
+	checkTestCred_Save(); // verify test cred n submit on save	
+	verifyManagementServiceExists($vcenterName,$msTypeInput);
+	_log("Edit Vcenter management service successful");
+}
+
+
+// zerto MS EDIT DELETE test
+
+function ManagementService_Zerto_CRUD($siteName,$msTypeInput,$zertoMSName,$vcenterName,$zertoMSIP){
+	Add_Management_Service();
+	createZertoMS($siteName,$msTypeInput,$zertoMSName,$vcenterName,"192.168.20.82"); //wrong IP passing
+	editZertoMS($msTypeInput,$zertoMSName,$zertoMSIP);
+	deleteMangService($zertoMSName);
+	
+}
+
+function createZertoMS($siteName,$msTypeInput,$zertoMSName,$vcenterName,$zertoMSIP){
+	_setSelected(_select($msSite), $siteName);
+	_setSelected(_select($msType), $msTypeInput);
+	_wait(3000);
+	_setValue(_textbox($msName), $zertoMSName);
+	_setSelected(_select($dependentMgmtServiceName), $vcenterName);
+	_click(_cell($ZertoVirtualManagerIP));
+	_setValue(_textbox($zertoServer), $zertoMSIP);
+	_click(_button($Ping));
+	_click(_button($Save));
+	_wait(3000);
+}
+
+// edit zerto mS
+
+function editZertoMS($msTypeInput,$zertoMSName,$zertoMSIP){
+	Navigate_Management_Service();
+	_assertExists(_image($Edit, _near(_link($zertoMSName))));
+	_click(_image($Edit, _near(_link($zertoMSName))));
+	_wait(3000);
+	_click(_cell($ZertoVirtualManagerIP));
+	_setValue(_textbox($zertoServer), $zertoMSIP);
+	_click(_button($Ping));
+	if(_exists(_button($Update))){
+		_click(_button($Update));
+	}
+	else{
+		_click(_button($Save));
+	}
+	_wait(3000);
+	verifyManagementServiceExists($zertoMSName,$msTypeInput);
+	_log("Edit Zerto management service successful");
+}
+// discovery of MS zerto
+
+function ManagementService_Zerto($siteName,$msTypeInput,$zertoMSName,$vcenterName,$zertoMSIP){
+	
+	Navigate_Management_Service();
+	var $mangList = _getText(_table($reportMgmtStatus));
+	_log($mangList);
+	var $zertoExists =$mangList.match($zertoMSName);
+	//_log($zertoExists);
+	if($zertoExists ==null){
+		var $msZertoResult= createZerto($siteName,$msTypeInput,$zertoMSName,$vcenterName,$zertoMSIP);
+		_log($msZertoResult);
+		if ($msZertoResult == $Active){
+			_log("Successfully Created ZERTO "+$siteName+" in Management Service is ACTIVE");
+		}
+		else{
+			_log(" Created ZERTO for "+$siteName+" in Management Service is UNKNOWN");
+		}
+	}
+	else{
+		_log("Already exists vcenter for "+$siteName+" in Management Service");
+	}	
+}
+
+function createZerto($siteName,$msTypeInput,$zertoMSName,$vcenterName,$zertoMSIP){
+	Add_Management_Service();
+	createZertoMS($siteName,$msTypeInput,$zertoMSName,$vcenterName,$zertoMSIP);
+	verifyManagementServiceExists($zertoMSName,$msTypeInput);
+	var $msPRZertoStatus = waitForManagmentServiceStatus($zertoMSName,$Active);
+	return $msPRZertoStatus;
+}
+
+// Appstack creation n AG creation
+
+function DiscoveryAppstack_VM2Zerto($vpgCount,$noOfAGs,$tierNum,$appstackName){
+	_log("Verify AG if already created then delete");
+	VerifyAG_DeleteIfExists($noOfAGs,$appstackName);
+	_log("Verify Appstack if already created then delete");
+	deleteAppstackIfExists($vpgCount,$appstackName);
+	_log("Create New Appstack");
+	CreateAppstack_VM2Zerto($vpgCount,$noOfAGs,$tierNum,$appstackName,$zertoMSNamePR);
+}
+
+// Verify AG /RG post group creation
+
+function VerifyAGRG_VM2Zerto($vpgCount,$noOfAGs,$appstackName){
+	for(var $i=0; $i<$noOfAGs; $i++ ){
+		var $appstk = $appstackName[$i];
+		_log("appstack name was "+$appstk);
+		var $groupAGName = Verify_VM2ZertoAG_Name($appstk);
+		_assertExists("AG creation success ",$groupAGName);		
+		_click(_link($groupAGName));
+		_click(_link($Relationship));
+		if(_exists(_div($relationshipContainer))){
+			var $grpRGsName = _getText(_div($relationshipContainer));
+			_log($grpRGsName +" RGs are displayed in AG-relationship container-diagram");
+			var $grpRGsNa= $grpRGsName.split(" ");
+			var $groupRG1 = $grpRGsNa[1];
+			_assertExists("RG creation success ",$groupRG1);
+			var $groupRG2 = $grpRGsNa[0];
+			_assertExists("RG creation success ",$groupRG2);		
+		}
+		else{
+			_log("RG group creation failed to display in AG-relationship diagram");
+		}
+	}
+}
+
+// verify subsystem status post group creation
+
+function SubsystemStatus_Verify($vpgCount,$vpgName){
+	for(var $i=0; $i<$vpgCount; $i++){
+		checkComponentStatus($vpgName[$i]);
+	}
+}
+
+// Verify Group status post AG/RG creation
+
+function GroupStatus_PostGroup($noOfAGs){
+	for(var $i=0; $i<$noOfAGs; $i++){		
+		AGRG_GroupStatus($appstackName[$i],$vpgVMcnt[$i],$vpgName[$i]);		
+	}
+}
+
+function AGRG_GroupStatus($appstakNm,$vpgVMcnt,$vpgNa){
+	var $groupAGName = Verify_VM2ZertoAG_Name($appstakNm);
+	//_wait(30000);
+	var $groupAGStatus = _getText(_div(1, _near(_link($groupAGName))));
+	_assertExists("AG Group Status ",$groupAGStatus);
+	
+	VM2ZertoRG_Name($vpgVMcnt,$vpgNa);
+	
+}
+
+function VM2ZertoRG_Name($vpgVMcnt,$vpgNa){
+
+	var $vpgVMsName=getVPG_VMName($vpgNa);
+	for(var $i=0; $i<$vpgVMcnt; $i++){
+		NavigateToRG();
+		
+		var $groupRGName = "RG_"+$vpgVMsName[$i];
+		_log("$groupRGName= " + $groupRGName);
+		var $groupRGStatus = _getText(_div(1, _near(_link($groupRGName))));
+		_assertExists("RG Group Status ",$groupRGStatus);
+		_wait(3000);
+		if(_exists(_italic("dot-green"))){
+			_assertExists("RG Group Status GREEN color and MANAGED");
+		}
+		else{
+			_log("RG Group Status is not GREEN color and not MANAGED");
+		}
+		CheckRG_ContinuityStatus($groupRGName);
+	}	
+}
+
+function CheckRG_ContinuityStatus($groupRGName){
+	_click(_span($imgwrenchtextblacksettings, _near(_link($groupRGName))));
+	var $currentRGStatus =_getText(_span(1, _near(_span($CurrentStatus))));
+	//_assertExists("Current RG status is= ",$currentRGStatus);
+	_log("Current RG status is= "+ $currentRGStatus);
+	_click(_heading4($ChangeContinuityState));
+	var $rgContinuityState = _getText(_span(1, _near(_span($GroupState))));
+	//_log("Current RG Continuity State is = "+$rgContinuityState);
+}
+
+function RG_ReplicationStatus($noOfAGs){
+	for(var $i=0; $i<$noOfAGs; $i++){		
+		RG_Replication_Status($vpgVMcnt[$i],$vpgName[$i]);	
+	}
+}
+
+function RG_Replication_Status($vpgVMcnt,$vpgNa){
+	
+	var $vpgVMsName=getVPG_VMName($vpgNa);
+	for(var $i=0; $i<$vpgVMcnt; $i++){
+		
+		NavigateToRG();		
+		var $groupRGName = "RG_"+$vpgVMsName[$i];
+		_log("$groupRGName= " + $groupRGName);
+		
+		navigateToReplication($groupRGName);
+		
+		var $zertoVirtualProtgrp= _getText(_span(1, _near(_span("/Protection/"))));
+		_assertExists("Protection " , $zertoVirtualProtgrp);
+		var $repStatus = _getText(_span(1, _near(_span("/Replication Status/"))));
+		var $repServices =  _getText(_span(1, _near(_span("/Primary - Remote Services/"))));
+		_assertExists("Primary - Remote Services " , $repServices);
+		
+		if($repStatus==$Active){		
+			_assertExists("Replication status is ACTIVE");
+		}else{
+			_log("Replication status is not ACTIVE -check gui and backend");
+		}
+		_click(_link("/RPO/"));
+		var $currentRPO = _getText(_heading5("/Current Data RPO/"));
+		_assertExists($currentRPO);
+		var $configRPO = _getText(_heading5("/Configured Data RPO/"));	
+		_assertExists($configRPO);
+	}	
+}

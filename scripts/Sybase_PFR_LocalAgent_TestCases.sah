@@ -1,0 +1,458 @@
+
+
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Sybaselication Name : DRM 
+ ** Objective : This script contains all the Local agent test cases which are the part of  Sybase_PFR solution. 
+ ** AuthorName : OmPrakash
+ ** Created Date : June 2013
+ ************************************************************************/
+
+_log("=================================Pre-Condition===================================","Custom1");
+
+//don't change the below line.
+_include("../Library/Solution_Signature/Include/Sybase_PFR_Include.sah");
+
+// mentioned the correct parameter file name which user are going to execute within the "" code.
+_include("../conf/DRMInstallation_Parameter.sah");
+//_include("../conf/DRMInstallation_Parameter_New.sah");
+_include("../conf/Sybase_PFR/Sybase_PFR_Local_Agent_Parameter.sah");
+_include("../conf/Sybase_PFR/UserSelected_Sybase_PFR_Testcase.sah");
+_include("../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+
+_include("../Library/Database/Sybase/ObjectRepository/Sybase_ObjectRepository.sah");
+
+
+// *************************************************************************************************************************************************
+// Notes: below test cases for Local agent
+
+StopSybaseServices($compIPPR,$remoteUserNameValPR, $remotePwdValPR);
+StopSybaseServices($compIPDR,$remoteUserNameValDR, $remotePwdValDR);
+
+
+SetDateForSybase($compIPPR,$remoteUserNameValPR, $remotePwdValPR);
+SetDateForSybase($compIPDR,$remoteUserNameValPR, $remotePwdValPR);
+
+StartSybaseServicesPR($compIPPR,$remoteUserNameValPR, $remotePwdValPR);
+StartSybaseServicesDR($compIPDR,$remoteUserNameValDR, $remotePwdValDR);
+
+DropDB_DR_Side($compIPDR,$remoteUserNameValPR, $remotePwdValPR);
+
+Delete_Backup_logs_PR($compIPPR,$remoteUserNameValPR, $remotePwdValPR);
+Delete_Backup_logs_DR($compIPDR,$remoteUserNameValDR, $remotePwdValDR);
+
+//Notes: below test cases for PFR service 
+
+UnInstall_Remote_Agent_SilentMode_PR();  //uninstalling remote Agent. Pfr Services for PR
+UnInstall_Remote_Agent_SilentMode_DR();  //uninstalling remote Agent. Pfr Services for DR
+Agent_UnInstllation_001();
+
+AgentBuild_Copy_into_PFRFile_PR();
+AgentBuild_Copy_into_PFRFile_DR();
+Copy_Property_file(); 
+Update_PropertyFile_RemoteAgent_PR();
+Update_PropertyFile_RemoteAgent_DR(); 
+Install_Remote_Agent_SilentMode_PR();  // installing the PFR service 
+Install_Remote_Agent_SilentMode_DR();   // installing the PFR service 
+
+AgentBuild_Copy_into_AgentHost_PR(); 
+AgentBuild_Copy_into_AgentHost_DR(); 
+Copy_Property_file();
+Update_SybasePropertyFile_LocalAgent_PR();
+Update_SybasePropertyFile_LocalAgent_DR();  
+Install_Local_Agent_SilentMode_PR();
+Install_Local_Agent_SilentMode_DR(); 
+
+WorkFlow_copy_001();
+
+
+
+Login_001();
+
+_log("=================================Test========================================","Custom1");
+
+
+if($g_executeSybase_PFRAll == "Y" || $g_siteSybase_PFR == "Y"){
+var $test0 = _testcase("Site_0003","Create New Site");
+$test0.start(); 
+	Site_0003();
+$test0.end();
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_agentNodeSybase_PFR == "Y"){
+var $test1 = _testcase("Object_Manager/ Common/ Components/ Component_04","Create Agent Node");
+$test1.start();
+	Agent_node_001();
+$test1.end();
+}
+
+
+if($g_executeSybase_PFRAll == "Y" || $g_componentRemoteDiscoverySybase_PFR == "Y"){
+var $test2 = _testcase("Object_Manager/ Common/ Components/ Component_04","Create New Component");
+$test2.start();
+	Sybase_PFR_Component_Local_Discovery_0002();
+$test2.end();
+}
+
+
+if($g_executeSybase_PFRAll == "Y" || $g_datasetDiscoverySybase_PFR == "Y"){
+var $test3 = _testcase("Object_Manager/Dataset/Sybase/OraDiscovery_0006 ","Dataset Discovery");
+$test3.start();
+	Sybase_PFR_Dataset_Discovery_0007();
+$test3.end();
+}
+
+
+if($g_executeSybase_PFRAll == "Y" || $g_datasetAutoDiscoverySybase_PFR == "Y"){
+var $test4 = _testcase("Object_Manager/Dataset/Sybase/Ora_Auto_DatasetDiscovery0002","Sybase Auto Dataset Discovery");
+$test4.start();
+	Sybase_PFR_Auto_DatasetDiscovery0009();
+$test4.end();
+}
+
+
+if($g_executeSybase_PFRAll == "Y" || $g_protectionSchemeDiscoverySybase_PFR == "Y"){
+var $test5 = _testcase("Object_Manager/ProtectionScheme/DataGaurd/Sybase_PFR_Discovery0002","Protection Scheme Discovery");
+$test5.start();
+	Sybase_PFR_Protectionscheme_Discovery_0018();
+$test5.end();
+}
+
+
+if($g_executeSybase_PFRAll == "Y" || $g_groupCreationSybase_PFR == "Y"){
+var $test6 = _testcase("Continuity_Manager/Common/FG/Group/GroupCreation_0001","Sybase_PFR Group Creation");
+$test6.start();
+	Sybase_PFR_GroupCreation_0022();
+$test6.end();
+}
+
+
+if($g_executeSybase_PFRAll == "Y" || $g_moveGroupToManageSybase_PFR == "Y"){
+var $test7 = _testcase("Continuity_Manager/Common/FG/Group/GroupCreation_0006","Move Group to Manage");
+$test7.start();
+	Sybase_PFR_Move_Group_Manage_0006();
+$test7.end();
+}
+
+
+if($g_executeSybase_PFRAll == "Y" || $g_postGroupCreationSybase_PFR == "Y"){
+var $test8 = _testcase("Object_Manager/ProtectionScheme/DataGaurd/Sybase_PFR_Discovery_0010","Post Group Creation");
+$test8.start();
+ 	Sybase_PFR_Post_Group_Creation_0010();
+$test8.end();
+}
+
+//Linux
+if($g_executeSybase_PFRAll == "Y" || $g_componentStatusSybase_PFR == "Y"){
+var $test9 = _testcase("Object_Manager/ Common/ Components/ Subsystem_Moinitoring_0001 ","Component Status");
+$test9.start();
+	//Sybase_PFR_Component_Status_0001(); 
+$test9.end();
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_datasetStatusSybase_PFR == "Y"){
+var $test10 = _testcase("Object_Manager/Dataset/Sybase/Ora_Auto_DatasetDiscovery0009","Dataset Status");
+$test10.start();
+	//Sybase_PFR_Dataset_status_0011();
+$test10.end();
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_continuityStatusSybase_PFR == "Y"){
+var $test11 = _testcase("Continuity_Manager/Common/FG/Monitor/MON_0002","Continuity Status");
+$test11.start();
+ 	Sybase_PFR_Contiunity_Status_0002();
+$test11.end(); 
+}
+
+
+if($g_executeSybase_PFRAll == "Y" || $g_startNCSybase_PFR == "Y"){
+var $test13 = _testcase("Continuity_Manager/Common/FG/Manage/NormalCopy_0001","Start NC");
+$test13.start();
+ 	Sybase_PFR_Start_NormalCopy_0001();
+$test13.end();
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_protectionSchemeStatusSybase_PFR == "Y"){
+	var $test14 = _testcase("Object_Manager/ProtectionScheme/DataGaurd/Sybase_PFR_Discovery0011","Protection Scheme Status");
+	$test14.start();
+	//Sybase_PFR_Protectionscheme_local_status_0021();
+	$test14.end();
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_monitorRelationshipSybase_PFR == "Y"){
+var $test15 = _testcase("Monitor_Relationship_0030","Monitor Relationship");
+$test15.start();
+//Sybase_PFR_Monitor_Relationship_0030();
+$test15.end();
+}
+
+
+if($g_executeSybase_PFRAll == "Y" || $g_replicationNCSybase_PFR == "Y"){
+var $test18 = _testcase("Continuity_Manager/Template/Sybase_Log/Sybase_PFR/Sybase_PFR_ProtectionMonitoring0001","NC Replication");
+$test18.start();
+Sybase_PFR_NC_Replication_0028();
+$test18.end();
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_rpoNCSybase_PFR == "Y"){
+var $test19 = _testcase("Continuity_Manager/Common/FG/Monitor/RPO_0008","NC RPO");
+$test19.start();
+Sybase_PFR_NC_RPO_0026();
+$test19.end();
+}
+
+
+if($g_executeSybase_PFRAll == "Y" || $g_rtoNCSybase_PFR == "Y"){
+var $test20 = _testcase("Continuity_Manager/Common/FG/Monitor/RTO_0004","NC RTO");
+$test20.start();
+Sybase_PFR_NC_RTO_0027();
+$test20.end();
+}
+
+
+if($g_executeSybase_PFRAll == "Y" || $g_stopNCSybase_PFR == "Y"){
+var $test21 = _testcase("Site_0003","Stop NC");
+$test21.start();
+	Sybase_PFR_Stop_NC_0002();
+$test21.end();
+}
+
+
+if($g_executeSybase_PFRAll == "Y" || $g_EditSOWFCSybase_PFR == "Y"){
+var $test21 = _testcase("Site_0003","Import SO WF");
+$test21.start();
+	Sybase_Import_SO_For_Local0007();
+	Sybase_PFR_ImportWF_SB_0034();
+$test21.end();
+}
+///////////////////DRYRUN REPORT SCRIPT/////////////////////////////////////
+if ($g_executeSybase_PFRAll == "Y" || $Sybase_PFR_Dryrun_Report == "Y") {
+	var $test26 = _testcase("Continuity_Manager/Common/FG/DryRun_Report_Function", "verify Dry run reports");
+	$test26.start();
+	Sybase_PFR_Dryrun_Report_Testcase();
+    $test26.end();
+}
+if($g_executeSybase_PFRAll == "Y" || $g_Validation_Manager_Execution == "Y"){
+	var $test50 = _testcase("APP_PFR/APP_PFR_Group_Health_Status_0101","Validation Manager Execution");
+	$test50.start();
+	Validation_Manager_Execution();
+	$test50.end();
+}
+///////////////////////////////////////////////Nightly SO/SB disabled do SO/SB manually due steup issue///////////
+
+if($g_executeSybase_PFRAll == "Y" || $g_startSOSybase_PFR == "Y"){
+var $test22 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0011","Start SO");
+$test22.start();
+	Sybase_PFR_Start_SO_0011();
+$test22.end();
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_SOExecutionSybase_PFR == "Y"){
+var $test23 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0012","SO Execution");
+$test23.start();
+	Sybase_PFR_SO_Execution_0012();
+$test23.end();
+}
+
+
+if($g_executeSybase_PFRAll == "Y" || $g_startRNCSybase_PFR == "Y"){
+var $test25 = _testcase("Continuity_Manager/Template/Sybase_Log/Monitor/OraLog_RNC_0001","Start RNC");
+$test25.start();
+	Sybase_PFR_Start_RNC_0033();
+$test25.end();
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_replicationSOSybase_PFR == "Y"){
+var $test24 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0013","SO Replication");
+$test24.start();
+	//Sybase_PFR_SO_Replication_0013();
+$test24.end();
+}
+
+
+if($g_executeSybase_PFRAll == "Y" || $g_stopRNCSybase_PFR == "Y"){
+var $test27 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0033","Stop RNC");
+$test27.start();
+	Sybase_PFR_Stop_RNC_0033();
+$test27.end();
+}
+/*
+if($g_executeSybase_PFRAll == "Y" || $g_localStopSybase_PFRAgent == "Y"){
+var $test28 = _testcase("Continuity_Manager/Template/Sybase_Log/Sybase_PFR/Sybase_PFR_Object_Health_Events0001","Stopping Local Agent");
+$test28.start();
+   Sybase_PFR_Local_Stop_Sybase_PFR_Agent_SO_InActive_0039();
+$test28.end();
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_localStopSybase_PFRAgent == "Y"){
+	var $test50 = _testcase("APP_PFR/APP_PFR_Group_Health_Status_0101","Group Status based on events");
+	$test50.start();
+	Group_Status_BasedONEvents($groupName);
+	$test50.end();
+	}
+
+if($g_executeSybase_PFRAll == "Y" || $g_localStartSybase_PFRAgent == "Y"){
+var $test29 = _testcase("Continuity_Manager/Template/Sybase_Log/Sybase_PFR/Sybase_PFR_Object_Health_Events0001","Starting Local Agent");
+$test29.start();
+Sybase_PFR_Local_Start_Sybase_PFR_Agent_SO_InActive_0038();
+$test29.end();
+	}
+
+if($g_executeSybase_PFRAll == "Y" || $g_localStopSybase_PFRAgent == "Y"){
+	var $test50 = _testcase("APP_PFR/APP_PFR_Group_Health_Status_0101","Group Status based on events");
+	$test50.start();
+	Group_Status_BasedONEvents($groupName);
+	$test50.end();
+	}
+
+
+if($g_executeSybase_PFRAll == "Y" || $g_localStop_PFRAgent == "Y"){
+var $test30 = _testcase("Continuity_Manager/Template/Sybase_Log/Sybase_PFR/Sybase_PFR_Object_Health_Events0001","Stopping Local Agent");
+	$test30.start();
+	   Sybase_PFR_Local_Stop_PFR_Agent_SO_InActive_0051();
+	$test30.end();
+	}
+
+if($g_executeSybase_PFRAll == "Y" || $g_localStopSybase_PFRAgent == "Y"){
+	var $test50 = _testcase("APP_PFR/APP_PFR_Group_Health_Status_0101","Group Status based on events");
+	$test50.start();
+	Group_Status_BasedONEvents($groupName);
+	$test50.end();
+	}
+
+if($g_executeSybase_PFRAll == "Y" || $g_localStart_PFRAgent == "Y"){
+var $test31 = _testcase("Continuity_Manager/Template/Sybase_Log/Sybase_PFR/Sybase_PFR_Object_Health_Events0001","Starting Local Agent");
+	$test31.start();
+	     Sybase_PFR_Local_Start_PFR_Agent_SO_InActive_0052();
+	$test31.end();
+	}
+	
+if($g_executeSybase_PFRAll == "Y" || $g_localStopSybase_PFRAgent == "Y"){
+	var $test50 = _testcase("APP_PFR/APP_PFR_Group_Health_Status_0101","Group Status based on events");
+	$test50.start();
+	Group_Status_BasedONEvents($groupName);
+	$test50.end();
+	}
+*/
+
+if($g_executeSybase_PFRAll == "Y" || $g_startSBSybase_PFR == "Y"){
+var $test32= _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0034","Start SB");
+$test32.start();
+	Sybase_PFR_Start_SB_0034();
+$test32.end();
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_SBExecutionSybase_PFR == "Y"){
+var $test33 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0035","SB Execution");
+$test33.start();
+	Sybase_PFR_SB_Execution_0035();
+$test33.end();
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_monitorManageSBSybase_PFR == "Y"){
+var $test34 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0038","SB Monitor Manage");
+$test34.start();
+	Sybase_PFR_SB_Monitor_Manage_0038();
+$test34.end();
+}
+
+
+/////////////////////////////////////////////////////////////Events////////////////////////////////////////S
+/*
+
+if($g_executeSybase_PFRAll == "Y" || $g_remoteStopSybase_PFRAgent == "Y"){
+var $test35 = _testcase("Continuity_Manager/Template/Sybase_Log/Sybase_PFR/Sybase_PFR_Object_Health_Events0001","Stopping Remote Agent");
+$test35.start();
+	Sybase_PFR_Local_Stop_Sybase_PFR_Agent_0039();
+$test35.end();
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_localStopSybase_PFRAgent == "Y"){
+	var $test50 = _testcase("APP_PFR/APP_PFR_Group_Health_Status_0101","Group Status based on events");
+	$test50.start();
+	Group_Status_BasedONEvents($groupName);
+	$test50.end();
+	}
+
+if($g_executeSybase_PFRAll == "Y" || $g_remoteStartSybase_PFRAgent == "Y"){
+var $test36 = _testcase("Continuity_Manager/Template/Sybase_Log/Sybase_PFR/Sybase_PFR_Object_Health_Events0001","Starting Remote Agent");
+$test36.start();
+	Sybase_PFR_Local_Start_Sybase_PFR_Agent_0038();
+$test36.end();
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_localStopSybase_PFRAgent == "Y"){
+	var $test50 = _testcase("APP_PFR/APP_PFR_Group_Health_Status_0101","Group Status based on events");
+	$test50.start();
+	Group_Status_BasedONEvents($groupName);
+	$test50.end();
+	}
+
+if($g_executeSybase_PFRAll == "Y" || $g_replicaionStopSybase_PFR == "Y"){
+var $test37 = _testcase("Continuity_Manager/ Template/ Sybase_Log/ Sybase_PFR/ Sybase_PFR_Manage_Replication ","Stop Replication");
+$test37.start();
+     Sybase_PFR_Local_Stop_PFR_Agent_0051();
+$test37.end();
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_localStopSybase_PFRAgent == "Y"){
+	var $test50 = _testcase("APP_PFR/APP_PFR_Group_Health_Status_0101","Group Status based on events");
+	$test50.start();
+	Group_Status_BasedONEvents($groupName);
+	$test50.end();
+	}
+
+if($g_executeSybase_PFRAll == "Y" || $g_replicaionStartSybase_PFR == "Y"){
+var $test38 = _testcase("Continuity_Manager/ Template/ Sybase_Log/ Sybase_PFR/ Sybase_PFR_Manage_Replication ","Start Replication");
+$test38.start();
+      Sybase_PFR_Local_Start_PFR_Agent_0052();
+$test38.end();
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_localStopSybase_PFRAgent == "Y"){
+	var $test50 = _testcase("APP_PFR/APP_PFR_Group_Health_Status_0101","Group Status based on events");
+	$test50.start();
+	Group_Status_BasedONEvents($groupName);
+	$test50.end();
+	}
+
+*/	
+//////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+if($g_executeSybase_PFRAll == "Y" || $g_startFOSybase_PFR == "Y"){
+var $test39 = _testcase("Continuity_Manager/ Common/ FG/ Monitor/ Failover_0001 ","Start FO");
+$test39.start();
+	Sybase_PFR_Start_FO_0001();
+$test39.end();
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_FOExecutionSybase_PFR == "Y"){
+var $test40 = _testcase("Continuity_Manager/ Common/ FG/ Monitor/ Failover_0001 ","FO Execution");
+$test40.start();
+	Sybase_PFR_FO_execution_0058();
+$test40.end();
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_continuityStatusFOSybase_PFR == "Y"){
+var $test41 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0007","Continuity Status During FO");
+$test41.start();
+	Sybase_PFR_Continuity_Status_FO_0007();
+$test41.end();
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_rpoFOSybase_PFR == "Y"){
+var $test42 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0003","RPO during FO");
+$test42.start();
+	Sybase_PFR_FO_RPO_0003();
+$test42.end();
+}
+
+if($g_executeSybase_PFRAll == "Y" || $g_monitorManageFOSybase_PFR == "Y"){
+var $test43 = _testcase("Continuity_Manager/ Common/ FG/ Monitor/ Failover_0006 ","FO Monitor Manage");
+$test43.start();
+	Sybase_PFR_FO_Monitor_Manage_0006();
+$test43.end();
+} 
+_log("================================Post-Condition================================== ","Custom1");
+*/
+Logout_001(); 

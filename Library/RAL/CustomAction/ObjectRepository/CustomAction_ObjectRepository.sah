@@ -1,0 +1,105 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains APP PFR Solution specific
+ ** AuthorName : 
+ ** Created Date : 
+ ***********************************************************************************************/
+
+var $Excel1=_getExcel($SAHI_HOME + "\\Library\\RAL\\CustomAction\\ObjectRepository\\Custom_action_ObjectRepository.xls","Param");
+
+var $Excel=$Excel1.getData();
+
+if($BrowserLang == "N"){
+
+	var $j = 2;
+}
+else if($BrowserLang == "Y-JA"){
+	
+	var $j = 3;
+	}
+
+else if($BrowserLang == "Y-EN"){
+		
+		var $j = 3;
+	}
+////////////////////Solution\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+var $Execute=$Excel[2][$j];
+var $StartTime=$Excel[3][$j];
+var $NotExecuted=$Excel[4][$j];
+var $Time=$Excel[5][$j];
+var $TimeElapsed=$Excel[6][$j];
+var $workflowStatus=$Excel[7][$j];
+var $CreateNew=$Excel[8][$j];
+var $SaveNow=$Excel[9][$j];
+var $Workflowalreadyexists=$Excel[10][$j];
+var $Version=$Excel[11][$j];
+var $executionCurrentStatus=$Excel[12][$j];
+var $AwaitingInput=$Excel[13][$j];
+var $RetryRETRYuserInputButtonbtnbtnprimarybtnxsbtnbtninfo=$Excel[14][$j];
+var $QuitABORTuserInputButtonbtnbtnprimarybtnxsbtnbtninfo=$Excel[15][$j];
+var $STDOUT=$Excel[16][$j];
+var $Output=$Excel[17][$j];
+var $Admin=$Excel[18][$j];
+var $Drill=$Excel[19][$j];
+var $Summary=$Excel[20][$j];
+var $ViewAll=$Excel[21][$j];
+var $Test=$Excel[22][$j];
+var $Reports=$Excel[23][$j];
+var $chartType=$Excel[24][$j];
+var $Viewactionlog=$Excel[25][$j];
+var $QuitABORTuserInputButtonbtnbtnprimarybtnxsbtnbtninfo=$Excel[26][$j];
+var $StartProcess=$Excel[27][$j];
+var $SuccessPattern=$Excel[28][$j];
+var $FailurePattern=$Excel[29][$j];
+var $success=$Excel[30][$j];
+var $failure=$Excel[31][$j];
+var $CustomWorkflow=$Excel[32][$j];
+var $ActionProperties=$Excel[33][$j];
+var $serverName=$Excel[34][$j];
+var $sudousrname=$Excel[35][$j];
+var $isSudo=$Excel[36][$j];
+var $executecommandPath=$Excel[37][$j];
+var $commandAbsolutePath=$Excel[38][$j];
+var $serverLocation=$Excel[39][$j];
+var $timeout=$Excel[40][$j];
+var $inputKey=$Excel[41][$j];
+var $inputValue=$Excel[42][$j];
+var $AddkeyValue=$Excel[43][$j];
+var $command=$Excel[44][$j];
+var $workWorkflowCustom=$Excel[45][$j];
+var $Workflow4=$Excel[46][$j];
+var $infoBtn=$Excel[47][$j];
+var $ActionProperties=$Excel[48][$j];
+var $serverName=$Excel[49][$j];
+var $script=$Excel[50][$j];
+var $commandAbsolutePath=$Excel[51][$j];
+var $Next=$Excel[52][$j];
+var $PublishWorkflow=$Excel[53][$j];
+var $AddkeyValue=$Excel[54][$j];
+var $inputKey=$Excel[55][$j];
+var $Next=$Excel[56][$j];
+var $Admin=$Excel[57][$j];
+var $CurrentEvents=$Excel[58][$j];
+var $AdvancedFilter=$Excel[59][$j];
+var $severity2=$Excel[60][$j];
+var $severity3=$Excel[61][$j];
+var $severity4=$Excel[62][$j];
+var $NEW=$Excel[63][$j];
+var $WIP=$Excel[64][$j];
+var $groups=$Excel[65][$j];
+var $Apply=$Excel[66][$j];
+var $Critical=$Excel[67][$j];
+var $Serious=$Excel[68][$j];
+var $Warning=$Excel[69][$j];
+var $GroupisInInActiveState=$Excel[70][$j];
+var $GroupisInDegradedState=$Excel[71][$j];
+var $GroupisInActiveState=$Excel[72][$j];
+var $Execute=$Excel[73][$j];
+var $EXECUTING=$Excel[74][$j];
+var $Botharecomparedandequal=$Excel[75][$j];
+var $Botharecomaparedandnotequal=$Excel[76][$j];
+var $Custom=$Excel[77][$j];
+var $dotred=$Excel[78][$j];
+var $dotyellow=$Excel[79][$j];
+var $dotgreen=$Excel[80][$j];

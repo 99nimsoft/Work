@@ -1,0 +1,3 @@
+_include("../../Library/BugRegression/BugRegression_TestCaseFunction.sah");
+_include("../../Library/BugRegression/BugRegression_CommonFunctions.sah");
+_include("../../Library/Component/SiteController_Component.sah");

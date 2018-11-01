@@ -1,0 +1,132 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the SFR test cases. 
+ ** AuthorName : Anantha Sakthi
+ ** Created Date : July 2014
+ ************************************************************************/
+
+
+_log("=================================Pre-Condition===================================", "Custom1");
+
+
+_include("../../../conf/RAL/SFR/SFR_RaLParameter.sah");
+_include("../../../Library/Component/Component_Common.sah");
+_include("../../../Library/Solution_Signature/Include/Common_Automation_testcase_Function.sah");
+_include("../../../Library/RAL/RAL_CommonFunction.sah");
+_include("../../../Library/RAL/SFR/SFR_RAL.sah");
+_include("../../../Library/RAL/SFR/SFR_TestCaseFunctions.sah");
+
+_include("../../../Library/Solution_Signature/Include/APP_PFR_Include.sah");
+_include("../../../conf/DRMInstallation_Parameter.sah");
+_include("../../../conf/APP_PFR/APP_PFR_Remote_Agent_Parameter.sah");
+_include("../../../conf/APP_PFR/UserSelected_APP_PFR_Testcase.sah");
+_include("../../../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+	
+/*
+	UnInstall_Remote_Agent_SilentMode_PR();  //uninstalling remote Agent. Pfr Services for PR
+	UnInstall_Remote_Agent_SilentMode_DR(); //uninstalling remote Agent. Pfr Services for DR
+	AgentBuild_Copy_into_PFRFile_PR();
+	AgentBuild_Copy_into_PFRFile_DR();
+	Copy_Property_file();
+	Update_PropertyFile_RemoteAgent_PR();
+	Update_PropertyFile_RemoteAgent_DR();
+	Install_Remote_Agent_SilentMode_PR();
+	Install_Remote_Agent_SilentMode_DR();
+
+
+*/
+
+
+Login_001();
+
+
+//filter_Exclude($cmdScriptPathDR,$cmdScriptPathPR);
+//preConditionForSFR_GroupCreation();
+
+
+_log("=================================Test========================================","Custom1");
+
+/*
+if($g_executeAPP_PFRAll == "Y" || $g_siteAPP_PFR == "Y"){
+var $test0 = _testcase("fileset","Create fileset and enable replication");
+$test0.start(); 
+	//SFR_CreateFileSet();
+$test0.end();
+}
+
+if($g_executeAPP_PFRAll == "Y" || $g_siteAPP_PFR == "Y"){
+	var $test1 = _testcase("fileset","Disable fileset ");
+	$test1.start(); 
+	SFR_DisableFileSet();
+$test1.end();
+}
+
+if($g_executeAPP_PFRAll == "Y" || $g_siteAPP_PFR == "Y"){
+	var $test1 = _testcase("fileset","Enable fileset ");
+	$test1.start(); 
+	SFR_StartFileSet();
+$test1.end();
+}
+
+
+if($g_executeAPP_PFRAll == "Y" || $g_siteAPP_PFR == "Y"){
+	var $test1 = _testcase("fileset","Delete fileset ");
+	$test1.start(); 
+	SFR_DeleteFileSet();
+$test1.end();
+}
+
+
+
+
+
+	
+	
+if($g_executeAPP_PFRAll == "Y" || $g_siteAPP_PFR == "Y"){
+	var $test01 = _testcase("SFR_Filters");
+	$test01.start();
+	Create_Files_Folder();
+	Filter_Execution_Exclude();
+    Filter_Include_Execution(); 
+$test01.end();
+}
+
+
+if($g_executeAPP_PFRAll == "Y" || $g_siteAPP_PFR == "Y"){
+	var $test02 = _testcase("Transfer fileset");
+	$test02.start(); 
+	Transferfileset();
+$test02.end();
+}
+
+if($g_executeAPP_PFRAll == "Y" || $g_siteAPP_PFR == "Y"){
+	var $test03 = _testcase("Sync Delete");
+	$test03.start(); 
+	Sync_delete();
+$test03.end();
+}
+
+*/
+
+_log("================================Post-Condition================================== ","Custom1");
+
+//Logout_001(); 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

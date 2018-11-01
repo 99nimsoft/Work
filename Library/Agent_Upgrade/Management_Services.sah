@@ -1,0 +1,103 @@
+/**
+* Function  to verify the Agent & Agent Upgrade link in Admin Page
+*@param :  null
+*@return : null
+*@Author: Sujata Rani Choudhury
+*
+*/ 
+
+
+function verify_Agents_AgentUpgradeLinks_AdminPage(){
+navigateToAdmin();
+_assertExists(_link("Go to Agents"));
+_assertExists(_link(" Go to Agent Upgrade"));
+}
+
+/**
+* Function  to create Vcentre_Management_Service
+*@param : $AgentNodesite,$vCentremsName,$vCentre_Server,$vcentre_username,$vcentre_password
+*@return : null
+*@Author: Sujata Rani Choudhury
+*
+*/
+
+
+function vcentre_Management_Service(){
+Add_Management_Service();
+  _setSelected(_select("msSite"), $AgentNodesite);
+  _setSelected(_select("msType"), "VCENTER") ;
+  _setValue(_textbox("msName"), $vCentremsName) ;
+  _setValue(_textbox("vCenterServer"), $vCentre_Server); 
+  _setValue(_textbox("userName2"), $vcentre_username) ;
+   _setValue(_password("password2"), $vcentre_password);
+   _click(_button("Test Credentials"));
+   _assertExists(_span("Credential Check Passed")) ;
+   _click(_submit("Save")) ;
+   _wait(1000) ;
+   _assertExists(_link($vCentremsName)) ;
+     _wait(100000);
+	var $vcentre_Status=_getText(_cell(4, _near(_link($vCentremsName))));
+    _log("Vcentre Management Service Status is : " + $vcentre_Status);
+}
+
+/**
+* Function  to create vcenter_Management_agent status
+*@param : $AgentNodesite,$AWSmsName,$aws_access_id,$aws_secret_key
+*@return : null
+*@Author: Sujata Rani Choudhury
+*
+*/
+function vcentre_Agent_Status(){
+	verify_Agents_AgentUpgradeLinks_AdminPage();
+	_click(_link("Go to Agents")); 
+	_assertExists(_cell($vCentremsName +"(Mgmt Service)"));
+	var $AWS_Agent_Status= _getText(_cell(3, _near(_cell($vCentremsName+"(Mgmt Service)"))));
+	_log("AWS Agent Status is :" + $AWS_Agent_Status);
+}
+
+/**
+* Function  to create AWS_Management_Service
+*@param : $AgentNodesite,$AWSmsName,$aws_access_id,$aws_secret_key
+*@return : null
+*@Author: Sujata Rani Choudhury
+*
+*/
+
+function AWS_Management_Service(){
+
+	Add_Management_Service();
+	_setSelected(_select("msSite"), $AgentNodesite);
+	_setSelected(_select("msType"), "AWS");
+	_setValue(_textbox("msName"), $AWSmsName);
+	_setSelected(_select("compName"), "AgentNode");
+	_setValue(_textbox("aws_access_id"), $aws_access_id);
+	_setValue(_password("aws_secret_key"), $aws_secret_key);
+	_click(_button("Test Credentials"));
+	var $test_cred_status= _assertExists(_span("Credential Check Passed"));
+	_log("Aws Management Service Test Credential  Status is :" + $test_cred_status);
+	_click(_submit("Save"));
+	_wait(1000);
+	_assertExists(_link($AWSmsName));
+	_wait(100000);
+	
+	var $AWS_Status=_getText(_cell(4, _near(_link($AWSmsName))));
+	_log("Aws Management Service Status is :" + $AWS_Status);
+	
+}
+
+/**
+* Function  to create AWS_Management_agent status
+*@param : $AgentNodesite,$AWSmsName,$aws_access_id,$aws_secret_key
+*@return : null
+*@Author: Sujata Rani Choudhury
+*
+*/
+
+function AWS_Agent_Status(){
+	verify_Agents_AgentUpgradeLinks_AdminPage();
+	_click(_link("Go to Agents")); 
+	_assertExists(_cell($AWSmsName +"(Mgmt Service)"));
+	var $AWS_Agent_Status= _getText(_cell(3, _near(_cell($AWSmsName+"(Mgmt Service)"))));
+	_log("AWS Agent Status is :" + $AWS_Agent_Status);
+}
+

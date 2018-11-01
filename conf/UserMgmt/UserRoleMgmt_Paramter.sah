@@ -1,0 +1,40 @@
+
+if($BrowserLang == "N"){
+	var  $l_UsrlMgmt = _readExcelFile($SAHI_HOME+"\\conf\\UserMgmt\\UserRoleMgmt.xls","UserRole");  //To read the inputs from the drm_inputs excel file.
+}
+else if($BrowserLang == "Y-JA"){
+	var  $l_UsrlMgmt = _readExcelFile($SAHI_HOME+"\\conf\\UserMgmt\\UserRoleMgmt.xls","UserRole_JA");  //To read the inputs from the drm_inputs excel file.
+	}
+
+else if($BrowserLang == "Y-EN"){
+	var  $l_UsrlMgmt = _readExcelFile($SAHI_HOME+"\\conf\\UserMgmt\\UserRoleMgmt.xls","UserRole_EN");  //To read the inputs from the drm_inputs excel file.
+	}
+
+
+
+	//The below parameter is used for Linux OS
+	var $SerIP = $l_UsrlMgmt[3][3];
+	var $SerUserNm = $l_UsrlMgmt[4][3];
+	var $SerPassWord =$l_UsrlMgmt[5][3];
+	
+	var $supadmin=$l_UsrlMgmt[3][6];
+	var $admin=$l_UsrlMgmt[4][6];
+	var $operator=$l_UsrlMgmt[5][6];
+	var $notification=$l_UsrlMgmt[6][6];
+	var $password1=$l_UsrlMgmt[7][6];
+	var $logspath=$l_UsrlMgmt[8][6];
+	var $errorvalue=$l_UsrlMgmt[9][6];
+	var $supuname=$l_UsrlMgmt[3][8];
+	var $suppwd=$l_UsrlMgmt[4][8];
+	
+	var $compIpPR=$l_UsrlMgmt[12][3];
+	
+	
+	var $groupName=$l_UsrlMgmt[21][3];
+	
+	var $username= $l_UsrlMgmt[8][3];
+	var $password= $l_UsrlMgmt[9][3];
+	
+	
+	
+	

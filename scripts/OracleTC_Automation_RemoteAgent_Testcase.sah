@@ -1,0 +1,370 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the remote agent test cases which are the part of  Oracle_DG solution. 
+ ** AuthorName : Aditi Jain
+ ** Created Date : nov 2013
+ ************************************************************************/
+
+_log("=================================Pre-Condition===================================", "Custom1");
+
+//don't change the below line.
+_include("../Library/Solution_Signature/Include/Oracle_TC_Include.sah");
+
+// mentioned the correct parameter file name which user are going to execute within the "" code.
+_include("../conf/DRMInstallation_Parameter.sah");
+_include("../conf/Oracle_TC/Oracle_TC_Remote_Agent_Parameter.sah");
+_include("../conf/Oracle_TC/UserSelected_Oracle_TC_Testcase.sah");
+
+// *************************************************************************************************************************************************
+// Notes: below test cases for Local agent
+
+Get_latest_Build();
+WorkFlow_copy_001();
+
+Login_001();
+
+_log("=================================Test========================================", "Custom1");
+
+if ($g_executeOracleTCAll == "Y" || $g_siteOracleTC == "Y") {
+	var $test0 = _testcase("Site_0003", "Create New Site");
+	$test0.start();
+	Site_0003();
+	$test0.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_agentNodeOracleTC == "Y") {
+	var $test1 = _testcase("Object_Manager/ Common/ Components/ Component_04", "Create Agent Node");
+	$test1.start();
+	Agent_node_001();
+	$test1.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_componentRemoteDiscoveryOracleTC == "Y") {
+	var $test2 = _testcase("Object_Manager/ Common/ Components/ Component_04", "Create New Component");
+	$test2.start();
+	OracleTC_Component_Remote_Discovery_0018();
+	$test2.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_datasetDiscoveryOracleTC == "Y") {
+	var $test3 = _testcase("Object_Manager/Dataset/Oracle/OraDiscovery_0006 ", "Dataset Discovery");
+	$test3.start();
+	OracleTC_Dataset_Discovery_0007();
+	$test3.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_datasetAutoDiscoveryOracleTC == "Y") {
+	var $test4 = _testcase("Object_Manager/Dataset/Oracle/Ora_Auto_DatasetDiscovery0002", "Oracle Auto Dataset Discovery");
+	$test4.start();
+	OracleTC_Auto_DatasetDiscovery0009();
+	$test4.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_protectionSchemeDiscoveryOracleTC == "Y") {
+	var $test5 = _testcase("Object_Manager/ProtectionScheme/DataGaurd/OracleTC_Discovery0002", "Protection Scheme Discovery");
+	$test5.start();
+	OracleTC_Protectionscheme_Discovery_0018();
+	$test5.end();
+}
+
+
+if ($g_executeOracleTCAll == "Y" || $g_groupCreationOracleTC == "Y") {
+	var $test7 = _testcase("Continuity_Manager/Common/FG/Group/GroupCreation_0001", "OracleTC Group Creation");
+	$test7.start();
+	OracleTC_GroupCreation_0022();
+	$test7.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_moveGroupToManageOracleTC == "Y") {
+	var $test8 = _testcase("Continuity_Manager/Common/FG/Group/GroupCreation_0006", "Move Group to Manage");
+	$test8.start();
+	OracleTC_Move_Group_Manage_0006();
+	$test8.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_changeContinuityStateOracleTC == "Y") {
+	var $test9 = _testcase("Continuity_Manager/Common/FG/Manage/Change_Continuity_State_0001", "Change Continuity Status");
+	$test9.start();
+	OracleTC_Change_Continuity_State_0001();
+	$test9.end();
+}
+
+
+
+
+if ($g_executeOracleTCAll == "Y" || $g_componentStatusOracleTC == "Y") {
+	var $test11 = _testcase("Object_Manager/ Common/ Components/ Subsystem_Moinitoring_0001 ", "Component Status");
+	$test11.start();
+	OracleTC_Component_Status_0001();
+	$test11.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_datasetStatusOracleTC == "Y") {
+	var $test12 = _testcase("Object_Manager/Dataset/Oracle/Ora_Auto_DatasetDiscovery0009", "Dataset Status");
+	$test12.start();
+	OracleTC_Dataset_status_0011();
+	$test12.end();
+}
+
+
+if ($g_executeOracleTCAll == "Y" || $g_continuityStatusOracleTC == "Y") {
+	var $test14 = _testcase("Continuity_Manager/Common/FG/Monitor/MON_0002", "Continuity Status");
+	$test14.start();
+	OracleTC_Contiunity_Status_0002();
+	$test14.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_continuityManagenentOracleTC == "Y") {
+	var $test15 = _testcase("Continuity_Manager/Common/FG/Manage/Continuity_Management_0015", "Continuity Management");
+	$test15.start();
+	OracleTC_Continuity_Management_0015();
+	$test15.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_importNCOracleTC == "Y") {
+	var $test16 = _testcase("Import NC WF", "Import NC");
+	$test16.start();
+	OracleTC_Import_NC_0056();
+	$test16.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_importFOOracleTC == "Y") {
+	var $test17 = _testcase("Import FO WF", "Import FO");
+	$test17.start();
+	OracleTC_Import_FO_0057();
+	$test17.end();
+}
+
+
+if ($g_executeOracleTCAll == "Y" || $g_startNCOracleTC == "Y") {
+	var $test18 = _testcase("Continuity_Manager/Common/FG/Manage/NormalCopy_0001", "Start NC");
+	$test18.start();
+	OracleTC_Start_NormalCopy_0001();
+	$test18.end();
+}
+
+
+if ($g_executeOracleTCAll == "Y" || $g_monitorRelationshipOracleTC == "Y") {
+	var $test19 = _testcase("Relationship Screen", "Monitor Relationship");
+	$test19.start();
+	OracleTC_Monitor_Relationship_0030();
+	$test19.end();
+}
+
+
+if ($g_executeOracleTCAll == "Y" || $g_manageDRSolutionOracleTC == "Y") {
+	var $test20 = _testcase("Manage DR Solution", "Manage DR Solution");
+	$test20.start();
+	OracleTC_Manage_DRsolution_0029();
+	$test20.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_groupInformationOracleTC == "Y") {
+	var $test21 = _testcase("Continuity_Manager/Common/FG/Manage/Continuity_Management_0007", "Group Information");
+	$test21.start();
+	OracleTC_GroupInformation_Manage_0007();
+	$test21.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_groupSnapshotOracleTC == "Y") {
+	var $test22 = _testcase("Site_0003", "Group SnapShot");
+	$test22.start();
+	OracleTC_Groupsnapshot_Monitor_0001();
+	$test22.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_replicationNCOracleTC == "Y") {
+	var $test23 = _testcase("Continuity_Manager/Template/Oracle_Log/OracleTC/OracleTC_ProtectionMonitoring0001", "NC Replication");
+	$test23.start();
+	OracleTC_NC_Replication_0028();
+	$test23.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_rpoNCOracleTC == "Y") {
+	var $test24 = _testcase("Continuity_Manager/Common/FG/Monitor/RPO_0008", "NC RPO");
+	$test24.start();
+	OracleTC_NC_RPO_0026();
+	$test24.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_rtoNCOracleTC == "Y") {
+	var $test25 = _testcase("Continuity_Manager/Common/FG/Monitor/RTO_0004", "NC RTO");
+	$test25.start();
+	OracleTC_NC_RTO_0027();
+	$test25.end();
+}
+/*
+
+if ($g_executeOracleTCAll == "Y" || $g_importSOSBOracleTC == "Y") {
+	var $test26 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0007", "Import SO & SB");
+	$test26.start();
+	OracleTC_Import_SOSB_0007();
+	$test26.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_stopNCOracleTC == "Y") {
+	var $test27 = _testcase("Stop NC", "Stop NC");
+	$test27.start();
+	OracleTC_Stop_NC_0002();
+	$test27.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_startSOOracleTC == "Y") {
+	var $test28 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0011", "Start SO");
+	$test28.start();
+	OracleTC_Start_SO_0011();
+	$test28.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_SOExecutionOracleTC == "Y") {
+	var $test29 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0012", "SO Execution");
+	$test29.start();
+	OracleTC_SO_Execution_0012();
+	$test29.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_replicationSOOracleTC == "Y") {
+	var $test30 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0013", "SO Replication");
+	$test30.start();
+	OracleTC_SO_Replication_0013();
+	$test30.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_importRNCOracleTC == "Y") {
+	var $test31 = _testcase("Site_0003", "Import RNC");
+	$test31.start();
+	OracleTC_Import_RNC_0055();
+	$test31.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_startRNCOracleTC == "Y") {
+	var $test32 = _testcase("Continuity_Manager/Template/Oracle_Log/Monitor/OraLog_RNC_0001", "Start RNC");
+	$test32.start();
+	OracleTC_Start_RNC_0033();
+	$test32.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_groupInformaitionRNCOracleTC == "Y") {
+	var $test33 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0022", "RNC Group Information Monitor");
+	$test33.start();
+	OracleTC_RNC_Groupinformation_Monitor_0022();
+	$test33.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_groupSnapshotOracleTC == "Y") {
+	var $test34 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0021", "RNC Group SnapShot Monitor");
+	$test34.start();
+	OracleTC_RNC_Groupsnapshot_Monitor_0021();
+	$test34.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_rpoRNCOracleTC == "Y") {
+	var $test35 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0023", "RNC RPO Monitor");
+	$test35.start();
+	OracleTC_RNC_Rpo_Monitor_0023();
+	$test35.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_replicationRNCOracleTC == "Y") {
+	var $test36 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0024", "RNC Replication");
+	$test36.start();
+	OracleTC_RNC_Replication_0024();
+	$test36.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_stopRNCOracleTC == "Y") {
+	var $test37 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0033", "Stop RNC");
+	$test37.start();
+	OracleTC_Stop_RNC_0033();
+	$test37.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_startSBOracleTC == "Y") {
+	var $test38 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0034", "Start SB");
+	$test38.start();
+	OracleTC_Start_SB_0034();
+	$test38.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_SBExecutionOracleTC == "Y") {
+	var $test39 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0035", "SB Execution");
+	$test39.start();
+	OracleTC_SB_Execution_0035();
+	$test39.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_monitorManageSBOracleTC == "Y") {
+	var $test40 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0038", "SB Monitor Manage");
+	$test40.start();
+	OracleTC_SB_Monitor_Manage_0038();
+	$test40.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_remoteStopOracleTCAgent == "Y") {
+	var $test41 = _testcase("Continuity_Manager/Template/Oracle_Log/OracleTC/OracleTC_Object_Health_Events0001", "Stopping Remote Agent");
+	$test41.start();
+	OracleTC_Remote_Stop_OracleTC_Agent_0039();
+	$test41.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_remoteStartOracleTCAgent == "Y") {
+	var $test42 = _testcase("Continuity_Manager/Template/Oracle_Log/OracleTC/OracleTC_Object_Health_Events0001", "Starting Remote Agent");
+	$test42.start();
+	OracleTC_Remote_Start_OracleTC_Agent_0038();
+	$test42.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_replicaionStopOracleTC == "Y") {
+	var $test43 = _testcase("Continuity_Manager/ Template/ Oracle_Log/ OracleTC/ OracleTC_Manage_Replication ", "Stop Replication");
+	$test43.start();
+	OracleTC_Stop_replication_0051();
+	$test43.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_replicaionStartOracleTC == "Y") {
+	var $test44 = _testcase("Continuity_Manager/ Template/ Oracle_Log/ OracleTC/ OracleTC_Manage_Replication ", "Start Replication");
+	$test44.start();
+	OracleTC_Start_replication_0052();
+	$test44.end();
+}
+*/
+/*
+if ($g_executeOracleTCAll == "Y" || $g_startFOOracleTC == "Y") {
+	var $test45 = _testcase("Continuity_Manager/ Common/ FG/ Monitor/ Failover_0001 ", "Start FO");
+	$test45.start();
+	OracleTC_Start_FO_0001();
+	$test45.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_FOExecutionOracleTC == "Y") {
+	var $test46 = _testcase("Continuity_Manager/ Common/ FG/ Monitor/ Failover_0001 ", "FO Execution");
+	$test46.start();
+	OracleTC_FO_execution_0058();
+	$test46.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_continuityStatusFOOracleTC == "Y") {
+	var $test47 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0007", "Continuity Status During FO");
+	$test47.start();
+	OracleTC_Continuity_Status_FO_0007();
+	$test47.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_rpoFOOracleTC == "Y") {
+	var $test48 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0003", "RPO during FO");
+	$test48.start();
+	OracleTC_FO_RPO_0003();
+	$test48.end();
+}
+
+if ($g_executeOracleTCAll == "Y" || $g_monitorManageFOOracleTC == "Y") {
+	var $test49 = _testcase("Continuity_Manager/ Common/ FG/ Monitor/ Failover_0006 ", "FO Monitor Manage");
+	$test49.start();
+	OracleTC_FO_Monitor_Manage_0006();
+	$test49.end();
+}
+*/
+_log("================================Post-Condition================================== ", "Custom1");
+
+//Logout_001();

@@ -1,0 +1,245 @@
+
+function  creation_AG($GrpNm1,$GrpNm2,$GrpNm3,$AGrpNm,$time){
+	 _click(_link($Admin));
+	 _click(_link($Discover));
+	 _click(_link($Groups));
+	 _click(_button($DiscoverApplicationGroup));
+	 _setSelected(_select("subscriberId"), $Default);
+	 _click(_button("//Next »//"));
+	 _setValue(_textbox("name"), $AGrpNm);
+	 _doubleClick(_textbox("name"));
+	 _setValue(_textarea("description"), $AGrpNm);
+	
+	 _setSelected(_select("unassignedFunctionalGroups"), [$GrpNm1]);
+		_click(_button($smlbtn));
+		 _wait(1000);
+    _setSelected(_select("unassignedFunctionalGroups"), [$GrpNm2]);
+		_click(_button($smlbtn));
+		 _setSelected(_select("unassignedFunctionalGroups"), [$GrpNm3]);
+			_click(_button($smlbtn));
+		_click(_button($save3));
+	
+	 _wait(5000);
+	 _dragDrop(_listItem(14),_list($box1));
+	 _wait(5000);
+	 _dragDrop(_listItem(15),_list($box2));
+	 _wait(5000);
+	// _dragDrop(_listItem(16),_list("box2"));
+	 _wait(5000);
+	 _click(_button($okbutton1));
+	 _wait(5000);
+	 _setValue(_textbox("configuredRTOValue"),$time);
+	 _click(_button($Finish));
+ }
+function navigateToAGGroups(){
+	 _click(_link($Admin));
+	 _click(_link($Discover));
+	 _click(_link($Groups));
+	 _click(_heading4(9));
+
+}
+
+function Move_AG_To_Manage_Group($groupName) {
+	navigateToAGGroups();
+	 _click(_span("img-wrench text-black settings ", _near(_link($groupName))));
+	_wait(5000);
+	_click(_submit($ManageGroup));
+	_wait(10000);
+	_assertEqual($GroupModeChangeOperationManageGroupsuccessfullyperformedongroupAG1, _lastAlert());
+}
+
+
+function publishAGBCO($groupName,$workflowType){
+	NavigateToViewAGWorkflowsPage($groupName);
+	editWorkflowType($workflowType);
+	publishWorkflow();
+}
+
+
+function NavigateToViewAGWorkflowsPage($groupName){
+	//NavigateToRGDetailsPage();
+    navigateToAGManageRecovery($groupName);
+    _click(_link($Viewallworkflows));
+
+} 
+
+function NavigateToViewAGWorkflowsPage($groupName){
+	_click(_link($Admin));
+	_click(_link($Manage));
+	_click(_heading4($RecoveryGroups));
+	_click(_link($ViewAll));
+	_click(_link($groupName));
+	}
+
+
+function Trigger_Ral_Initiate_NormalFullcopy($groupName,$WrkflwNm){
+	//Before add the code forGroup  should  be  Normal reset  mode  
+ Trigger_Ral_Initiate_copy($groupName,$InitiateNormalFullCopy,$WrkflwNm);
+}
+
+function Trigger_Ral_Initiate_NormalFullcopyBP($groupName){
+	//Before add the code forGroup  should  be  Normal reset  mode  
+	Trigger_Ral_Initiate_BPcopy($groupName,$InitiateNormalFullCopy);
+}
+
+function Trigger_Ral_Start_SO($groupName,$workflowType,$WrkflwNm){
+	createWorkFlow($groupName,$WrkflwNm);
+	navigateDrillListing($groupName);
+	$versionNo = _getText(_span(0, _rightOf(_link($WrkflwNm))));
+	
+	if($version0 == $versionNo){		
+		
+		NavigateToDrillWorkflowEditor($groupName,$WrkflwNm);
+		AddRalIntoLayout($ralString,$ralCategory,$TEAction);
+	} else {
+		NavigateToDrillWorkflowEditor($groupName,$WrkflwNm);
+	}
+	editTriggerTEAction($groupName,$workflowType);
+	publishWorkflow();
+	executeWorkflow($groupName,$WrkflwNm);
+	Drills_Workflow_Execution_Status($WrkflwNm,$TEAction);
+}
+
+function Trigger_Ral_Start_SB($groupName,$workflowType,$WrkflwNm){
+	navigateDrillListing($groupName);
+	NavigateToWorkflowEditor($WrkflwNm);
+	editTriggerTEAction($groupName,$workflowType);
+	publishWorkflow();
+	executeWorkflow($groupName,$WrkflwNm);
+	Drills_Workflow_Execution_Status($WrkflwNm,$TEAction);
+}
+
+function Trigger_Ral_Initiate_BPcopy($groupName,$workflowType){
+	//TriggerRal_Move_Group_Manage_0001();
+	createBPWorkFlow($WorkflowName);
+	//$groupname="MYSQL_SR_Remote_5257";
+	navigateToBPWorkflow();
+	
+	NavigateToBPWorkflowEditor($WorkflowName);
+	AddRalIntoLayout($ralString,$ralCategory,$ralName);
+	/*
+		$versionNo = _getText(_span(1, _rightOf(_link($WorkflowName))));
+		
+		if("Version 0" == $versionNo){		
+			
+			NavigateToBPWorkflowEditor($WorkflowName);
+			AddRalIntoLayout($ralString,$ralCategory,$ralName);
+		} else {
+			NavigateToBPWorkflowEditor($WorkflowName);
+		}*/
+		editTriggerBCO($groupName,$workflowType);
+		publishWorkflow();
+		executeWorkflow($WorkflowName);
+		Drills_Workflow_Execution_Status($WorkflowName,$ralName);
+	}
+
+function Trigger_Ral_Initiate_copy($groupName,$workflowType,$WorkflowName){
+//TriggerRal_Move_Group_Manage_0001();
+createWorkFlow($groupName,$WorkflowName);
+//$groupname="MYSQL_SR_Remote_5257";
+navigateDrillListing($groupName);
+
+//AddRalIntoLayout($ralString,$ralCategory,$ralName);
+
+	$versionNo = _getText(_span(0, _rightOf(_link($WorkflowName))));
+	_log($versionNo);
+	if($version0 == $versionNo){		
+		
+		NavigateToDrillWorkflowEditor($groupName,$WorkflowName);
+		AddRalIntoLayout($ralString,$ralCategory,$TriggerBCO);
+	} else {
+		NavigateToDrillWorkflowEditor($groupName,$WorkflowName);
+	}
+	editTriggerBCO($groupName,$InitiateNormalFullCopy);
+	publishWorkflow();
+	executeWorkflow($groupName,$WorkflowName);
+	Drills_Workflow_Execution_Status($WorkflowName,$ralName);
+}
+	
+function Trigger_Ral_Initiate_Failover(){
+	Trigger_Ral_InitiateStop_NcRnc($groupName,$InitiateFailover);
+}
+
+function Trigger_Ral_Initiate_Fallback(){
+	Trigger_Ral_InitiateStop_NcRnc($groupName,$InitiateFallback);
+}
+
+function  Trigger_Ral_Initiate_Normalcopy($groupName,$WrkflwNm){
+	/*createWorkFlow($WorkflowName);
+	//$groupname="MYSQL_SR_Remote_5257";
+	navigateDrillListing();
+		$versionNo = _getText(_span(0, _rightOf(_link($WorkflowName))));
+		
+		if("Version: 0" == $versionNo){		
+			
+			NavigateToDrillWorkflowEditor($WorkflowName);
+			AddRalIntoLayout($ralString,$ralCategory,$ralName);
+		} else {
+			NavigateToDrillWorkflowEditor($WorkflowName);
+		}*/
+	
+	Trigger_Ral_InitiateStop_NcRnc($groupName,$InitiateNormalCopy,$WrkflwNm);
+}
+
+function Trigger_Ral_Stop_Normalcopy($groupName,$WrkflwNm){
+	Trigger_Ral_InitiateStop_NcRnc($groupName,$StopNormalCopy,$WrkflwNm);
+}
+
+function  Trigger_Ral_Initiate_ReverseNormalcopy($groupName,$WrkflwNm){
+	Trigger_Ral_InitiateStop_NcRnc($groupName,$InitiateReverseNormalCopy,$WrkflwNm);
+}
+
+function  Trigger_Ral_Stop_ReverseNormalcopy($groupName,$WrkflwNm){
+	Trigger_Ral_InitiateStop_NcRnc($groupName,$StopReverseNormalCopy,$WrkflwNm);
+}
+
+
+
+function Trigger_Ral_InitiateStop_NcRnc($groupName,$workflowType,$WorkflowName){
+	navigateDrillListing($groupName);
+	NavigateToWorkflowEditor($WorkflowName);
+	editTriggerBCO($groupName,$workflowType);
+	publishWorkflow();
+	executeWorkflow($groupName,$WorkflowName);
+}
+
+	//AddRalIntoLayout($ralString,$ralCategory,$ralName);
+	/*var $test1 = _testcase("Move Group Manage State_0001", "Move Group Manage State after group creation");
+	$test1.start();
+$test1.end();*/
+
+
+function editTriggerTEAction($groupName,$workflowType){
+	_click(_paragraph($textellipsis));
+	_click(_button($infoBtn));
+	_click(_link($ActionProperties));
+	_setSelected(_select("groupName"), $groupName);
+	_wait(5000);
+	_setSelected(_select("testName"), $workflowType);
+	_click(_select("testName"));
+	_click(_div("myModal"));
+}
+
+
+function AddRalIntoLayout($ralString,$ralCategory,$ralName){
+	_click(_span($glyphIon));
+	_click(_link($select2choice));
+	_setValue(_textbox(10), $ralString);
+	_click(_div($ralCategory));
+	_click(_span("glyphicon icon-blue-plus plusIconRals", _near(_span($ralName))));
+	_click(_span($glyphIon));
+	_dragDrop(_image($notificationsgreenpng),_image("notifications_yellow.png"));
+}
+
+function editTriggerBCO($groupName,$workflowType){
+	_click(_paragraph($textellipsis));
+	_click(_button($infoBtn));
+	_click(_link($ActionProperties));
+	_setSelected(_select("groupName"), $groupName);
+    _setSelected(_select("selectTheTrigger"),$workflowType);
+  	_click(_select("selectTheTrigger"));
+	_click(_div("myModal"));
+}
+
+
+//function editTriggerBCO($groupName,$workflowName)

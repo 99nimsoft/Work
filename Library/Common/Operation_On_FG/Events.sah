@@ -1,0 +1,40 @@
+/**
+ *Function is for remote agent stop the PFR agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+
+
+
+function Event($AgentType,$compIP,$remoteUserNameVal, $remotePwdVal, $localAgentPath, $Agent,$groupName,$EventName, $Eventdes, $Image,$WFType) {
+		if($AgentType=="Remote"){
+		var $server = Get_Remote_Agent_Event($compIP,$Agent);
+			}
+			else{
+		var $server = Get_Local_Agent_Event($compIP,$remoteUserNameVal, $remotePwdVal, $localAgentPath, $Agent);	
+			}
+			
+		Event_Verification($server.get("Server Time"), $groupName, $EventName, $Eventdes, $Image);
+}
+
+function Event_polar($groupName,$EventName) {
+	
+	_click(_link($obj_monitor));
+	_click(_link($obj_CurrentEvents));
+	_click(_link($obj_AdvFilter));
+	_click(_checkbox($obj_CLOSEDevent));
+	_setSelected(_select("groups"), [ $groupName ]);
+	_click(_button($obj_Apply));
+	_assertExists(_image($Closed_Event), _rightOf(_link($EventName)));
+}
+
+function RaiseEvent_Get_Remote_Agent_Event($groupName, $EventName) {
+	// ./raiseEvent.sh -g app_pfr_test -e BCSAppSubSystemPFREvent012
+	//var $sshCommand = '../.' + $EAMSROOT + 'bin/' + $agentStatus +" "+ $compIP + ' LINUXSERVER';
+	
+	var $sshCommand = '../.' + $EAMSROOT + 'bin/' + 'raiseEvent.sh' +" "+ '-g' +" "+ $groupName +" "+ '-e' +" "+ $EventName;
+	 $actionStatus = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+   
+}// End of Get_Remote_Agent_Event
+

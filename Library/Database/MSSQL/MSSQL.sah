@@ -1,0 +1,498 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains Creation of Component(LINUX) for both remote and local agents. 
+ ** AuthorName : Govinda Mengji 
+ ** Created Date : July 2013
+ ************************************************************************/
+
+
+/**
+* Function is for Creating  Dataset for PR  in  MSSQL.
+*@param :  null
+*@return : null
+* Author:Govinda
+*
+*/
+
+function Create_Mssql_DatasetPR(){
+
+Create_Mssql_Dataset_tempPR($systemTypeDataset, $dependentComponentNamePR, $datasetNamePR,$userPR,$pwdPR, $port,$databaseName);
+}
+
+/**
+* Function is for Creating  Dataset for PR  in  MSSQL.
+*@param :  null
+*@return : null
+* Author:Debabrat
+*
+*/
+function Create_Mssql_Mirror_DatasetDR(){
+Create_Mssql_Mirror_Dataset_tempDR($systemTypeDataset, $dependentComponentNameDR, $datasetNameDR,$userDR,$pwdDR, $port,$databaseName)
+}
+/**
+* Function is for Creating  Dataset for DR  in  MSSQL.
+*@param :  null
+*@return : null
+* Author:Govinda 
+* $remoteUserNameValPR
+*/
+function Create_Mssql_DatasetDR() {
+
+Create_Mssql_Dataset_tempDR($systemTypeDataset, $dependentComponentNameDR, $datasetNameDR,$userDR,$pwdDR, $port,$databaseName);
+
+}
+
+/**
+* Function is for Creating  Dataset for  in  MSSQL.
+*@param :  null
+*@return : null
+* Author:Govinda
+*updated -anita
+*/
+function Create_Mssql_Dataset_tempPR($systemTypeDataset, $dependentComponentName, $datasetName,$usernamedb,$password, $port,$database){
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($Datasets));
+	if (_exists(_link($datasetName))) {
+		_assertExists($Datasetalreadyexists);
+	} 
+	else {
+	_setSelected(_select($systemType), $systemTypeDataset);
+	_click(_button($Go));
+	_setSelected(_select($obj_dependentComponentName), $dependentComponentName);
+	_setValue(_textbox($obj_datasetName), $datasetName);
+	var $i=0;
+       while (true) 
+       {
+              if (_exists(_link($RegisterAgent))) {
+                     _click(_link($RegisterAgent));
+                     _wait(10000);
+              }
+       if (!_exists(_link($RegisterAgents)) && !_exists(_link($CONNECTED))) {
+                          navigateToDiscovery()
+                           _click(_link($Subsystems));
+                           _click(_link($Datasets));
+                           _setSelected(_select($systemType), $systemTypeDataset);
+                           _click(_button($Go));
+                           _setSelected(_select($obj_dependentComponentName), $dependentComponentName);
+                           _setValue(_textbox($obj_datasetName), $datasetName);
+                           if($i == 10 ){
+                                  _fail();
+                           }
+                     } 
+                     else 
+                     {
+                           _log("go ahead");
+                           break;
+                     }
+       _wait(10000);
+       $i++;
+       }
+
+		
+		if (_exists(_link($CONNECTED))) 
+		{
+			_click(_button($TestCredentials));
+			
+			// below code added- anita
+			_setSelected(_select($obj_serverName), "--Add New--");
+			_wait(3000);
+			_setValue(_textbox($obj_addNewServer), $Default);
+			_wait(3000);
+			_setValue(_textbox($obj_username), $usernamedb);
+			_setValue(_password($obj_password), $password);
+			_setValue(_textbox($obj_port), $port);
+			_setValue(_textbox($obj_databaseName), $database);
+			_click(_button($TestCredentials1));
+			if(_exists(_lastAlert())){
+			 _assertEqual($InstanceAlert, _lastAlert());
+		     }
+			_click(_button($Discover));
+			_wait(2000);
+			_click(_button($Save));
+			_wait(8000);
+			navigateToDiscovery();
+			_click(_link($Subsystems));
+			_click(_link($Datasets));
+		if (_exists(_link($datasetName))) 
+		{
+			_assertExists($datasetcreatedsuccesfully);
+		} 
+		else 
+		{
+			_fail("dataset not created succesfully.");
+		}
+		}
+		}
+}
+
+/**
+* Function is for Creating  Dataset for  in  MSSQL.
+*@param :  null
+*@return : null
+* Author
+*updated -Debabrat
+*/
+function Create_Mssql_Mirror_Dataset_tempDR($systemTypeDataset, $dependentComponentName, $datasetName,$usernamedb,$password, $port,$database){
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($Datasets));
+	if (_exists(_link($datasetName))) {
+		_assertExists($Datasetalreadyexists);
+	} 
+	else {
+	_setSelected(_select($systemType), $systemTypeDataset);
+	_click(_button($Go));
+	_setSelected(_select($obj_dependentComponentName), $dependentComponentName);
+	_setValue(_textbox($obj_datasetName), $datasetName);
+	var $i=0;
+       while (true) 
+       {
+              if (_exists(_link($RegisterAgent))) {
+                     _click(_link($RegisterAgent));
+                     _wait(10000);
+              }
+       if (!_exists(_link($RegisterAgents)) && !_exists(_link($CONNECTED))) {
+                          navigateToDiscovery()
+                           _click(_link($Subsystems));
+                           _click(_link($Datasets));
+                           _setSelected(_select($systemType), $systemTypeDataset);
+                           _click(_button($Go));
+                           _setSelected(_select($obj_dependentComponentName), $dependentComponentName);
+                           _setValue(_textbox($obj_datasetName), $datasetName);
+                           if($i == 10 ){
+                                  _fail();
+                           }
+                     } 
+                     else 
+                     {
+                           _log("go ahead");
+                           break;
+                     }
+       _wait(10000);
+       $i++;
+       }
+
+		
+		if (_exists(_link($CONNECTED))) 
+		{
+			_click(_button($TestCredentials));
+			
+			// below code added- anita
+			_setSelected(_select($obj_serverName), "--Add New--");
+			_setValue(_textbox($obj_addNewServer), $Default);
+			_setValue(_textbox($obj_username), $usernamedb);
+			_setValue(_password($obj_password), $password);
+			_setValue(_textbox($obj_port), $port);
+			_setValue(_textbox($obj_databaseName), $database);
+			_click(_button($TestCredentials1));
+			if(_exists(_lastAlert())){
+			 _assertEqual($obj_InstanceDefaultalreadyexists, _lastAlert());
+		     }
+			_click(_button($Discover));
+			_wait(2000);
+			_click(_button($Save));
+			_wait(8000);
+			navigateToDiscovery();
+			_click(_link($Subsystems));
+			_click(_link($Datasets));
+		if (_exists(_link($datasetName))) 
+		{
+			_assertExists($datasetcreatedsuccesfully);
+		} 
+		else 
+		{
+			_fail("dataset not created succesfully.");
+		}
+		}
+		}
+}
+
+/**
+* Function is to Verify Dataset details from GUI and DB after dataset has been created in PR.
+*@param :  null
+*@return : null
+* Author:Govinda
+*
+*/
+
+function Verify_Mssql_Dataset_Details_PR() {
+	Verify_Dataset_Discovery_Details($datasetNamePR,$ipPR,$database,$userPR, $pwdPR);
+}
+
+/**
+* Function is to Verify Dataset details from GUI and DB after dataset has been created in DR.
+*@param :  null
+*@return : null
+* Author: Govinda
+*
+*/
+function Verify_Mssql_Dataset_Details_DR() {
+	Verify_Dataset_Discovery_Details($datasetNameDR,$ipDR,$database,$userDR, $pwdDR);
+}
+
+/**
+* Function is to Verify Dataset details from GUI and DB after dataset has been created .
+*@param : $datasetName,$ip,$database,$user, $pwd
+*@return : null
+* Author: Govinda
+*
+*/
+function Verify_Dataset_Discovery_Details($datasetName,$ip,$database,$user, $pwd) {
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($Datasets));
+	_click(_link($datasetName));
+
+// Data Files
+	var $db = Get_MSsql_Db_Connection_URL($ip,$database,$user, $pwd);
+    var $datafilesGui = _getText(_cell(1, _near(_cell($DataFileNames))));
+    _assertExists($obj_DatafilesGUI, $datafilesGui);
+    
+    var $datafilesDB1 = $db.select("use master; select  a.filename from sysaltfiles a inner join sysdatabases b on a.dbid = b.dbid where b.name="+"'"+ $database +"'"+";");
+    var $datafilesDB2=$datafilesDB1.toString();
+	var $datafilesDB3 = $datafilesDB2.split(",");
+	var $datafilesDB=$datafilesDB3[0];
+	_assertExists($obj_DatafilesDB, $datafilesDB);
+
+	_assertEqual($datafilesDB, $datafilesGui, "Comparing Datafile  path from  DB and GUI"); 
+	
+// Transaction Log File 
+	
+	var $transactionLogFileGui = _getText(_cell(1, _near(_cell($TransactionLogFileNames))));
+	_assertExists($obj_TransactionLogFileGUI, $transactionLogFileGui);
+	
+	var $transactionLogFileDB1 = $db.select("use master; select  a.filename from sysaltfiles a inner join sysdatabases b on a.dbid = b.dbid where b.name="+"'"+ $database +"'"+";");
+	var $transactionLogFileDB2=$transactionLogFileDB1.toString();
+	var $transactionLogFileDB3 = $transactionLogFileDB2.split(",");
+	var $transactionLogFileDB=$transactionLogFileDB3[1];
+	//_assertExists("Transaction Log File DB", $transactionLogFileDB);
+	
+	_assertEqual($transactionLogFileDB, $transactionLogFileGui, "Comparing Transaction Log File from DB and GUI");
+}
+
+
+
+/**
+* Function is to Get Dataset status for PR from GUI and DB.
+*@param : null
+*@return : null
+* Author: Govinda
+*
+*/
+function Get_Mssql_Dataset_Status_PR(){
+	Get_Mssql_Dataset_Status_db($drmServer, $drmUserName, $drmPassword,$compIPPR, $remoteUserNameValPR, $remotePwdValPR,$sernamePR);
+	 
+}
+/**
+* Function is to Get Dataset status for DR from GUI and DB.
+*@param : null
+*@return : null
+* Author: Govinda
+*
+*/
+function Get_Mssql_Dataset_Status_DR(){
+	Get_Mssql_Dataset_Status_db($drmServer, $drmUserName, $drmPassword,$compIPDR, $remoteUserNameValDR, $remotePwdValDR,$sernameDR);
+	}
+
+/**
+* Function is to Get Dataset status from GUI and DB.
+*@param : $drmServer, $drmUserName, $drmPassword,$compIP, $remoteUserNameValPR, $remotePwdValPR,$sernamePR
+*@return : $datasetStatusDb
+* Author: Govinda
+* Modified: Anita
+*/
+function Get_Mssql_Dataset_Status_db($drmServer, $drmUserName, $drmPassword,$compIP, $remoteUserNameValPR, $remotePwdValPR,$sernamePR){
+
+	var $db = Get_MSsql_Db_Connection_URL($ipDR,$database,$userDR, $pwdDR);
+	_log($db);
+	if($agentType=="Remote"){
+		var $sshCommand = '../.' + $EAMSROOT + 'bin/'+"MSSQLAgent.sh status" + " " + $compIP + ' LINUXSERVER';
+		var $status = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+		
+		_log($status);
+		
+		var $actionStatus = $status.match(/MSSQLAgent running/);
+
+		_assertExists("actionStatus for remote MSSQLAgent ",$actionStatus);
+		
+		if (_exists($DatabaseConnectionEstablished)) {
+			if ($actionStatus == "MSSQLAgent running") {
+				var $datasetStatus = "ACTIVE";
+			} else if ($actionStatus == " There is no MSSQLAgent running") {
+				$datasetStatus = "UNKNOWN";
+			} else {
+			    $datasetStatus = "INACTIVE";
+			}	
+		}
+	}
+	_assertExists($DatasetStatusDB, $datasetStatus);
+	var $datasetStatusDb = new java.util.Properties();
+	$datasetStatusDb.put("Dataset Status DB:", $datasetStatus);
+	return $datasetStatusDb;
+}
+
+/**
+* Function is to Verify Dataset status from GUI and DB from PR.
+*@param : null
+*@return : null
+* Author: Govinda
+*
+*/
+function Verify_Mssql_Dataset_Status_PR() {
+	Verify_Dataset_Status($drmServer, $drmUserName, $drmPassword,$compIPPR, $remoteUserNameValPR, $remotePwdValPR,$sernamePR, $datasetNamePR);
+}
+
+/**
+* Function is to Verify Dataset status from GUI and DB from DR.
+*@param : null
+*@return : null
+* Author: Govinda
+*
+*/
+function Verify_Mssql_Dataset_Status_DR() {
+	Verify_Dataset_Status($drmServer, $drmUserName, $drmPassword,$compIPDR, $remoteUserNameValDR, $remotePwdValDR,$sernameDR, $datasetNameDR);
+}
+
+/**
+* Function is to Verify Dataset status from GUI and DB.
+*@param : $drmServer, $drmUserName, $drmPassword,$compIP, $remoteUserNameValPR, $remotePwdValPR,$sernamePR,$datasetName
+*@return : null
+* Author: Govinda
+*
+*/
+function Verify_Dataset_Status($drmServer, $drmUserName, $drmPassword,$compIP, $remoteUserNameValPR, $remotePwdValPR,$sernamePR, $datasetName) {
+
+	var $datasetStatusDb = Get_Mssql_Dataset_Status_db($drmServer, $drmUserName, $drmPassword,$compIP, $remoteUserNameValPR, $remotePwdValPR,$sernamePR);
+
+	var $datasetStatusGui = Get_Dataset_Status_Gui($datasetName);
+	_assertEqual($datasetStatusDb.get("Dataset Status DB:"), $datasetStatusGui.get("status"), "Comparing Dataset Status from Db and GUI");
+}
+////
+
+/**
+* Function is to get the datafilename and transactionfile Dataset status from GUI.
+*@param : $datafilename, $transactionfile;
+*@return : null
+* Author: anita
+*/
+
+
+function getdatasetdetailsPR(){
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($Datasets));
+	_click(_link($datasetNamePR));
+	
+	 var $datafilename=_getCellText(_cell(1,_near(_cell($DataFileNames))));
+	_log($datafilename);
+	
+    var $transactionfile=_getCellText(_cell(1,_near(_cell($TransactionLogFileNames))));
+	_log($transactionfile);
+	
+}
+
+/**
+* Function is for Creating  Dataset for  in  MSSQL.
+*@param :  null
+*@return : null
+* Author:Govinda
+*updated -anita
+*/
+function Create_Mssql_Dataset_tempDR($systemTypeDataset, $dependentComponentName, $datasetName,$usernamedb,$password, $port,$database){
+	   // get PR dataset file set name
+	 	navigateToDiscovery();
+		_click(_link($Subsystems));
+		_click(_link($Datasets));
+		_click(_link($datasetNamePR));
+		
+		var $datafilename=_getCellText(_cell(1,_near(_cell($DataFileNames))));
+		_log($DataFileNames);
+		
+	    var $transactionfile=_getCellText(_cell(1,_near(_cell($TransactionLogFileNames))));
+		_log($transactionfile);
+		_wait(5000);
+		//Create data set for DR
+		navigateToDiscovery();
+		_click(_link($Subsystems));
+		_click(_link($Datasets));
+		if (_exists(_link($datasetName))) {
+			_assertExists($Datasetalreadyexists);
+		} 
+		else {
+		_setSelected(_select($systemType), $systemTypeDataset);
+		_click(_button($Go));
+		_setSelected(_select($obj_dependentComponentName), $dependentComponentName);
+		_setValue(_textbox($obj_datasetName), $datasetName);
+		var $i=0;
+	       while (true) 
+	       {
+	              if (_exists(_link($RegisterAgent))) {
+	                     _click(_link($RegisterAgent));
+	                     _wait(10000);
+	              }
+	       if (!_exists(_link($RegisterAgents)) && !_exists(_link($CONNECTED))) {
+	                          navigateToDiscovery()
+	                           _click(_link($Subsystems));
+	                           _click(_link($Datasets));
+	                           _setSelected(_select($systemType), $systemTypeDataset);
+	                           _click(_button($Go));
+	                           _setSelected(_select($obj_dependentComponentName), $dependentComponentName);
+	                           _setValue(_textbox($obj_datasetName), $datasetName);
+	                           if($i == 10 ){
+	                                  _fail();
+	                           }
+	                     } 
+	                     else 
+	                     {
+	                           _log("go ahead");
+	                           break;
+	                     }
+	       _wait(10000);
+	       $i++;
+	       }
+	
+			
+			if (_exists(_link($CONNECTED))) 
+			{
+				_click(_button($TestCredentials));
+				
+				// below coded added- anita
+				_setSelected(_select($obj_serverName), "--Add New--");
+				_setValue(_textbox($obj_addNewServer), $Default);
+				_setValue(_textbox($obj_username), $usernamedb);
+				_setValue(_password($obj_password), $password);
+				_setValue(_textbox($obj_port), $port);
+				_setValue(_textbox($obj_databaseName), $database);
+				_click(_button($TestCredentials1));
+				_wait(5000);
+				/*_setValue(_textbox("dataFileNameText"), $datafilename);
+				_click(_button($Add));
+				//_click(_button(" Add  "));
+				_wait(3000);
+				_setValue(_textbox("transactionLogFileNameText"), $transactionfile);
+				//_click(_button("/Add/"));
+				_click(_button($Add));
+				//_click(_button($Add, _near(_cell($Transactionlogfilenameincludepath))));
+				_wait(3000);
+				_click(_button($Save));*/
+				
+				_click(_button($Discover));
+				_wait(2000);
+				_click(_button($Save));
+				_wait(8000);
+				navigateToDiscovery();
+				_click(_link($Subsystems));
+				_click(_link($Datasets));
+			if (_exists(_link($datasetName))) 
+			{
+				_assertExists($datasetcreatedsuccesfully);
+			} 
+			else 
+			{
+				_fail("dataset not created succesfully.");
+			}
+		}
+		}
+		}

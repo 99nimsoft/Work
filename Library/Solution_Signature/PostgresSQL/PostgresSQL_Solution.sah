@@ -1,0 +1,670 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are the part of  PostgresSR solution screen wise fetching and comparing data from Db and GUI. 
+ ** @AuthorName : Aditi Jain
+ ** Created Date : Nov 2013
+ ************************************************************************/
+
+/**
+* Function is for Functional Group creation for PostgreSQL SR solution.
+*@param : null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+function PostgresSR_Create_FG() {
+	$groupCreation = Create_FG($groupName, $groupDescription, $SolutionSignature, $primaryComponents, $remoteComponents, $primaryDatasets, $remoteDatasets, $primaryProtections, $remoteProtections);
+	if ($groupCreation.get($flag) == 0) {
+		_log("Same group name already exists");
+	} else {
+		//_wait(60000,_submit("/Submit/"));
+		//_click(_submit("/Submit/"));
+		_click(_button($Submit));
+		_click(_link($License));
+		_click(_checkbox($Recovery));
+		_click(_checkbox($Test));
+		_wait(1000);
+		_click(_button($licensebutton));
+		_wait(1000);
+		_click(_link($RPORTO));
+		_setValue(_textbox("desrpo1"), $desiredRpo);
+		_setValue(_textbox("rpoint1"), $rpoCompute);
+		_click(_button($Save));
+		_click(_button($Finish));
+		_wait(5000);
+		navigateToGroups();
+		if (_exists(_link($groupName))) {
+			_assertExists($Groupcreatedsuccesfully);
+		} else {
+			_fail("Group not created succesfully.So that stopping execution.");
+		}
+	}
+}// End Of PostgresSR_Create_FG()
+
+
+
+/**
+
+* Function is for Updating the  DRMServer for PostgreSQL SR solution.
+*@param : null
+*@return : null
+*@Author: Anita
+*
+*/
+
+function drm_Update($compIP, $remoteUserNameVal, $remotePwdVal,$drmServer){
+    _log($drmServer);
+    var $filepath = "/opt/PostgreSQL/data/"; 
+    var $sshCommand = "sed -i '/Pv4 local connections/a" + " \ " + "host     all         postgres   "+ $drmServer + "/32 trust' " + $filepath + "pg_hba.conf";
+    $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand); 
+}
+
+
+/**
+* Function is for Searching  for the  DRMServer PostgreSQL SR solution.
+*@param : null
+*@return : null
+*@Author: Debabrat
+*
+*/
+function drm_Search($compIP, $remoteUserNameVal, $remotePwdVal,$drmServer){
+	var $filepath = "/opt/PostgreSQL/data/";
+	var $sshCommand ="grep -r  "+$drmServer+"  "+$filepath + "pg_hba.conf";
+	$status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	_log($status);
+	if($status == ""){
+		_log("1");
+		_log("Adding  the DRMServerIp To pg_hba.conf  file");
+		drm_Update($compIP, $remoteUserNameVal, $remotePwdVal,$drmServer);
+		_log(" AlredAdded  the DRMServerIp To pg_hba.conf  file");
+	}
+	else{
+		_log("2");
+		var $check_ip=$status;
+		_log($check_ip);
+		var $check_ip1=$check_ip.split($postgres);
+		_log($check_ip1);
+		var $check_ip2=$check_ip1[1].split("/");
+		_log( $check_ip2);
+		var $check_ip3=$check_ip2[0].trim();
+		_log($check_ip3);
+		_log($drmServer);
+		if ($check_ip3  == $drmServer){
+			_log(" DRM  IP Exist, No Need To Add");
+		}else{
+			_log("Unable To Add  the DRM ServerIP");
+		}
+	}
+
+	
+}
+
+
+/**
+* Function is for Service Stop/Start for PostgreSQL SR solution.
+*@param : null
+*@return : null
+*@Author: Debabrat Sahu
+*
+*/
+function  service_Start_PR($compIP, $remoteUserNameVal, $remotePwdVal){
+	
+	service_Start($compIP, $remoteUserNameVal, $remotePwdVal);
+}
+
+
+function  service_Start_DR($compIP, $remoteUserNameVal, $remotePwdVal){
+	
+	service_Start($compIP, $remoteUserNameVal, $remotePwdVal);
+}
+
+function service_Start($compIP, $remoteUserNameVal, $remotePwdVal){
+	var $filepath = "/opt/";
+	var $preCheckfile=  "/opt/PrePostgresScript.sh";
+	
+	/*if(_fileExists($preCheckfile)){
+		_log("Checking  the  file  in  Proper location");
+		//var   $sshCommand= "rm  -f"+" "+ PrePostgresScript.sh ;
+		//var $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+    */
+		_log("Checking  the  file  in  Proper location");
+		var   $sshCommand= "rm  -f"+" "+ $preCheckfile ;
+		var $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+		_log("Downloading  the  file To  the  Path");
+	var  $sshCommand ="wget -r -nd -P"+"  " +$filepath+" "+"http://172.168.20.43//jenkins/job/DRM_Automation/ws/PrePostgresScript.sh; echo $?";
+    var $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+    _log("Allowing  Permission  777 To the  file");
+    var  $sshCommand = "chmod  777  PrePostgresScript.sh";
+    var $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+    _log("Execute  the  PrePostgresScript  file to  Start  the  Service");
+    var  $sshCommand = "sh  PrePostgresScript.sh";
+    var $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+    
+    
+    
+}
+/**
+* Function is for Verification of the all RTO detail from RPO/RTO screen for PostgreSQL SR solution
+*@param : null
+*@return : $dbRto
+*@Author: Aditi Jain
+*
+*/
+
+function PostgresSR_Rto() {
+	
+	navigateToRTO($groupName);
+
+	
+	//Remote Precheck Time From GUI
+	//navigateToRTO();
+	// verification of current RTO :
+	
+	
+	//Custom action for Remote Pre-check Time From GUI
+
+	_mouseOver(_svg_rect(11));
+    var $stepName1= RTO_Calculate();
+    _assertExists("Remote Precheck Time inSec", $stepName1);
+	
+    
+    //Trigger Failover Time From GUI
+
+    mouseOver(_svg_rect(12));
+    var $stepName2= RTO_Calculate();
+	_assertExists("Trigger Failover Time inSec", $stepName2);
+	
+	
+	//Verify DBMode Time From GUI
+	  mouseOver(_svg_rect(13));
+	    var $stepName3= RTO_Calculate();
+		_assertExists("Trigger Failover Time inSec", $stepName3);
+	
+	//MSSQLFailoverRAL  Time From GUI
+		 mouseOver(_svg_rect(14));
+		    var $stepName4= RTO_Calculate();
+			_assertExists("MSSQLFailoverRAL Time inSec", $stepName4);
+
+	
+	
+	var $expectedCompletionTime = Math.floor($stepName1 + $stepName2 + $stepName3 + $stepName4);
+	_assertExists("Expected completion time", $expectedCompletionTime);
+
+	// Calling function Calculate_Rto from Group_manager.sah
+	var $dbRto = Calculate_Rto($expectedCompletionTime);
+	return $dbRto;
+
+} // End of PostgresSR_Rto RTO
+
+
+/**
+* Function is for Rpo of  PostgresSR Post SO.
+*@param :  null
+*@return : null
+* Author: Aditi Jain
+*
+*/
+
+function PostgresSR_Rpo_Post_SO(){
+	PostgresSR_Rpo_Status($compIPDR, $remoteUserNameValDR, $remotePwdValDR,$compIPPR, $remoteUserNameValPR, $remotePwdValPR,$compIPDR,$dbSidSelect,$userNameDR, $pwdDR);
+}
+
+/**
+* Function is for Rpo of  PostgresSR before SO.
+*@param :  null
+*@return : null
+* Author: Aditi Jain
+*
+*/
+function PostgresSR_Rpo(){
+	
+	//PostgresSR_Rpo_Status($compIPPR, $remoteUserNameValPR, $remotePwdValPR,$compIPDR, $remoteUserNameValDR, $remotePwdValDR,$compIPPR,$dbSidSelect,$userNamePR, $pwdPR);
+	
+	PostgresSR_Rpo_Status($compIPPR, $remoteUserNameValPR, $remotePwdValPR,$compIPDR, $remoteUserNameValDR, $remotePwdValDR,$compIPPR,$dbSidSelect,$userNamePR, $pwdPR);
+
+}
+
+/**
+* Function is for Verification of the all RPO detail from RPO/RTO screen for PostgreSQL SR solution
+*@param : $compIP, $remoteUserNameVal, $remotePwdVal,$compIP, $remoteUserNameVal, $remotePwdVal,$ip,$database,$user, $pwd
+*@return : $dbRpo,$dbRecoveryPoint;
+*@Author: Aditi Jain
+*
+*/
+function PostgresSR_Rpo_Status($compIP1, $remoteUserNameVal, $remotePwdVal,$compIP2, $remoteUserNameVal1, $remotePwdVal1,$ip,$database,$user, $pwd){
+	
+	navigateToRPO($groupName);
+	//PR LOCATION
+	//var $transactionLocPR=_getText(_cell(1, _near(_cell("Current Transaction Location:", _under(_cell("Primary"))))));
+	var $transactionLocPR=_getText(_div(1, _near(_div($CurrentTransactionLocation))));
+	_log("Current Transaction Location PR: "+$transactionLocPR);
+
+	
+	var $sshCommand = 'su -c "'+$postgresHome+'/bin/pg_controldata '+$postgresData+'" - postgres';
+	var $status = Execute_Ssh_Command($compIP1, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	
+	var $action = $status.get($output);
+	var $actionStatus1 = $action.toString();
+	var $locPR=$actionStatus1.split(":");
+	
+	var $LocDBPR=$locPR[8].split(",");
+	var $tranLocDBPR=$LocDBPR[0].trim();
+	_assertExists("Current Transaction Location PR from DB",$tranLocDBPR);
+	if($tranLocDBPR == $transactionLocPR){
+	_assertEqual($tranLocDBPR,$transactionLocPR,"Verifying Transaction location from DB and GUI");
+	}
+	
+	
+	//PR TIME
+   // var $transactionTimePR=_getText(_cell(1, _near(_cell("Transaction Time:", _under(_cell("Primary"))))));
+    var $transactionTimePR=_getText(_div(1, _near(_div($TransactionTime))));
+
+    _assertExists("Transaction Time PR: ",$transactionTimePR);
+	
+  	var $date = $transactionTimePR;
+    var $dateString = $date.toString();
+    var $transactionTimeGUIPR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+    _assertExists("Transaction Time PR", $transactionTimeGUIPR);
+	
+
+    //DR LOCATION
+	//var $transactionLocDR=_getText(_cell(1, _near(_cell("Transaction Replay Location :", _under(_cell("Remote"))))));
+	var $transactionLocDR=_getText(_div(1, _near(_div($TransactionTime1))));
+
+    _assertExists("Transaction Replay Location DR:",$transactionLocDR);
+	
+	
+	var $sshCommand1 = 'su -c "'+$postgresHome+'/bin/pg_controldata '+$postgresData+'" - postgres';
+	var $status = Execute_Ssh_Command($compIP2, $remoteUserNameVal1, $remotePwdVal1, $sshCommand1);
+	var $action = $status.get($output);
+	var $actionStatus1 = $action.toString();
+	var $locDR=$actionStatus1.split(":");
+	
+	var $LocDBDR=$locDR[8].split(",");
+	var $tranLocDBDR=$LocDBDR[0].trim();
+	_assertExists("Current Transaction Location DR from DB",$tranLocDBDR);
+	
+	if($tranLocDBDR == $transactionLocDR){
+	_assertEqual($tranLocDBDR,$transactionLocDR,"Verifying Transaction location from DB and GUI");
+	
+
+	}
+	
+	//DR TIME
+	// var $transactionTimeDR=_getText(_cell(1, _near(_cell("Transaction Time:", _under(_cell("Remote"))))));
+	 var $transactionTimeDR=_getText(_div(1, _near(_div($TransactionTime1))));
+
+	 _assertExists("Transaction Time DR: ",$transactionTimeDR);
+		var $date = $transactionTimeDR;
+	    var $dateString = $date.toString();
+	    var $transactionTimeGUIDR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+	    _assertExists("Transaction Time DR GUI", $transactionTimeGUIDR);
+	
+	    
+	  
+	 
+			//Calling Calulate_Rpo function to verify RPO calculation from gui
+			$dbRpo = Calulate_Rpo($transactionTimePR, $transactionTimeDR);
+			$recoveryPointinDB = $dbRpo.get($recoveryPointDB);
+
+		   $dbRecoveryPoint = new java.util.Properties();
+		 	$dbRecoveryPoint.put("RecoveryPointDB", $recoveryPointinDB);
+			return $dbRpo;
+			return $dbRecoveryPoint;
+			
+}
+
+
+function replication(){
+	//PostgresSR_Replication($compIP, $remoteUserNameVal, $remotePwdVal);
+	PostgresSR_Replication($compIPPR, $remoteUserNameValPR, $remotePwdValPR);
+
+}
+/**
+* Function is for navigation of  Replication page of  PostgresSR Post SO.
+*@param :  null
+*@return : null
+* Author: Aditi Jain
+*
+*/
+function PostgresSR_Replication($compIP, $remoteUserNameVal, $remotePwdVal){
+	
+	var $sshCommand = 'su - postgres cd bin/ psql create table rrr(id integer);';
+	var $status = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+
+	
+	
+	
+	//_log($compIP1);
+	navigateToReplication();
+  var $i=0;
+  while($i<10){
+	  _log($i);
+	  _wait(20000);
+	  $i=$i+1;  
+  }
+	
+	
+	
+	var $protectionGUI=_getText(_span(1, _near(_span($Protection))));
+	_assertExists("Protection from GUI" , $protectionGUI);
+	
+	var $replicationStatusGUI=_getText(_span(1, _near(_span($ReplicationStatus))));
+	_assertExists("Replication Status from GUI" , $replicationStatusGUI);
+	
+	var $primaryRemoteServicesGUI=_getText(_span(1, _near(_span($PrimaryRemoteServices))));
+	_assertExists("Primary Remote Services from GUI" , $primaryRemoteServicesGUI);
+
+	
+	//var $sshCommand = 'su -c "'+$postgresHome+'/bin/pg_controldata '+$postgresData+'" - postgres';
+	var  $sshCommand = "ps -ef|grep postgres";
+	//var $status = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	var $status = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+
+	var $action = $status.get($output);
+	var $actionStatus1 = $action.toString();
+	_log($actionStatus1);
+	var $posPRDB2=$actionStatus1.split($streaming);
+	var $posPRDB1=$posPRDB2[1].split(",");
+	var $posPRDB=$posPRDB1[0].trim();
+	_log($posPRDB2);
+	_log($posPRDB1);
+	_log($posPRDB);
+	//var $LocDBPR=$locPR[8].split(",");
+	//var $tranLocDBPR=$LocDBPR[0].trim();
+	//_log($tranLocDBPR);
+	//_assertExists("Current Transaction log Location PR from DB",$tranLocDBPR);
+	var $guivalue=_getText(_preformatted(0));
+	var $actionStatus2 = $guivalue.toString();
+	_log($actionStatus2);
+	var $posPRGUI2=$actionStatus2.split($streaming);
+	_log($posPRGUI2);
+	var $posPRGUI1=$posPRGUI2[1].split(" ");
+	_log($posPRGUI1);
+	var $posGUI=$posPRGUI1[1].trim();
+	//var $posGUI=$posPRGUI1;
+	
+	
+	_log($posGUI);
+	
+	_assertEqual($posGUI,$posPRDB,"Verifying position from DB and GUI");
+	
+}
+
+/**
+* Function is for Group Snapshot of  PostgresSR Post SO.
+*@param :  null
+*@return : null
+* Author: Aditi Jain
+*
+*/
+function PostgresSR_GroupSnapshot_Post_SO(){
+	PostgresSR_GroupSnapshot_Status($groupName,"SO",$compIPDR, $remoteUserNameValDR, $remotePwdValDR,$compIPPR, $remoteUserNameValPR, $remotePwdValPR);
+}
+/**
+* Function is for Group Snapshot of  PostgresSR before SO.
+*@param :  null
+*@return : null
+* Author: Aditi Jain
+*
+*/
+function PostgresSR_Groupsnapshot(){
+	PostgresSR_GroupSnapshot_Status($groupName,$WFType,$compIPPR, $remoteUserNameValPR, $remotePwdValPR,$compIPDR, $remoteUserNameValDR, $remotePwdValDR);
+}
+/**
+* Function is for Group Snapshot of PostgresSR.
+*@param :  $groupName,$WFType,$compIP, $remoteUserNameVal, $remotePwdVal,$compIP, $remoteUserNameVal, $remotePwdVal
+*@return : null
+* Author:Aditi Jain
+*
+*/
+function PostgresSR_GroupSnapshot_Status($groupName,$WFType,$compIP, $remoteUserNameVal, $remotePwdVal,$compIP, $remoteUserNameVal, $remotePwdVal)
+	{
+	_click(_link($Monitor));
+	_click(_link($groupName));
+	_click(_link($GroupSnapshot));
+
+	//verifying Recovery Point
+    if ($WFType == "SO") {
+	if (_exists(_cell($NotsupportedinSwitchovermode))) {
+		_log("So done successfully");
+	} else {
+		_log("Gui not showing correct value");
+	}
+	// calling PostgresSR_Rpo_Post_SO function
+	$dbRecoveryPoint = PostgresSR_Rpo_Post_SO();
+	
+	} else {
+// calling PostgresSR_Rpo function
+		
+	 $dbRecoveryPoint = PostgresSR_Rpo();
+	} 
+   
+ 	var $recoveryPointGui1 = _getText(_span(1, _near(_span($DRDataConsistentupto), _near(_cell("Continuity")))));
+ 	_assertExists("Recovery Point DR Data Consistent up to:", $recoveryPointGui1);
+ 	var $date = $recoveryPointGui1;
+     var $dateString = $date.toString();
+     var $recoveryPointGui = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+ 	
+ 	_assertExists("Recovery Point DR Data Consistent up to:", $recoveryPointGui);
+ 	
+ 	if($dbRecoveryPoint == $recoveryPointGui){
+ 	_assertEqual($dbRecoveryPoint, $recoveryPointGui, "Recovery Point DR Data Consistent upto correct in GUI");
+ 	}
+	else {
+ 		_log("Validating Recovery Point DR Data Consistent is not  correct in GUI");
+ 	}
+	// Verfing Recovery time
+	if ($WFType == "SO") {
+	if (_exists(_cell($NotsupportedinSwitchovermode))) {
+		_log("Not supported in Switchover mode");
+	}
+	} else {
+	_click(_link($Monitor));
+	_click(_link($groupName));
+   _click(_link($GroupSnapshot));
+	var $CurrentTransLogFile=_getCellText(_cell(0, _near(_tableHeader($CurrentTransLogFile))));
+	_log("Current Trans Log File"+$CurrentTransLogFile);
+	
+	var $CurrentTransLogLoc=_getCellText(_cell(0, _near(_tableHeader($CurrentTransLogLocation))));
+	_log("Current Transaction Log Location"+$CurrentTransLogLoc);
+	
+	
+	var $sshCommand = 'su -c "'+$postgresHome+'/bin/pg_controldata '+$postgresData+'" - postgres';
+	var $status = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	var $action = $status.get($output);
+	var $actionStatus1 = $action.toString();
+	var $locPR=$actionStatus1.split(":");
+	
+	var $LocDBPR=$locPR[8].split(",");
+	var $tranLocDBPR=$LocDBPR[0].trim();
+	_assertExists("Current Transaction log Location PR from DB",$tranLocDBPR);
+	if($tranLocDBPR == $CurrentTransLogLoc){
+	_assertEqual($tranLocDBPR,$CurrentTransLogLoc,"Verifying Transaction location from DB and GUI");
+	}
+	
+	_click(_link($Monitor));
+	_click(_link($groupName));
+	_click(_link($GroupSnapshot));
+	var $lastReplayLogFile=_getCellText(_cell(0, _near(_tableHeader($LastReplayLogFile))));
+	_log("Last Replay Log File" +$lastReplayLogFile);
+	
+	var $lastReplayLogLoc=_getCellText(_cell(0, _near(_tableHeader($LastReplayLogLocation))));
+	_log("Last Replay Log Location:"+$lastReplayLogLoc);
+	
+	
+	var $sshCommand = 'su -c "'+$postgresHome+'/bin/pg_controldata '+$postgresData+'" - postgres';
+	var $status = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	
+	
+	var $action = $status.get($output);
+	var $actionStatus1 = $action.toString();
+	var $locDR=$actionStatus1.split(":");
+	
+	var $LocDBDR=$locDR[8].split(",");
+	var $tranLocDBDR=$LocDBDR[0].trim();
+	_assertExists("Current Transaction Location DR from DB",$tranLocDBDR);
+	if($tranLocDBDR == $lastReplayLogLoc){
+	_assertEqual($tranLocDBDR,$lastReplayLogLoc,"Verifying Transaction location from DB and GUI");
+	}
+	
+	}
+		
+}
+
+
+//Group Information
+
+/**
+* Function is for Group Information of PostgresSR post SO.
+*@param :  null
+*@return : null
+* Author: Aditi Jain
+*
+*/
+function PostgresSR_GroupInformation_Post_SO(){
+	
+	PostgresSR_GroupInformation_Status($groupName,"SO",$compIPDR, $remoteUserNameValDR, $remotePwdValDR,$compIPPR, $remoteUserNameValPR, $remotePwdValPR);
+	
+}// End of PostgresSR_GroupInformation_Post_SO()
+
+/**
+* Function is for Group Information of PostgresSR before SO.
+*@param :  null
+*@return : null
+* Author: Aditi Jain
+*
+*/
+//function PostgresSR_GroupInformation($groupName,$workflowType)
+function PostgresSR_Continuity_Work_Flow($groupName,$workflowType){
+	if($workflowType=="NormalCopy"){
+	//PostgresSR_GroupInformation_Status($groupName,$workflowType,$compIPPR, $remoteUserNameValPR, $remotePwdValPR,$compIPDR, $remoteUserNameValDR, $remotePwdValDR);
+		PostgresSR_Continuity_Work_Flow_Status($groupName,$workflowType,$compIPPR, $remoteUserNameValPR, $remotePwdValPR);
+	}
+		else if($workflowType=="ReverseNormalCopy"){
+			PostgresSR_Continuity_Work_Flow_Status($groupName,$workflowType,$compIPDR, $remoteUserNameValDR, $remotePwdValDR);
+
+		}
+	
+	
+}//End of PostgresSR_GroupInformation()
+
+/**
+* Function is for Group Information of PostgresSR .
+*@param : $groupName,$WFType,$compIP, $remoteUserNameVal, $remotePwdVal,$compIP, $remoteUserNameVal, $remotePwdVal
+*@return : null
+* Author: Aditi Jain
+*
+*/
+//function PostgresSR_GroupInformation_Status($groupName,$workflowType,$compIP, $remoteUserNameVal, $remotePwdVal,$compIP, $remoteUserNameVal, $remotePwdVal)
+
+//Coninuity WorkFlow
+//
+function PostgresSR_Continuity_Work_Flow_Status($groupName,$workflowType,$compIP, $remoteUserNameVal, $remotePwdVal)
+{
+	_log($groupName);
+	_log($workflowType);
+	_log($compIP);
+	_log($remoteUserNameVal);
+	_log($remotePwdVal);
+	NavigateToRGDetailsPage($groupName);
+	_click(_link(1, _near(_link($workflowType))));
+	
+// calling Group_ManageGroupInformation to verify the PR and DR site status
+     // Group_Managegroupinformation($groupName, $WFType);
+      
+      var $CurrentTransLogFile2=_getText(_heading5($CurrentTransLogFile1));
+      
+      var $CurrentTransLogFile1=$CurrentTransLogFile2.split($CurrentTransLogFile2);
+      var $CurrentTransLogFile=$CurrentTransLogFile1[1]; 
+      _assertExists("Current Trans Log File", $CurrentTransLogFile);
+
+	  	_log("Current Trans Log File"+$CurrentTransLogFile);
+  	
+  	var $i=0;
+	while($i<10){
+		  
+	  	//var $CurrentTransLogFile=_getCellText(_cell(0, _near(_tableHeader("Current Trans Log File:"))));
+	  	//_log("Current Trans Log File"+$CurrentTransLogFile);
+	if($CurrentTransLogFile =="N/A"){
+		_wait(30000);
+	}
+	else
+		{
+		break;
+		_log("Go Ahead");
+		}
+	$i++;
+	}
+  	
+  	var $CurrentTransLogLoc2=_getText(_heading5($CurrentTransLogLocation1));
+  	var $CurrentTransLogLoc1=$CurrentTransLogLoc2.split($CurrentTransLogLocation2);
+  	var $CurrentTransLogLoc=$CurrentTransLogLoc1[1];
+    _assertExists("Current Transaction Log Location"+$CurrentTransLogLoc);
+
+  	_log("Current Transaction Log Location"+$CurrentTransLogLoc);
+  	
+	
+	var $sshCommand = 'su -c "'+$postgresHome+'/bin/pg_controldata '+$postgresData+'" - postgres';
+	//var $status = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	var $status = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+
+	var $action = $status.get($output);
+	var $actionStatus1 = $action.toString();
+	//_log($actionStatus1);
+	var $locPR=$actionStatus1.split(":");
+	
+	var $LocDBPR=$locPR[8].split(",");
+	var $tranLocDBPR=$LocDBPR[0].trim();
+	_assertExists("Current Transaction log Location PR from DB",$tranLocDBPR);
+	if($tranLocDBPR == $CurrentTransLogLoc){
+	_assertEqual($tranLocDBPR,$CurrentTransLogLoc,"Verifying Transaction location from DB and GUI");
+	}
+	
+	/*_click(_link("Manage"));
+	_click(_link($GroupsListView));
+	_click(_link($groupName));
+	_click(_link($GroupInformation));
+  	//var $lastReplayLogFile=_getCellText(_cell(0, _near(_tableHeader($LastReplayLogFile))));*/
+	var $lastReplayLogFile2=_getText(_heading5($LastReplayLogFile1));
+	var $lastReplayLogFile1=$lastReplayLogFile2.split($LastReplayLogFile2);
+	var $lastReplayLogFile=$lastReplayLogFile1[1];
+    _assertExists("Last Reply Log File", $CurrentTransLogFile);
+	
+	var $i=1;
+	while ($i < 10) {
+		_log($i);
+		//var $lastReplayLogFile=_getCellText(_cell(0, _near(_tableHeader("Last Replay Log File:"))));
+		if ($lastReplayLogFile== "N/A") {
+			_wait(30000);
+		} else {
+			break;
+		}
+		$i = $i + 1;
+	}
+  	
+  	_log("Last Replay Log File" +$lastReplayLogFile);
+  	
+  	var $lastReplayLogLoc=_getText(_heading5($LastReplayLogLocation));
+    _assertExists("Last Replay Log Location:"+$CurrentTransLogLoc);
+
+  	_log("Last Replay Log Location:"+$lastReplayLogLoc);
+  	
+ 
+	var $sshCommand = 'su -c "'+$postgresHome+'/bin/pg_controldata '+$postgresData+'" - postgres';
+	var $status = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+	var $action = $status.get($output);
+	var $actionStatus1 = $action.toString();
+	var $locDR=$actionStatus1.split(":");
+	
+	var $LocDBDR=$locDR[8].split(",");
+	var $tranLocDBDR=$LocDBDR[0].trim();
+	_assertExists("Current Transaction Location DR from DB",$tranLocDBDR);
+	if($tranLocDBDR == $lastReplayLogLoc){
+	_assertEqual($tranLocDBDR,$lastReplayLogLoc,"Verifying Transaction location from DB and GUI");
+	}
+ 	
+}
+
+

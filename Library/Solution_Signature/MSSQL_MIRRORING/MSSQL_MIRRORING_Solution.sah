@@ -1,0 +1,753 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Sybaselication Name : DRM 
+ ** Objective : This script contains all the functions which are the part of  MSSQL MIRRORING solution screen wise fetching and comparing data from Db and GUI. 
+ ** @AuthorName : Govinda Mengji
+ ** Created Date : July 2013
+ ************************************************************************/
+
+/**
+* Function is for Group Creation of MssqL_Mirroring
+*@param :  null
+*@return : null
+* Author:Govinda Mengji
+*
+*/
+
+//Description: Functional Group creation
+
+function Create_MSSQL_MIRR_Group($groupName,$groupDescription,$SolutionSignature,$primaryComponents,$remoteComponents,$primaryDatasets,$remoteDatasets) 
+{
+	navigateToGroups();
+    // _setSelected(_select("createGroup"),"Recovery Group");
+     _click(_button($DiscoverRecoveryGroup));
+		_wait(1000);
+		if (_exists(_link($groupName))) {
+			_assertExists($Datasetalreadyexists);
+		} else {
+		//_click(_button("/Go/"));
+		_setValue(_textbox("groupName"), $groupName);
+		_setValue(_textarea("groupDescription"), $groupDescription);
+		_setSelected(_select("solutionType"), $SolutionSignature);
+		_setValue(_textbox("configuredRPOValue"), "5");
+		_click(_button($Next));
+		_click(_link($ServerComponent));
+		_click(_checkbox($primaryComponents, _near(_cell($primaryComponents, _under(_tableHeader("Primary Component"))))));
+		_click(_checkbox($remoteComponents, _near(_cell($remoteComponents, _under(_tableHeader("Remote Component"))))));
+		_click(_submit($Save));
+		_wait(2000);
+		_click(_link($ApplicationDataset));
+		_click(_checkbox($showAll));
+		_wait(3000);
+		_setSelected(_select("primaryDatasets[1]"), $primaryDatasets);
+		_setSelected(_select("remoteDatasets[1]"), $remoteDatasets);
+		_click(_submit($Save));
+		_click(_button($Next));
+		_click(_link($License));
+		_click(_checkbox($Recovery));
+		_click(_checkbox($Test));
+		_click(_button($licensebutton));		
+		
+		_click(_link($RPORTO));
+		_setValue(_textbox("rpoint1"), "180");
+		_click(_button($apply));
+		_click(_button($Finish));
+		navigateToGroups();
+		if (_exists(_link($ViewAll))){
+			_click(_link($ViewAll));
+		}
+			if (_exists(_link($groupName))) {
+				_assertExists($Groupcreatedsuccesfully);
+			} else {
+				_fail("Group not created succesfully.");
+			}
+	}
+}
+// End of groupCreation()
+/**
+* Function is for Group Creation of MssqL_Mirroring
+*@param :  $groupName
+*@return : null
+* Author:Govinda Mengji
+**/
+		
+function MSSQL_MIRR_Monitor_Relationship($groupName){
+	      _wait(5000);    
+	      NavigateToRGDetailsPage($groupName);	      
+	   // Validation of Solution Signature
+	  	var $a= _getText(_heading5(/.*/, _rightOf(_heading4($groupName))));
+	  	var $aa =$a.split("(");
+	  	var $b=$aa[1].split(",");
+	  	var $drSolutionSignature = $b[0].replace(/\-/g, " ");
+	  
+	  	_log($drSolutionSignature);
+	      
+			_assertEqual($SolutionSignature, $drSolutionSignature, "Checking DR Solution Signature from the user input and GUI showing for group");
+
+			// Validation of Data set for PR
+			var $primaryDataset = _getText(_link(0, _near(_italic($imagedatabasewhitepaddingr30))));
+
+			_assertExists("Primary Dataset:", $primaryDataset);
+			_log($datasetNamePR);
+			_assertEqual($datasetNamePR, $primaryDataset, "Checking Dataset from user input and GUI for PR");
+
+			// Splitting the strings to get the Data set type for PR
+			var $datasetPR = _getText(_heading6(0, _near(_italic($imagedatabasewhitepaddingr30))));
+
+			
+			_log($systemTypeDataset);
+			_assertEqual($systemTypeDataset, $datasetPR, "Checking Dataset Type from user input and GUI for PR");
+
+			
+			
+			
+
+			// Validation of Data set for DR
+			var $remoteDataset = _getText(_link(0, _near(_italic($imagedatabasewhitepaddingr301))));
+
+			_assertEqual($datasetNameDR, $remoteDataset, "Checking Dataset from user input and GUI for DR");
+
+			// Splitting the strings to get the Data set type for DR
+			
+			var $datasetDR = _getText(_heading6(0, _near(_italic($imagedatabasewhitepaddingr301))));
+			_assertEqual($systemTypeDataset, $datasetDR, "Checking Dataset Type from user input and GUI for DR");
+
+			
+		
+			var $primaryComponent = _getText(_link(/.*/, _near(_span($leftuparrow))));
+
+			_assertEqual($compNamePR, $primaryComponent, "Checking Component from user input and GUI for PR");
+
+			// Splitting the strings to get the Component type for PR
+			var $componentPR = _getText(_heading6(/.*/, _near(_span($leftuparrow1))));
+			
+			_assertExists("Primary Component Status", $componentPR);
+
+			// Validation of Component for DR
+			var $remoteComponent = _getText(_link(/.*/, _near(_span($leftuparrow1))));
+			_assertEqual($compNameDR, $remoteComponent, "Checking Component from user input and GUI for DR");
+
+			
+		}
+/**
+* Function is for Group Snapshot of MSSQL post SO.
+*@param :  null
+*@return : null
+* Author:Govinda Mengji
+*
+*/
+function MSSQL_MIRR_GroupSnapshot_Post_SO(){
+
+	MSSQL_MIRR_Replication($groupName,"Switchover");
+	//MSSQL_MIRR_GroupSnapshot_Status($groupName,"SO",$ipDR,$database,$userDR, $pwdDR,$ipPR,$userPR, $pwdPR);
+
+	
+}// End of MSSQL_MIRR_GroupSnapshot_Post_SO()
+
+/**
+* Function is for Group Snapshot of MSSQL before SO.
+*@param :  null
+*@return : null
+* Author:Govinda Mengji
+*
+*/
+
+function MSSQL_MIRR_GroupSnapshot(){
+	MSSQL_MIRR_Replication($groupName,"NormalCopy");
+	//MSSQL_MIRR_GroupSnapshot_Status($groupName,$WFType,$ipPR,$database,$userPR, $pwdPR,$ipDR,$userDR, $pwdDR);
+	
+}
+//End of MSSQL_MIRR_GroupSnapshot()
+
+
+function MSSQL_MIRR_Continuity($groupName,$workflowType){
+	if($workflowType=="NormalCopy"){
+	MSSQL_MIRR_Continuity_Workflows_Status($groupName,$workflowType,$ipPR,$database,$userPR, $pwdPR);
+	}
+	else if($workflowType=="ReverseNormalCopy"){
+		MSSQL_MIRR_Continuity_Workflows_Status($groupName,$workflowType,$ipDR,$database,$userDR, $pwdDR);
+	}
+
+}
+/**
+* Function is for Group Snapshot of MSSQL.
+*@param :  $groupName,$ipPR,$database,$userPR, $pwdPR,$ipDR,$userDR, $pwdDR
+*@return : null
+* Author:Govinda Mengji
+* @Modified By:Debabrat Sahu
+*
+*/
+function MSSQL_MIRR_Continuity_Workflows_Status($groupName,$workflowType,$ip,$database,$user, $pwd){
+	NavigateToRGDetailsPage($groupName);
+	_click(_link(1, _near(_link($workflowType))));
+		
+	//CONNECTION PR
+	//PR
+  	var $TransactionIDGuiPR=_getText(_heading5($TransactionID));
+    	_assertExists("TransactionID from Gui" , $TransactionIDGuiPR);
+    	
+  
+    var $TimeStampGuiFromPR=_getText(_heading5($TimeStamp1));
+    var $TimeStampIDGuiFromPR=$TimeStampGuiFromPR.split($TimeStamp2);
+    var $modifiedTimeStampGuiPR=$TimeStampIDGuiFromPR[1];
+    
+	_assertExists("$TimeStamp from Gui", $TimeStampGuiFromPR);
+    _assertExists("$TimeStamp from Gui", $modifiedTimeStampGuiPR);
+    	
+    	
+    	var $i = 0;
+    	while ($i < 10) {
+    		if ($modifiedTimeStampGuiPR == "N/A") {
+    			_wait(30000);
+    		} else {
+    			break;
+    			_log("Go Ahead");
+    		}
+    		$i++;
+    	}
+    	
+    	
+    var	$ActualTimeStampGuiPR=new java.text.SimpleDateFormat(
+    		"dd MMM, yyyy HH:mm:ss").parse($modifiedTimeStampGuiPR)
+		.getTime();
+    _assertExists("$ActualTimeStampGuiPR", $ActualTimeStampGuiPR);
+	
+      
+       //DR
+    	var $TransactionIDGuiDR=_getText(_heading5($TransactionID1nearstrongSecondary,_near(_strong($Secondary)))); 
+      _assertExists("TransactionID from Gui", $TransactionIDGuiDR);
+
+      
+      var $TimeStampGuiFromDR=_getText(_heading5($TimeStamp1nearstrongSecondary,_near(_strong($Secondary))));
+      var $TimeStampIDGuiFromDR=$TimeStampGuiFromDR.split($TimeStamp2);
+      var $modifiedTimeStampGuiDR=$TimeStampIDGuiFromDR[1];
+      
+      _assertExists("TimeStamp from Gui", $TimeStampGuiFromDR);
+     _assertExists("TimeStamp from Gui", $modifiedTimeStampGuiDR);
+      
+      $ActualTimeStampGuiDR=new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($modifiedTimeStampGuiDR).getTime();
+      _assertExists("$ActualTimeStampGuiDR", $ActualTimeStampGuiDR);
+
+      //CONNECTION PR
+   	
+    $db = Get_MSsql_Db_Connection_URL($ip,$database,$user, $pwd);
+          var $time = currentTime();
+      $db.update("CREATE TABLE [dbo].[Table_"+$time+"](" +
+    			"[col1] [varchar](50) NULL," +
+    			"[col2] [varchar](50) NULL," +
+    			"[col3] [varchar](50) NULL," +
+    			"[col4] [varchar](50) NULL," +
+    			"[col5] [varchar](50) NULL" +
+                ")"); 
+    	
+  
+    
+    $db = Get_MSsql_Db_Connection_URL($ip,$database,$user, $pwd);
+   
+    	var $TimeStampDB2 = $db.select("use "+ $database +" ;select TOP 1  [End Time] as endTime from ::fn_dblog (null, null) where ([End Time] is NOT NULL) ORDER BY [End Time] DESC;");
+	_log($TimeStampDB2);
+    var $TimeStampDB1=$TimeStampDB2;
+    	var $TimeStampDB = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss").parse($TimeStampDB1));
+    	var $TimeStampDB1=$TimeStampDB.split(":");
+    	var $TimeStampDB=$TimeStampDB1[0]+":"+$TimeStampDB1[1]+":"+$TimeStampDB1[2];
+    	_log($TimeStampDB);
+    	_assertExists("Transaction Time DB",$TimeStampDB);
+    
+    	
+      var $date = $TimeStampDB;
+      var $dateString = $date.toString();
+      var $TimeStamp = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+      _assertExists("TimeStamp", $TimeStamp);
+    	
+      $count = 0;
+  	while($count<10){
+  		_wait(30000);
+  		$count++;
+  		}
+  	
+    	
+    	//PR
+  	var $TransactionIDPR=_getText(_heading5($TransactionID));
+    	_assertExists("TransactionID from Gui" , $TransactionIDPR);
+    	
+  	   
+    	var $modifiedTimeStampGuiFromPR=_getText(_heading5($TimeStamp1));
+        var $modifiedTimeStampIDGuiFromPR=$modifiedTimeStampGuiFromPR.split($TimeStamp2);
+        var $TimeStampGuiPR=$modifiedTimeStampIDGuiFromPR[1];
+        
+        _assertExists("$TimeStamp from Gui", $modifiedTimeStampGuiFromPR);
+        _assertExists("$TimeStamp from Gui", $TimeStampGuiPR);
+        	
+    	var $date = $TimeStampGuiPR;
+      var $dateString = $date.toString();
+      var $TimeStampPR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+      _assertExists("TimeStamp PR", $TimeStampPR);
+      
+    	//DR
+      var $TransactionIDDR=_getText(_heading5($TransactionID1nearstrongSecondary,_near(_strong($Secondary)))); ;
+      _assertExists("TransactionID from Gui", $TransactionIDDR);
+
+      //TimeStamp from GUI
+      
+      var $modifiedTimeStampGuiFromDR=_getText(_heading5($TimeStamp1nearstrongSecondary,_near(_strong($Secondary))));
+      var $modifiedTimeStampIDGuiFromDR=$modifiedTimeStampGuiFromDR.split($TimeStamp);
+      var $TimeStampGuiDR=$modifiedTimeStampIDGuiFromDR[1];
+      
+      _assertExists("TimeStamp from Gui", $modifiedTimeStampGuiFromDR);
+      _assertExists("TimeStamp from Gui", $TimeStampGuiDR);
+      
+    
+      var $date = $TimeStampGuiDR;
+      var $dateString = $date.toString();
+      var $TimeStampDR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+      _assertExists("TimeStamp DR", $TimeStampDR);
+      
+      _assertTrue($TransactionIDGuiPR<=$TransactionIDPR, "TransactionID PR Equal in GUI and db");
+      _assertTrue($TimeStamp<=$TimeStampPR, "TimeStamp PR is Equal in GUI and db");
+      _assertTrue($TransactionIDGuiDR<=$TransactionIDDR, "TransactionID DR Equal in GUI and db");
+      _assertTrue($TimeStamp<=$TimeStampDR, "TimeStamp DR is Equal in GUI and db");
+
+
+}
+
+//Group Infromation
+
+/**
+* Function is forGroup Information of MSSQL post SO.
+*@param :  null
+*@return : null
+* Author:Govinda Mengji
+*
+*/
+function MSSQL_MIRR_GroupInformation_Post_SO(){
+	
+	MSSQL_MIRR_GroupInformation_Status($groupName,$ipDR,$database,$userDR, $pwdDR,$ipPR,$userPR, $pwdPR,"SO");
+	
+}// End of Mssql_GroupInformation_Post_SO()
+
+/**
+* Function is forGroup Information of MSSQL before SO.
+*@param :  null
+*@return : null
+* Author:Govinda Mengji
+*
+*/
+function MSSQL_MIRR_GroupInformation(){
+	MSSQL_MIRR_GroupInformation_Status($groupName,$ipPR,$database,$userPR, $pwdPR,$ipDR,$userDR, $pwdDR);
+	
+}//End of Mssql_GroupInformation()
+
+/**
+* Function is forGroup Information of MSSQL .
+*@param : $groupName,$ipPR,$database,$userPR, $pwdPR,$ipDR,$userDR, $pwdDR
+*@return : null
+* Author: Govinda Mengji
+*
+*/
+
+function MSSQL_MIRR_GroupInformation_Status($groupName,$ipPR,$database,$userPR, $pwdPR,$ipDR,$userDR, $pwdDR,$WFType)
+{
+	_click(_link($Manage));
+	_click(_link($GroupsListView));
+	_click(_link($groupName));
+	_click(_link($GroupInformation));
+// calling Group_ManageGroupInformation to verify the PR and DR site status
+      Group_Managegroupinformation($groupName, $WFType);
+           
+      
+    //PR
+
+    	var $i=0;
+	  	while ( $i < 20 ) {
+		var $TransactionIDGuiPR = _getCellText( _cell( 0,_near( _tableHeader( $TransactionID2 ) ) ) );
+		_assertExists( "TransactionID from Gui", $TransactionIDGuiPR );
+
+		if ( $TransactionIDGuiPR == "N/A" ) {
+			_wait( 30000 );
+		} else {
+			break;
+			_log( "Go Ahead" );
+		}
+		$i++ ;
+	}
+    	    	
+    	var $TimeStampGuiPR=_getCellText(_cell(0,_near(_tableHeader($TimeStamp2))));
+    	_assertExists("$TimeStamp from Gui", $TimeStampGuiPR);
+      
+       //DR
+       var $TransactionIDGuiDR=_getCellText(_cell(0,_near(_tableHeader($TransactionID1))));
+      _assertExists("TransactionID from Gui", $TransactionIDGuiDR);
+
+      
+      var $TimeStampGuiDR=_getCellText(_cell(0,_near(_tableHeader($TimeStamp1))));
+      _assertExists("TimeStamp from Gui", $TimeStampGuiDR);
+
+      //CONNECTION PR
+    	
+    	$db = Get_MSsql_Db_Connection_URL($ipPR,$database,$userPR, $pwdPR);
+          var $time = currentTime();
+      $db.update("CREATE TABLE [dbo].[Table_"+$time+"](" +
+    			"[col1] [varchar](50) NULL," +
+    			"[col2] [varchar](50) NULL," +
+    			"[col3] [varchar](50) NULL," +
+    			"[col4] [varchar](50) NULL," +
+    			"[col5] [varchar](50) NULL" +
+                ")"); 
+    	
+        
+    _wait(100);
+    
+    $db = Get_MSsql_Db_Connection_URL($ipPR,$database,$userPR, $pwdPR);
+    	
+    	var $TimeStampDB2 = $db.select("use "+ $database +" ;select TOP 1  [End Time] as endTime from ::fn_dblog (null, null) where ([End Time] is NOT NULL) ORDER BY [End Time] DESC;");
+    	var $TimeStampDB1=$TimeStampDB2;
+    	var $TimeStampDB = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss").parse($TimeStampDB1));
+    	var $TimeStampDB1=$TimeStampDB.split(":");
+    	var $TimeStampDB=$TimeStampDB1[0]+":"+$TimeStampDB1[1]+":"+$TimeStampDB1[2];
+    	_assertExists("Transaction Time DB",$TimeStampDB);
+    
+    	
+     var $date = $TimeStampDB;
+      var $dateString = $date.toString();
+      var $TimeStamp = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+      _assertExists("TimeStamp", $TimeStamp);
+    	
+      $count = 0;
+  	while($count<10){
+  		_wait(30000);
+  		$count++;
+  		}
+  		
+    	
+    	//PR
+    	var $TransactionIDPR=_getCellText(_cell(0,_near(_tableHeader("TransactionID:"))));
+    	_assertExists("TransactionID from Gui" , $TransactionIDPR);
+    	
+  	var $TimeStampGuiPR=_getCellText(_cell(0,_near(_tableHeader($TimeStamp2))));
+    	_assertExists("$TimeStamp from Gui", $TimeStampGuiPR);
+    	
+    	var $date = $TimeStampGuiPR;
+      var $dateString = $date.toString();
+      var $TimeStampPR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+      _assertExists("TimeStamp PR", $TimeStampPR);
+      
+    	//DR
+    	var $TransactionIDDR=_getCellText(_cell(0,_near(_tableHeader($TransactionID1))));
+      _assertExists("TransactionID from Gui", $TransactionIDDR);
+
+      //TimeStamp from GUI
+      var $TimeStampGuiDR=_getCellText(_cell(0,_near(_tableHeader($TimeStamp1))));
+      _assertExists("TimeStamp from Gui", $TimeStampGuiDR);
+    	
+      var $date = $TimeStampGuiDR;
+      var $dateString = $date.toString();
+      var $TimeStampDR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+      _assertExists("TimeStamp DR", $TimeStampDR);
+      
+      _assertTrue($TransactionIDGuiPR<=$TransactionIDPR, "TransactionID PR Equal in GUI and db");
+      //_assertTrue($TimeStamp<=$TimeStampPR, "TimeStamp PR is Equal in GUI and db");
+      _assertTrue($TimeStampPR<=$TimeStamp, "TimeStamp PR is Equal in GUI and db");
+
+      _assertTrue($TransactionIDGuiDR<=$TransactionIDDR, "TransactionID DR Equal in GUI and db");
+     // _assertTrue($TimeStamp<=$TimeStampDR, "TimeStamp DR is Equal in GUI and db");
+      _assertTrue($TimeStampDR<=$TimeStamp, "TimeStamp DR is Equal in GUI and db");
+
+  
+}
+
+/**
+ *Function is used to verify RTO Status 
+ *@param :null
+ *@return : null
+ *@author : Aditi
+ *@ModifiedBy:Debabrat Sahu
+ */
+
+function MSSQL_MIRR_RTO() {
+	navigateToRTO($groupName);
+	// verification of current RTO :
+	
+	$count = 0;
+	while($count<5){
+		_wait(30000);
+		$count++;
+		}
+	
+	//Remote Precheck Time From GUI
+	
+    _mouseOver(_svg_rect(12));
+    var $stepName1= RTO_Calculate();
+    _assertExists("Remote Precheck Time inSec", $stepName1);
+    
+  //MSSQLDBGetModeRAL Time From GUI
+	
+    _mouseOver(_svg_rect(13));
+    var $stepName2= RTO_Calculate();
+    _assertExists("MSSQLDBGetModeRAL Time inSec", $stepName2)
+	
+	//DBMode Recovering Time From GUI
+        _mouseOver(_svg_rect(14));
+    var $stepName3= RTO_Calculate();  
+	_assertExists("DBMode Recovering Time inSec", $stepName3);
+
+	//MSSQLFailoverRAL  Time From GUI
+	 _mouseOver(_svg_rect(15));
+	  var $stepName4= RTO_Calculate();  
+	_assertExists("MSSQLFailoverRAL Time inSec", $stepName4);
+
+	//DBMode Online on DR Time From GUI
+	 _mouseOver(_svg_rect(16));
+	 var $stepName5= RTO_Calculate(); 
+	_assertExists("DBMode Online on DR Time inSec", $stepName5);
+
+	var $expectedCompletionTime = Math.floor($stepName1 + $stepName2 + $stepName3 + $stepName4 + $stepName5);
+	_assertExists("Expected completion time", $expectedCompletionTime);
+
+	// Calling function Calculate_Rto from Group_manager.sah
+	 $dbRto = Calculate_Rto($expectedCompletionTime);
+	return $dbRto;
+
+} // End of MsSql RTO
+
+
+
+/**
+ *Function is used to verify RPO Status before SO.
+ *@param :null
+ *@return : null
+ *@author : Aditi
+ */
+function MSSQL_MIRR_RPO()
+{
+	var $dbRecoveryPoint = MSSQL_MIRR_RPO_Status($ipPR,$database,$userPR, $pwdPR);
+	return $dbRecoveryPoint;
+}
+/**
+ *Function is used to verify RPO Status post SO.
+ *@param :null
+ *@return : null
+ *@author : Aditi
+ */
+function MSSQL_MIRR_RPO_Post_SO(){
+	var $dbRecoveryPoint = MSSQL_MIRR_RPO_Status($ipDR,$database,$userDR, $pwdDR);
+	return $dbRecoveryPoint;
+}
+
+/**
+ *Function is used to verify RPO Status 
+ *@param :$ipPR,$database,$userPR, $pwdPR
+ *@return : null
+ *@author : Aditi
+ *@Modified By:Debabrat Sahu
+ */
+
+function MSSQL_MIRR_RPO_Status($ipPR,$database,$userPR, $pwdPR) {
+	
+	navigateToRPO($groupName);
+	
+	//PR
+	var $TransactionIDGuiPR=_getText(_div(1, _near(_div($PrimaryTransactionId))));
+  	_assertExists("TransactionID from Gui" , $TransactionIDGuiPR);
+  	
+  	var $TimeStampGuiPR=_getText(_div(1, _near(_div($TransactionTimestamp))));
+  	_assertExists("$TimeStamp from Gui", $TimeStampGuiPR);
+    
+     //DR
+     var $TransactionIDGuiDR=_getText(_div(1, _near(_div($RemoteTransactionId))));
+    _assertExists("TransactionID from Gui", $TransactionIDGuiDR);
+
+    
+    var $TimeStampGuiDR=_getText(_div(1, _near(_div($TransactionTimestamp1))));
+    _assertExists("TimeStamp from Gui", $TimeStampGuiDR);
+
+    //CONNECTION PR
+  	
+  	$db = Get_MSsql_Db_Connection_URL($ipPR,$database,$userPR, $pwdPR);
+  	 var $time = currentTime();
+  $db.update("CREATE TABLE [dbo].[Table_"+$time+"](" +
+  			"[col1] [varchar](50) NULL," +
+  			"[col2] [varchar](50) NULL," +
+  			"[col3] [varchar](50) NULL," +
+  			"[col4] [varchar](50) NULL," +
+  			"[col5] [varchar](50) NULL" +
+              ")"); 
+ 
+  
+  $db = Get_MSsql_Db_Connection_URL($ipPR,$database,$userPR, $pwdPR);
+  	
+  	var $TimeStampDB2 = $db.select("use "+ $database +" ;select TOP 1  [End Time] as endTime from ::fn_dblog (null, null) where ([End Time] is NOT NULL) ORDER BY [End Time] DESC;");
+  	var $TimeStampDB1=$TimeStampDB2;
+  	var $TimeStampDB = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss").parse($TimeStampDB1));
+  	var $TimeStampDB1=$TimeStampDB.split(":");
+  	var $TimeStampDB=$TimeStampDB1[0]+":"+$TimeStampDB1[1]+":"+$TimeStampDB1[2];
+  	_assertExists("Transaction Time DB",$TimeStampDB);
+  	
+  	var $date = $TimeStampDB;
+    var $dateString = $date.toString();
+    var $TimeStamp = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+    _assertExists("TimeStamp", $TimeStamp);
+  	
+    $count = 0;
+	while($count<20){
+		_wait(30000);
+		$count++;
+		}
+		
+  	
+  	//PR
+  	var $TransactionIDPR=_getText(_div(1, _near(_div($PrimaryTransactionId))));
+  	_assertExists("TransactionID from Gui" , $TransactionIDPR);
+  	
+	var $ApplicatioTimeStampGuiPR=_getText(_div(1, _near(_div($TransactionTimestamp))));
+  	var $date =$ApplicatioTimeStampGuiPR;
+    var $dateString = $date.toString();
+    var $TimeStampPR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+    _assertExists("TimeStamp PR", $TimeStampPR);
+    
+  	//DR
+  	var $TransactionIDDR=_getText(_div(1, _near(_div($RemoteTransactionId))));
+    _assertExists("TransactionID from Gui", $TransactionIDDR);
+
+    //TimeStamp from GUI
+    var $ApplicationTimeStampGuiDR=_getText(_div(1, _near(_div($TransactionTimestamp1))));
+    var $date = $ApplicationTimeStampGuiDR;
+    var $dateString = $date.toString();
+    var $TimeStampDR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+    _assertExists("TimeStamp DR", $TimeStampDR);
+    
+    _assertTrue($TransactionIDGuiPR<=$TransactionIDPR,"TransactionID PR Equal in GUI and db");
+    _assertTrue($TimeStampPR<=$TimeStamp, "TimeStamp PR is Equal in GUI and db");
+
+    _assertTrue($TransactionIDGuiDR<=$TransactionIDDR, "TransactionID DR Equal in GUI and db");
+    _assertTrue($TimeStampDR<=$TimeStamp,"TimeStamp DR is Equal in GUI and db" );
+
+	
+	//Calling Calulate_Rpo function to verify RPO calculation from gui
+	$dbRpo = Calulate_Rpo($TimeStampGuiPR, $TimeStampGuiDR);
+  
+	$recoveryPointinDB = $dbRpo.get($recoveryPointDB);
+
+   $dbRecoveryPoint = new java.util.Properties();
+ 	$dbRecoveryPoint.put("RecoveryPointDB", $recoveryPointinDB);
+	return $dbRpo;
+	return $dbRecoveryPoint;
+	
+	
+}
+/**
+ *Function is used to verify Replication(page) 
+ *@param :$groupName
+ *@return : null
+ *@author : Govinda Mengji
+ */
+
+function MSSQL_MIRR_Replication($groupName,$workflowType){
+	navigateToReplication($groupName);
+	
+	$count = 0;
+	while($count<10){
+		
+	
+		_wait(30000);
+		$count++;
+		}
+	
+	var $protectionGUI = _getText(_span(1, _near(_span($Protection))));
+	_assertExists("Protection from GUI" , $protectionGUI);
+	
+	var $primaryRemoteServicesGUI1 =_getText(_span(1, _near(_span($PrimaryRemoteServices))));
+	_assertExists("Primary Remote Services from GUI", $primaryRemoteServicesGUI1);
+    var $primaryRemoteServicesGUI2 = $primaryRemoteServicesGUI1.toString();
+    var $primaryRemoteServicesGUI = $primaryRemoteServicesGUI2.split(" ");
+    if ($workflowType == "Switchover") {
+    	_assertNotEqual($primaryRemoteServicesGUI[0],$datasetNamePR, "Remote Services are Equal");
+    	_assertNotEqual($primaryRemoteServicesGUI[3],$datasetNameDR ,"Remote Services are Equal"); 
+    	
+    	
+        var $datalagGUI = _getText(_span(1, _near(_span($DataLag))));
+    	_assertExists("Data Lag from GUI", $datalagGUI);
+    	$db = Get_MSsql_Db_Connection_URL($ipDR,$database,$userDR, $pwdDR);
+        var $datalagdb1 = $db.select($usemsdbselecttop1sendqueuesizedatabaseidfromdbodbmmonitordatawheredatabaseidDBIDdatabaseorderbytimedesc);
+        var $datalagdb3 = $datalagdb1.toString();
+        var $datalagdb2= $datalagdb3.split(",");
+        var $datalagdb=($datalagdb2[0]+" "+ "KB");
+        _assertEqual($datalagdb,$datalagGUI , "Data Lag is Equal in db and GUI");
+         
+        var $mirrorStatusGUI =_getText(_span(1, _near(_span($MirrorStatus))));
+     	_assertExists("Mirroring Status from GUI", $mirrorStatusGUI);
+     	$db = Get_MSsql_Db_Connection_URL($ipDR,$database,$userDR, $pwdDR);
+     	var $mirrorStatusdb = $db.select($selectmirroringstatedescfromsysdatabasemirroringwheredatabaseiddatalagdb21);
+    	_assertEqual($mirrorStatusdb,$mirrorStatusGUI, "Mirror Status is Equal in db and GUI");
+    	
+    	var $replicationStatusGUI = _getText(_span(1, _near(_span($ReplicationStatus))));
+
+    	_assertExists("Replication Status from GUI", $replicationStatusGUI);
+    	if($mirrorStatusGUI=="SYNCHRONIZED")
+    	{
+    		_assertExists($ReplicationStatusisEqualindbandGUI);
+    	}else{
+    		_assertExists($ReplicationStatusisnotEqualindbandGUI);
+    	}
+    	
+    	var $mirrorSafetyLevelGUI = _getText(_span(1, _near(_span($MirrorSafetyLevel))));
+
+    	_assertExists("Mirroring Safety Level from GUI", $mirrorSafetyLevelGUI);
+    	$db = Get_MSsql_Db_Connection_URL($ipDR,$database,$userDR, $pwdDR);
+         var $mirrorSafetyleveldb= $db.select("select top 1 mirroring_safety_level_desc from sys.database_mirroring,sys.databases where sys.databases.database_id=sys.database_mirroring.database_id and name = ('"+$database+"')");
+    	_assertExists("Mirroring Safety level from db", $mirrorSafetyleveldb);
+        _assertEqual($mirrorSafetyleveldb,$mirrorSafetyLevelGUI, "Mirroring Safety Level is Equal in and GUI");
+    
+     }
+     else{
+    
+    	 $count = 0;
+ 		while($count<5){
+ 			_wait(30000);
+ 			$count++;
+ 			}
+ 		_click(_button($RefreshDetails));
+ 		_wait(60000);
+    _assertEqual($primaryRemoteServicesGUI[0],$datasetNamePR, "Remote Services are Equal");
+    _assertEqual($primaryRemoteServicesGUI[3],$datasetNameDR ,"Remote Services are Equal"); 
+    	
+    
+    var $datalagGUI =_getText(_span(1, _near(_span($DataLag))));
+
+	_assertExists("Data Lag from GUI", $datalagGUI);
+	$db = Get_MSsql_Db_Connection_URL($ipPR,$database,$userPR, $pwdPR);
+    var $datalagdb1 = $db.select("use msdb;select top 1 send_queue_size,database_id from  dbo.dbm_monitor_data where database_id= DB_ID('"+$database+"') order by time desc");
+    var $datalagdb3 = $datalagdb1.toString();
+    var $datalagdb2= $datalagdb3.split(",");
+    var $datalagdb=($datalagdb2[0]+" "+ "KB");
+    _assertEqual($datalagdb,$datalagGUI , "Data Lag is Equal in db and GUI");
+     
+    var $mirrorStatusGUI = _getText(_span(1, _near(_span($MirrorStatus))));
+ 	_assertExists("Mirroring Status from GUI", $mirrorStatusGUI);
+ 	$db = Get_MSsql_Db_Connection_URL($ipPR,$database,$userPR, $pwdPR);
+ 	var $mirrorStatusdb = $db.select("select mirroring_state_desc from sys.database_mirroring where database_id = '"+$datalagdb2[1]+"';");
+	_assertEqual($mirrorStatusdb,$mirrorStatusGUI, "Mirror Status is Equal in db and GUI");
+	
+	var $replicationStatusGUI =  _getText(_span(1, _near(_span($ReplicationStatus))));
+
+	_assertExists("Replication Status from GUI", $replicationStatusGUI);
+	if($mirrorStatusGUI=="SYNCHRONIZED")
+	{
+		_assertExists($ReplicationStatusisEqualindbandGUI);
+	}else{
+		_assertExists($ReplicationStatusisnotEqualindbandGUI);
+	}
+	
+	var $mirrorSafetyLevelGUI = _getText(_span(1, _near(_span($MirrorSafetyLevel))));
+	_assertExists("Mirroring Safety Level from GUI", $mirrorSafetyLevelGUI);
+	$db = Get_MSsql_Db_Connection_URL($ipPR,$database,$userPR, $pwdPR);
+     var $mirrorSafetyleveldb= $db.select("select top 1 mirroring_safety_level_desc from sys.database_mirroring,sys.databases where sys.databases.database_id=sys.database_mirroring.database_id and name = ('"+$database+"')");
+	_assertExists("Mirroring Safety level from db", $mirrorSafetyleveldb);
+    _assertEqual($mirrorSafetyleveldb,$mirrorSafetyLevelGUI, "Mirroring Safety Level is Equal in and GUI");
+
+    }
+  
+}	
+
+
+
+

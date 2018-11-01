@@ -1,0 +1,45 @@
+function Advanced_Report_Installation_0001()
+{
+try {
+	Verify_Advanced_Report_Installation();
+	} catch ($e) { 
+	_log("for test Case ID: Advanced_Report_Installation_0001,execution got failed.kindly check the log for more details");
+	}
+	}	
+
+
+function Advanced_Report_Configuration_0002()
+{
+try {
+	Advanced_Report_Configuration();
+	} catch ($e) { 
+	_log("for test Case ID: Advanced_Report_Configuration_0002,execution got failed.kindly check the log for more details");
+	}
+}	
+
+function Verifying_Advanced_Report_Configuration_0003()
+{
+try {
+	Verifying_Advanced_Report_Configuration();
+	} catch ($e) { 
+	_log("for test Case ID: Verifying_Advanced_Report_Configuration_0003,execution got failed.kindly check the log for more details");
+	}
+}	
+
+function Verifying_Report_Tab_0004()
+{
+try {
+	Verifying_Report_Tab();
+	} catch ($e) { 
+	_log("for test Case ID: Verifying_Report_Tab_0004,execution got failed.kindly check the log for more details");
+	}
+}	
+
+function Verifying_Scheduled_Report_Tab_0005()
+{
+try {
+	Verifying_Scheduled_Report_Tab();
+	} catch ($e) { 
+	_log("for test Case ID: Verifying_Scheduled_Report_Tab_0005,execution got failed.kindly check the log for more details");
+	}
+}	

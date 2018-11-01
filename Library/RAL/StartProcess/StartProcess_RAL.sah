@@ -1,0 +1,500 @@
+
+
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the common functions which are the part of Start Process RAL( Recovery automation library). 
+ **@AuthorName : Srinivas Pulamarsetti
+ ** Created Date : November 2015
+ ************************************************************************/
+
+function StartProcessRAL_DynamicCompWith_Command(){	
+	
+		StartProcessRAL_commandCategory($compIPPR,$compNameDynamic,$command1,$Spattern,$Fpattern ,$waitTime);
+		ValidateTheBackendServer($command1,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);	
+		ValidateTheWorkflowListingPage($WorkflowName);
+}
+
+function StartProcessRAL_StaticCompWith_Command(){	
+		StartProcessRAL_commandCategory($compIPPR,$compNamePR,$command1,$Spattern,$Fpattern ,$waitTime);
+		ValidateTheBackendServer($command1,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+		ValidateTheWorkflowListingPage($WorkflowName);
+}
+
+function StartProcessRAL_DynamicCompWith_Script(){	
+	StartProcessRAL_Dynamic_Script();
+}
+
+function StartProcessRAL_StaticCompWith_Script(){
+	StartProcessRAL_Static_Script();
+}
+
+
+function StartProcessRAL_Dynamic_Script(){
+	StartProcessRAL_Dynamic_WithNewScript();
+	StartProcessRAL_Dynamic_WithExistingScript();
+}
+
+function StartProcessRAL_Static_Script(){
+	StartProcessRAL_Static_WithNewScript();
+	StartProcessRAL_Static_WithExistingScript();
+	}
+
+function StartProcessRAL_LocalComp_Script(){
+	StartProcessRAL_Local_WithNewScript();
+	StartProcessRAL_Local_WithExistingScript();
+}
+
+function StartProcessRAL_Dynamic_WithNewScript(){	
+	CreateBackendScript($command,$NewScriptName,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	StartProcessRAL_ScriptCategory($compIPPR,$compNameDynamic,$NewScriptName,$Spattern,$Fpattern ,$waitTime);
+	ValidateTheBackendServer("sh " +  $NewScriptName,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+
+function StartProcessRAL_Dynamic_WithExistingScript(){	
+	//StartProcessRAL_ScriptCategory($compIPPR,$compNameDynamic,$ExistingScriptName1,$Spattern,$Fpattern ,$waitTime);
+	StartProcessRAL_ScriptCategory($compIPPR,$compNameDynamic,$ExistingScriptName,$Spattern,$Fpattern ,$waitTime);
+
+}
+
+function StartProcessRAL_Static_WithNewScript(){	
+	CreateBackendScript($command,$NewScriptName,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	StartProcessRAL_ScriptCategory($compIPPR,$compNamePR,$NewScriptName,$Spattern,$Fpattern ,$waitTime);
+	ValidateTheBackendServer("sh " +  $NewScriptName,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+
+function StartProcessRAL_Static_WithExistingScript(){	
+	//StartProcessRAL_ScriptCategory($compIPPR,$compNamePR,$ExistingScriptName1,$Spattern,$Fpattern ,$waitTime);
+	StartProcessRAL_ScriptCategory($compIPPR,$compNamePR,$ExistingScriptName,$Spattern,$Fpattern ,$waitTime);
+
+}
+
+function StartProcessRAL_Local_WithNewScript(){	
+	CreateBackendScript($command,$NewScriptName,$LocalCompIP,$LocalCompUserName,$LocalCompPassword);
+	StartProcessRAL_ScriptCategory($LocalCompIP,$LocalCompName,$NewScriptName,$Spattern,$Fpattern ,$waitTime);
+	ValidateTheBackendServer("sh " + $rootPath + $NewScriptName,$LocalCompIP,$LocalCompUserName,$LocalCompPassword);
+	ValidateTheWorkflowListingPage($WorkflowName);	
+}
+
+function StartProcessRAL_Local_WithExistingScript(){	
+	//StartProcessRAL_ScriptCategory($LocalCompIP,$LocalCompName,$ExistingScriptName1,$Spattern,$Fpattern ,$waitTime);
+	StartProcessRAL_ScriptCategory($LocalCompIP,$LocalCompName,$ExistingScriptName,$Spattern,$Fpattern ,$waitTime);
+	ValidateTheWorkflowListingPage($WorkflowName);	
+}
+
+
+function StartProcessRAL_DynamicCompWith_CommandWithSingleQuote(){	
+	StartProcessRAL_commandCategory($compIPPR,$compNameDynamic,$commandWithSingleQuote,$Spattern,$Fpattern ,$waitTime);
+	ValidateTheBackendServer($commandWithSingleQuote,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+
+function StartProcessRAL_LocalCompWith_CommandWithSingleQuote(){	
+	//LocalAgentComponentCreation();
+	StartProcessRAL_commandCategory($LocalCompIP,$LocalCompName,$commandWithSingleQuote,$Spattern,$Fpattern ,$waitTime);
+	ValidateTheBackendServer($commandWithSingleQuote,$LocalCompIP,$LocalCompUserName,$LocalCompPassword);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+
+
+function StartProcessRAL_DynamicCompWith_CommandWithDoubleQuote(){	
+	StartProcessRAL_commandCategory($compIPPR,$compNameDynamic,$commandWithDoubleQuote,$Spattern,$Fpattern ,$waitTime);
+	ValidateTheBackendServer($commandWithDoubleQuote,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+
+function StartProcessRAL_LocalCompWith_CommandWithDoubleQuote(){	
+	//LocalAgentComponentCreation();
+	StartProcessRAL_commandCategory($LocalCompIP,$LocalCompName,$commandWithDoubleQuote,$Spattern,$Fpattern ,$waitTime);
+	ValidateTheBackendServer($commandWithDoubleQuote,$LocalCompIP,$LocalCompUserName,$LocalCompPassword);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+
+
+function StartProcessRAL_DynamicCompWith_CommandWithPipe(){	
+	StartProcessRAL_commandCategory($compIPPR,$compNameDynamic,$commandWithPipe,$Spattern,$Fpattern ,$waitTime);
+	ValidateTheBackendServer($commandWithPipe,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+
+function StartProcessRAL_LocalCompWith_CommandWithPipe(){	
+	//LocalAgentComponentCreation();
+	StartProcessRAL_commandCategory($LocalCompIP,$LocalCompName,$commandWithPipe,$Spattern,$Fpattern ,$waitTime);
+	ValidateTheBackendServer($commandWithPipe,$LocalCompIP,$LocalCompUserName,$LocalCompPassword);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+
+
+
+
+function StartProcessRAL_DynamicCompWith_ScriptWithSingleQuote(){	
+	CreateBackendScript($command2,$scriptWithSingleQuote,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	StartProcessRAL_ScriptCategory($compIPPR,$compNameDynamic,$scriptWithSingleQuote,$Spattern,$Fpattern ,$waitTime);
+	ValidateTheBackendServer("sh " +$scriptWithSingleQuote,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+
+function StartProcessRAL_LocalCompWith_ScriptWithSingleQuote(){	
+	CreateBackendScript($command1,$scriptWithSingleQuote1,$LocalCompIP,$LocalCompUserName,$LocalCompPassword);
+	StartProcessRAL_ScriptCategory($LocalCompIP,$LocalCompName,$scriptWithSingleQuote1,$Spattern,$Fpattern ,$waitTime);
+	ValidateTheBackendServer("sh " + $scriptWithSingleQuote1,$LocalCompIP,$LocalCompUserName,$LocalCompPassword);
+	ValidateTheWorkflowListingPage($WorkflowName);	
+}
+
+function StartProcessRAL_DynamicCompWith_ScriptWithDoubleQuote(){	
+	CreateBackendScript($command2,$scriptWithDoubleQuote,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	StartProcessRAL_ScriptCategory($compIPPR,$compNameDynamic,$scriptWithDoubleQuote,$Spattern,$Fpattern ,$waitTime);
+	ValidateTheBackendServer("sh " + $scriptWithDoubleQuote,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+
+function StartProcessRAL_LocalCompWith_ScriptWithDoubleQuote(){	
+	CreateBackendScript($command1,$scriptWithDoubleQuote1,$LocalCompIP,$LocalCompUserName,$LocalCompPassword);
+	StartProcessRAL_ScriptCategory($LocalCompIP,$LocalCompName,$scriptWithDoubleQuote1,$Spattern,$Fpattern ,$waitTime);
+	ValidateTheBackendServer("sh " + $scriptWithDoubleQuote1,$LocalCompIP,$LocalCompUserName,$LocalCompPassword);
+	ValidateTheWorkflowListingPage($WorkflowName);	
+}
+
+
+
+function StartProcessRAL_DynamicCompWith_ScriptWithPipe(){	
+	CreateBackendScript($command,$scriptWithPipe,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	StartProcessRAL_ScriptCategory($compIPPR,$compNameDynamic,$scriptWithPipe,$Spattern,$Fpattern ,$waitTime);
+	//ValidateTheBackendServer("sh " + $rootPath + $scriptWithPipe,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheBackendServer("sh "  + $scriptWithPipe,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+
+function StartProcessRAL_LocalCompWith_ScriptWithPipe(){
+	//LocalAgentComponentCreation();
+	CreateBackendScript($command,$scriptWithPipe,$LocalCompIP,$LocalCompUserName,$LocalCompPassword);
+	StartProcessRAL_ScriptCategory($LocalCompIP,$LocalCompName,$scriptWithPipe,$Spattern,$Fpattern ,$waitTime);
+	//ValidateTheBackendServer("sh " + $rootPath + $scriptWithPipe1,$LocalCompIP,$LocalCompUserName,$LocalCompPassword);
+	ValidateTheBackendServer("sh " + $scriptWithPipe,$LocalCompIP,$LocalCompUserName,$LocalCompPassword);
+
+	ValidateTheWorkflowListingPage($WorkflowName);	
+}
+
+
+function StartProcessRAL_DynamicCompWith_Command_Linux_successFailurePatternScenario1(){	
+	StartProcessRAL_commandCategory($compIPPR,$compNameDynamic,$command,$Spattern1,$Fpattern1 ,$waitTime);
+	ValidateTheBackendServer($command,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+
+function StartProcessRAL_StaticCompWith_Command_Linux_successFailurePatternScenario1(){	
+	StartProcessRAL_commandCategory($compIPPR,$compNamePR,$command,$Spattern1,$Fpattern1 ,$waitTime);
+	ValidateTheBackendServer($command,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+
+
+function StartProcessRAL_DynamicCompWith_Command_Linux_successFailurePatternScenario2(){	
+	StartProcessRAL_commandCategory($compIPPR,$compNameDynamic,$command,$Spattern2,$Fpattern2 ,$waitTime);
+	ValidateTheBackendServer($command,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+
+function StartProcessRAL_StaticCompWith_Command_Linux_successFailurePatternScenario2(){	
+	StartProcessRAL_commandCategory($compIPPR,$compNamePR,$command,$Spattern2,$Fpattern2 ,$waitTime);
+	ValidateTheBackendServer($command,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+
+function StartProcessRAL_DynamicCompWith_Command_Linux_successFailurePatternScenario3(){	
+	StartProcessRAL_commandCategory($compIPPR,$compNameDynamic,$command,$Spattern3,$Fpattern3 ,$waitTime);
+	ValidateTheBackendServer($command,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+
+function StartProcessRAL_StaticCompWith_Command_Linux_successFailurePatternScenario3(){	
+	StartProcessRAL_commandCategory($compIPPR,$compNamePR,$command,$Spattern3,$Fpattern3 ,$waitTime);
+	ValidateTheBackendServer($command,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+
+function StartProcessRAL_StaticCompWith_Command_Linux_successFailurePatternScenario_011_02(){	
+	StartProcessRAL_commandCategoryPattern($compIPPR,$compNameDynamic,$command2,$Spattern4a,$Fpattern4b,$waitTime,$kvFlag,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheBackendServer($command2,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+
+function StartProcessRAL_DynamicCompWith_Command_Linux_successFailurePatternScenario_011_01(){	
+	StartProcessRAL_commandCategoryPattern($compIPPR,$compNamePR,$command2,$Spattern4a,$Fpattern4b,$waitTime,$kvFlag,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheBackendServer($command2,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+function StartProcessRAL_DynamicCompWith_Command_Linux_successFailurePatternScenario_012_01(){	
+	StartProcessRAL_commandCategoryPattern($compIPPR,$compNamePR,$command2,$Spattern4c,$Fpattern4d,$waitTime,$kvFlag,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheBackendServer($command2,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+function StartProcessRAL_StaticCompWith_Command_Linux_successFailurePatternScenario_012_02(){	
+	StartProcessRAL_commandCategoryPattern($compIPPR,$compNamePR,$command2,$Spattern4c,$Fpattern4d,$waitTime,$kvFlag,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheBackendServer($command2,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+function StartProcessRAL_DynamicCompWith_Command_Linux_successFailurePatternScenario_013_01(){	
+	StartProcessRAL_commandCategoryPattern($compIPPR,$compNamePR,$command2,$Spattern4e,$Fpattern4f,$waitTime,$kvFlag,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheBackendServer($command2,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+function StartProcessRAL_StaticCompWith_Command_Linux_successFailurePatternScenario_013_02(){	
+	StartProcessRAL_commandCategoryPattern($compIPPR,$compNamePR,$command2,$Spattern4e,$Fpattern4f,$waitTime,$kvFlag,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheBackendServer($command2,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+function StartProcessRAL_DynamicCompWith_Command_Linux_successFailurePatternScenario_014_01(){	
+	StartProcessRAL_commandCategoryPattern($compIPPR,$compNamePR,$command2,$Spattern4g,$Fpattern4h,$waitTime,$kvFlag,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheBackendServer($command2,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+
+function StartProcessRAL_StaticCompWith_Command_Linux_successFailurePatternScenario_014_02(){	
+	StartProcessRAL_commandCategoryPattern($compIPPR,$compNamePR,$command2,$Spattern4g,$Fpattern4h,$waitTime,$kvFlag,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheBackendServer($command2,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+function StartProcessRAL_DynamicCompWith_Command_Linux_successFailurePatternScenario_015_01(){	
+	StartProcessRAL_commandCategoryPattern($compIPPR,$compNamePR,$command2,$Spattern4i,$Fpattern4j,$waitTime,$kvFlag,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheBackendServer($command2,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+function StartProcessRAL_StaticCompWith_Command_Linux_successFailurePatternScenario_015_02(){	
+	StartProcessRAL_commandCategoryPattern($compIPPR,$compNamePR,$command2,$Spattern4i,$Fpattern4j,$waitTime,$kvFlag,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheBackendServer($command2,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+function StartProcessRAL_DynamicCompWith_Command_Linux_successFailurePatternScenario_016_01(){	
+	StartProcessRAL_commandCategoryPattern($compIPPR,$compNamePR,$command2,$Spattern4k,$Fpattern4l,$waitTime,$kvFlag,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheBackendServer($command2,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+function StartProcessRAL_StaticCompWith_Command_Linux_successFailurePatternScenario_016_02(){	
+	StartProcessRAL_commandCategoryPattern($compIPPR,$compNamePR,$command2,$Spattern4k,$Fpattern4l,$waitTime,$kvFlag,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheBackendServer($command2,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+
+function StartProcessRAL_DynamicCompWith_Command_Linux_successFailurePatternScenario_017_01(){	
+	StartProcessRAL_commandCategoryPattern($compIPPR,$compNamePR,$command2,$Spattern4m,$Fpattern4n,$waitTime,$kvFlag,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheBackendServer($command2,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+function StartProcessRAL_StaticCompWith_Command_Linux_successFailurePatternScenario_017_02(){	
+	StartProcessRAL_commandCategoryPattern($compIPPR,$compNamePR,$command2,$Spattern4m,$Fpattern4n,$waitTime,$kvFlag,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheBackendServer($command2,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+function StartProcessRAL_DynamicCompWith_Command_Linux_successFailurePatternScenario_018_01(){	
+	StartProcessRAL_commandCategoryPattern($compIPPR,$compNamePR,$command2,$Spattern4o,$Fpattern4p,$waitTime,$kvFlag,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheBackendServer($command2,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+function StartProcessRAL_StaticCompWith_Command_Linux_successFailurePatternScenario_018_02(){	
+	StartProcessRAL_commandCategoryPattern($compIPPR,$compNamePR,$command2,$Spattern4o,$Fpattern4p,$waitTime,$kvFlag,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheBackendServer($command2,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+
+
+
+
+function StartProcessRAL_DynamicCompWith_Command_Linux_successFailurePatternScenario5(){	
+	StartProcessRAL_commandCategory($compIPPR,$compNameDynamic,$command,$Spattern4,$Fpattern4 ,$waitTime);
+	ValidateTheBackendServer($command,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+
+function StartProcessRAL_StaticCompWith_Command_Linux_successFailurePatternScenario5(){	
+	StartProcessRAL_commandCategory($compIPPR,$compNamePR,$command,$Spattern4,$Fpattern4 ,$waitTime);
+	ValidateTheBackendServer($command,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+
+
+
+//Solaris platform : 
+
+function StartProcessRAL_DynamicCompWith_Command_in_Solaris(){	
+	StartProcessRAL_commandCategory($compIPPR,$compNameDynamic,$command,$Spattern,$Fpattern ,$waitTime);
+	ValidateTheBackendServer($command,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+
+function StartProcessRAL_StaticCompWith_Command_in_Solaris(){	
+	StartProcessRAL_commandCategory($compIPPR,$compNamePR,$command,$Spattern,$Fpattern ,$waitTime);
+	ValidateTheBackendServer($command,$compIPPR,$remoteUserNameValPR,$remotePwdValPR);
+	ValidateTheWorkflowListingPage($WorkflowName);
+}
+
+
+
+
+       
+         //StartProcessRAL_commandCategory($compIPPR,$compNameDynamic,$command,$Spattern4,$Fpattern4 ,$waitTime,$remoteUserNameValPR,$remotePwdValPR);
+        //StartProcessRAL_commandCategory($compIPPR,$compNamePR,$command,$Spattern,$Fpattern ,$waitTime);
+        //StartProcessRAL_commandCategory($compIPPR,$compNameDynamic,$command,$Spattern,$Fpattern ,$waitTime);
+
+function StartProcessRAL_commandCategory($compIP,$compName,$command,$Spattern,$Fpattern ,$waitTime,$kvFlag,$serverUsername, $serverPassword){	
+	
+	createWorkFlow($groupName,$WorkflowName);
+	NavigateToListingPage();
+	$versionNo = _getText(_span(0, _rightOf(_link($WorkflowName))));
+	
+	if("Version: 0" == $versionNo){		
+		NavigateToWorkflowEditor($WorkflowName);
+		AddRalIntoLayout($ralString,$ralCategory,$ralName);
+	} else {
+		NavigateToWorkflowEditor($WorkflowName);
+		//deleteRal();
+		//AddRalIntoLayout($ralString,$ralCategory,$ralName);
+	}	
+	
+	AddStartProcessRALWithCommand($compName,$command,$Spattern,$Fpattern ,$waitTime,$kvFlag);
+	publishWorkflow();
+	executeWorkflow($groupName,$WorkflowName);
+	Drills_Workflow_Execution_Status($WorkflowName,$ralName);
+	//successFailurePatterns($Spattern,$Fpattern,$WorkflowName,$compIP,$serverUsername,$serverPassword,$command);
+	//validateExecutionPage($WorkflowName);
+	
+}
+
+function StartProcessRAL_commandCategoryPattern($compIP,$compName,$command,$Spattern,$Fpattern ,$waitTime,$kvFlag,$serverUsername, $serverPassword){	
+	
+	createWorkFlow($groupName,$WorkflowName);
+	NavigateToListingPage();
+	$versionNo = _getText(_span(0, _rightOf(_link($WorkflowName))));
+	
+	if("Version: 0" == $versionNo){		
+		NavigateToWorkflowEditor($WorkflowName);
+		AddRalIntoLayout($ralString,$ralCategory,$ralName);
+	} else {
+		NavigateToWorkflowEditor($WorkflowName);
+		//deleteRal();
+		//AddRalIntoLayout($ralString,$ralCategory,$ralName);
+	}	
+	
+	AddStartProcessRALWithCommand($compName,$command,$Spattern,$Fpattern ,$waitTime,$kvFlag);
+	publishWorkflow();
+	executeWorkflow($groupName,$WorkflowName);
+	//Drills_Workflow_Execution_Status($WorkflowName,$ralName);
+	successFailurePatterns($Spattern,$Fpattern,$WorkflowName,$compIP,$serverUsername,$serverPassword,$command);
+	//validateExecutionPage($WorkflowName);
+	
+}
+
+
+
+
+
+
+
+
+function StartProcessRAL_ScriptCategory($compIP,$compName,$scriptName,$Spattern,$Fpattern ,$waitTime,$kvFlag){		
+	
+	createWorkFlow($groupName,$WorkflowName);
+	NavigateToListingPage();
+	
+	$versionNo = _getText(_span(0, _rightOf(_link($WorkflowName))));
+	
+	if("Version: 0" == $versionNo){				
+		NavigateToWorkflowEditor($WorkflowName);
+		AddRalIntoLayout($ralString,$ralCategory,$ralName);
+	} else {
+		NavigateToWorkflowEditor($WorkflowName);
+		//deleteRal();
+		//deleteSuccessFailurePatterns();
+		//AddRalIntoLayout($ralString,$ralCategory,$ralName);
+	}
+		
+	AddStartProcessRALWithScript($compName,$scriptName,$Spattern,$Fpattern ,$waitTime,$kvFlag);
+	publishWorkflow();
+	executeWorkflow($groupName,$WorkflowName);
+	Drills_Workflow_Execution_Status($WorkflowName,$ralName);
+	//validateExecutionPage($WorkflowName);
+		
+}
+
+
+function LocalAgentComponentCreation(){
+	UnInstall_Local_Agent_SilentMode("0", $agentBuildPath, $LocalCompIP, $LocalCompUserName, $LocalCompPassword, $localAgentPath);
+	AgentBuild_Copy_into_AgentHost($agentBuildPath, $LocalCompIP, $LocalCompUserName, $LocalCompPassword,"PanacesAgentsInstaller.properties","DRMAgent");
+	Copy_Property_file();
+	Update_local_Agent_propertyFile($agentBuildPath, $LocalCompIP, $LocalCompUserName, $LocalCompPassword, $panacesAgentNodeAddressDR, $localAgentPath);
+	Install_Local_Agent_SilentMode($agentBuildPath, $LocalCompIP, $LocalCompUserName, $LocalCompPassword, $localAgentPath);
+	Create_Local_Component($systemType, $LocalCompName, $LocalCompIP, $compsite);
+}
+
+/**
+ * Function is used to add the custom action for command execution with sudo and dry run option. 
+ * 
+ * @param : null
+ * @return: null
+ * @Author: Srinivas Pulamarasetti
+ * 
+ */
+function AddStartProcessRALWithCommand($compName,$command,$Spattern,$Fpattern ,$waitTime,kvFlag){
+	AddingInfoToStartProcesRAL($compName,$command,$Spattern,$Fpattern ,$waitTime,kvFlag);
+}
+
+
+
+
+/**
+ * Function is used to add the custom action for command execution with sudo and dry run option. 
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+function AddStartProcessRALWithScript($compName,$scriptName,$Spattern,$Fpattern ,$waitTime,kvFlag){
+	AddingInfoToStartProcesRAL($compName,$scriptName,$Spattern,$Fpattern ,$waitTime,kvFlag);
+}
+
+
+function AddingInfoToStartProcesRAL($compName,$CommandORscriptName,$Spattern,$Fpattern ,$waitTime,kvFlag){
+	
+		if($kvFlag == 1){
+		_click(_div($KeyValuePairs));
+		_setValue(_textbox($inputKey),$CommandKvName);
+		_setValue(_textbox($inputValue),$CommandORscriptName);
+		_click(_link($AddkeyValue));
+		_setValue(_textbox($inputKey),$WaitTimeKvName);
+		_setValue(_textbox($inputValue),$waitTime);
+		_click(_link($AddkeyValue));
+		_click(_div($KeyValuePairs));
+		_doubleClick(_div($StartProcessProcess));
+		_click(_link($ActionProperties));
+		_setSelected(_select($componentName), $compName);
+		_setValue(_textbox($command), "");
+		 deleteSuccessFailurePatterns();
+		 _click(_image("insert.png", _near(_label($SuccessPattern))));
+		_setValue(_textbox($SuccessPattern),$Spattern);
+		_click(_image($insertpngnearlabelFailurePattern))));
+		_setValue(_textbox($FailurePattern),$Fpattern);
+		_setValue(_textbox($waitFor), "");
+	}
+	else{
+		_doubleClick(_div($StartProcessProcess));
+		_click(_link($ActionProperties));
+		_setSelected(_select($componentName), $compName);
+		_setValue(_textbox($command), $CommandORscriptName);
+		 deleteSuccessFailurePatterns();
+		 _click(_image("insert.png", _near(_label($SuccessPattern))));
+	    _setValue(_textbox($SuccessPattern),$Spattern);
+	    _click(_image("insert.png", _near(_label($FailurePattern))));
+	    _setValue(_textbox($FailurePattern),$Fpattern);
+	    _setValue(_textbox($waitFor), $waitTime);
+	}
+	_wait(5000);
+	_click(_button("close", _near(_heading4($StartProcess))));
+    _wait(5000);
+    _click(_link($SaveNow));
+    _wait(5000);
+}

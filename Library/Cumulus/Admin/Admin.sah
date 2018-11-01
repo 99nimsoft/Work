@@ -1,0 +1,554 @@
+
+
+
+/**
+ * Function is for Validating all the links present on Admin Page .
+ * @param : null
+ * @return : null
+ * @Author: Rajan Velayutham
+ */
+
+function AdminPageLinks(){
+
+	_click(_link("Admin"));
+	_assertExists(_link("Go to Users"));
+	_assertExists(_link("Go to Organizations"));
+	_assertExists(_link("Go to Notification"));
+	_assertExists(_link("Go to Agents"));
+	_assertExists(_link("Go to Logs"));
+	_assertExists(_link("Go to Backup"));
+	_assertExists(_link("Go to Server Failover"));
+	_assertExists(_link("Go to System Events"));
+	//_assertExists(_link("Go to Group Labels")); - In Migration this link is removed
+	_assertExists(_link("Go to License"));
+	//_assertExists(_link("Go to Operational History")); - In Migration this link is removed
+}
+
+
+/**
+ * Function is for Validating all the sections present on Admin page.
+ * @param :  null
+ * @return : null
+ * @Author: Rajan Velayutham
+ */
+
+function AdminPageSections() {
+	_click(_link("Admin"));
+	_assertExists(_strong("User Summary"));
+	_assertExists(_strong("Organizations Summary"));
+	_assertExists(_strong("Notification Summary"));
+	_assertExists(_strong("Agents Summary"));
+	_assertExists(_strong("Logs Summary"));
+	_assertExists(_strong("Backup Summary"));
+	_assertExists(_strong("Server Failover Summary"));
+	_assertExists(_strong("System events"));
+	//_assertExists(_strong("Group Labels")); - In Migration this link is removed
+	_assertExists(_strong("License Summary "));
+	//_assertExists(_strong("Operational History Summary ")); - In Migration this link is removed
+}
+
+/**
+ * Function is for Validating User Summary section on Admin page.
+ * @param : null
+ * @return : null
+ * @Author: Rajan Velayutham
+ */
+
+function UserSummary() {
+	_click(_link("Admin"));
+	_assertExists(_strong("User Summary"));
+	var $userSummary = _getText(_paragraph("style1"));
+	_log("Actual String to SPLIT", $userSummary);
+	var $User = $userSummary.split(":");
+	_log("Split String   ", $User);
+	var $totalUser = $User[1].split(" ");
+	_log("Total Number of Users", $totalUser[1]);
+	var $superAdmin = $User[2].split("|");
+	_log("Super Admin", $superAdmin[0]);
+	var $admin = $User[3].split("|");
+	_log("Admin ", $admin[0]);
+	var $operator = $User[3].split("|");
+	_log("Operator", $operator[0]);
+	var $activeUsers = $User[5].split("|");
+	_log("Active Users ", $activeUsers[0]);
+	var $activeSuperAdmin = $User[6].split("|");
+	_log("Active SuperAdmin ", $activeSuperAdmin[0]);
+	var $activeAdmin = $User[7].split("|");
+	_log("Active Admin ", $activeAdmin[0]);
+	var $activeOperator = $User[8].split("");
+	_log("Active Operator ", $activeOperator[1]);
+
+	_assertExists("Total Number of Users :", $totalUser[1]);
+	_assertExists("Super Admin: ", $superAdmin[0]);
+	_assertExists("| Admin: ", $admin[0]);
+	_assertExists("| Operator:", $operator[0]);
+	_assertExists(" Active Users:", $activeUsers[0]);
+	_assertExists(" | Super Admin:", $activeSuperAdmin[0]);
+	_assertExists(" | Admin: ", $activeAdmin[0]);
+	_assertExists(" | Operator:", $activeOperator[1]);
+}
+
+/**
+ * Function is for Validating Organisations Summary section on Admin page.
+ * @param : null
+ * @return : null
+ * @Author: Rajan Velayutham
+ */
+
+function OrganizationSummary() {
+	_click(_link("Admin"));
+	_assertExists(_strong("Organizations Summary"));
+
+	var $OrgSummary = _getText(_paragraph("style1[1]"));
+	_log("Actual String to SPLIT", $OrgSummary);
+	var $Org = $OrgSummary.split(":");
+	_log("Split String   ", $Org);
+	_log("Total Number of Organizations :", $Org[1]);
+
+	_assertExists(_link("Go to Organizations"));
+	_click(_link("Go to Organizations"));
+	_assertExists(_link("Default"));
+}
+
+/**
+ * Function is for Validating Notification Summary section on Admin page.
+ * @param : null
+ * @return : null
+ * @Author: Rajan Velayutham
+ */
+
+function NotificationSummary() {
+	_click(_link("Admin"));
+	_assertExists(_strong("Notification Summary"));
+
+	var $Serv = _getText(_paragraph("style1[2]"));
+	_log("Actual String to Split :  ", $Serv);
+	var $mail = $Serv.split(":");
+	_log($mail);
+	_log($mail);
+	var $mailserv = $mail[1].split(" ");
+	_log($mailserv);
+	var $mailserver = $mailserv[1] + " " + $mailserv[2];
+	_log("Mail Server: ", $mailserver);
+}
+
+/**
+ * Function is for Validating Agents Summary section on Admin page.
+ * @param : null
+ * @return : null
+ * @Author: Rajan Velayutham
+ */
+function AgentsSummary() {
+	_click(_link("Admin"));
+	_assertExists(_strong("Agents Summary"));
+	_assertExists(_link("Go to Agents"));
+	var $agentSummary = _getText(_paragraph("style1[3]"));
+	_log($agentSummary);
+	var $Agents = $agentSummary.split(":");
+	_log($Agents);
+	var $totalAgentsCount = $Agents[1].split(" ");
+	_log("Total Number of Agents :", $totalAgentsCount[1]);
+	var $agentsConnectedCount = $Agents[2].split(" ");
+	_log("Agents Connected:", $agentsConnectedCount[1]);
+	_click(_link("Go to Agents"));
+	_assertExists(_image("ico_agent.gif"));
+	_assertExists(_cell("Agents"));
+
+}
+
+/**
+ * Function is for Validating Logs Summary section on Admin page.
+ * @param : null
+ * @return : null
+ * @Author: Rajan Velayutham
+ */
+
+
+function LogsSummary() {
+	_click(_link("Admin"));
+	_assertExists(_strong("Logs Summary"));
+	_assertExists(_link("Go to Logs"));
+	_click(_link("Go to Logs"));
+	_assertExists(_cell("Sanovi DRM Logs"));
+}
+
+/**
+ * Function is for Validating Backup Summary section on Admin page.
+ * @param : null
+ * @return : null
+ * @Author: Rajan Velayutham
+ */
+
+
+function BackupSummary() {
+	_click(_link("Admin"));
+	_assertExists(_strong("Backup Summary"));
+	_assertExists(_link("Go to Backup"));
+	_click(_link("Go to Backup"));
+	_assertExists(_cell("Backup Manager"));
+	_assertExists(_button("Backup Now"));
+
+	/* create the backup configuration */
+	
+	if (_exists(_bold("Backup is not configured"))) {
+		FailoverSummary();
+	} else {
+		_setValue(_textbox("despath"), $backUpPath);
+		_setSelected(_select("backuptime"), $backupTime);
+		_setSelected(_select("region"), $backfrequency);
+		_setSelected(_select("country"), $backUpDay);
+		_click(_button("Save"));
+
+		_click(_link("Admin"));
+		var $backupString = _getText(_paragraph("style1[4]"));
+		_log($backupString);
+
+		var $backUp = $backupString.split("Last Backup:");
+
+		_log("Backup Configured at " + $backupTime + " Hrs For " + $backUpDay
+				+ " " + $backfrequency);
+		_log($backUp[0]);
+
+		if ($backUp[0] == "Backup Configured at " + $backupTime + " Hrs For "
+				+ $backUpDay + " " + $backfrequency) {
+			_assertTrue(true);
+		} else {
+			_assertTrue(false);
+		}
+	}
+}
+
+/**
+ * Function is for Validating Server Failover Summary section on Admin page.
+ * @param : null
+ * @return : null
+ * @Author: Rajan Velayutham
+ */
+
+/*
+ * This will work only when HA is licensed to the user. If HA is not licensed to
+ * the user then Server Failover section will not appear in the UI.
+ */
+function FailoverSummary() {
+	_click(_link("Admin"));
+	_assertExists(_strong("Server Failover Summary"));
+	_assertExists(_link("Go to Server Failover"));
+	var $serverFailover = _getText(_paragraph("style1[5]"));
+	_log($serverFailover);
+	_click(_link("Go to Server Failover"));
+	_assertExists(_cell("Server Failover"));
+	_assertExists(_link("Status"));
+	_assertExists(_link("Configuration"));
+	_click(_link("Configuration"));
+	_assertExists(_strong("Slave Server Host Name/IP:"));
+	_assertExists(_strong("User Name with Admin Privileges:"));
+	_assertExists(_textbox("hostName"));
+	_assertExists(_textbox("userName"));
+	var $ip = _getValue(_textbox("hostName"));
+	_log("Slave IP Configured : ", $ip);
+	var $user = _getValue(_textbox("userName"));
+	_log("User name : ", $user);
+}
+
+/**
+ * Function is for Validating System Events section on Admin page.
+ * @param : null
+ * @return : null
+ * @Author: Rajan Velayutham
+ */
+
+function SystemEvents() {
+	_click(_link("Admin"));
+	_assertExists(_strong("System events"));
+	_assertExists(_link("Go to System Events"));
+	var $systemEvents = _getText(_paragraph("style1[6]"));
+	var $eventCount = $systemEvents.split(":");
+	var $count = $eventCount[1].split(" ");
+
+	_log("Critical:", $count[1]);
+	if ($count[1] > 2) {
+		_log("More than TWO Critical Event count cannot be displayed. Only last two Critical Events can be shown");
+	}
+
+	_assertExists(_strong("Sanovi DRM Server Snapshot"));
+	_assertExists(_paragraph("style1[7]"));
+	var $ipString = _getText(_paragraph("style1[7]"));
+	var $ipAdd = $ipString.split(":");
+	var $ipAddHold = $ipAdd[1].split(" ");
+	var $ipAddress = $ipAddHold[1];
+
+	_log("Ip Address :", $ipAddress);
+	_log("Up Time: ", $ipAdd[2]);
+	_click(_link("Go to System Events"));
+	_assertExists(_cell("System Events will be sent to the selected list of notifications"));
+	_assertExists(_cell("AgentNotCompatible"));
+	_assertExists(_cell("VaultAccessSuccess"));
+}
+
+
+/** - For Migration this funcitonality is not is removed
+ * Function is for Validating Server Failover Summary section on Admin page. 
+ * @param : null
+ * @return : null
+ * @Author: Rajan Velayutham
+ */
+/* 
+function GroupLabel() {
+
+	_click(_link("Admin"));
+	_assertExists(_strong("Group Labels"));
+	_assertExists(_link("Go to Group Labels"));
+	_click(_link("Go to Group Labels"));
+	_assertExists(_cell("Group Labels"));
+	var $label = _getText(_table("unique_id"));
+	_log($label);
+	_assertExists(_table("unique_id"));
+
+}
+
+*/
+/**
+ * Function is for Validating License Summary section on Admin page.
+ * @param : null
+ * @return : null
+ * @Author: Rajan Velayutham
+ */
+
+function LicenseSummary() {
+	_click(_link("Admin"));
+	_assertExists(_strong("License Summary"));
+	_assertExists(_link("Go to License"));
+	_click(_link("Go to License"));
+	_assertExists(_cell("License Usage Summary"));
+	_assertExists(_link("Enterprise"));
+	_assertExists(_link("Common Modules"));
+	_assertExists(_link("Cloud Continuity - CI Virtual"));
+	_assertExists(_link("Cloud Continuity - CI Physical"));
+	_click(_link("Enterprise"));
+	_click(_link("Common Modules"));
+	_click(_link("Cloud Continuity - CI Virtual"));
+	_click(_link("Cloud Continuity - CI Physical"));
+
+}
+
+/** - For Migration this funcitonality is not is removed
+ * Function is for Validating Operational History Summary section on Admin page.
+ * @param : null
+ * @return : null
+ * @Author: Rajan Velayutham
+ */
+/*
+function OpHistorySummary() {
+	_click(_link("Admin"));
+	_assertExists(_strong("Operational History Summary"));
+	_assertExists(_link("Go to Operational History"));
+	_click(_link("Go to Operational History"));
+	_assertExists(_cell("Sanovi DRM Server Operational History Management"));
+	_assertExists(_link("Purge Logs Now"));
+	_assertExists(_link("Edit Log Retention Period"));
+	_assertExists(_button("Purge Now"));
+}
+
+*/
+/**
+ * Function is for Validating User listing Page on Admin page.
+ * @param : null
+ * @return : null
+ * @Author: Rajan Velayutham
+ */
+
+function UserSummaryVerify() {
+	_click(_link("Admin"));
+	_assertExists(_strong("User Summary"));
+	var $userSummary = _getText(_paragraph("style1"));
+	_log("Actual String to SPLIT", $userSummary);
+	var $User = $userSummary.split(":");
+	var $totalUser = $User[1].split(" ");
+	var $superAdmin = $User[2].split("|");
+	var $admin = $User[3].split("|");
+	var $operator = $User[3].split("|");
+	var $activeUsers = $User[5].split("|");
+	var $activeSuperAdmin = $User[6].split("|");
+	var $activeAdmin = $User[7].split("|");
+	var $activeOperator = $User[8].split("");
+
+	_assertExists("Total Number of Users :", $totalUser[1]);
+	_assertExists("Super Admin: ", $superAdmin[0]);
+	_assertExists("| Admin: ", $admin[0]);
+	_assertExists("| Operator:", $operator[0]);
+	_assertExists(" Active Users:", $activeUsers[0]);
+	_assertExists(" | Super Admin:", $activeSuperAdmin[0]);
+	_assertExists(" | Admin: ", $activeAdmin[0]);
+	_assertExists(" | Operator:", $activeOperator[1]);
+
+	_click(_link("Go to Users"));
+	_click(_radio("days[1]"));
+	_click(_submit("View"));
+	_wait(5000);
+
+	var $test = _exists(_cell("Currently Logged in"));
+	_log($test);
+	$count = 0;
+	$i = 1;
+	while (true) {
+		_wait(3000);
+		if ($test == true && $count == 0) {
+			$count = 1;
+		} else {
+			break;
+		}
+		var $loggedCount = _exists(_cell("Currently Logged in[" + $i + "]"));
+
+		if ($loggedCount == true && $count > 0) {
+			$count++;
+		} else {
+			break;
+		}
+
+		$i++;
+	}
+	_log($count + "person are currently logged in");
+}
+
+/*
+ function NotificationVerify(){
+
+ _click(_link("Admin"));
+ _assertExists(_strong("Notification Summary"));
+
+ var $Serv = _getText(_paragraph("style1[2]"));
+ _log("Actual String to Split :  ", $Serv);
+ var $mail = $Serv.split(":");
+ _log($mail);
+ var $mailserv= $mail[1].split(" ");
+ _log($mailserv);
+ var $mailserver= $mailserv[1] + " " + $mailserv[2];
+ _log("Mail Server: ", $mailserver);
+
+ _click(_link("Go to Notification"));
+ _click(_link("Configure Email Server"));
+ _setValue(_textbox("smtp"), "192.168.0.001");
+ _setValue(_textbox("email"), "user123@sanovi.com");
+ _setValue(_textbox("replyTo"), "bugzilla123@sanovi.com");
+ _setValue(_textbox("user"), "ashu123@sanovi.com");
+ _click(_button("Save"));
+ _click(_link("Admin"));
+ _click(_link("Go to Notification"));
+ _click(_link("Add Notification List"));
+ _setValue(_textbox("uname"), "Noti List 1");
+ _setSelected(_select("list1"), ["drmadmin"]);
+ _click(_button(" » "));
+ _click(_submit("Save"));
+ _click(_link("Add Notification List"));
+ _setValue(_textbox("uname"), "Notif List2");
+ _setSelected(_select("list1"), ["jairam"]);
+ _click(_button(" » "));
+ _click(_submit("Save"));
+ _click(_link("Admin"));
+ _click(_link("Go to Notification"));
+ _click(_image("ico_delete.gif[1]"));
+ _expectConfirm("Are you sure you wish to delete this Notification Notif List2?", true);
+ _click(_link("Admin"));
+ }*/
+
+
+/**
+ * Function is for Validating Agents Listing page on Admin page.
+ * It has inner functions Local(); and Remote();
+ * @param : null
+ * @return : null
+ * @Author: Rajan Velayutham
+ */
+
+function AgentSummaryVerify() {
+
+	_click(_link("Admin"));
+	_assertExists(_strong("Agents Summary"));
+	_assertExists(_link("Go to Agents"));
+	var $agentSummary = _getText(_paragraph("style1[3]"));
+	_log($agentSummary);
+	var $Agents = $agentSummary.split(":");
+	_log($Agents);
+	var $totalAgentsCount = $Agents[1].split(" ");
+	_log("Total Number of Agents :", $totalAgentsCount[1]);
+	var $agentsConnectedCount = $Agents[2].split(" ");
+	_log("Agents Connected:", $agentsConnectedCount[1]);
+	_click(_link("Go to Agents"));
+	_assertExists(_image("ico_agent.gif"));
+	_assertExists(_cell("Agents"));
+
+	_click(_link("Admin"));
+	_assertExists(_strong("Agents Summary"));
+	_click(_link("Go to Agents"));
+
+	function Local() {
+		var $agentLocal = _exists(_cell("Connected"));
+		$countLocal = 0;
+		$i = 1;
+		if ($agentLocal == true) {
+			$countLocal = 1;
+		}
+		while (true) {
+			_wait(300);
+			if ($countLocal == 0) {
+				break;
+			}
+
+			var $connectCountLocal = _exists(_cell("Connected [" + $i + "]"));
+			if ($connectCountLocal == true) {
+				$countLocal++;
+			} else {
+				break;
+			}
+			$i++;
+		}
+	}
+
+	function Remote() {
+		var $agentRemote = _exists(_cell("Connected Stop"));
+		$countRemote = 0;
+		$j = 1;
+		if ($agentRemote == true) {
+			$countRemote = 1;
+		}
+		while (true) {
+			_wait(300);
+			if ($countRemote == 0) {
+				break;
+			}
+
+			var $connectCountRemote = _exists(_cell("Connected Stop[" + $j
+					+ "]"));
+			if ($connectCountRemote == true) {
+				$countRemote++;
+			} else {
+				break;
+			}
+			$j++;
+		}
+	}
+	Local();
+	Remote();
+	var $totalCount = $countLocal + $countRemote;
+	_log("Total no. of Agents Connected", $totalCount);
+	_click(_link("Admin"));
+	_log("Total Number of Agents :", $totalAgentsCount[1]);
+	_log("Agents Connected:", $totalCount);
+	_click(_link("Go to Agents"));
+	_assertExists(_link("Stop"));
+
+	var $stop = _exists(_link("Stop"));
+	if ($stop == true) {
+		_click(_link("Stop"));
+		_wait(10000);
+		Local();
+		Remote();
+		var $totalCount = $countLocal + $countRemote;
+		_wait(5000);
+		_log("Total Number of Agents :", $totalAgentsCount[1]);
+		_log("Agents Connected:", $totalCount);
+	} else {
+		_log("Stop link not found as there is no remote agent connected.");
+
+	}
+}

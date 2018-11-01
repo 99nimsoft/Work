@@ -1,0 +1,727 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : IBM RO
+ ** Objective : This script contains all the common test cases functions for Blocker and critical bugs
+**  @AuthorName : Anita 
+ ** Created Date : OCT 2017
+ ************************************************************************/
+
+/**
+ * Function is used to create APP PFR Group
+ * @param :
+ * @return : null
+ * @Author:Anita
+ * 
+ */
+
+function preCondition_AppPFRGroupCreation(){
+	
+	var $grpName = VerifyGroupExists($groupName);
+	if ($grpName == $groupName){
+		_log("Group is already exists");
+	}
+	else{
+		Site_0003();	 
+		APP_PFR_Component_Remote_Discovery_0018();
+		APP_PFR_Dataset_Discovery_0007();
+		APP_PFR_Auto_DatasetDiscovery0009();
+		
+		APP_PFR_Protectionscheme_Discovery_0018();
+		APP_PFR_GroupCreation_0022();	
+		APP_PFR_Move_Group_Manage_0006();
+	} 	
+}
+
+function Publish_BCO_WF_001(){
+	publishBCOVerify($groupName, "NormalFullCopy");
+}
+
+function publishBCOVerify($groupName,$workflowType){
+	NavigateToViewAllWorkflowsPage($groupName);
+	editWorkflowType($workflowType);
+	publishWorkflowAndVerify($workflowType);
+	navigateToManageRecovery($groupName);
+	var $isWFPublish = _getText(_strong(1, _near(_link($workflowType))));
+	if ($isWFPublish ==$obj_PUBLISHED){
+		_assertExists("BCO Workflow published successfully");
+	}
+	else{
+		_fail("BCO Workflow is not published");
+	}
+}
+
+function Publish_BP_WF_002(){
+	publishBPWorkflowVerify($groupName, "BPWorkflow","Business Process");
+}
+
+function publishBPWorkflowVerify($groupName,$ralName,$workflowType){
+	createNewBPWorkflow($groupName,$ralName,$workflowType);
+	publishWorkflow();
+	_click(_heading4($obj_bpworkflows));
+	var $isWFPublish = _getText(_strong(0, _near(_link($ralName))));
+	if ($isWFPublish ==$obj_PUBLISHED){
+		_assertExists("BP Workflow published successfully");
+	}
+	else{
+		_fail("BP Workflow is not published");
+	}
+}
+
+function Publish_Drill_WF_003(){
+	publishDrillWorkflowVerify($groupName, "DrillWorkflow",$obj_drill);
+}
+
+function publishDrillWorkflowVerify($groupName,$ralName,$workflowType){
+	createNewBPWorkflow($groupName,$ralName,$workflowType);
+	publishWorkflow();
+	if (!(_exists(_heading4($obj_Drill_Listing)))){
+		navigateDrillListing($groupName);
+	}else{
+		var $isDrillPublish = _getText(_span(1, _near(_link($ralName))));
+		_log($isDrillPublish);
+		var $isDrillPublish = $isDrillPublish.match($obj_PUBLISHED);
+		if($isDrillPublish == $obj_PUBLISHED){
+			_assertExists("Drill Workflow published successfully");
+		}
+		else{
+			_fail("Drill Workflow is not published");
+		}
+	}
+}
+
+function VerifyAgentNode_004(){
+	verifyAgentNodeStatus("AgentNode");
+}
+
+function verifyAgentNodeStatus($agentNode){
+	navigateToDiscovery();
+	_click(_link($obj_subsystems));
+	_click(_link($obj_components));
+	var $agentNodeIp = _getText(_cell($drmServer, _near(_link("AgentNode"))));
+	if ($agentNodeIp == $drmServer){
+		_assertExists("AgentNode created successfully thru installer");
+		var $agentNodeStatus = _getText(_cell(4, _near(_link("AgentNode"))));
+		_log("$agentNodeStatus is "+$agentNodeStatus);
+		if($agentNodeStatus ==$Active){
+			_assertExists("AgentNode Status is ACTIVE ");
+		}
+		else{
+			_fail("AgentNode status is not ACTIVE state");
+		}
+	}
+	else{
+		_fail("AgentNode is not created thru installer");
+	}
+}
+
+function VerifyAgentStatus_005(){
+	verifyAgentStatus($compIPPR,$compIPDR);
+}
+
+function verifyAgentStatus($compIPPR,$compIPDR){
+	navigateToDiscovery();
+	_click(_link($obj_subsystems));
+	_click(_link($obj_components));
+	//_highlight(_cell(4, _near(_cell("192.168.2.106"))));
+	var $agentStatus = _getText(_cell(4, _near(_cell($compIPPR))));
+	_log("$agentStatus is "+$agentStatus);
+	var $agentStatus1 = _getText(_cell(4, _near(_cell($compIPDR))));
+	_log("$agentStatus1 is "+$agentStatus1);
+	if($agentStatus ==$Active && $agentStatus1 ==$Active){
+		_assertExists("Agent Status is ACTIVE ");
+	}
+	else{
+		_fail("Agent status is not ACTIVE state");
+	}
+}
+
+
+function VerifyClickOnAnyGroup_006($groupName){
+	navigateToManageRecovery($groupName);
+	if(_exists(_heading4($groupName))){
+		_assertExists("Group details page displayed successfully ");
+	}
+	else{
+		_fail("failed to display the group details");
+	}
+}
+
+function VerifyDrillSummaryPage_007(){
+	navigateDrillSummary();
+	var $getList = _getText(_div("drill-all"));
+	if($getList != null){
+		_assertExists($getList);
+		_log("Drill Summary page - RGs are displayed successfully");
+	}
+	else{
+		_fail("Drill Summary page - RGs are not displaying");
+	}
+}
+
+
+function VerifyAgentNodeInstallation_008(){
+	SiteController_Binary_Copy_AgentHost_PR();
+	Copy_SC_Property_file();
+	update_SiteController_propertyFile_PR();
+	SiteController_UnInstllation_PR();
+	SiteController_Instllation_SilentMode_PR();
+}
+
+function VerifyOracle12cLocalAgentInstallation_009(){
+	/*
+	UnInstall_Local_Agent_SilentMode("0", "/opt/", "192.168.3.67", "root", "Sanovi123", "/opt/panaces/");
+	AgentBuild_Copy_into_AgentHost("/opt/", "192.168.3.67", "root", "Sanovi123","PanacesAgentsInstaller.properties","DRMAgent");
+	Copy_Property_file();
+	Update_local_Agent_propertyFile("/opt/","192.168.3.67", "root", "Sanovi123", "192.168.3.67", "/opt/panaces/");
+	*/
+	Install_Local_Agent_SilentMode("/opt/", "192.168.3.67", "root", "Sanovi123", "/opt/panaces/");
+}
+
+
+
+function groupCreationwithCustomReplicator(){
+	
+	_click(_link("/Admin/"));
+	_click(_link("Manage"));
+	_click(_heading4("Recovery Groups"));
+	_click(_link("/View All/"));
+	
+	if (_exists(_link($bug40908groupName))!=true){
+		_click(_link("/Admin/"));
+		_click(_link("Manage"));
+		_click(_heading4("Recovery Groups"));
+		_click(_link("/View All/"));
+		
+		if(_exists(_link($bug40908groupName))==true){
+			_log("Group is already exists");
+		}
+		
+		else{
+
+//			UnInstall_Local_Agent_SilentMode("0", $bug40908agentBuildPR, $bug40908compIPPR, $bug40908remoteUserNameValPR, $bug40908remotePwdValPR, $bug40908localAgentPathPR);
+//			UnInstall_Local_Agent_SilentMode("0", $bug40908agentBuildDR, $bug40908compIPDR, $bug40908remoteUserNameValDR, $bug40908remotePwdValDR, $bug40908localAgentPathDR);
+//			
+//			AgentBuild_Copy_into_AgentHost($bug40908agentBuildPR, $bug40908compIPPR, $bug40908remoteUserNameValPR, $bug40908remotePwdValPR,"PanacesAgentsInstaller.properties","DRMAgent");
+//			
+//			AgentBuild_Copy_into_AgentHost($bug40908agentBuildDR, $bug40908compIPDR, $bug40908remoteUserNameValDR, $bug40908remotePwdValDR,"PanacesAgentsInstaller.properties","DRMAgent");
+//
+//			Copy_Property_file();
+//
+//			$datasetType = "DB2";
+//			$systemTypeProtection = "HP3PAR";
+//			$panacesAgentNodeAddressPR = $bug40908panacesAgentNodeAddressPR;
+//			Update_local_Agent_propertyFile($bug40908agentBuildPR, $bug40908compIPPR, $bug40908remoteUserNameValPR, $bug40908remotePwdValPR, $bug40908panacesAgentNodeAddressPR, $bug40908localAgentPathPR,$bug40908userPR,$bug40908db2ResultDirPR);
+//			
+//			$systemTypeDataset = "DB2";
+//			Install_Local_Agent_SilentMode($bug40908agentBuildPR, $bug40908compIPPR, $bug40908remoteUserNameValPR, $bug40908remotePwdValPR, $bug40908localAgentPathPR,$bug40908siteControllerPRnode);
+//			
+//			$datasetType = "DB2";
+//			$systemTypeProtection = "HP3PAR";
+//			$panacesAgentNodeAddressDR = $bug40908panacesAgentNodeAddressDR;
+//			Update_local_Agent_propertyFile($bug40908agentBuildDR, $bug40908compIPDR, $bug40908remoteUserNameValDR, $bug40908remotePwdValDR, $bug40908panacesAgentNodeAddressDR, $bug40908localAgentPathDR,$bug40908userDR,$bug40908db2ResultDirDR);
+//			$systemTypeDataset = "DB2";
+//			Install_Local_Agent_SilentMode($bug40908agentBuildDR, $bug40908compIPDR, $bug40908remoteUserNameValDR, $bug40908remotePwdValDR, $bug40908localAgentPathDR,$bug40908siteControllerDRnode);
+//
+//			Add_RepInf_getStatus_PR_DR_2();
+//			
+//			Add_HP3PAR_Start_Stop_TCL_PR_DR_2();  //Adds start and stop TCL files in both local machines
+
+			Creating_DB_PR_2();  //Creating DB in PR machine
+			Creating_DB_DR_2();  //Creating DB in DR machine
+			
+			Site_0003();
+			
+			Create_Local_Component($bug40908systemType, $bug40908compNamePR, $bug40908compIPPR, $bug40908compsitePR);
+			Create_Local_Component($bug40908systemType, $bug40908compNameDR, $bug40908compIPDR, $bug40908compsiteDR);
+			
+			Create_DB2_HP3PAR_Dataset($bug40908systemTypeDataset, $bug40908compNamePR, $bug40908datasetType, $bug40908datasetNamePR,$bug40908userPR, $bug40908pwdPR,$bug40908dataBaseName);
+			Create_DB2_HP3PAR_Dataset($bug40908systemTypeDataset, $bug40908compNameDR, $bug40908datasetType, $bug40908datasetNameDR,$bug40908userDR, $bug40908pwdDR,$bug40908dataBaseName);
+			
+			Create_DB2_HP3PAR_ProtectionScheme($bug40908systemTypeProtection, $bug40908sernamePR,  $bug40908mgmtHost_HP3PAR_PR  ,$bug40908userPR,$bug40908dataBaseName,$bug40908userPR,$bug40908pwdPR);
+			Create_DB2_HP3PAR_ProtectionScheme($bug40908systemTypeProtection, $bug40908sernameDR,  $bug40908mgmtHost_HP3PAR_DR  ,$bug40908userDR,$bug40908dataBaseName,$bug40908userDR,$bug40908pwdDR);
+			
+			Get_Protectionscheme_Status_Gui($bug40908sernamePR);
+			Get_Protectionscheme_Status_Gui($bug40908sernameDR);
+			
+			CreateGroup_DB2HP3PAR();
+		} 
+	}		
+}
+
+function CreateGroup_DB2HP3PAR() {
+	
+	$groupCreation = Create_FG($bug40908groupName, $bug40908groupDescription, $bug40908SolutionSignature, $bug40908primaryComponents, $bug40908remoteComponents, $bug40908primaryDatasets, $bug40908remoteDatasets, $bug40908primaryProtections, $bug40908remoteProtections);
+	if ($groupCreation.get("flag") == 0) 
+	{
+		_assertExists("Same group name already exists");
+	} 
+	else 
+	{ 
+		_wait(20000);
+		_click(_checkbox("Recovery"));
+		_click(_checkbox("Test"));
+		_click(_button("Save[2]"));
+		_click(_button("Finish"));
+		navigateToGroups();
+		if (_exists(_link($bug40908groupName)) == true) {
+			_assertExists("Group created succesfully");
+		} else {
+			_fail("Group not created succesfully.");
+		}	
+	}
+}
+
+function Add_RepInf_getStatus_PR_DR_2(){
+
+	try {
+		add_HP3PAR_RepInfo_getStatusTcl($bug40908compIPPR, $bug40908remoteUserNameValPR, $bug40908remotePwdValPR,$bug40908localAgentPathDR + "DRMAgents");
+		} catch($e) {
+			_assertTrue(false);
+			_log($e.toString(),"Custom1");
+			_log("Adding RepInfo and getStatus TCL files in PR got failed. kindly check the log for more details");
+		   }
+	try {
+		add_HP3PAR_RepInfo_getStatusTcl($bug40908compIPDR, $bug40908remoteUserNameValDR, $bug40908remotePwdValDR,$bug40908localAgentPathDR + "DRMAgents");
+		} catch($e) {
+			
+			_assertTrue(false);
+			_log($e.toString(),"Custom1");
+			_log("Adding RepInfo and getStatus TCL files in DR got failed. kindly check the log for more details");
+		} 
+}
+
+
+
+function testEditProtectionSchemaFunctionality($argProtectionSchemaName){
+	try{
+		_click(_link("Admin"));
+		_click(_link("Discover"));
+		_click(_link("Subsystems"));
+		_click(_link("Protection Schemes"));
+		_click(_image("/Edit/", _near(_link("/"+$argProtectionSchemaName+"/"))));
+		_setValue(_textbox("newPSName"), $argProtectionSchemaName+"_EditTest");
+		_click(_button("Save"));
+		_assertEqual("Protection Scheme discovery updated successfully", _lastAlert());
+		_click(_link("Protection Schemes"));
+		_exists(_link("/"+$argProtectionSchemaName+"/"));
+	}
+	catch (e) {
+		_log("Protection Schema edit functionality is not working as expected","FAILURE");
+	}
+}
+
+function verifyFieldOperationalDashboard(){
+	
+	try{
+        if(_exists(_div("opertator")) == false){
+        	_click(_image("IBM"));
+        }
+        _click(_div("opertator"));    
+        
+		_selectWindow("/IBM Resiliency Orchestration - Operational Dashboard/");
+		if(_exists(_paragraph("User Intervention", _under(_paragraph("Workflow Snapshot")))) == false){
+			_log("Could not verify fields with name 'User Intervention' under 'Workflow Snapshot' on page Operational Dashboard","FAILURE");
+		}
+		_popup("/IBM Resiliency Orchestration - Operational Dashboard/")._closeWindow();
+//		if(_exists(_popup("/IBM Resiliency Orchestration - Operational Dashboard/")) == true){
+//			_log("Operational Dashboard window not closed");
+//		}
+		_selectWindow();
+	}
+	catch(e){
+		_log("could not verify field","FAILURE");
+	}
+	_pause();
+}
+
+
+function testBug40645(){
+	try{	
+		   //APP_PFR_Component_Local_Discovery_0002();
+		   APP_PFR_Component_Remote_Discovery_0018();	
+		
+	       APP_PFR_Dataset_Discovery_0007();
+		
+	       $systemTypeProtection = "PFR"; 
+	       APP_PFR_Protectionscheme_Discovery_0018();
+
+	       APP_PFR_GroupCreation_0022();                                             
+
+		var $temp = SecuredShellConnection($drmServer,$drmUserName,$drmPassword,"grep -r --include=\*.log 'Sanovi123' ./","Y");
+		
+		if($temp != ""){
+			_log("Password visible in logs","FAILURE");
+		}	
+	}
+	catch (e) {
+		_log("Could not retest bug 40645","FAILURE");
+	}
+}
+
+function testBug38916(){
+	
+	try{
+		_click(_link($Reports));
+		_click(_link($Editemailrecipients));
+		_setValue(_textbox($email), $gmailEmailID);
+		_click(_button($Add));
+		_click(_button($Save));
+		_click(_image($SendEmailNow));
+		_assertEqual($SendEmailInitiated, _lastAlert());
+
+		_navigateTo('https://gmail.com/');
+
+		if(_exists(_div($gmailEmailID)) != true){
+			_setValue(_emailbox($identifier), $gmailUserID);
+			_click(_span($Next));
+		}
+
+		_setValue(_password($password),$gmailPassword);
+		_click(_span($Next));
+
+		var $counter = 0;
+		while(_exists(_span("/bugzilla@sanovi.com/")) != true && $counter < 18){
+			_log("waiting for 10 seconds to check mail","CUSTOM");
+			_wait(10000);
+			$counter++;
+		}
+		if(_exists(_span("/bugzilla@sanovi.com/")) != false){
+			
+			_click(_span("/bugzilla@sanovi.com/"));
+
+			if(_exists(_byXPath("//table/tbody/tr/th[text()='DR Group Summary Report']/../..")) != true){
+				_log("Summary Report not seen in mail","FAILURE");
+			}
+			else{
+//				_focus(_byXPath("//div[@data-tooltip='Delete']"));
+//				_click(_byXPath("//div[@data-tooltip='Delete']"));                  
+			}
+		}
+		else{
+			_log("Waited for more than 3 mins mail not received","FAILURE");
+		}	
+	}
+	catch (e) {
+		_log("Could not verify bug 38916","FAILURE");
+	}
+	finally{	
+
+		_click(_byXPath("//a[contains(@title,'"+$gmailEmailID+"')]"));
+		_click(_byXPath("//a[contains(.,'Sign out')]"));   
+		      
+		_navigateTo('https://' + $drmServer + ':'+ $urlPortNo +'/PanacesGUI');
+		
+		if(_exists(_textbox("username")) == true){
+			Login_001();
+		}
+	}
+}
+
+function testBug40866(){
+	try{
+	_click(_link($Admin));
+	_click(_link($Monitor));
+	_click(_heading4($Sites));
+	_click(_button($Monitor));
+	_click(_link($Manage));
+	_click(_heading4($Sites));
+	}
+	catch(e){
+		_log("Could not verufy bug 40866","FAILURE");
+	}
+}
+
+function testBug40039(){
+	try{
+		_click(_link($Admin));
+		_click(_link($Discover));
+		_click(_link($Groups));
+		
+		_click(_heading4($ApplicationGroups));
+		
+		$countAG = parseInt(_getText(_byXPath("//h4[text()='"+$ApplicationGroups1+"']")).split("(")[1].split(")")[0]);
+
+		_click(_heading4($RecoveryGroups));
+		
+		$countRG = parseInt(_getText(_byXPath("//h4[text()='"+$RecoveryGroups1+"']")).split("(")[1].split(")")[0]);
+	
+		//_click(_button($Discover2));
+		_click(_link($Monitor));
+		_click(_heading4($ApplicationGroups));
+		_click(_link($ViewAll));
+		
+		$countAG2 = _count("_link","/.*/",_in(_div("agList")))-1;
+		
+		if($countAG != $countAG2){
+			_log("AG count is different","FAILURE");
+		}
+		_click(_heading4($RecoveryGroups2));
+		_click(_link($ViewAll));
+		
+		$countRG2 = _count("_link","/.*/",_in(_div($recoveryGroups3)));
+
+		if($countRG != $countRG2){
+			_log("RG count is different","FAILURE");
+		}
+	}
+	catch(e){
+		_log("Could not verufy bug 40039","FAILURE");
+	}
+
+}
+
+function testBug41135(){
+	try{
+		_click(_link($Admin));
+		
+		_click(_link($Reports));
+
+		$countGroups =  _count("_link","/.*/",_in(_byXPath("//div[@id='reports_grp_list_table']/table[@id='report']")));
+
+		for(var $i = 1; $i <= $countGroups;$i++){
+			$groupName = _getText(_byXPath("//div[@id='reports_grp_list_table']/table[@id='report']/tbody/tr["+$i+"]/td[1]/a"));
+			_log("Clicking on group:-"+$groupName);
+			$xpath = "//div[@id='reports_grp_list_table']/table[@id='report']/tbody/tr["+$i+"]/td[1]/a";
+			_click(_byXPath($xpath));
+			_setSelected(_select($chartType),$WorkflowExecution);
+			
+			$dateFrom = getDate("yyyy-MM-dd","year",-1);
+			$dateTo = getDate("yyyy-MM-dd","year",-0);
+			_setValue(_textbox("fromDate"), $dateFrom);
+			_setValue(_textbox("toDate"), $dateTo);    //today
+			_click(_button($ViewGraph));
+			
+			_click(_link($WorkflowExecutionAnalysis));
+ 
+			var $WORKFLOWEXECUTION;
+			if(_condition(_exists(_link("/.*/", _under(_link($WORKFLOWEXECUTION)))) == true)){
+
+				if($BrowserLang == "N"){
+					_click(_link("/.*/", _under(_link("WORKFLOW EXECUTION"))));
+				}
+				else{
+					_click(_link("/.*/", _under(_link("ワークフロー実行"))));
+				}
+				_click(_link($ExporttoCSV));
+				_saveDownloadedAs(_userDataDir("\\")+"\\temp\\download\\"+$groupName+"WorkFlowExecutionReport.csv");
+				if(_fileExists(_userDataDir("\\")+"\\temp\\download\\"+$groupName+"WorkFlowExecutionReport.csv") == true){
+					_log("csv file successfully downloaded","SUCCESS");
+				    return;
+				}		
+			}
+			else{
+				_click(_link($Reports));
+			}
+		}
+		_log("No workflow has been created for any group present in RO , execute workflow for any group to download csv file","FAILURE");
+	}
+	catch($e){
+		_log("Could not verufy bug 41135","FAILURE");
+		_log($e.toString(),"Custom1");
+	}
+}
+
+function getDate($format,$previous,$count) {
+	$dateFormat = java.text.SimpleDateFormat($format);
+    $cal = java.util.Calendar.getInstance();
+    if($previous=="year"){
+    	$cal.add(java.util.Calendar.YEAR,$count);
+    }
+    if($previous=="month"){
+    	$cal.add(java.util.Calendar.MONTH,$count);
+    }
+    if($previous=="day"){
+    	$cal.add(java.util.Calendar.DATE,$count);
+    }
+    return $dateFormat.format($cal.getTime());
+}
+
+function testBug44350(){
+	
+	var $tmp = "";
+	if($BrowserLang == "N"){
+		$tmp = $noteCopyRight;
+	}
+	if($BrowserLang == "Y-JA"){
+		$tmp = $noteCopyRight_Japan;
+	}
+	if($BrowserLang == "Y-EN"){
+		$tmp = $noteCopyRight_Japan;
+	}
+	
+	try{
+//		_click(_image("IBM"));
+//		
+//		_click(_div("discovery"));
+//		if(_getText(_heading6("/Copyright IBM Corporation/")) != $tmp){
+//			_log("Copyright message not correct on discovery page,it is showing it:-"+_getText(_heading6("/Copyright IBM Corporation/")),"FAILURE");
+//		}
+//		
+//		_click(_image("logo"));
+//		_click(_div("monitor"));
+//		if(_getText(_heading6("/Copyright IBM Corporation/")) != $tmp){
+//			_log("Copyright message not correct on monitor page,it is showing it:-"+_getText(_heading6("/Copyright IBM Corporation/")),"FAILURE");
+//		}
+//	
+//		_click(_image("logo"));
+//		_click(_div("manage"));
+//		if(_getText(_heading6("/Copyright IBM Corporation/")) != $tmp){
+//			_log("Copyright message not correct on manage page,it is showing it:-"+_getText(_heading6("/Copyright IBM Corporation/")),"FAILURE");
+//		}
+//		
+//		_click(_image("logo"));
+//		_click(_div("drill"));
+//		if(_getText(_heading6("/Copyright IBM Corporation/")) != $tmp){
+//			_log("Copyright message not correct on drill page,it is showing it:-"+_getText(_heading6("/Copyright IBM Corporation/")),"FAILURE");
+//		}
+//		
+//		_click(_image("logo"));
+//		_click(_div("reports"));
+//		if(_getText(_cell("/Copyright IBM Corporation/")) != $tmp){
+//			_log("Copyright message not correct on reports page,it is showing it:-"+_cell(_heading6("/Copyright IBM Corporation/")),"FAILURE");
+//		}
+		
+		_click(_image("IBM"));
+		_click(_div("drManager"));
+
+		_selectWindow($IBMResiliencyOrchestrationManagerDashboard);
+		if(_getText(_paragraph("bx--type-legal")) != $tmp){
+			_log("Copyright message not correct on drManager page,it is showing it:-"+_getText(_paragraph("bx--type-legal")),"FAILURE");
+		}
+		_popup($IBMResiliencyOrchestrationManagerDashboard).close();
+		_selectWindow();
+		
+		_click(_div("opertator"));
+		_selectWindow($IBMResiliencyOrchestrationOperationalDashboard);
+		if(_getText(_paragraph("bx--type-legal")) != $tmp){
+			_log("Copyright message not correct on operator page,it is showing it:-"+_getText(_paragraph("bx--type-legal")),"FAILURE");
+		}
+		_popup($IBMResiliencyOrchestrationOperationalDashboard).close();
+		_selectWindow();
+	}
+	catch($e){
+		_log("Could not verufy bug 44350","FAILURE");
+		_log($e.toString(),"Custom1");
+	}
+}
+
+
+function selectWindow($argWindowName){
+	var $windows = _getWindows();
+	for(var $i=0;$i<$windows.length;$i++){
+		if($windows[$i].windowTitle == $argWindowName){
+			_log("yesssssss");
+		}
+		_log("qwer"+$windows[$i].windowTitle);
+		_log("1111"+$argWindowName);
+	}
+}
+
+
+//***
+
+/**
+ * Function is for Adding the start and stop tcl scripts in (PR) and (DR)
+ * 
+ * @param :null
+ * @return : null
+ * @Author: Saiteja M
+ * 
+ */
+	function Add_HP3PAR_StartTcl_PR() {
+	add_HP3PAR_StartTcl($bug40908compIPPR, $bug40908remoteUserNameValPR, $bug40908remotePwdValPR,$bug40908localAgentPathPR + "DRMAgents");
+	}
+
+	function Add_HP3PAR_StopTcl_PR() {
+	add_HP3PAR_StopTcl($bug40908compIPPR, $bug40908remoteUserNameValPR, $bug40908remotePwdValPR,$bug40908localAgentPathPR + "DRMAgents");
+    }
+
+	function Add_HP3PAR_StartTcl_DR() {
+		add_HP3PAR_StartTcl($bug40908compIPDR, $bug40908remoteUserNameValDR, $bug40908remotePwdValDR,$bug40908localAgentPathDR + "DRMAgents");
+	}
+
+	function Add_HP3PAR_StopTcl_DR() {
+		add_HP3PAR_StopTcl($bug40908compIPDR, $bug40908remoteUserNameValDR, $bug40908remotePwdValDR,$bug40908localAgentPathDR + "DRMAgents");
+	}
+	
+		     
+function Add_HP3PAR_Start_Stop_TCL_PR_DR_2() {
+	try {
+		Add_HP3PAR_StartTcl_PR();
+	} catch ($e) { 
+		_assertTrue(false);
+ 		_log($e.toString(),"Custom1");
+		_log("Adding StartTcl file to PR got failed.kindly check the log for more details");
+	}
+
+	try {
+	Add_HP3PAR_StopTcl_PR();
+	} catch($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("Adding StopTcl file to PR got failed.kindly check the log for more details");
+	}
+	try {
+	Add_HP3PAR_StartTcl_DR();
+	} catch($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("Adding StartTcl file to DR got failed.kindly check the log for more details");
+	}
+	try {
+	Add_HP3PAR_StopTcl_DR();
+	} catch($e) {
+		_assertTrue(false);
+		_log($e.toString(),"Custom1");
+		_log("Adding StopTcl file to DR got failed.kindly check the log for more details");
+	}
+	
+}
+
+
+
+function Creating_DB_PR_2() {
+	   try {
+	Create_Db2Database($bug40908userPR, $bug40908pwdPR, $bug40908compIPPR, $bug40908dataBaseName);
+	   }
+	   catch($e) {
+		   _assertTrue(false);
+		   _log($e.toString(),"Custom1");
+			_log("Creating DB in PR got failed.kindly check the log for more details");
+	   }
+	}
+
+	function Creating_DB_DR_2() {
+		try {
+		Create_Db2Database($bug40908userDR, $bug40908pwdDR, $bug40908compIPDR, $bug40908dataBaseName);
+	}
+		catch($e) {
+			_assertTrue(false);
+			   _log($e.toString(),"Custom1");
+				_log("Creating DB in DR got failed.kindly check the log for more details");
+		}
+	}
+
+
+function logout_pre(){
+	
+	if(_exists(_label("Logout")) == true){
+		_click(_label("Logout"));
+	}
+	else{
+		Logout_001();
+	}
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+

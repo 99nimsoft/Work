@@ -1,0 +1,52 @@
+
+var $l_AgentNodeInstallInputs = _readExcelFile("../conf/DRM_AgentNode_Inputs.xls","Install");  //To read the inputs from the drm_inputs excel file.
+
+
+//This user Input required to Login the AgentNode Server from backend
+var $agentNodeServer = $l_AgentNodeInstallInputs[4][4];//DRM server IP
+var $agentNodeUserName = $l_AgentNodeInstallInputs[5][4];// DRM server user name
+var $agentNodePassword = $l_AgentNodeInstallInputs[6][4];// DRM server password
+var $EAMSROOT = $l_AgentNodeInstallInputs[16][4]; // This path of EAMSROOT
+var $primaryPanacesServer = $l_AgentNodeInstallInputs[7][4]; //this is Primary DRM server
+var $SecondaryPanacesServer = $l_AgentNodeInstallInputs[7][4]; //This is Secondary DRM server,Primary and secondary both are same then don't change it.Else use "172.168.20.176"
+var $g_isDailyBuild = $l_AgentNodeInstallInputs[13][4];
+
+if($g_isDailyBuild == "Y"){
+	$revisionNo = _readFile("../conf/latest_rev");
+	$revisionNo = $revisionNo.replace(/\n/g,"");
+	var $g_buildUrl  = "http://192.168.1.201:8080/jenkins/job/JaspeRed_7_1_Nightly/ws/Pumice_Tonalite_Appliance_Nightly_"+ $revisionNo +"/panacesDVDVPumice_Tonalite_Appliance__" + $revisionNo + "/";
+	_setGlobal("newBuildName",$g_buildUrl);
+	_writeFile($revisionNo, "../conf/RevisionNo.txt", true);
+	} else {
+		var $g_buildUrl = $l_AgentNodeInstallInputs[12][4];
+		_setGlobal("newBuildName",$g_buildUrl);
+	}
+
+var $installedAgentNodeBuildPath = $l_AgentNodeInstallInputs[8][4]; // This is the Path where user has install the server and path of bin directory
+
+var $drmBuild = $l_AgentNodeInstallInputs[11][4]; // This is the path where build will copy
+var $agentNodeBuild = $drmBuild + "/DRM_Build/AgentNode/";
+
+
+var $l_ANMappingInputs = _readExcelFile("../conf/DRM_AgentNode_Inputs.xls","ANMaping");  //To read the inputs from the drm_inputs excel file.
+var $serverIpList = $l_ANMappingInputs;
+/*var $serverUserNameList = $l_ANMappingInputs.length();
+var $serverPasswordList = $l_ANMappingInputs.length();
+var $serverCompNameList = $l_ANMappingInputs.length();
+var $serverSystemTypeList = $l_ANMappingInputs.length();
+var $serverIPList = $l_ANMappingInputs.length();*/
+var $drmServer = $l_ANMappingInputs[2][9];
+var $username = $l_ANMappingInputs[3][9];
+var $password = $l_ANMappingInputs[4][9];
+var $site = $l_ANMappingInputs[5][9];
+
+
+//This user Input required to update the PanacesServerInstaller.properties file which is required for installation of drm in silent mode
+
+$g_sahiBuildUrl = "http://172.168.20.43/jenkins/job/DRM_Automation/ws/DRM_Automation_Pumice/";
+$propertyfilePath  = "/SanoviDRM/AgentNode/PanacesAgentNodeInstaller.properties";
+
+var $packagename = "DRM_Automation_CrossPlatform";
+
+var $SAHI_HOME = Get_Sahi_Home_Path();
+

@@ -1,0 +1,45 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the remote agent test cases which are the part of  CDRM feature. 
+ ** AuthorName : Sujata Rani Choudhury
+
+ ************************************************************************/
+
+//don't change the below line.
+
+_include("../../Library/Common/Common_Function.sah");
+_include("../../conf/DRMInstallation_Parameter.sah");
+
+_include("../../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+_include("../../Library/Solution_Signature/Include/Common_Automation_testcase_Function.sah");
+_include("../../Library/Agent_Upgrade/DRM_Uploadbinary.sah");
+_include("../../Library/Agent_Upgrade/Screenshot.sah");
+_include("../../Library/Agent_Upgrade/All_Function.sah");
+//_include("../../Library/Agent_Upgrade/Management_Services.sah");
+_include("../../conf/Agent_Upgrade/Agent_Upgrade_Parameter.sah");
+
+
+
+Login_001();
+verify_Agents_AgentUpgradeLinks_AdminPage();
+_log($l_AgentUpgarde.length);
+for($CompIndex=9 ; $CompIndex <= $l_AgentUpgarde.length-1; $CompIndex++ ){
+	
+	UpgradeComponentName($CompIndex);
+	AgentsPage_BeforeUpgrade();
+	AgentsUpgradePage_BeforeAgentUpgrade();
+}
+
+
+
+
+
+//AgentsPage_AfterAgentUpgrade("Windows_192.168.20.10","Component/Mgmt Service","6.3 BETA_29012");
+
+//AgentsUpgradePage_AfterAgentUpgrade("Windows_192.168.20.10","7.0 Nightly_32580");
+//Agentversion_fromhelp();
+//Upload_Agents_DRM(); //upload binary 
+//After_DRMUpgrade_Screenshots(App_PFR_for_SP_RAL );
+
+

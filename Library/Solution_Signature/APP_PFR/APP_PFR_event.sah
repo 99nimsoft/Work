@@ -1,0 +1,415 @@
+
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are the part of APP PFR solution generating events.
+ ** AuthorName : Govinda Mengji 
+ ** Created Date : Nov 2013
+ ************************************************************************/
+/**
+ *Function is for remote agent stop the PFR agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+
+function APP_PFR_Remote_PR_PFR_Agent_Stop_Event() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "PFRAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent010", $obj_PfrPRDown, "Critical");
+}// End of Remote_PR_PFR_Agent_Stop_Event()
+
+/**
+ *Function is for remote agent stop the PFR agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+function APP_PFR_Remote_DR_PFR_Agent_Stop_Event() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "PFRAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent011", $obj_PfrDRdown, "Critical");
+}// Remote_DR_PFR_Agent_Stop_Event
+
+/**
+ *Function is for remote agent start the PFR agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+function APP_PFR_Remote_PR_PFR_Agent_Start_Event() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "PFRAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent012", $obj_PfrPRUp, "Information");
+}// End of Remote_PR_PFR_Agent_Start_Event
+
+/**
+ *Function is for remote agent start the PFR agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+function APP_PFR_Remote_DR_PFR_Agent_Start_Event() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "PFRAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent013", $obj_PfrDRUp, "Information");
+}// End of Remote_DR_PFR_Agent_Start_Event
+
+
+/**
+* Function is for remote agent stop the linux agent from back end for PR.
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function APP_Remote_PR_Linux_Agent_Stop_Event() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "LinuxOSAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent005", $obj_OsPRdown, "Warning");
+}// End of Remote_PR_LinuxAgent_Stop
+
+/**
+* Function is for remote agent stop the linux agent from back end for DR.
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function APP_Remote_DR_Linux_Agent_Stop_Event() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "LinuxOSAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent006", $obj_OsDRdown, "Warning");
+}// End of Remote_DR_LinuxAgent_Stop
+
+/**
+* Function is for remote agent start the linux agent from back end for PR.
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function APP_Remote_PR_Linux_Agent_Start_Event() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "LinuxOSAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent024", $obj_OsPRUp, "Information");
+}// End of Remote_PR_LinuxAgent_Start
+
+/**
+* Function is for remote agent start the linux agent from back end for DR.
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function APP_Remote_DR_Linux_Agent_Start_Event() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "LinuxOSAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent025", $obj_OsDRUp, "Information");
+}// End of Remote_DR_LinuxAgent_Start
+
+
+//SOACTIVE/////////////////////////////////////////////////////////////
+
+/**
+ *Function is for remote agent stop the PFR agent from back end for PR (Current DR)
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+
+function APP_PFR_Remote_DR_PFR_Agent_Stop_Event_SO_InActive() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "PFRAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent010", $obj_PfrPRDown, "Warning");
+	
+}// End of Remote_PR_PFR_Agent_Stop_Event()
+
+/**
+ *Function is for remote agent stop the PFR agent from back end for DR (Current PR)
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+function APP_PFR_Remote_PR_PFR_Agent_Stop_Event_SO_InActive() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "PFRAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent011", $obj_PfrDRdown, "Warning");
+}// Remote_DR_PFR_Agent_Stop_Event
+
+/**
+ *Function is for remote agent start the PFR agent from back end for PR (Current DR)
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+function APP_PFR_Remote_DR_PFR_Agent_Start_Event_SO_InActive() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "PFRAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent012", $obj_PfrPRUp, "Information");
+}// End of Remote_PR_PFR_Agent_Start_Event
+
+/**
+ *Function is for remote agent start the PFR agent from back end for DR (Current PR)
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+function APP_PFR_Remote_PR_PFR_Agent_Start_Event_SO_InActive() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "PFRAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent013", $obj_PfrDRUp, "Information");
+	
+}// End of Remote_DR_PFR_Agent_Start_Event()
+
+
+/**
+* Function is for remote agent stop the linux agent from back end for PR. (Current DR)
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function APP_Remote_PR_Linux_Agent_Stop_Event_SO_InActive() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "LinuxOSAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent006", $obj_OsDRdown, "Warning");
+}// End of Remote_PR_LinuxAgent_Stop
+
+/**
+* Function is for remote agent stop the linux agent from back end for DR. (Current PR)
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function APP_Remote_DR_Linux_Agent_Stop_Event_SO_InActive() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "LinuxOSAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent005", $obj_OsPRdown, "Warning");
+	
+}// End of Remote_DR_LinuxAgent_Stop
+
+/**
+* Function is for remote agent start the linux agent from back end for PR. (Current DR)
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function APP_Remote_DR_Linux_Agent_Start_Event_SO_InActive() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "LinuxOSAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent025", $obj_OsDRUp, "Information");
+}// End of Remote_PR_LinuxAgent_Start
+
+/**
+* Function is for remote agent start the linux agent from back end for DR. (Current PR)
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function APP_Remote_PR_Linux_Agent_Start_Event_SO_InActive() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "LinuxOSAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent024", $obj_OsPRUp, "Information");
+	
+}// End of Remote_DR_LinuxAgent_Start
+
+////////////////LOCAL---AGENST//////////////////////////////////////////////////
+
+
+/**
+ *Function is for Local agent stop the PFR agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+
+function APP_PFR_Local_PR_PFR_Agent_Stop_Event() {
+	var $server = Get_Local_Agent_Event($compIPPR,$remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "PFRAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent010", "PFR agent on primary server is down.", "WARNING");
+}// End of Local_PR_PFR_Agent_Stop_Event() //updated by Critical with Warning type
+
+/**
+ *Function is for Local agent stop the PFR agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+function APP_PFR_Local_DR_PFR_Agent_Stop_Event() {
+	var $server = Get_Local_Agent_Event($compIPDR,$remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "PFRAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent011", "PFR agent on DR server is down.", "WARNING");
+}// Local_DR_PFR_Agent_Stop_Event //updated by Critical with Warning type
+
+/**
+ *Function is for Local agent start the PFR agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+function APP_PFR_Local_PR_PFR_Agent_Start_Event() {
+	var $server = Get_Local_Agent_Event($compIPPR,$remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "PFRAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent012", "PFR agent on primary server is up.", "Information");
+}// End of Local_PR_PFR_Agent_Start_Event
+
+/**
+ *Function is for Local agent start the PFR agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+function APP_PFR_Local_DR_PFR_Agent_Start_Event() {
+	var $server = Get_Local_Agent_Event($compIPDR,$remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "PFRAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent013", "PFR agent on the DR server is up.", "Information");
+}// End of Local_DR_PFR_Agent_Start_Event
+
+
+
+
+
+/**
+* Function is for Local agent stop the linux agent from back end for PR.
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function APP_Local_PR_Linux_Agent_Stop_Event() {
+	var $server = Get_Local_Agent_Event($compIPPR,$remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "LinuxOSAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent005", "OS agent is down on primary server.", "Critical");
+}// End of Local_PR_LinuxAgent_Stop
+
+/**
+* Function is for Local agent stop the linux agent from back end for DR.
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function APP_Local_DR_Linux_Agent_Stop_Event() {
+	var $server = Get_Local_Agent_Event($compIPDR,$remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "LinuxOSAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent006", "OS agent is down on DR server.", "Critical");
+}// End of Local_DR_LinuxAgent_Stop
+
+/**
+* Function is for Local agent start the linux agent from back end for PR.
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function APP_Local_PR_Linux_Agent_Start_Event() {
+	var $server = Get_Local_Agent_Event($compIPPR,$remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "LinuxOSAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent024", "OS Agent is up on primary server.", "Information");
+}// End of Local_PR_LinuxAgent_Start
+
+/**
+* Function is for Local agent start the linux agent from back end for DR.
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function APP_Local_DR_Linux_Agent_Start_Event() {
+	var $server = Get_Local_Agent_Event($compIPDR,$remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "LinuxOSAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent025", "OS Agent is up on DR server.", "Information");
+}// End of Local_DR_LinuxAgent_Start
+
+
+//SO ACTIVE/////////////////////////////////////////////////////////////
+
+/**
+ *Function is for Local agent stop the PFR agent from back end for PR (Current DR)
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+
+function APP_PFR_Local_PR_PFR_Agent_Stop_Event_SO_InActive() {
+	var $server = Get_Local_Agent_Event($compIPPR,$remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "PFRAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent011", "PFR agent on DR server is down.", "Warning");
+	
+}// End of Remote_PR_PFR_Agent_Stop_Event()
+
+/**
+ *Function is for Local agent stop the PFR agent from back end for DR (Current PR)
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+function APP_PFR_Local_DR_PFR_Agent_Stop_Event_SO_InActive() {
+	var $server = Get_Local_Agent_Event($compIPDR,$remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "PFRAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent010", "PFR agent on primary server is down.", "Warning");
+}// Local_DR_PFR_Agent_Stop_Event
+
+/**
+ *Function is for Local agent start the PFR agent from back end for PR (Current DR)
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+function APP_PFR_Local_PR_PFR_Agent_Start_Event_SO_InActive() {
+	var $server = Get_Local_Agent_Event($compIPPR,$remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "PFRAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent013", "PFR agent on the DR server is up.", "Information");
+}// End of Remote_PR_PFR_Agent_Start_Event
+
+/**
+ *Function is for Local agent start the PFR agent from back end for DR (Current PR)
+ *@param :  null
+ *@return : null
+ *@Author :Govinda Mengji
+ */
+function APP_PFR_Local_DR_PFR_Agent_Start_Event_SO_InActive() {
+	var $server = Get_Local_Agent_Event($compIPDR,$remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "PFRAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent012", "PFR agent on primary server is up.", "Information");
+	
+}// End of Local_DR_PFR_Agent_Start_Event
+
+
+
+
+
+/**
+* Function is for Local agent stop the linux agent from back end for PR. (Current DR)
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function APP_Local_PR_Linux_Agent_Stop_Event_SO_InActive() {
+	var $server = Get_Local_Agent_Event($compIPPR,$remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "LinuxOSAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent006", "OS agent is down on DR server.", "Critical");
+}// End of Local_PR_LinuxAgent_Stop
+
+/**
+* Function is for Local agent stop the linux agent from back end for DR.(Current PR)
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function APP_Local_DR_Linux_Agent_Stop_Event_SO_InActive() {
+	var $server = Get_Local_Agent_Event($compIPDR,$remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "LinuxOSAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent005", "OS agent is down on primary server.", "Critical");
+	
+}// End of Local_DR_LinuxAgent_Stop
+
+/**
+* Function is for Local agent start the linux agent from back end for PR. (Current DR)
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function APP_Local_PR_Linux_Agent_Start_Event_SO_InActive() {
+	var $server = Get_Local_Agent_Event($compIPPR,$remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "LinuxOSAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent025", "OS Agent is up on DR server.", "Information");
+}// End of Local_PR_LinuxAgent_Start
+
+/**
+* Function is for Local agent start the linux agent from back end for DR.(Current PR)
+*@param : null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function APP_Local_DR_Linux_Agent_Start_Event_SO_InActive() {
+	var $server = Get_Local_Agent_Event($compIPDR,$remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "LinuxOSAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSAppSubSystemPFREvent024", "OS Agent is up on primary server.", "Information");
+	
+}// End of Local_DR_LinuxAgent_Start
+
+
+
+
+

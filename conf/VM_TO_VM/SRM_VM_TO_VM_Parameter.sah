@@ -1,0 +1,188 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the Remote Agents parameters for APP PFR
+ ** AuthorName : Govinda Mengji
+ ** Created Date : Nov 2013
+ ***********************************************************************************************/
+
+
+if($BrowserLang == "N"){
+	var $l_VM_TO_VM = _readExcelFile($SAHI_HOME+ "\\conf\\VM_TO_VM\\VM_TO_VM_Parameter.xls","SRM_EN");
+}
+else if($BrowserLang == "Y-JA"){
+	var $l_VM_TO_VM = _readExcelFile($SAHI_HOME+ "\\conf\\VM_TO_VM\\VM_TO_VM_Parameter.xls","SRM_JA");
+	}
+
+else if($BrowserLang == "Y-EN"){
+	var $l_VM_TO_VM = _readExcelFile($SAHI_HOME+ "\\conf\\VM_TO_VM\\VM_TO_VM_Parameter.xls","SRM_EN");
+	}
+
+//This user Input required to Login the DRM server
+var $username = $l_VM_TO_VM[3][2]; // DRM server GUI user name e.g. "swati"
+var $password = $l_VM_TO_VM[4][2]; // DRM server GUI pwd
+
+//This user Input required to  uninstall /install PFR service 
+var $ManagementserviceUNDR = $l_VM_TO_VM[13][5]; // this is the Path where user has install the agent on PR "/opt/PFR/"
+var $ManagementservicePWDDR = $l_VM_TO_VM[14][5]; // this is the Path where user h
+
+//This user Input required to install the local agents
+
+ // opt/panaces
+
+//this is user input for PFR service path
+var $localAgentPFRPathPR = $l_VM_TO_VM[13][5]; 
+var $localAgentPFRPathDR = $l_VM_TO_VM[14][5]; 
+//local Agent Installation
+var $dataCentrePR =$l_VM_TO_VM[15][5];
+var $dataCentreDR=$l_VM_TO_VM[16][5];
+var $vcentreNamePR =  $l_VM_TO_VM[19][2];
+var $vcentreNameDR =  $l_VM_TO_VM[20][2];
+var $msType =  $l_VM_TO_VM[21][2];
+
+var $vmName =  $l_VM_TO_VM[18][2];
+var $userPR = $l_VM_TO_VM[9][2];
+var $userDR = $l_VM_TO_VM[11][2];
+
+var $clusterPR=$l_VM_TO_VM[17][5];
+var $clusterDR = $l_VM_TO_VM[18][5]; 
+
+//This user Input required to create the Site
+if($BrowserLang == "N"){
+	/*var $locationPR = "PARIS"; // PR Site Location
+	var $incharge = "drmadmin"; // Site Incharge
+	var $addressPR = "PARIS"; // PR site Address
+	var $locationDR = "DUBLIN"; // DR Site Location
+	var $addressDR = "DUBLIN";// DR site Address
+	var $locationCR = "CHICAGO";
+	var $addressCR="CHICAGO";*/
+	var $locationPR = "PR"; // PR Site Location
+	var $incharge = "drmadmin"; // Site Incharge
+	var $addressPR = "PARIS"; // PR site Address
+	var $locationDR = "DR"; // DR Site Location
+	var $addressDR = "DUBLIN";// DR site Address
+	var $locationCR = "CR";
+	var $addressCR="CHICAGO";
+}
+else {
+	var $locationPR = "Ã¤Â¸â‚¬Ã¦Â¬Â¡"; // PR Site Location
+    var $incharge = "drmadmin"; // Site Incharge
+    var $addressPR = "Ã£Æ’Â Ã£Æ’Â³Ã£Æ’ï¿½Ã£â€šÂ¤"; // PR site Address
+    var $locationDR = "Ã£Æ’ÂªÃ£Æ’Â¢Ã£Æ’Â¼Ã£Æ’Ë†"; // DR Site Location
+    var $addressDR = "Ã£Æ’ï¿½Ã£Æ’Â³Ã£â€šÂ¬Ã£Æ’Â­Ã£Æ’Â¼Ã£Æ’Â«";// DR site Address
+	}
+
+
+
+
+//This user Input required to create the Component for Local or remote
+var $agentType = "Local"; // This if for agent type always enter as e.g. Local or Remote.Note Here first letter is upper case and remaining lower case.
+var $compIPPR = $l_VM_TO_VM[7][2]; // PR Componenet ID
+var $compIPDR = $l_VM_TO_VM[8][2]; // DR Componenet ID
+var $remoteUserNameValPR = $l_VM_TO_VM[9][2]; // PR Machine user name. this information required for both local and remote
+var $remotePwdValPR = $l_VM_TO_VM[10][2]; // PR Machine Pwd name. this information required for both local and remote
+var $remoteUserNameValDR = $l_VM_TO_VM[11][2];// DR Machine user name. this information required for both local and remote
+var $remotePwdValDR = $l_VM_TO_VM[12][2];// PR Machine Pwd name. this information required for both local and remote
+var $compNamePR = $l_VM_TO_VM[13][2]; // PR Componenet Name
+var $compNameDR = $l_VM_TO_VM[14][2]; // DR Componenet Name
+
+
+//This user Input required to create the dataset
+//var $systemTypeDataset = "Application SubSystem"
+var $systemTypeDataset = "LinuxOS";//updated by anita for local agent
+var $mserviceipPR = $l_VM_TO_VM[3][5]; // PR dataset name
+var $mserviceipDR = $l_VM_TO_VM[4][5]; // DR dataset name
+var $ManagementserviceUNPR = $l_VM_TO_VM[5][5];
+var $ManagementservicePWDPR = $l_VM_TO_VM[6][5];
+
+//This user Input required to create the protection Scheme
+var $VRA_NamePR = $l_VM_TO_VM[9][5]; // PR Protection Scheme name
+var $VRA_NameDR = $l_VM_TO_VM[10][5]; // DR Protection Scheme name
+
+ 
+var $systemType=$l_VM_TO_VM[22][2];
+var $VRA_IPPR=$l_VM_TO_VM[23][2];
+var $VRA_IPDR=$l_VM_TO_VM[24][2];
+
+var $VRA_UNPR = $l_VM_TO_VM[19][5];
+var $VRA_PWDPR = $l_VM_TO_VM[20][5];
+var $VRA_UNDR=$l_VM_TO_VM[21][5];
+var $VRA_PWDDR=$l_VM_TO_VM[22][5];
+
+var $tierNum=$l_VM_TO_VM[23][5];
+var $VMsNum=$l_VM_TO_VM[24][5];
+
+var $vmIP=$l_VM_TO_VM[25][2];
+var $vmIP1=$l_VM_TO_VM[29][2];
+
+var $dummyComponentIPCR=$l_VM_TO_VM[26][2];
+var $dummyComponentNameCR=$l_VM_TO_VM[27][2];
+
+var $dummyComponentIPPR=$l_VM_TO_VM[30][2];
+var $dummyComponentNamePR=$l_VM_TO_VM[31][2];
+var $serNamePR=$l_VM_TO_VM[32][5];
+
+var $system_TypeLinux=$l_VM_TO_VM[28][2];
+
+var $serNameCR=$l_VM_TO_VM[26][5];
+var $ProtectionType=$l_VM_TO_VM[27][5];
+
+var $cgMapping=$l_VM_TO_VM[25][5];
+var $withSameIp=$l_VM_TO_VM[33][5];
+var $isMultiple=$l_VM_TO_VM[34][5];
+
+var $crendetialUNPR=$l_VM_TO_VM[34][2];
+var $crendetialPWDPR=$l_VM_TO_VM[35][2];
+var $crendetialUNDR=$l_VM_TO_VM[36][2];
+var $crendetialPWDDR=$l_VM_TO_VM[37][2];
+
+var $drIP=$l_VM_TO_VM[28][5];
+var $drIP_Ex_DR=$l_VM_TO_VM[29][5];
+var $csvFileName=$l_VM_TO_VM[30][5];
+var $withExtendedDR=$l_VM_TO_VM[31][5];
+//This user Input required to create the Group
+var $appStackName = $l_VM_TO_VM[17][2]; // Group name
+var $AGgroupName="AG_"+$appStackName;
+var $appStackName1 = "RM_with_Extended_DR"; // Group name
+var $AGgroupName1="AG_"+$appStackName1;
+if($BrowserLang == "N"){
+	var $groupDescription = "APP PFR"; // Group description
+	}
+	else{
+	var $groupDescription = "Ã¥Â¿Å“Ã§â€�Â¨"; // Group description
+	}
+
+
+//*********************************************************************************************************************************************
+//Important Note : Please don't modify/edit any below variable or its value.
+//If you made any changes of variable and its value, script will not execute.
+//*********************************************************************************************************************************************
+
+var $primaryPanacesServer = $drmServer; // this is Primary DRM server
+var $panacesAgentNodeAddressPR = $compIPPR;
+var $panacesAgentNodeAddressDR = $compIPDR;
+var $compsitePR = $locationPR;
+var $compsiteDR = $locationDR;
+var $primaryComponents = $compNamePR;
+var $remoteComponents = $compNameDR;
+//var $primaryProtections = $sernamePR;
+//var $remoteProtections = $sernameDR;
+var $mgmtHostDGPR =$compNamePR+' ('+$compIPPR+')';
+var $mgmtHostDGDR = $compNameDR+' ('+$compIPDR+')';
+var $dependentComponentNamePR = $compNamePR;
+var $dependentComponentNameDR = $compNameDR;
+var $incharge = "drmadmin";
+var $desiredRpo = "300";
+var $rpoCompute = "300";
+var $systemTypeProtection = "PFR"; // Protection Scheme type
+if($BrowserLang == "N"){
+	var $SolutionSignature = "Application SubSystem with PFR";// Solution type
+}
+else{
+	var $SolutionSignature= "PFRÃ¤Â»ËœÃ£ï¿½ï¿½Application Subsystem";
+}
+var $drmDbUserName = "automation"; // DRM server database user id
+var $drmDbPassword = "sanovi";// DRM server database password
+
+
+

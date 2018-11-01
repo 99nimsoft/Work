@@ -1,0 +1,56 @@
+/**
+* Function is for Validation manager execution.
+*@Author: Omprakash.v
+*/
+function Validation_Manager_Execution()
+{
+	NavigateTo_Validation_Manager($groupName);
+	_click(_button($ValidationRules));
+	_setSelected(_select("groupID"),$groupName);
+	if(_exists(_image($ExecuteNow,_near(_cell($groupName))))){
+		_click(_image($ExecuteNow));
+		_wait(10000);
+		var $i=0;
+		while(i<10)
+		{
+			_wait(10000);
+			if(_exists(_image("spin.gif"))){
+				_log("Validation Execution in progress");
+			}
+			else{
+				_log("Validation execution Successfully Completed");
+				break;
+			}
+			$i++;
+		}
+		
+		NavigateTo_Validation_Manager($groupName);
+		_click(_button($ValidationRules));
+		
+		if(_exists(_image("glass_red.gif"))){
+			_log("validation manager execution Failed");
+			_assertTrue(false);
+		}
+		else{
+			_log("validation manager execution passed successfully");
+		}
+	}
+}
+
+/**
+* Function is for Validation manager execution History.
+*@Author: Omprakash.v
+*/
+
+function View_Execution_History($groupName)
+{
+NavigateTo_Validation_Manager($groupName);
+_click(_button($ValidationRules));
+_setSelected(_select("groupID"),$groupName);
+var $executionStatus=_getText(_link(1,_near(_cell($groupName))));
+if(_exists(_image($ViewExecutionHistory,_near(_cell($groupName)))))
+{
+_click(_image($ViewExecutionHistory));
+_wait(20000);
+}	
+}

@@ -1,0 +1,405 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are used commonly 
+ **              for Low touch solutions. 
+ ** AuthorName :Govinda Mengji
+ ** Created Date : OCT 2015
+ ************************************************************************/
+//var $CompAmazonInstanceIP=$AWSDR;
+
+/**
+* Function for AWS_Management_Service Details script.
+*@param :  null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function AWS_Management_Service(){
+	Management_Service($primarysite,$AWSmsName,$aws_access_id,$aws_secret_key);
+}
+
+
+function Management_Service($primarysite,$AWSmsName,$aws_access_id,$aws_secret_key){
+
+	navigateToDiscovery();
+	_click(_link("Management Service"));
+	if (_exists(_link($AWSmsName))) {
+		_log("Site already exists");
+	}
+	else {
+	_click(_link("Add Management Service"));
+	_setSelected(_select("msSite"), $primarysite);
+	_setSelected(_select("msType"), "AWS");
+	_setValue(_textbox("msName"), $AWSmsName);
+	_setSelected(_select("compName"), "AgentNode");
+	_setValue(_textbox("aws_access_id"), $aws_access_id);
+	_setValue(_password("aws_secret_key"), $aws_secret_key);
+	_click(_button("Test Credentials"));
+	_assertExists(_span("Credential Check Passed"));
+	_click(_submit("Save"));
+	_wait(1000);
+	_assertExists(_link($AWSmsName));
+}
+
+}
+/**
+* Function for Primary Server Details script.
+*@param :  null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function Create_Primary_Server_Details_PR(){
+	Create_Primary_Server_Details($primarysystemType,$primarysite,$primaryip,$primaryPwd,$CreatePrimaryServerType);	
+}
+
+function Create_Primary_Server_Details($primarysystemType,$primarysite,$primaryip,$primaryPwd,$CreatePrimaryServerType){
+navigateToDiscovery();
+_click(_link("Groups"));
+_click(_link("Low Touch Wizard"));
+_click(_link("1) Oracle Recovery to AWS"));
+_setSelected(_select("ComponentType"), $primarysystemType);
+_setSelected(_select("site"), $primarysite);
+_setValue(_textbox("compip"), $primaryip);
+
+if($CreatePrimaryServerType == "Local"){
+	_click(_checkbox("remoteAccess"));
+	_click(_button("Next"));
+}
+else if($CreatePrimaryServerType == "Remote"){
+var $OracleOSUserName =_getText(_textbox("usernameval",_rightOf(_cell("Oracle OS User Name:"))));
+_assertEqual($OracleOSUserName , "oracle");
+_setValue(_password("pwdval"), $primaryPwd);
+_click(_button("Test Credentials"));
+_assertExists(_span("Credential Check Passed"));
+_assertExists(_button("Cancel"));
+_click(_button("Next"));
+
+}
+}
+
+/**
+* Function for Primary_Database Details script.
+*@param :  null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function Create_Primary_Database_Details_PR(){
+	Create_Primary_Database_Details($primarysid,$primaryip,$primarydbusernameval,$primarydbpwdval,$BackuppathforDB);
+}
+
+
+function Create_Primary_Database_Details($primarysid,$primaryip,$primarydbusernameval,$primarydbpwdval,$BackuppathforDB){
+	
+	var $i=0;
+	while($i<20){
+	if(_exists(_link("Prev Info"))){
+			break;
+	}
+	else{
+		_wait(10000);
+		$i++;
+	}
+	}
+	
+
+	_setSelected(_select("ListenetName"), "LISTENER");
+	_wait(10000);
+	_setSelected(_select("sid"), $primarysid);
+	
+	var $IPAddress = _getText(_textbox("dataisn",_rightOf(_cell("IP Address on Which Oracle Listens:"))));
+	_assertEqual($IPAddress , $primaryip ,"IP Address on Which Oracle Listens:" );
+	
+	_setValue(_textbox("dbusernameval"), $primarydbusernameval);
+	_setValue(_password("dbpwdval"), $primarydbpwdval);
+	_click(_button("Test Credentials"));
+	_assertExists(_span("Credential Check Passed"));
+	_setValue(_textbox("path"),  $BackuppathforDB);
+	_click(_button("Next"));
+  
+} 
+
+
+
+/**
+* Function for AWS_Details script.
+*@param :  null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+
+function AWS_Details(){
+	AWS_Details_DR($AWSDRsite,$AWSmsName,$AWSip,$AWSvpcid,$AWSsubnetid,$AWSimageid,$AWSinstancetype,$AWSinstancename,$AWSsg,$AWSkeypair);
+}
+
+
+function AWS_Details_DR($AWSDRsite,$AWSmsName,$AWSip,$AWSvpcid,$AWSsubnetid,$AWSimageid,$AWSinstancetype,$AWSinstancename,$AWSsg,$AWSkeypair){
+	
+	var $i=0;
+	while($i<20){
+	if(_exists(_link("Prev Info"))){
+			break;
+	}
+	else{
+		_wait(10000);
+		$i++;
+	}
+	}
+	
+	_setSelected(_select("drsite"), $AWSDRsite);
+	_setSelected(_select("mgmtsvc"), $AWSmsName);
+	_setSelected(_select("ip") , $AWSip);
+
+	_setSelected(_select("vpcid") , $AWSvpcid);
+	_setSelected(_select("subnetid") , $AWSsubnetid); 				
+	_setSelected(_select("imageid") , $AWSimageid);
+	
+	_setSelected(_select("instancetype") , $AWSinstancetype); 
+	_setSelected(_setValue(_textbox("instancename"), $AWSinstancename));
+	_setSelected(_select("sg"), $AWSsg);
+	
+	_setSelected(_select("keypair"),$AWSkeypair );
+	
+
+	_click(_file("keyfile"));
+	_log($SAHI_HOME+"utility\\import.exe"+" "+$path);
+	_execute($SAHI_HOME+"utility\\import.exe"+" "+$path);
+	_click(_button("Provision"));
+	//_click(_button("Provision"));
+}
+
+
+/**
+* Function for Primary_Component script.
+*@param :  null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function Primary_Component($compnamePrimary){
+	_popup("Test").navigateToDiscovery();
+	_popup("Test")._click(_link("Groups"));
+	_popup("Test")._click(_link("Subsystems"));
+	_popup("Test")._click(_link("Components"));
+	_popup("Test")._assertExists(_link($compnamePrimary));
+	_popup("Test")._assertExists(_cell("ACTIVE", _near(_cell($compnamePrimary))));
+	//var $componentStatus =_popup("Test").1(_cell("ACTIVE", _near(_cell("LINUXSERVER_192.168.20.74"))));
+	//	_popup("Test")._getText(_cell(4, _near(_cell($compnamePrimary), _under(_tableHeader("Status")))));
+	//_popup("Test")._assertEqual($componentStatus,"ACTIVE");
+	
+}
+
+/**
+* Function for Primary_DataSet script.
+*@param :  null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function Primary_DataSet($DatasetPrimary){
+	_popup("Test")._wait(100000);
+	_popup("Test").navigateToDiscovery();
+	_popup("Test")._click(_link("Groups"));
+	_popup("Test")._click(_link("Subsystems"));
+	_popup("Test")._click(_link("Datasets"));
+	_popup("Test")._assertExists(_link($DatasetPrimary));
+	_popup("Test")._assertExists(_cell("ACTIVE", _near(_cell($DatasetPrimary))));
+	Close_Window();
+}
+
+
+/**
+* Function for  Open_NewWindow script.
+*@param :  null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function Open_NewWindow($drmServer){
+	//_wait(100000);
+	_call(window.open('http://' + $drmServer + ':8080/PanacesGUI/pages/discovery_ss_list.do', "Test"));
+	
+}
+/**
+* Function for Close_Window script.
+*@param :  null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function Close_Window(){
+	_popup("Test").close();
+}
+
+
+/**
+* Function for Oracle_Low_Touch_Provisioning script.
+*@param :  null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function Verify_Oracle_Low_Touch_Provisioning() {
+_wait(10000);
+	_call(top.location.reload());
+var $i=0;
+while($i<10){
+if(_exists(_span("WaaS")) || _span("EXECUTING[1]")) {
+	_log("Oracle Low touch Provisioning Started");
+	break;
+}
+else{
+	_wait(10000);
+	_call(top.location.reload());
+	$i+1;
+}
+}
+
+_wait(1000000);
+var $i=0;
+while($i<20){
+if(_exists(_cell("EXECUTED[1]" ,_near(_span("CreateAmazonInstance")))))
+{
+	_click(_span("CreateAmazonInstance"));
+	 $awsIns = _getText(_preformatted(/.*/));
+    $awsInsIP = $awsIns.split("AWS_INSTANCE_IP=");
+	 $awsInstIP=$awsInsIP[1].split("}");
+	$AmazonInstanceIP=$awsInstIP[0];
+	_log($AmazonInstanceIP ,"AWS_INSTANCE_IP");
+	return $AmazonInstanceIP;
+break;
+}
+else{
+	_wait(1000);
+	i++;
+}
+
+}
+}
+
+
+/**
+* Function for Go_to_exection_page script.
+*@param :  null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function Go_to_exection_page(){
+	_click(_link("Admin"));
+	navigateToDiscovery();
+	_click(_link("Groups"));
+	_wait(10000);
+	_click(_link("Low Touch Wizard"));
+	_wait(10000);
+	_click(_link("Go to exection page"));
+		
+/* if(_exists(_link("Go to exection page"))) {
+	
+	}
+	else{
+	_fail("Provising not started");
+	}*/
+}
+
+
+/**
+* Function for AmazonInstance_Component script.
+*@param :  null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+
+function AmazonInstance_Component($primarysystemType,$AmazonInstanceIP){
+	_click(_link("Admin"));
+	_wait(10000);
+	navigateToDiscovery();
+	_click(_link("Groups"));
+	_click(_link("Subsystems"));
+	_click(_link("Components"));
+	 $CompAmazonInstanceIP=$primarysystemType+"SERVER"+"_"+$AmazonInstanceIP;
+	_assertExists(_link($CompAmazonInstanceIP));
+	_assertExists(_cell("ACTIVE", _near(_cell($CompAmazonInstanceIP))));
+	return $CompAmazonInstanceIP;
+	
+}
+
+/**
+* Function for AmazonInstance_DataSet script.
+*@param :  null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function AmazonInstance_DataSet($CompAmazonInstanceIP){
+	_click(_link("Admin"));
+	navigateToDiscovery();
+	_click(_link("Groups"));
+	_click(_link("Subsystems"));
+	_click(_link("Datasets"));
+	 $DataAmazonInstanceIP="Oracle_"+$CompAmazonInstanceIP;
+	_assertExists(_link($DataAmazonInstanceIP));
+   _assertExists(_cell("ACTIVE", _near(_cell($DataAmazonInstanceIP))));
+	return $DataAmazonInstanceIP;
+}
+
+
+/**
+* Function for Oracle Low Touch_Provisioning Executions Script.
+*@param :  null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+
+function Oracle_Low_Touch_Provisioning_Execution(){
+	_wait(10000);
+	$i=0;
+	$sec = 0;  //_assertExists(_span("AWAITING INPUT"));
+	
+	
+	while ($i < 100){
+		var $ExecutionStatus = _getText(_span("executionCurrentStatus"));
+		if($ExecutionStatus == "EXECUTING"){
+			$sec=$sec+40;
+			_log("Oracle DG Low touch workflow Executing for last " + $sec + " Secs");
+		} 
+		if($ExecutionStatus == "AWAITING INPUT"){
+			_click(_button("Awaiting Input"));
+			if (_exists(_submit("Retry=RETRY userInputButton btn btn-primary btn-xs btn btn-info"))) {
+				_click(_submit("Retry=RETRY userInputButton btn btn-primary btn-xs btn btn-info"));
+			_wait(100000);
+			if (_exists(_button("Awaiting Input"))) {
+				_fail("Oracle DG Low touch workflow Exectuion got fail check logs");
+				break;
+			}
+		}
+		}
+		
+		else if($ExecutionStatus == "SUCCESS"){
+			_log("Oracle DG Low touch workflow executed succesfully");
+			break;
+		}
+	 _wait(300000);	
+	 $i++;
+	}
+	
+	}
+
+
+

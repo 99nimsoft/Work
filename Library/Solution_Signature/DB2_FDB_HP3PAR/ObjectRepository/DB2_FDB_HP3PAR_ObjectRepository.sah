@@ -1,0 +1,84 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains APP PFR Solution specific
+ ** AuthorName : 
+ ** Created Date : 
+ ***********************************************************************************************/
+
+var $Excel1=_getExcel($SAHI_HOME + "\\Library\\Solution_Signature\\DB2_FDB_HP3PAR\\ObjectRepository\\DB2_FDB_HP3PAR_ObjectRepository.xls","Param");
+
+var $Excel=$Excel1.getData();
+
+if($BrowserLang == "N"){
+	
+	var $j = 2;
+}
+else if($BrowserLang == "Y-JA"){
+	
+	var $j = 3;
+	}
+
+else if($BrowserLang == "Y-EN"){
+		
+		var $j = 3;
+	}
+////////////////////Solution\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+var $Save2=$Excel[2][$j];
+var $Finish=$Excel[3][$j];
+var $EditWorkflow=$Excel[4][$j];
+var $Workflow=$Excel[5][$j];
+var $ActionProperties=$Excel[6][$j];
+var $Custom=$Excel[7][$j];
+var $ReplicationStatus=$Excel[8][$j];
+var $DataLag=$Excel[9][$j];
+var $Status=$Excel[10][$j];
+var $ReplicationStatus=$Excel[11][$j];
+var $Admin=$Excel[12][$j];
+var $CurrentEvents=$Excel[13][$j];
+var $AdvancedFilter=$Excel[14][$j];
+var $Apply=$Excel[15][$j];
+
+
+var $Subsystems=$Excel[16][$j];
+var $Datasets=$Excel[17][$j];
+var $Go=$Excel[18][$j];
+var $RegisterAgent=$Excel[19][$j];
+var $RegisterAgent=$Excel[20][$j];
+var $RegisterAgents=$Excel[21][$j];
+var $Subsystems=$Excel[22][$j];
+var $Datasets=$Excel[23][$j];
+var $systemType=$Excel[24][$j];
+var $Go=$Excel[25][$j];
+var $CONNECTED=$Excel[26][$j];
+var $TestCredentials=$Excel[27][$j];
+var $Success=$Excel[28][$j];
+var $Discover=$Excel[29][$j];
+var $Save=$Excel[30][$j];
+var $Subsystems=$Excel[31][$j];
+var $Datasets=$Excel[32][$j];
+var $Datafiles=$Excel[33][$j];
+var $Redologs=$Excel[34][$j];
+var $Controlfiles=$Excel[35][$j];
+var $ArchiveLogsLocation=$Excel[36][$j];
+var $Subsystems=$Excel[37][$j];
+var $Datasets=$Excel[38][$j];
+var $DatabaseConnectionEstablished=$Excel[39][$j];
+var $DatabaseConnectionEstablished=$Excel[40][$j];
+var $DatasetStatusDB=$Excel[41][$j];
+
+
+var $Subsystems=$Excel[42][$j];
+var $ProtectionSchemes=$Excel[43][$j];
+var $Protectionschemealreadyexists=$Excel[44][$j];
+var $Go=$Excel[45][$j];
+var $RegisterAgent=$Excel[46][$j];
+var $CONNECTED=$Excel[47][$j];
+var $Status=$Excel[48][$j];
+var $AgentisCONNECTED=$Excel[49][$j];
+var $Save=$Excel[50][$j];
+var $ACTIVEHP3PAR=$Excel[51][$j];
+var $INACTIVEHP3PAR=$Excel[52][$j];
+var $UNKNOWNHP3PAR=$Excel[53][$j];
+

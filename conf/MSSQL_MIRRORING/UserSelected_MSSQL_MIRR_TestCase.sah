@@ -1,0 +1,186 @@
+var $l_userInputsDataMSSQLMIRR  = _readExcelFile($SAHI_HOME + "\\conf\\MSSQL_MIRRORING\\MSSQL_MIRR_Parameter.xls","User Selected Case");
+var $userDataLength   = $l_userInputsDataMSSQLMIRR.length-1;
+
+var $flag = 0;
+for($i = 4 ; $i <= $userDataLength  ; $i++){
+	if($l_userInputsDataMSSQLMIRR [$i][4] == "Y"){	
+		$flag=$flag+1;	
+	}
+}
+
+
+///----Execution of Individual Testcase------------------------------------------
+
+var $g_MSSQL_MIRR_site = $l_userInputsDataMSSQLMIRR [17][4];
+var $g_MSSQL_MIRR_AgentNode = $l_userInputsDataMSSQLMIRR [18][4];
+var $g_MSSQL_MIRR_ComponentRemoteDiscovery = $l_userInputsDataMSSQLMIRR [19][4];
+var $g_MSSQL_MIRR_ComponentLocalDiscovery = $l_userInputsDataMSSQLMIRR [20][4];
+var $g_MSSQL_MIRR_DatasetDiscovery = $l_userInputsDataMSSQLMIRR [21][4];
+var $g_MSSQL_MIRR_AutoDatasetDiscovery = $l_userInputsDataMSSQLMIRR [22][4];
+var $g_MSSQL_MIRR_Dataset_Status = $l_userInputsDataMSSQLMIRR [23][4];
+var $g_MSSQL_MIRR_Group_Creation = $l_userInputsDataMSSQLMIRR [24][4];
+var $g_MSSQL_MIRR_Move_Group_Manage = $l_userInputsDataMSSQLMIRR [25][4];
+var $g_MSSQL_MIRR_Change_Continuity_State = $l_userInputsDataMSSQLMIRR [26][4];
+var $g_MSSQL_MIRR_Component_Remote_Status = $l_userInputsDataMSSQLMIRR [27][4];
+var $g_MSSQL_MIRR_Component_Local_Status = $l_userInputsDataMSSQLMIRR [28][4];
+var $g_MSSQL_MIRR_Contiunity_Status = $l_userInputsDataMSSQLMIRR [29][4];
+var $g_MSSQL_MIRR_Continuity_Management = $l_userInputsDataMSSQLMIRR [30][4];
+
+var $g_MSSQL_MIRR_Start_NormalCopy= $l_userInputsDataMSSQLMIRR [31][4];
+
+var $g_MSSQL_MIRR_Mointor_Relationship = $l_userInputsDataMSSQLMIRR [32][4];
+var  $g_MSSQL_MIRR_Group_Information = $l_userInputsDataMSSQLMIRR [33][4];
+var  $g_MSSQL_MIRR_Group_Snapshot = $l_userInputsDataMSSQLMIRR [34][4];
+var $g_MSSQL_MIRR_NC_RPO = $l_userInputsDataMSSQLMIRR [35][4];
+var $g_MSSQL_MIRR_NC_RTO = $l_userInputsDataMSSQLMIRR [36][4];
+
+var $g_MSSQL_MIRR_Stop_NC = $l_userInputsDataMSSQLMIRR [37][4];
+var$g_MSSQL_MIRR_Start_SO = $l_userInputsDataMSSQLMIRR [38][4];
+var $g_MSSQL_MIRR_SO_Execution = $l_userInputsDataMSSQLMIRR [39][4];
+var $g_MSSQL_MIRR_SO_Replication = $l_userInputsDataMSSQLMIRR [40][4];
+var  $g_MSSQL_MIRR_Start_RNC = $l_userInputsDataMSSQLMIRR [41][4];
+var $g_MSSQL_MIRR_RNC_GroupInformation = $l_userInputsDataMSSQLMIRR [42][4];
+var $g_MSSQL_MIRR_RNC_GroupSnapshot = $l_userInputsDataMSSQLMIRR [43][4];
+var $g_MSSQL_MIRR_RNC_Rpo_Monitor = $l_userInputsDataMSSQLMIRR [44][4];
+var  $g_MSSQL_MIRR_Stop_RNC = $l_userInputsDataMSSQLMIRR [45][4];
+var $g_MSSQL_MIRR_Remote_Stop_MSSQL_Agent_SO_InActive = $l_userInputsDataMSSQLMIRR [46][4];
+var $g_MSSQL_MIRR_Remote_Start_MSSQL_Agent_SO_InActive = $l_userInputsDataMSSQLMIRR [47][4];
+var $g_MSSQL_MIRR_Remote_Stop_Windows_OS_Agent_SO_InActive = $l_userInputsDataMSSQLMIRR [48][4];
+var $g_MSSQL_MIRR_Remote_Start_Windows_OS_Agent = $l_userInputsDataMSSQLMIRR [49][4];
+var $g_MSSQL_MIRR_Local_Stop_MSSQL_Agent_SO_InActive = $l_userInputsDataMSSQLMIRR [50][4];
+var $g_MSSQL_MIRR_Local_Start_MSSQL_Agent_SO_InActive = $l_userInputsDataMSSQLMIRR [51][4];
+var $g_MSSQL_MIRR_Local_Stop_Windows_OS_Agent_SO_InActive = $l_userInputsDataMSSQLMIRR [52][4];
+var $g_MSSQL_MIRR_Local_Start_Windows_OS_Agent = $l_userInputsDataMSSQLMIRR [53][4];
+var $g_MSSQL_MIRR_Start_SB = $l_userInputsDataMSSQLMIRR [54][4];
+var $g_MSSQL_MIRR_SB_Execution = $l_userInputsDataMSSQLMIRR [55][4];
+var $g_MSSQL_MIRR_SB_Monitor_Manage = $l_userInputsDataMSSQLMIRR [56][4];
+var $g_MSSQL_MIRR_Remote_Stop_MSSQL_Agent = $l_userInputsDataMSSQLMIRR [57][4];
+var $g_MSSQL_MIRR_Remote_Start_MSSQL_Agent = $l_userInputsDataMSSQLMIRR [58][4];
+var $g_MSSQL_MIRR_Remote_Stop_Windows_OS_Agent = $l_userInputsDataMSSQLMIRR [59][4];
+var $g_MSSQL_MIRR_Remote_Start_Windows_OS_Agent = $l_userInputsDataMSSQLMIRR [60][4];
+var $g_MSSQL_MIRR_Local_Stop_MSSQL_Agent = $l_userInputsDataMSSQLMIRR [61][4];
+var $g_MSSQL_MIRR_Local_Start_MSSQL_Agent = $l_userInputsDataMSSQLMIRR [62][4];
+var $g_MSSQL_MIRR_Local_Stop_Windows_OS_Agent = $l_userInputsDataMSSQLMIRR [63][4];
+var $g_MSSQL_MIRR_Local_Start_Windows_OS_Agent = $l_userInputsDataMSSQLMIRR [64][4];
+
+var $g_MSSQL_MIRR_Start_FO = $l_userInputsDataMSSQLMIRR [65][4];
+var $g_MSSQL_MIRR_FO_execution = $l_userInputsDataMSSQLMIRR [66][4];
+var $g_MSSQL_MIRR_FO_RPO = $l_userInputsDataMSSQLMIRR [67][4];
+var $g_MSSQL_MIRR_FO_Monitor_Manage = $l_userInputsDataMSSQLMIRR [68][4];
+var $g_MSSQL_MIRR_Continuity_Status_FO = $l_userInputsDataMSSQLMIRR [69][4];
+var $g_MSSQL_MIRR_Remote_Stop_Windows_OS_Agent_FO_Active = $l_userInputsDataMSSQLMIRR [70][4];
+var $g_MSSQL_MIRR_Remote_Start_Windows_OS_Agent_FO_Active = $l_userInputsDataMSSQLMIRR [71][4];
+var $g_MSSQL_MIRR_Remote_Local_Windows_OS_Agent_FO_Active = $l_userInputsDataMSSQLMIRR [72][4];
+var $g_MSSQL_MIRR_Remote_Local_Windows_OS_Agent_FO_Active = $l_userInputsDataMSSQLMIRR [73][4];
+var $MsSqlAgentWindowCheck=1;
+
+//---------------For Executing All the Testcases------------------------
+var $g_MSSQL_MIRR_executeAll = $l_userInputsDataMSSQLMIRR [5][4];
+
+
+var $g_MSSQL_MIRR_groupCreation  = $l_userInputsDataMSSQLMIRR [9][4];
+var $g_MSSQL_MIRR_executeNC  = $l_userInputsDataMSSQLMIRR [10][4];
+var $g_MSSQL_MIRR_Monitor  = $l_userInputsDataMSSQLMIRR [11][4];
+var $g_MSSQL_MIRR_executeSOSB  = $l_userInputsDataMSSQLMIRR [12][4];
+var $g_MSSQL_MIRR_executeFO  = $l_userInputsDataMSSQLMIRR [13][4];
+
+//--------------For Group Creation--------------------------------------
+
+if ($g_MSSQL_MIRR_groupCreation  == "Y"){
+var $g_MSSQL_MIRR_site  = "Y";
+var $g_MSSQL_MIRR_AgentNode  = "Y";
+if($agentType == "Remote"){
+var  $g_MSSQL_MIRR_ComponentRemoteDiscovery  = "Y";
+}else{
+var $g_MSSQL_MIRR_ComponentLocalDiscovery = "Y";
+}
+var $g_MSSQL_MIRR_DatasetDiscovery= "Y";
+var $g_MSSQL_MIRR_AutoDatasetDiscovery = "Y";
+var $g_MSSQL_MIRR_Dataset_Status = "Y";
+var $g_MSSQL_MIRR_Group_Creation  = "Y";
+var $g_MSSQL_MIRR_Move_Group_Manage = "Y";
+var $g_MSSQL_MIRR_Change_Continuity_State = "Y";
+var $g_MSSQL_MIRR_Component_Remote_Status = "Y";
+var $g_MSSQL_MIRR_Contiunity_Status = "Y";
+var $g_MSSQL_MIRR_Continuity_Management = "Y";
+}
+
+//-----------Execution Normal Copy----------------------------
+
+if ($g_MSSQL_MIRR_executeNC  == "Y")
+{
+var $g_MSSQL_MIRR_Start_NormalCopy  = "Y";
+}
+
+//--------------Monitor-----------------------------------------
+
+if($g_MSSQL_MIRR_Monitor == "Y"){
+var $g_MSSQL_MIRR_Mointor_Relationship = "Y";
+var $g_MSSQL_MIRR_Group_Information = "Y";
+var $g_MSSQL_MIRR_Group_Snapshot = "Y";
+var	$g_MSSQL_MIRR_NC_RPO = "Y";
+var	$g_MSSQL_MIRR_NC_RTO = "Y";
+}
+
+//----------Stop NC and Start SO,RNC and SB------------------------------------------
+if($g_MSSQL_MIRR_executeSOSB == "Y") {
+var $g_MSSQL_MIRR_Stop_NC = "Y";
+var $g_MSSQL_MIRR_Start_SO = "Y";
+var $g_MSSQL_MIRR_SO_Execution = "Y";
+var $g_MSSQL_MIRR_SO_Replication = "Y";
+var $g_MSSQL_MIRR_Start_RNC = "Y";
+var $g_MSSQL_MIRR_RNC_GroupInformation = "Y";
+var $g_MSSQL_MIRR_RNC_GroupSnapshot = "Y";		
+var $g_MSSQL_MIRR_RNC_Rpo_Monitor = "Y";
+var $g_MSSQL_MIRR_Stop_RNC = "Y";
+if($agentType == "Remote"){
+var $g_MSSQL_MIRR_Remote_Stop_MSSQL_Agent_SO_InActive = "Y";
+var $g_MSSQL_MIRR_Remote_Start_MSSQL_Agent_SO_InActive = "Y";
+var $g_MSSQL_MIRR_Remote_Stop_Windows_OS_Agent_SO_InActive = "Y";
+var $g_MSSQL_MIRR_Remote_Start_Windows_OS_Agent = "Y";
+} else{
+var $g_MSSQL_MIRR_Local_Stop_MSSQL_Agent_SO_InActive = "Y";
+var $g_MSSQL_MIRR_Local_Start_MSSQL_Agent_SO_InActive = "Y";
+var $g_MSSQL_MIRR_Local_Stop_Windows_OS_Agent_SO_InActive = "Y";
+var $g_MSSQL_MIRR_Local_Start_Windows_OS_Agent = "Y";
+}
+var $g_MSSQL_MIRR_Start_SB = "Y";
+var $g_MSSQL_MIRR_SB_Execution = "Y";
+var $g_MSSQL_MIRR_SB_Monitor_Manage = "Y";
+if($agentType == "Remote"){
+var $g_MSSQL_MIRR_Remote_Stop_MSSQL_Agent = "Y";
+var $g_MSSQL_MIRR_Remote_Start_MSSQL_Agent = "Y";
+var $g_MSSQL_MIRR_Remote_Stop_Windows_OS_Agent = "Y";
+var $g_MSSQL_MIRR_Remote_Start_Windows_OS_Agent = "Y";
+} else{
+var $g_MSSQL_MIRR_Local_Stop_MSSQL_Agent = "Y";
+var $g_MSSQL_MIRR_Local_Start_MSSQL_Agent = "Y";
+var $g_MSSQL_MIRR_Local_Stop_Windows_OS_Agent = "Y";
+var $g_MSSQL_MIRR_Local_Start_Windows_OS_Agent = "Y";
+}
+}
+//--------FO Execution-----------------------------------------------
+if($g_MSSQL_MIRR_executeFO == "Y") {
+
+var $g_MSSQL_MIRR_Start_FO = "Y";
+var $g_MSSQL_MIRR_FO_execution = "Y";
+var $g_MSSQL_MIRR_FO_RPO = "Y";
+var $g_MSSQL_MIRR_FO_Monitor_Manage = "Y";
+var $g_MSSQL_MIRR_Continuity_Status_FO = "Y";
+if($agentType == "Remote"){
+var $g_MSSQL_MIRR_Remote_Stop_Windows_OS_Agent_FO_Active = "Y";
+var $g_MSSQL_MIRR_Remote_Start_Windows_OS_Agent_FO_Active = "Y";
+} else {
+var $g_MSSQL_MIRR_Local_Stop_Windows_OS_Agent_FO_Active = "Y";
+var $g_MSSQL_MIRR_Local_Start_Windows_OS_Agent_FO_Active = "Y";
+}
+}
+
+
+
+if($flag == 0){
+	$g_MSSQL_MIRR_executeAll = "Y";
+}
+
+
+

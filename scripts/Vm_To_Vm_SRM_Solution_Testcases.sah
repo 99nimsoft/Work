@@ -1,0 +1,88 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the remote agent test cases which are the part of  APP_PFR solution. 
+ ** AuthorName : Govinda Mengji
+ ** Created Date : June 2013
+ ************************************************************************/
+
+_log("=================================Pre-Condition===================================","Custom1");
+
+_include("../Library/Solution_Signature/Include/APP_PFR_Include.sah");
+_include("../conf/DRMInstallation_Parameter.sah");
+_include("../Library/Common/CommonRepository/CommonDRM_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/CommonGUINavigation_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/GroupOperation_ObjRepository.sah");
+_include("../Library/Solution_Signature/APP_PFR/ObjectRepository/APPPFR_ObjectRepository.sah");
+_include("../Library/Solution_Signature/APP_PFR/ObjectRepository/AppPFR_Event_ObjectRepository.sah");
+_include("../conf/VM_TO_VM/SRM_VM_TO_VM_Parameter.sah");
+_include("../Library/Solution_Signature/VM_TO_VM/SRM_VM_TO_VM_Automation_testcases_Function.sah");
+_include("../Library/Solution_Signature/VM_TO_VM/VM_TO_VM_Solution.sah");
+
+
+Login_001();
+
+var $test0 = _testcase("Site_0003","Create New Site")
+	$test0.start(); 
+	Site_0003();
+	Create_Site_CR();
+	$test0.end();
+
+
+var $test2 = _testcase("CreateManagementService_002", "Create Management Services and Verify Status")
+    $test2.start();
+    CreateManagementService_002();
+    $test2.end();
+  
+   
+var $test2 = _testcase("Vcentre_Resource_Mapping", "Vcentre resource mapping and Verify")
+    $test2.start();
+    Vcentre_Resource_Mapping();
+    $test2.end();
+ 
+var $test2 = _testcase("APP_PFR_Component_Remote_Discovery_VRA_ESX","Create New VRA and ESX Component");
+    $test2.start();
+    APP_PFR_Component_Remote_Discovery_VRA_ESX();
+    $test2.end();
+
+var $test2 = _testcase("Create_Crendetials_SRM_PRDR","Create crendetials");
+    $test2.start();
+    Create_Crendetials_SRM_PRDR();
+    $test2.end();     
+
+var $test2 = _testcase("Bulk_Upload", "Bulk upload")
+    $test2.start();
+    Bulk_Upload();
+    $test2.end();    
+ 
+var $test2 = _testcase("APP_PFR_Component_Remote_Discovery_0018","Create New Netapp Component");
+    $test2.start();
+    APP_PFR_Component_Remote_Discovery_0018();
+    $test2.end();
+
+var $test2 = _testcase("Create_Netapp_Protection_Schema","Create New Netapp protection schema");
+    $test2.start();
+    Create_Netapp_Protection_Schema();
+    $test2.end();
+    
+
+if($withExtendedDR=="no") {
+var $test6= _testcase("Navigate_to_Appstack_SRM", " Go to Appstack in Application Recovery")
+    $test6.start();
+    Navigate_to_Appstack_SRM();
+    $test6.end();
+}
+
+if($withExtendedDR=="no") {
+var $test6= _testcase("create_AG", " Create AG with single DR")
+    $test6.start();
+    create_AG();
+    $test6.end(); 
+}
+   
+if($withExtendedDR=="yes") {         
+var $test6= _testcase("create_AG_Extended_DR", " Creating AG with Extended DR")
+    $test6.start();
+    create_AG_Extended_DR();
+    $test6.end();
+ }

@@ -1,0 +1,421 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the remote agent test cases which are the part of  MSSQL solution. 
+ ** AuthorName : Automation Team
+ ** Created Date : June 2013
+ ************************************************************************/
+
+//don't change the below line.
+_include("../Library/Solution_Signature/Include/MSSQL_MIRR_Include.sah");
+
+// mentioned the correct parameter file name which user are going to execute within the "" code.
+_include("../conf/DRMInstallation_Parameter.sah");
+_include("../Library/Common/CommonRepository/CommonDRM_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/CommonGUINavigation_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/GroupOperation_ObjRepository.sah");
+_include("../Library/Solution_Signature/MSSQL_MIRRORING/objectRepository/Mirroring_ObjectRepository.sah");
+//_include("../Library/Solution_Signature/MSSQL_MIRRORING/objectRepository/AppPFR_Event_ObjectRepository.sah");
+_include("../conf/MSSQL_MIRRORING/MSSQL_MIRR_Remote_Agent_Parameter.sah");
+_include("../conf/MSSQL_MIRRORING/UserSelected_MSSQL_MIRR_TestCase.sah");
+
+//_include("../Common/Operation_On_FG/Common_GUI_Navigation.sah");
+
+_include("../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+
+_log("=================================Pre-Condition===================================", "Custom1");
+
+
+Login_001();
+
+_log("=================================Test========================================", "Custom1");
+
+
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_site == "Y") {
+	var $test1 = _testcase("Site_0003", "Site Creation");
+	$test1.start();
+	Site_0003();
+	$test1.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_AgentNode == "Y") {
+	var $test2 = _testcase("Object_Manager/ Common/ Components/ Component_04 ", "Create Agent Node");
+	$test2.start();
+	Agent_node_001();
+	$test2.end();
+}
+
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_ComponentRemoteDiscovery == "Y") {
+	var $test1 = _testcase("Object_Manager/Common/Components/Component_04", "Creation of Component");
+	$test1.start();
+	MSSQL_MIRR_Component_Remote_Discovery_0001();
+
+	$test1.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_DatasetDiscovery == "Y") {
+	var $test2 = _testcase("Object_Manager/Dataset/Mssql/MSSQL_DatasetDiscovery0002", "Creation of Datasets");
+	$test2.start();
+	MSSQL_MIRR_Dataset_Discovery_0002();
+	$test2.end();
+}
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_AutoDatasetDiscovery == "Y") {
+	var $test3 = _testcase("MsSql_Auto_DatasetDiscovery0003", "Auto Dataset Discovery");
+	$test3.start();
+	MSSQL_MIRR_Auto_DatasetDiscovery0003();
+	$test3.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Group_Creation == "Y") {
+	var $test4 = _testcase("Continuity_Manager/Common/FG/Group/GroupCreation_0004", "Group Creation");
+	$test4.start();
+	MSSQL_MIRR_GroupCreation_0004();
+	$test4.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Move_Group_Manage == "Y") {
+	var $test5 = _testcase("Continuity_Manager/Common/FG/Group/GroupCreation_0005", "Move Group to Managed state");
+	$test5.start();
+	MSSQL_MIRR_Move_Group_Manage_0005();
+	$test5.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Change_Continuity_State == "Y") {
+	var $test6 = _testcase("Continuity_Manager/Common/FG/Manage/Change_Continuity_State_0006", "Change Continuity State");
+	$test6.start();
+	MSSQL_MIRR_Change_Continuity_State_0006();
+	$test6.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Component_Remote_Status == "Y") {
+	var $test7 = _testcase("Object_Manager/Common/Components/Component_0007", "Component Status");
+	$test7.start();
+	MSSQL_MIRR_Component_Remote_Status_0007();
+	$test7.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Contiunity_Status == "Y") {
+	var $test8= _testcase("Continuity_Manager/Common/FG/Monitor/NormalCopy_0008 ", "Current Continuity Status");
+	$test8.start();
+	MSSQL_MIRR_Contiunity_Status_0008();
+	$test8.end();
+}
+
+
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Start_NormalCopy == "Y") {
+	var $test9 = _testcase("Continuity_Manager/Common/FG/Manage/NormalCopy_0009", "Start NormalCopy");
+	$test9.start();
+	MSSQL_MIRR_Start_NormalCopy_0009();
+	$test9.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Mointor_Relationship == "Y") {
+	var $test10 = _testcase("Monitor_Relationship_0010", "Monitor Relationship");
+	$test10.start();
+	MSSQL_MIRR_Monitor_Relationship_0010();
+	$test10.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Group_Information == "Y") {
+	var $test11= _testcase("Continuity_Manager/Common/FG/Manage/Continuity_Management_0011", "ContiniutyWorkFlow");
+	$test11.start();
+	MSSQL_MIRR_Continuity_Work_Flow_NC_0011();
+	$test11.end();
+}
+
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Group_Snapshot == "Y") {
+	var $test12 = _testcase("Replication_NC_0012", "Replication");
+	$test12.start();
+	MSSQL_MIRR_Replication_Flow_NC_0012();
+	$test12.end();
+}
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_NC_RPO == "Y") {
+	var $test13 = _testcase("Continuity_Manager/Common/FG/Monitor/RPO_0013", "RPO TransactionID/Time");
+	$test13.start();
+	MSSQL_MIRR_NC_RPO_0013();
+	$test13.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_NC_RTO == "Y") {
+	var $test14 = _testcase("Continuity_Manager/Common/FG/Monitor/RTO_0014", "Vailidate the RTO compute interval time");
+	$test14.start();
+	MSSQL_MIRR_NC_RTO_0014();
+	$test14.end();
+}
+
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Stop_NC == "Y") {
+	var $test15 = _testcase("Continuity_Manager/Common/FG/Monitor/Switchover_0015", "Stop Normal Copy");
+	$test15.start();
+	MSSQL_MIRR_Stop_NC_0015();
+	$test15.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Start_SO == "Y") {
+	var $test16 = _testcase("Continuity_Manager/Common/FG/Monitor/Switchover_0016", "Start SwitchOver");
+	$test16.start();
+	MSSQL_MIRR_Start_SO_0016();
+	$test16.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_SO_Execution == "Y") {
+	var $test17 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0017", "Verify Continuity Status");
+	$test17.start();
+	MSSQL_MIRR_SO_Execution_0017();
+	$test17.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_SO_Replication == "Y") {
+	var $test18 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0018 ", "Verify the Continuity Status");
+	$test18.start();
+	
+	MSSQL_MIRR_SO_Continuity_Status_0018();
+
+	$test18.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Start_RNC == "Y") {
+	var $test19 = _testcase("Start_RNC_0019", "Start RNC");
+	$test19.start();
+	MSSQL_MIRR_Start_RNC_0019();
+	$test19.end();
+}
+//Checking the RNC_Execution
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_RNC_GroupInformation == "Y") {
+	var $test20 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0020", "RNC Execution");
+	$test20.start();
+	
+	MSSQL_MIRR_RNC_Execution_0020();
+
+	$test20.end();
+}
+
+//Need to  change  the  value
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Group_Information == "Y") {
+	var $test21 = _testcase("Continuity_Manager/Common/FG/Manage/Continuity_Management_0021", "Group Information Tab");
+	$test21.start();
+	
+	MSSQL_MIRR_Continuity_Work_Flow_RNC_0021();
+	$test21.end();
+}
+
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Mointor_Relationship == "Y") {
+	var $test10 = _testcase("Monitor_Relationship_0010", "Monitor Relationship");
+	$test10.start();
+	MSSQL_MIRR_Monitor_Relationship_0010();
+	$test10.end();
+}
+
+//Calling Replication of SO
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_RNC_GroupSnapshot == "Y") {
+	var $test22 = _testcase("RNC_GroupSnapshot_Monitor_0022", "Group Snapshot RNC");
+	$test22.start();
+	MSSQL_MIRR_Replication_Flow_RNC_0022();
+	$test22.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_RNC_Rpo_Monitor == "Y") {
+	var $test23 = _testcase("RNC_Rpo_Monitor_0023", "RNC RPO");
+	$test23.start();
+	MSSQL_MIRR_RNC_RPO_Monitor_0023();
+	$test23.end();
+}
+
+
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Stop_RNC == "Y") {
+	var $test24 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0024 ", "Stop RNC");
+	$test24.start();
+	MSSQL_MIRR_Stop_RNC_0024();
+	$test24.end();
+}
+
+
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Remote_Stop_MSSQL_Agent_SO_InActive == "Y") {
+	var $test25 = _testcase("Remote_Stop_MSSQL_Agent_SO_InActive0025", "Stop MSSQL Agent");
+	$test25.start();
+	MSSQL_MIRR_Remote_Stop_MSSQL_Agent_SO_InActive_0025();
+
+	$test25.end();
+}
+
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Remote_Start_MSSQL_Agent_SO_InActive == "Y") {
+	var $test26 = _testcase("Remote_Start_MSSQL_Agent_SO_InActive0026", "Start MSSQL Agent");
+	$test26.start();
+	MSSQL_MIRR_Remote_Start_MSSQL_Agent_SO_InActive_0026();
+	$test26.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Remote_Stop_Windows_OS_Agent_SO_InActive == "Y") {
+	var $test27 = _testcase("Continuity_Manager/Template/MSSQL/MSSQL_Mirroring/Mssql_mirroring_0027", "Stop Windows OS Agent");
+	$test27.start();
+	MSSQL_MIRR_Remote_Stop_Windows_OS_Agent_SO_InActive_0027();
+
+	$test27.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Remote_Start_Windows_OS_Agent == "Y") {
+	var $test28 = _testcase("Continuity_Manager/Template/MSSQL/MSSQL_Mirroring/Mssql_mirroring_0028", "Start Windows OS Agent");
+	$test28.start();
+	MSSQL_MIRR_Remote_Start_Windows_OS_Agent_SO_InActive_0028();
+	$test28.end();
+}
+
+
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Start_SB == "Y") {
+	var $test29 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0029", "Start SB");
+	$test29.start();
+	MSSQL_MIRR_Start_SB_0029();
+	$test29.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_SB_Execution == "Y") {
+	var $test30 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0030 ", "Verify the continuity status ");
+	$test30.start();
+	MSSQL_MIRR_SB_Execution_0030();
+
+	$test30.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_SB_Monitor_Manage == "Y") {
+	var $test31 = _testcase("SB_Monitor_Manage_0031", "Monitor Manage SB");
+	$test31.start();
+	MSSQL_MIRR_SB_Monitor_Manage_0031();
+	$test31.end();
+}
+
+///////////////////DRYRUN REPORT SCRIPT/////////////////////////////////////
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Dryrun_Report == "Y") {
+	var $test26 = _testcase("Continuity_Manager/Common/FG/DryRun_Report_Function", "verify Dry run reports");
+	$test26.start();
+	MSSQL_MIRR_Dryrun_Report_Testcase();
+    $test26.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Group_Information == "Y") {
+	var $test11= _testcase("Continuity_Manager/Common/FG/Manage/Continuity_Management_0011", "ContiniutyWorkFlow");
+	$test11.start();
+	MSSQL_MIRR_Continuity_Work_Flow_NC_0011();
+	$test11.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Mointor_Relationship == "Y") {
+	var $test10 = _testcase("Monitor_Relationship_0010", "Monitor Relationship");
+	$test10.start();
+	MSSQL_MIRR_Monitor_Relationship_0010();
+	$test10.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Group_Snapshot == "Y") {
+	var $test12 = _testcase("Replication_NC_0012", "Replication");
+	$test12.start();
+	
+	MSSQL_MIRR_Replication_Flow_NC_0012();
+	$test12.end();
+}
+//Need To Change
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_NC_RTO == "Y") {
+	var $test14 = _testcase("Continuity_Manager/Common/FG/Monitor/RTO_0014", "Vailidate the RTO compute interval time");
+	$test14.start();
+	MSSQL_MIRR_NC_RTO_0014();
+	$test14.end();
+}
+
+
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Remote_Stop_MSSQL_Agent == "Y") {
+	var $test34 = _testcase("Continuity_Manager/Template/MSSQL_TrnLog/Monitor/MSSQL_Event0005 ", "Stop MSSQL Agent");
+	$test34.start();
+	MSSQL_MIRR_Remote_Stop_MSSQL_Agent_0039();
+	$test34.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Remote_Start_MSSQL_Agent == "Y") {
+	var $test35 = _testcase("Continuity_Manager/Template/MSSQL/MSSQL_Mirroring/Mssql_mirroring_049", "Start MSSQL Agent");
+	$test35.start();
+	MSSQL_MIRR_Remote_Start_MSSQL_Agent_0038();
+	$test35.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Remote_Stop_Windows_OS_Agent == "Y") {
+	var $test36 = _testcase("Continuity_Manager/Template/MSSQL_TrnLog/Monitor/MSSQL_Event0001 ", "Stop Windows OS Agent");
+	$test36.start();
+	MSSQL_MIRR_Remote_Stop_Windows_OS_Agent_0046();
+	$test36.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Remote_Start_Windows_OS_Agent == "Y") {
+	var $test37 = _testcase("Continuity_Manager/Template/MSSQL/MSSQL_Mirroring/Mssql_mirroring_045", "Start Windows OS Agent");
+	$test37.start();
+	MSSQL_MIRR_Remote_Start_Windows_OS_Agent_0045();
+	$test37.end();
+}
+if($g_MSSQL_MIRR_executeAll == "Y" || $g_Validation_Manager_Execution == "Y"){
+	var $test50 = _testcase("APP_PFR/APP_PFR_Group_Health_Status_0101","Validation Manager Execution");
+	$test50.start();
+	Validation_Manager_Execution();
+	$test50.end();
+	}
+/*
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Start_FO == "Y") {
+	var $test38 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0001", "Execute Failover");
+	$test38.start();
+	MSSQL_MIRR_Start_FO_0001();
+	$test38.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_FO_execution == "Y") {
+	var $test39 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0007", "Failover Continuity Status");
+	$test39.start();
+	MSSQL_MIRR_FO_execution_0058();
+	$test39.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_FO_RPO == "Y") {
+	var $test40 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0003", "Calculate RPO Post FO");
+	$test40.start();
+	MSSQL_MIRR_FO_RPO_0003();
+	$test40.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_FO_Monitor_Manage == "Y") {
+	var $test41 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0006", "FO Monitor manage");
+	$test41.start();
+	MSSQL_MIRR_FO_Monitor_Manage_0006();
+	$test41.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Continuity_Status_FO == "Y") {
+	var $test42 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0007", "Continuity Status when FO is Active/InActive");
+	$test42.start();
+	MSSQL_MIRR_Continuity_Status_FO_0007();
+	$test42.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Remote_Stop_Windows_OS_Agent_FO_Active == "Y") {
+	var $test43 = _testcase("Continuity_Manager/Template/MSSQL/MSSQL_Mirroring/Mssql_mirroring_047", "Stop Windows OS Agent FO Active");
+	$test43.start();
+	MSSQL_MIRR_Remote_Stop_Windows_OS_Agent_FO_Active_0047();
+	$test43.end();
+}
+
+if ($g_MSSQL_MIRR_executeAll == "Y" || $g_MSSQL_MIRR_Remote_Start_Windows_OS_Agent_FO_Active == "Y") {
+	var $test44 = _testcase("Continuity_Manager/Template/MSSQL/MSSQL_Mirroring/Mssql_mirroring_051", "Start Windows OS Agent FO Active");
+	$test44.start();
+	MSSQL_MIRR_Remote_Start_Windows_OS_Agent_FO_Active_0051();
+	$test44.end();
+}
+*/
+_log("================================Post-Condition================================== ", "Custom1");
+
+Logout_001();

@@ -1,0 +1,371 @@
+
+
+function CreateUser($a_user){
+	
+	_click(_link("Admin"));
+	_click(_link("Go to Users"));
+	if(_exists(_link($a_user))){
+		_log("User exist with  name"+" "+$a_user);
+	}else{
+		_click(_link("Create New User"));
+		_setValue(_textbox("loginId"), $a_user);
+		_setValue(_password("newPassword"), "Sanovi123$");
+		_setValue(_password("confPassword"), "Sanovi123$");
+		
+	
+	
+	if($a_user == "supadmin"){
+	_click(_radio("ucat"));
+     }
+	
+	if($a_user == "administrator"){
+		_click(_radio("ucat[1]"));
+	}
+	
+	if($a_user == "operator"){
+		_click(_radio("ucat[2]"));
+	}
+	
+	if($a_user == "notification"){
+		_click(_radio("ucat[3]"));
+	}
+	_setValue(_textbox("userFullName"), $a_user);
+	_setSelected(_select("homePage"), "Events List View");
+	_setValue(_textbox("email"), "auto@sanovi.com");
+	_click(_submit("Save"));
+}
+
+}
+function Assign_Group_User($a_user,$groupName){
+	_click(_link("Admin"));
+	_click(_link("Go to Users"));
+	_click(_image("edit.png", _near(_link($a_user))));
+	_setSelected(_select("remainingGroups"), [$groupName]);
+	_click(_button("smlbtn[1]"));
+	_click(_button("Save")); 
+    _wait(5000);
+   	_assertEqual("User Details Modified Successfully", _lastAlert());
+}
+
+
+function    Sys_Log_Opr(){
+	_click(_link("Admin"));
+	 _click(_link("Go to Logs"));
+	 _click(_link("System Capture"));
+	 _setSelected(_select("sselectedGroup"), "app_pfr_12");
+	if(_exists(_button("ok-button disableLink"))){
+		_log("Button is not  Clickable");
+	}
+}
+function  Sys_Log($groupName){
+	_click(_link("Admin"));
+	 _click(_link("Go to Logs"));
+	 _click(_link("System Capture"));
+	 _setSelected(_select("sselectedGroup"),$groupName);
+	 if(_exists(_button("Fetch System Capture"))){
+			_log("Button is visible");
+	 }
+}
+
+function SystemCaputrelog($groupName,$logspath){
+	Sys_Log($groupName);
+	_click(_button("Fetch System Capture"));
+	while(_isVisible(_button("Fetch System Capture"))){
+		_log("Download  is  in  Progress");
+		break;
+	}
+	var $strFileName = _lastDownloadedFileName();
+	_log($strFileName);
+	if (_lastDownloadedFileName() != null) {
+		_log("Last Downloaded File Name: "+_lastDownloadedFileName());
+		_wait(3000);  
+	}
+	return $strFileName;
+}
+
+/**
+* Function is for verify SystemCapture log CLI mode and windows mode
+*@param :  $logspath
+*@return : null
+* Author: Anita
+*/
+
+function  SystemCaputre_Log_Windows($groupName,$logspath){
+	delete_SystemCaptureLogs_windows();
+	delete_SystemCaptureLogs_BeforeFetch($logspath);
+	var $downloadfilename = SystemCaputrelog($groupName,$logspath);
+	var $path = _userDataDir()+"\\SystemCapturelog\\"+$downloadfilename;
+	_log($path);
+	if (_lastDownloadedFileName() != null) {
+		_log("Last Downloaded File Name"+" "+_lastDownloadedFileName());
+		_saveDownloadedAs($path);
+		_wait(3000);
+	}	
+	verify_SystemCaputre_Log($logspath,$downloadfilename);
+}
+
+/**
+* Function is for verify SystemCapture log CLI mode
+*@param :  $logspath
+*@return : null
+* Author: Anita
+*/
+
+function verify_SystemCaputre_Log($logspath,$strFileName){
+	_log("Verify in backend DRM server system capture logs");
+	var $sshCommand = 'ls ' + $logspath;
+	var $syslog = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	_log($syslog);
+	$syslog = $syslog.match($strFileName);
+	if($syslog == $strFileName){
+		_log("System Capture CLI mode done successfully in DRM server: " +$syslog);
+	}
+	else{
+		_fail("System Capture thru CLI mode failed");
+	}
+}
+/**
+* Function is for delete older system capture logs
+*@param :  $logspath
+*@return : null
+* Author: Anita
+*/
+function delete_SystemCaptureLogs_BeforeFetch($logspath){
+	var $sshCommand = 'rm -rf ' + $logspath +"/*.zip";
+	SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	var $sshCommand = 'rm -rf ' + $logspath +"/*.html";
+	SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	_log("Before fetching system logs an Older system capture logs deleted in drm server");
+}
+
+function delete_SystemCaptureLogs_windows(){
+	var $path= _userDataDir()+"\\SystemCapturelog\\";
+	 var $timeInterval = "\n\n";
+	 _writeFile("cd "+$path+$timeInterval+"del "+"*.zip", $path+"\\delzip.bat",true); // over writes content in file 
+	 _wait(3000);
+	 _execute($path+"\\delzip.bat",true);
+	 _wait(3000);
+	 _log(" older zip files has been deleted succcessfully in the path: "+$path);
+}
+/**
+* Function is for Verify_SystemCapture_GroupDetails
+*@param :  $groupName,$logspath,$compPR,$compDR,$dataPR,$dataDR,$protPR,$protDR,$solSign
+*@return : null
+* Author: Anita
+*/
+function Verify_SystemCapture_GroupDetails($groupName,$logspath,$compPR,$compDR,$dataPR,$dataDR,$protPR,$protDR,$solSign){
+	var $sshCommand = 'ls ' + $logspath;
+	var $syslog = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	_log($syslog);
+	var $sshCommand = "cat "+$logspath+"/group-capture-*.html";
+	var $grplog = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	_wait(3000);
+	var $grpName = 	$grplog.match($groupName);
+	_assertExists("Found the Group name in HTML:",$grpName);
+	//_assertEqual($grpName,[$groupName]);
+
+	var $compPRName = $grplog.match($compPR);
+	//var $compPRName = $grplog.indexOf($compPR);
+	_assertExists("Found the Component SubSystem PR in HTML:",$compPRName);
+	//_assertEqual($compPRName,[$compPR]);
+	var $compDRName = $grplog.match($compDR);
+	//_assertEqual($compDRName,[$compDR]);
+	_assertExists("Found the Component SubSystem DR in HTML:",$compDRName);
+
+	var $dataPRName = $grplog.match($dataPR);
+	//_assertEqual($dataPRName,[$dataPR]);
+	_assertExists("Found the Database SubSystem PR in HTML:",$dataPRName);
+	var $dataDRName = $grplog.match($dataDR);
+	//_assertEqual($dataDRName,[$dataDR]);
+
+	_assertExists("Found the Database SubSystem DR in HTML:",$dataDRName);
+	var $protPRName = $grplog.match($protPR);
+	//_assertEqual($protPRName,[$protPR]);
+	_assertExists("Found the Protection Scheme PR SubSystem in HTML:",$protPRName);
+	var $protDRName = $grplog.match($protDR);
+//	_assertEqual($protDRName,[$protDR]);
+
+	_assertExists("Found the Protection Scheme DR SubSystem in HTML:",$protDRName);
+	var $solsigName = $grplog.match($solSign);
+	//_assertEqual($solsigName,[$solSign]);
+	_assertExists("Found the Solution Signature in HTML:",$solsigName);
+}	
+
+/**
+* Function is for Verify_SystemCapture_GroupDetails
+*@param :  $groupName,$logspath,$compPR,$compDR,$dataPR,$dataDR,$protPR,$protDR,$solSign
+*@return : null
+* Author: Sahu
+*/
+function Verify_BCO_Details($groupName,$logspath,$bcoNC,$descNC,$bcoNFC,$descNFC,
+		$bcoFO,$descFO,$bcoFB,$descFB,$bcoFBRSync,$descFBRSync,$bcoRNC,$descRNC){
+	var $sshCommand = 'ls ' + $logspath;
+	var $syslog = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	_log($syslog);
+	var $sshCommand = "cat "+$logspath+"/group-capture-*.html";
+	var $grplog = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	_wait(3000);
+	
+	var $bcoNmNC=$grplog.match($bcoNC);
+	//_assertEqual($bcoNmNC,[$bcoNC]);
+	_assertExists("Found the BCOName in HTML:",$bcoNC);
+	var $descNmNC=$grplog.match($descNC);
+	_assertExists("Found the DescName in HTML:",$descNmNC);
+	//_assertEqual($descNmNC,[$descNC]);	
+	var $bcoNmNFC=$grplog.match($bcoNFC);
+	_assertExists("Found the DescName in HTML:",$descNmNC);
+
+	//_assertEqual($bcoNmNFC,[$bcoNFC]);	
+	var $descNmNFC=$grplog.match($descNFC);
+	_assertExists("Found the DescName in HTML:",$descNmNFC);
+
+	//_assertEqual($descNmNFC,[$descNFC]);	
+	var $bcoNmFO=$grplog.match($bcoFO);
+	//_assertEqual($bcoNmFO,[$bcoFO]);
+	_assertExists("Found the DescName in HTML:",$bcoNmFO);
+	 var $descNmFO=$grplog.match($descFO);
+		//_assertEqual($descNmFO,[$descFO]);	
+		_assertExists("Found the DescName in HTML:",$descNmFO);
+
+   var $bcoNmFB=$grplog.match($bcoFB);
+//	_assertEqual($bcoNmFB,[$bcoFB]);	
+
+   _assertExists("Found the BCOName in HTML:",$bcoNmFB);
+   var $descNmFB=$grplog.match($descFB);
+   _assertExists("Found the BCOName in HTML:",$descNmFB);
+	//_assertEqual($descNmFB,[$descFB]);	
+
+   //_assertExists("Found the BCODesc in HTML:",$descNmFB);
+   var $bcoNmFBRSync=$grplog.match($bcoFBRSync);
+	//_assertEqual($bcoNmFBRSync,[$bcoFBRSync]);	
+	   _assertExists("Found the BCODesc in HTML:",$bcoNmFBRSync);
+
+   //_assertExists("Found the BCOName in HTML:",$bcoFBRSync);
+   var $descNmFBRSync=$grplog.match($descFBRSync);
+//	_assertEqual($descNmFBRSync,[$descFBRSync]);	
+
+   _assertExists("Found the BCODesc in HTML:",$descFBRSync);
+   var $bcoNmRNC=$grplog.match($bcoRNC);
+	//_assertEqual($bcoNmRNC,[$bcoRNC]);	
+
+   _assertExists("Found the BCOName in HTML:",$bcoRNC);
+   var $descNmRNC=$grplog.match($descRNC);
+	//_assertEqual($descNmRNC,[$descRNC]);	
+
+   _assertExists("Found the BCODesc in HTML:",$descRNC);
+	
+}
+
+
+function Verify_Test_Details($groupName,$logspath,$TestNmSO,$TestDescSO,$TestExecSO,
+		                     $TestNmSB,$TestDescSB,$TestExecSB,$TestNmFO,$TestDescFO,$TestExecFO,
+		                     $TestNmRDCC,$TestDescRDCC,$TestExecRDCC,$TestNmStAppPr,$TestDescStAppPr,$TestExecStAppPr){
+	var $sshCommand = 'ls ' + $logspath;
+	var $syslog = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	_log($syslog);
+	var $sshCommand = "cat "+$logspath+"/group-capture-*.html";
+	var $grplog = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	_wait(3000);
+	
+	
+	var $TestSO=$grplog.match($TestNmSO);
+	_assertExists("Found the TestName in HTML:",$TestNmSO);
+	 var $TestDecSO=$grplog.match($TestDescSO);
+	 _assertExists("Found the TestName in HTML:",$TestDescSO);
+	 var $TestExSO=$grplog.match($TestExecSO);
+		_assertExists("Found the TestName in HTML:",$TestExecSO);
+	 
+	 
+	var $TestSB=$grplog.match($TestNmSB);
+	_assertExists("Found the TestName in HTML:",$TestNmSB);
+	var $TestDesSB=$grplog.match($TestDescSB);
+	 _assertExists("Found the TestName in HTML:",$TestDescSB);
+	 var$TestExSB=$grplog.match($TestExecSB);
+	 _assertExists("Found the TestName in HTML:",$TestExecSB);
+	 
+	 
+	 
+	 var $TestFO=$grplog.match($TestNmFO);
+   _assertExists("Found the TestName in HTML:",$TestNmFO);
+   var $TestDesFO=$grplog.match($TestDescFO);
+   _assertExists("Found the TestName in HTML:",$TestDescFO);
+   var $TestExFO=$grplog.match($TestExecFO);
+   _assertExists("Found the TestName in HTML:",$TestExecFO);
+   
+   
+   var $TestRDCC=$grplog.match($TestNmRDCC);
+   _assertExists("Found the TestName in HTML:",$TestNmRDCC);
+   var $TestDesRDCC=$grplog.match($TestDescRDCC);
+   _assertExists("Found the TestName in HTML:",$TestDescRDCC);
+   var $TestExRDCC=$grplog.match($TestExecRDCC);
+   _assertExists("Found the TestName in HTML:",$TestExecRDCC);
+   
+   var $TestStAppPr=$grplog.match($TestNmStAppPr);
+   _assertExists("Found the TestName in HTML:",$TestNmStAppPr);
+   var $TestDesStAppPr=$grplog.match($TestDescStAppPr);
+   _assertExists("Found the TestName in HTML:",$TestDescStAppPr);
+   var $TestExStAppPr=$grplog.match($TestExecStAppPr);
+   _assertExists("Found the TestName in HTML:",$TestExecStAppPr);
+   
+  
+	
+}
+
+
+function Verify_Test_Other_Details($groupName,$logspath,$TestNmStopAppPr,$TestDescStopAppPr,$TestExecStopAppPr,
+		      $TestNmStAppDr,$TestDescStAppDr,$TestExecStAppDr,$TestNmStopAppDr,$TestDescStopAppDr,$TestExecStopAppDr,
+		      $TestNmRlPr,$TestDescRlPr,$TestExecRlPr,$TestNmRlDr,$TestDescRlDr,$TestExecRlDr,$TestNmIntChk,$TestDescIntChk,$TestExecIntChk){
+	
+	var $sshCommand = 'ls ' + $logspath;
+	var $syslog = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	_log($syslog);
+	var $sshCommand = "cat "+$logspath+"/group-capture-*.html";
+	var $grplog = SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand);
+	_wait(3000);
+	
+	 var $TestStopAppPr=$grplog.match($TestNmStopAppPr);
+	   _assertExists("Found the TestName in HTML:",$TestNmStopAppPr);
+	   var $TestDescStopAppPr=$grplog.match($TestDescStopAppPr);
+	   _assertExists("Found the TestName in HTML:",$TestDescStopAppPr);
+	   var $TestExStopAppPr=$grplog.match($TestExecStopAppPr);
+	   _assertExists("Found the TestName in HTML:",$TestExecStopAppPr);
+	   
+	   var $TestStAppDr=$grplog.match($TestNmStAppDr);
+	   _assertExists("Found the TestName in HTML:",$TestNmStAppDr);
+	   var $TestDesStAppDr=$grplog.match($TestDescStAppDr);
+	   _assertExists("Found the TestName in HTML:",$TestDescStAppDr);
+	   var $TestExStAppDr=$grplog.match($TestExecStAppDr);
+	   _assertExists("Found the TestName in HTML:",$TestExecStAppDr);
+	   
+	   var $TestStopAppDr=$grplog.match($TestNmStopAppDr);
+	   _assertExists("Found the TestName in HTML:",$TestNmStopAppDr);
+	   var $TestDescStopAppDr=$grplog.match($TestDescStopAppDr);
+	   _assertExists("Found the TestName in HTML:",$TestDescStopAppDr);
+	   var $TestExStopAppDr=$grplog.match($TestExecStopAppDr);
+	   _assertExists("Found the TestName in HTML:",$TestExecStopAppDr);
+	   
+	   
+	   var $TestNmRlPr=$grplog.match($TestNmRlPr);
+	   _assertExists("Found the TestName in HTML:",$TestNmRlPr);
+	   var $TestDesRlPr=$grplog.match($TestDescRlPr);
+	   _assertExists("Found the TestName in HTML:",$TestDescRlPr);
+	   var $TestExRlPr=$grplog.match($TestExecRlPr);
+	   _assertExists("Found the TestName in HTML:",$TestExecRlPr);
+	   
+	   var $TestNmRlDr=$grplog.match($TestNmRlDr);
+	   _assertExists("Found the TestName in HTML:",$TestNmRlDr);
+	   var $TestDesRlDr=$grplog.match($TestDescRlDr);
+	   _assertExists("Found the TestName in HTML:",$TestDescRlDr);
+	   var $TestExRlDr=$grplog.match($TestExecRlDr);
+	   _assertExists("Found the TestName in HTML:",$TestExecRlDr);
+	   
+	   var $TestIntChk=$grplog.match($TestNmIntChk);
+	   _assertExists("Found the TestName in HTML:",$TestNmIntChk);
+	   var $TestDesIntChk=$grplog.match($TestDescIntChk);
+	   _assertExists("Found the TestName in HTML:",$TestDescIntChk);
+	   var $TestExecIntChk=$grplog.match($TestExecIntChk);
+	   _assertExists("Found the TestName in HTML:",$TestExecIntChk);
+	   
+	   
+	   
+}

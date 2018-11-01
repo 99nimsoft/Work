@@ -1,0 +1,401 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the remote agent test cases which are the part of  APP_PFR solution. 
+ ** AuthorName : Govinda Mengji
+ ** Created Date : June 2013
+ ************************************************************************/
+
+_log("=================================Pre-Condition===================================","Custom1");
+
+//don't change the below line.
+
+_include("../Library/Solution_Signature/Include/Oracle_FDB_Netapp_Include.sah");
+_include("../conf/DRMInstallation_Parameter.sah");
+_include("../conf/Oracle_FDB_Netapp/Oracle_FDB_Netapp_Remote_Agent_Parameter.sah");
+_include("../conf/Oracle_FDB_Netapp/UserSelected_Oracle_FDB_Netapp_Testcase.sah");
+//_include("../Library/Common/Common_Function.sah");
+
+// *************************************************************************************************************************************************
+// Notes: below test cases for Remote agent
+
+
+/*UnInstall_Remote_Agent_SilentMode_PR();  //uninstalling remote Agent. Pfr Services for PR
+UnInstall_Remote_Agent_SilentMode_DR(); //uninstalling remote Agent. Pfr Services for DR
+AgentBuild_Copy_into_PFRFile_PR();
+AgentBuild_Copy_into_PFRFile_DR();
+Copy_Property_file();
+Update_PropertyFile_RemoteAgent_PR();
+Update_PropertyFile_RemoteAgent_DR();
+Install_Remote_Agent_SilentMode_PR();
+Install_Remote_Agent_SilentMode_DR();
+*/
+WorkFlow_copy_001();
+Login_001();
+
+_log("=================================Test========================================","Custom1");
+
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_siteOraFDB_NetApp == "Y"){
+var $test0 = _testcase("Site_0003","Create New Site");
+$test0.start(); 
+	Site_0003();
+$test0.end();
+}
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_agentNodeOraFDB_NetApp == "Y"){
+var $test1 = _testcase(" Misc/ Pumice/ Solution_Sanity/ OraFDB_NetAppr/ OraFDB_NetAppr_0001","Create Agent Node");
+$test1.start();
+	Agent_node_001();
+$test1.end();
+}
+
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_componentRemoteDiscoveryOraFDB_NetApp == "Y"){
+var $test2 = _testcase(" Misc/ Pumice/ Solution_Sanity/ OraFDB_NetAppr/ OraFDB_NetAppr_0001","Create New Component");
+$test2.start();
+	OraclefulldbNetApp_Component_Remote_Discovery_0018();
+$test2.end();
+}
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_datasetDiscoveryOraFDB_NetApp == "Y"){
+var $test3 = _testcase("Object_Manager/Dataset/APP/OraDiscovery_0006 ","Dataset Discovery");
+$test3.start();
+	OraclefulldbNetApp_Dataset_Discovery_0007();
+$test3.end();
+}
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_protectionSchemeDiscoveryOraFDB_NetApp == "Y"){
+	var $test4 = _testcase("Misc/ Pumice/ Solution_Sanity/ OraFDB_NetAppr/ OraFDB_NetAppr_0005","Protection Scheme Discovery");
+	$test4.start();
+	OraclefulldbNetApp_Protectionscheme_Discovery_0018();
+$test4.end();
+}
+
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_groupCreationOraFDB_NetApp == "Y"){
+var $test5= _testcase("Continuity_Manager/Common/FG/Group/GroupCreation_0001","OraFDB_NetAppr Group Creation");
+$test5.start();
+	OraclefulldbNetApp_GroupCreation_0022();
+$test5.end();
+}
+
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_moveGroupToManageOraFDB_NetApp == "Y"){
+var $test6 = _testcase("Continuity_Manager/Common/FG/Group/GroupCreation_0006","Move Group to Manage");
+$test6.start();
+	OraclefulldbNetApp_Move_Group_Manage_0006();
+$test6.end();
+	}
+
+if ($g_executeOraFDB_NetAppAll == "Y" || $g_moveGroupToManageOraFDB_NetApp == "Y") {
+	var $test7 = _testcase("Continuity_Manager/Common/FG/Manage/Change_Continuity_State_0001", "Change Continuity State");
+$test7.start();
+	 OraclefulldbNetApp_Change_Continuity_State_0001();
+$test7.end();
+}
+
+
+
+if ($g_executeOraFDB_NetAppAll == "Y" || $g_postGroupCreationOracleDg == "Y") {
+	var $test10 = _testcase("Edit FOTE,SO,SB,pre/Post RPO workflows/OraclefulldbNetApp_Edit_workflows005", "Edit_workflows");
+	$test10.start();
+	OraclefulldbNetApp_Edit_workflows005();
+	$test10.end();
+}
+
+
+
+if ($g_executeOraFDB_NetAppAll == "Y" || $g_postGroupCreationOracleDg == "Y") {
+	var $test10 = _testcase("Object_Manager/ProtectionScheme/DataGaurd/OracleDG_Discovery_0010", "Post Group Creation");
+	$test10.start();
+	OraclefulldbNetApp_Post_Group_Creation_0010();
+	$test10.end();
+}
+
+
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_componentStatusOraFDB_NetApp == "Y"){
+	var $test8 = _testcase("Object_Manager/ Common/ Components/ Subsystem_Moinitoring_0001 ","Component Status");
+$test8.start();
+     OraclefulldbNetApp_Component_Status_0001();
+$test8.end();
+	}
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_datasetAutoDiscoveryOracle_PFR == "Y"){
+	var $test4 = _testcase("Object_Manager/Dataset/Oracle/Ora_Auto_DatasetDiscovery0002","Oracle Auto Dataset Discovery");
+	$test4.start();
+		OraclefulldbNetApp_Auto_DatasetDiscovery0009();
+	$test4.end();
+	}
+
+
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_datasetStatusOraFDB_NetApp == "Y"){
+	var $test9 = _testcase("Object_Manager/Dataset/APP/Ora_Auto_DatasetDiscovery0009","Dataset Status");
+	$test9.start();
+	OraclefulldbNetApp_Dataset_status_0011();
+	$test9.end();
+	}
+
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_protectionSchemeStatusOraFDB_NetApp == "Y"){
+	var $test10 = _testcase("Object_Manager/ProtectionScheme/DataGaurd/APP_PFR_Discovery0011","Protection Scheme Status");
+	$test10.start();
+	OraclefulldbNetApp_Protectionscheme_status_0021();
+	$test10.end();
+    }
+
+  
+if($g_executeOraFDB_NetAppAll == "Y" || $g_continuityManagenentOraFDB_NetApp == "Y"){
+	var $test11 = _testcase("Continuity_Manager/Common/FG/Manage/Continuity_Management_0015","Continuity Management");
+	$test11.start();
+	OraclefulldbNetApp_Continuity_Management_0015();
+	$test11.end();
+}
+
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_continuityStatusOraFDB_NetApp == "Y"){
+	var $test12 = _testcase("Continuity_Manager/Common/FG/Monitor/MON_0002","Continuity Status");
+	$test12.start();
+	OraclefulldbNetApp_Contiunity_Status_0002();
+	$test12.end();
+    }
+
+	
+	
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_monitorRelationshipOraFDB_NetApp == "Y"){
+var $test19 = _testcase("Site_0003","Monitor Relationship");
+$test19.start();
+	OraclefulldbNetApp_Monitor_Relationship_0030();
+$test19.end();
+}
+
+ 
+
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_groupInformationOraFDB_NetApp == "Y"){
+var $test21 = _testcase("Continuity_Manager/Common/FG/Manage/Continuity_Management_0007","Group Information");
+$test21.start();
+	OraclefulldbNetApp_GroupInformation_Manage_0007();
+$test21.end();
+}
+
+
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_groupSnapshotOraFDB_NetApp == "Y"){
+var $test22 = _testcase("Site_0003","Group SnapShot");
+$test22.start();
+	OraclefulldbNetApp_Groupsnapshot_Monitor_0001();
+$test22.end();
+}
+
+
+
+
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_replicationNCOraFDB_NetApp == "Y"){
+var $test23 = _testcase("Continuity_Manager/Template/Oracle_Log/OraFDB_NetApp/OraclefulldbNetApp_ProtectionMonitoring0001","NC Replication");
+$test23.start();
+	OraclefulldbNetApp_NC_Replication_0028();
+$test23.end();
+}
+
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_rpoNCOraFDB_NetApp == "Y"){
+var $test24 = _testcase("Continuity_Manager/Common/FG/Monitor/RPO_0008","NC RPO");
+$test24.start();
+	OraclefulldbNetApp_NC_RPO_0026();
+$test24.end();
+}
+
+
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_rpoNCOraFDB_NetApp == "Y"){
+	var $test24 = _testcase("Continuity_Manager/Common/FG/Monitor/DATARPO_0008","NC RPO");
+	$test24.start();
+	OraclefulldbNetApp_NC_Data_RPO_0026();
+	$test24.end();
+	}
+
+
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_rtoNCOraFDB_NetApp == "Y"){
+var $test25 = _testcase("Continuity_Manager/Common/FG/Monitor/RTO_0004","NC RTO");
+$test25.start();
+	OraclefulldbNetApp_NC_RTO_0027();
+$test25.end();
+}
+
+
+
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_importSOSBOraFDB_NetApp == "Y"){
+var $test26 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0007","Import SO & SB");
+$test26.start();
+   OraclefulldbNetApp_Import_SOSB_0007();
+$test26.end();
+}
+
+
+
+
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_startSOOraFDB_NetApp == "Y"){
+var $test28 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0011","Start SO");
+$test28.start();
+	OraclefulldbNetApp_Start_SO_0011();
+$test28.end();
+}
+
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_SOExecutionOraFDB_NetApp == "Y"){
+var $test29 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0012","SO Execution");
+$test29.start();
+	OraclefulldbNetApp_SO_Execution_0012();
+$test29.end();
+}
+
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_replicationSOOraFDB_NetApp == "Y"){
+var $test30 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0013","SO Replication");
+$test30.start();
+	OraclefulldbNetApp_SO_Replication_0013();
+$test30.end();
+}
+
+
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_groupInformaitionRNCOraFDB_NetApp == "Y"){
+var $test33 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0022","RNC Group Information Monitor");
+$test33.start();
+	OraclefulldbNetApp_RNC_Groupinformation_Monitor_0022();
+$test33.end();
+}
+
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_groupSnapshotOraFDB_NetApp == "Y"){
+var $test34 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0021","RNC Group SnapShot Monitor");
+$test34.start();
+	OraclefulldbNetApp_RNC_Groupsnapshot_Monitor_0021();
+$test34.end();
+}
+
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_rpoRNCOraFDB_NetApp == "Y"){
+var $test35 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0023","RNC RPO Monitor");
+$test35.start();
+	OraclefulldbNetApp_RNC_Rpo_Monitor_0023();
+$test35.end();
+}
+
+
+
+/* //Events 
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_remoteStopOraFDB_NetAppAgent == "Y"){
+var $test38 = _testcase("Continuity_Manager/Template/Oracle_Log/OraFDB_NetApp/OraclefulldbNetApp_Object_Health_Events0001","Stopping Remote Agent");
+$test38.start();
+	OraclefulldbNetApp_Remote_Stop_OraclefulldbNetApp_Agent_SO_InActive_0039();
+$test38.end();
+}
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_remoteStartOraFDB_NetAppAgent == "Y"){
+var $test39 = _testcase("Continuity_Manager/Template/Oracle_Log/OraFDB_NetApp/OraclefulldbNetApp_Object_Health_Events0001","Starting Remote Agent");
+$test39.start();
+	OraclefulldbNetApp_Remote_Start_OraclefulldbNetApp_Agent_SO_InActive_0038();
+$test39.end();
+}
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_replicaionStopOraFDB_NetApp == "Y"){
+var $test40 = _testcase("Continuity_Manager/ Template/ Oracle_Log/ OraFDB_NetApp/ OraclefulldbNetApp_Manage_Replication ","Stop Replication");
+$test40.start();
+	OraclefulldbNetApp_Remote_Stop_PFR_Agent_0051_SO_InActive();
+$test40.end();
+}
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_replicaionStartOraFDB_NetApp == "Y"){
+var $test41 = _testcase("Continuity_Manager/ Template/ Oracle_Log/ OraFDB_NetApp/ OraclefulldbNetApp_Manage_Replication ","Start Replication");
+$test41.start();
+	OraclefulldbNetApp_Remote_Start_PFR_Agent_0052_SO_InActive();
+$test41.end();
+}
+*/ //Events ends
+
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_startSBOraFDB_NetApp == "Y"){
+var $test42 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0034","Start SB");
+$test42.start();
+	OraclefulldbNetApp_Start_SB_0034();
+$test42.end();
+}
+
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_SBExecutionOraFDB_NetApp == "Y"){
+var $test43 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0035","SB Execution");
+$test43.start();
+	OraclefulldbNetApp_SB_Execution_0035();
+$test43.end();
+}
+
+/* //Events
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_remoteStopOraFDB_NetAppAgent == "Y"){
+var $test44 = _testcase("Continuity_Manager/Template/Oracle_Log/OraFDB_NetApp/OraclefulldbNetApp_Object_Health_Events0001","Stopping Remote Agent");
+$test44.start();
+	OraclefulldbNetApp_Remote_Stop_OraclefulldbNetApp_Agent_0039();
+$test44.end();
+}
+
+
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_remoteStartOraFDB_NetAppAgent == "Y"){
+var $test45 = _testcase("Continuity_Manager/Template/Oracle_Log/OraFDB_NetApp/OraclefulldbNetApp_Object_Health_Events0001","Starting Remote Agent");
+$test45.start();
+	OraclefulldbNetApp_Remote_Start_OraclefulldbNetApp_Agent_0038();
+$test45.end();
+}
+
+
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_replicaionStopOraFDB_NetApp == "Y"){
+var $test46 = _testcase("Continuity_Manager/ Template/ Oracle_Log/ OraFDB_NetApp/ OraclefulldbNetApp_Manage_Replication ","Stop Replication");
+$test46.start();
+	OraclefulldbNetApp_Remote_Stop_PFR_Agent_0051();
+$test46.end();
+}
+
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_replicaionStartOraFDB_NetApp == "Y"){
+var $test47 = _testcase("Continuity_Manager/ Template/ Oracle_Log/ OraFDB_NetApp/ OraclefulldbNetApp_Manage_Replication ","Start Replication");
+$test47.start();
+	OraclefulldbNetApp_Remote_Start_PFR_Agent_0052();
+$test47.end();
+} 
+*/
+//Events end
+
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_monitorManageSBAPP_PFR == "Y"){
+	var $test48 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0038","SB Monitor Manage");
+	$test48.start();
+	OraclefulldbNetApp_SB_Monitor_Manage_0038();
+	$test48.end();
+}
+
+
+
+/* //failOver 
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_startFOOraFDB_NetApp == "Y"){
+var $test49 = _testcase("Continuity_Manager/ Common/ FG/ Monitor/ Failover_0001 ","Start FO");
+$test49.start();
+	OraclefulldbNetApp_Start_FO_0001();
+$test49.end();
+}
+
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_FOExecutionOraFDB_NetApp == "Y"){
+var $test50 = _testcase("Continuity_Manager/ Common/ FG/ Monitor/ Failover_0001 ","FO Execution");
+$test50.start();
+	OraclefulldbNetApp_FO_execution_0058();
+$test50.end();
+}
+
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_continuityStatusFOOraFDB_NetApp == "Y"){
+var $test51 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0007","Continuity Status During FO");
+$test51.start();
+	OraclefulldbNetApp_Continuity_Status_FO_0007();
+$test51.end();
+}
+
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_rpoFOOraFDB_NetApp == "Y"){
+var $test52 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0003","RPO during FO");
+$test52.start();
+	OraclefulldbNetApp_FO_RPO_0003();
+$test52.end();
+}
+
+if($$g_executeOraFDB_NetAppAll == "Y" || $g_monitorManageFOOraFDB_NetApp == "Y"){
+var $test53 = _testcase("Continuity_Manager/ Common/ FG/ Monitor/ Failover_0006 ","FO Monitor Manage");
+$test53.start();
+	OraclefulldbNetApp_FO_Monitor_Manage_0006();
+$test53.end();
+} */
+_log("================================Post-Condition================================== ","Custom1");
+
+Logout_001(); 

@@ -1,0 +1,835 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Sybaselication Name : DRM 
+ ** Objective : This script contains all the functions which are the part of  MSSQL ALWAYS ON solution
+ ** @AuthorName : SAITEJA and OMPRAKASH
+ ** Created Date : October 2016
+ ************************************************************************/
+
+/**
+* Function is for Group Creation of MssqL_ALWAYS_ON
+*@param :  null
+*@return : null
+* Author: SAITEJA and OMPRAKASH
+*
+*/
+
+//Description: Functional Group creation
+ 
+function Create_MSSQL_ALWAYS_ON_Group($groupName,$groupDescription,$SolutionSignature,$primaryComponents,$primaryComponents2,$remoteComponents,$remoteComponents2,$primaryDatasets,$primaryDatasets2,$remoteDatasets,$remoteDatasets2) 
+	{
+	navigateToGroups();
+	    // _setSelected(_select("createGroup"),"Recovery Group");
+	if (_exists(_link($groupName))) {
+		_assertExists("Group already exists");
+		} else {
+	     _click(_button($DiscoverRecoveryGroup));
+	_wait(1000);
+	_setValue(_textbox("groupName"), $groupName);
+	_setValue(_textarea("groupDescription"), $groupDescription);
+	_setSelected(_select("solutionType"), $SolutionSignature);
+	_setValue(_textbox("configuredRPOValue"), "5");
+	_click(_button($Next));
+	if($scenario==1)
+	{ 
+	_click(_link($ServerComponent)); 
+	_click(_checkbox($primaryComponents, _near(_cell($primaryComponents, _under(_tableHeader($obj_prComp))))));
+	_click(_checkbox($primaryComponents2, _near(_cell($primaryComponents2, _under(_tableHeader($obj_prComp))))));
+	_click(_checkbox($remoteComponents, _near(_cell($remoteComponents, _under(_tableHeader($obj_remoteComp))))));
+	_click(_checkbox($remoteComponents2, _near(_cell($remoteComponents2, _under(_tableHeader($obj_remoteComp))))));
+	     _click(_submit($Save));
+	_wait(2000);
+	_click(_link($ApplicationDataset));
+	_wait(1000);
+	_setSelected(_select("primaryDatasets"),[$primaryDatasets,$primaryDatasets2]);
+	_wait(1000);
+	_setSelected(_select("remoteDatasets"),[$remoteDatasets,$remoteDatasets2]);
+	_wait(1000);
+	}
+	else 
+	{
+	_click(_link($ServerComponent));
+	_click(_checkbox($primaryComponents, _near(_cell($primaryComponents, _under(_tableHeader($obj_prComp))))));
+	_click(_checkbox($primaryComponents2, _near(_cell($primaryComponents2, _under(_tableHeader($obj_prComp))))));
+	_click(_checkbox($remoteComponents, _near(_cell($remoteComponents, _under(_tableHeader($obj_remoteComp))))));
+	     _click(_submit($Save));
+	_wait(2000);
+	_click(_link($ApplicationDataset));
+	//_click(_checkbox("showAll"));
+	_wait(1000);
+	_setSelected(_select("primaryDatasets"),[$primaryDatasets,$primaryDatasets2]);
+	_wait(1000);
+	_setSelected(_select("remoteDatasets"), $remoteDatasets);
+	_wait(1000);
+	}
+	_click(_submit($Save));
+	_wait(2000);
+	_click(_button($Next));
+	_wait(4000);
+	_click(_link($License));
+	_click(_checkbox($Recovery));
+	_click(_checkbox($Test));
+	_click(_button($Save2));
+	_click(_button($Finish));
+	navigateToGroups();
+	if (_exists(_link($obj_viewall))){
+		_click(_link($obj_viewall));
+	}
+	if (_exists(_link($groupName))) {
+	_assertExists("Group created succesfully");
+	} else {
+	_fail("Group not created succesfully.");
+	}
+	}
+	}
+
+
+/**
+* Function is for Stopping services(Local) of MssqLAlwaysOn PR2 and DR2(2:2)
+*@param :  null
+*@return : null
+* Author:SAITEJA M
+**/
+function Uninstalling_ForWindowsAgent_PR2_DR2(){
+		StopServices($compIPPR2, $remoteUserNameValPR, $remotePwdValPR);
+		if($scenario==1){
+		StopServices($compIPDR2, $remoteUserNameValDR, $remotePwdValDR);
+       }
+		else {
+			_log("User input is given as 2:1,hence not uninstalling DR2 local agents");
+		}
+}
+
+
+/**
+* Function is for Editing property files(Local) of MssqLAlwaysOn PR2 and DR2(2:2)
+*@param :  null
+*@return : null
+* Author:SAITEJA M
+**/
+
+function EditPropertyFile_For_LocalAgentInstallation_WindowsMachine_PR2(){
+	CreateBatchFileToEditPropertyfileForLocalAgents($MsSqlAgentWindowCheck,$PfrAgentCheck,$UserInstallDirforLocal,$UserInputResultJarMsSql,$drmServer,$SecondaryPanacesServer,$compIPPR2,$AgentStartYes,$fileName); 
+	_wait(3000);
+	Create_Batch_File_To_Copy_Sed($sourcePath,$compIPPR2,$remoteUserNameValPR,$remotePwdValPR);
+	_wait(3000);
+	Create_Batch_File_For_RemoteSed($compIPPR2,$remoteUserNameValPR,$remotePwdValPR);
+	_wait(2000);
+	_execute($SAHI_HOME +"Utility\\SedCopy.bat","true");   //execute batch file to copy required folder to remote machine for sed. 
+	_wait(2000);
+	_execute($SAHI_HOME +"Utility\\Execute.bat");  //execute the batch file on remote machine using PsExec.
+	_wait(2000);
+}
+
+function EditPropertyFile_For_LocalAgentInstallation_WindowsMachine_DR2(){
+
+	CreateBatchFileToEditPropertyfileForLocalAgents($MsSqlAgentWindowCheck,$PfrAgentCheck,$UserInstallDirforLocal,$UserInputResultJarMsSql,$drmServer,$SecondaryPanacesServer,$compIPDR2,$AgentStartYes,$fileName); 
+	_wait(3000);
+	Create_Batch_File_To_Copy_Sed($sourcePath,$compIPDR2,$remoteUserNameValDR,$remotePwdValDR);
+	_wait(3000);
+	Create_Batch_File_For_RemoteSed($compIPDR2,$remoteUserNameValDR,$remotePwdValDR);
+	_wait(2000);
+	_execute($SAHI_HOME +"Utility\\SedCopy.bat","true");   //execute batch file to copy required folder to remote machine for sed.
+	_wait(2000);
+	_execute($SAHI_HOME +"Utility\\Execute.bat");  //execute the batch file on remote machine using PsExec.
+	_wait(2000);
+	
+}
+
+/**
+* Function is for Copy SFR(Local) of MssqLAlwaysOn PR2 and DR2(2:2)
+*@param :  null
+*@return : null
+* Author:SAITEJA M
+**/
+function Copy_Sfr_PR2(){
+	Copy_WindowsBinaries_To_RemoteMachine($compIPPR2,$remoteUserNameValPR,$remotePwdValPR);
+}
+
+function Copy_Sfr_DR2(){
+	Copy_WindowsBinaries_To_RemoteMachine($compIPDR2,$remoteUserNameValDR,$remotePwdValDR);
+}
+
+
+/**
+* Function is for Installing local agents(Local) of MssqLAlwaysOn PR2 and DR2(2:2)
+*@param :  null
+*@return : null
+* Author:SAITEJA M
+**/
+
+function Installing_Local_Agents_PR2(){
+	
+	
+	Installing_Local_Agents($compIPPR2,$remoteUserNameValPR,$remotePwdValPR,$installbinpath);
+	Create_Batch_File_To_Copy_Sed($sourcePath,$compIPPR2,$remoteUserNameValPR,$remotePwdValPR);
+	_wait(3000);
+	Create_Batch_File_For_RemoteSed($compIPPR2,$remoteUserNameValPR,$remotePwdValPR);
+	_wait(2000);
+	_execute($SAHI_HOME +"Utility\\SedCopy.bat","true");   //execute batch file to copy required folder to remote machine for sed. 
+	_wait(5000);
+	_execute($SAHI_HOME +"Utility\\Execute.bat");  //execute the batch file on remote machine using PsExec.
+	_wait(30000);
+	
+}
+
+
+function Installing_Local_Agents_DR2(){
+	
+	Installing_Local_Agents($compIPDR2,$remoteUserNameValDR,$remotePwdValDR,$installbinpath);
+	Create_Batch_File_To_Copy_Sed($sourcePath,$compIPDR2,$remoteUserNameValDR,$remotePwdValDR);
+	_wait(3000);
+	Create_Batch_File_For_RemoteSed($compIPDR2,$remoteUserNameValDR,$remotePwdValDR);
+	_wait(2000);
+	_execute($SAHI_HOME +"Utility\\SedCopy.bat","true");   //execute batch file to copy required folder to remote machine for sed. 
+	_wait(5000);
+	_execute($SAHI_HOME +"Utility\\Execute.bat");  //execute the batch file on remote machine using PsExec.
+	_wait(30000);
+	
+	}
+
+/**
+* Function is for Component Creation(Local) of MssqLAlwaysOn PR and DR(2:2)
+*@param :  null
+*@return : null
+* Author:SAITEJA M
+**/
+
+function Create_MssqlAlwaysOn_LocalComponent_2PR(){
+	Create_Local_Component($systemType, $compNamePR2, $compIPPR2, $compsitePR);
+}
+
+function Create_MssqlAlwaysOn_LocalComponent_2DR(){
+	Create_Local_Component($systemType, $compNameDR2, $compIPDR2, $compsiteDR);
+}
+
+
+/**
+* Function is for Remote Component creation at PR2 and DR2 .
+*@param :  null
+*@return : null
+*@Author: Omprakash.V 
+*
+*/
+	function Create_Remote_Component2PR() {
+		Create_Remote_Component($systemType, $compNamePR2, $compIPPR2, $compsitePR, $remoteUserNameValPR2, $remotePwdValPR2);
+	}// End of 2nd RemoteComponentPR()
+
+
+	function Create_Remote_Component2DR() {
+		Create_Remote_Component($systemType, $compNameDR2, $compIPDR2, $compsiteDR, $remoteUserNameValDR2, $remotePwdValDR2);
+	}// End of 2nd RemoteComponentDR() 
+
+/**
+* Function is for Dataset Creation(Local) of MssqLAlwaysOn PR and DR(2:2)
+*@param :  null
+*@return : null
+* Author: SAITEJA.M and OMPRAKASH.V
+**/
+
+function Create_MssqlAlwaysOn_Dataset_2PR(){
+	Create_Mssql_Dataset_tempPR($systemTypeDataset, $dependentComponentName2PR, $datasetName2PR, 
+			$userPR,$pwdPR, $port,$databaseName);
+}
+
+function Create_MssqlAlwaysOn_Dataset_2DR(){
+	Create_Mssql_Dataset_tempDR($systemTypeDataset, $dependentComponentName2DR, $datasetName2DR, 
+			$userDR,$pwdDR, $port,$databaseName);
+}
+
+
+
+/**
+* Function is for Group Snapshot of MSSQL post SO.
+*@param :  null
+*@return : null
+* Author: SAITEJA and OMPRAKASH
+*
+*/
+function MSSQL_ALWAYS_ON_GroupSnapshot_Post_SO(){
+
+	MSSQL_ALWAYS_ON_Replication($groupName,"Switchover");
+
+}
+
+/**
+* Function is for Group Snapshot of MSSQL before SO.
+*@param :  null
+*@return : null
+* Author:SAITEJA and OMPRAKASH
+*
+*/
+
+function MSSQL_ALWAYS_ON_GroupSnapshot(){
+	MSSQL_ALWAYS_ON_Replication($groupName,"NormalCopy");
+	
+}
+
+
+
+
+/**
+ *Function is used to verify RTO Status 
+ *@param :null
+ *@return : null
+ *@author : SAITEJA and OMPRAKASH
+ */
+
+
+function MSSQL_ALWAYS_ON_RTO() {
+	navigateToRTO($groupName);
+	// verification of current RTO :
+	$count = 0;
+	while($count<5){
+	_wait(30000);
+	$count++;
+	}
+	//Remote Precheck Time From GUI
+	    _mouseOver(_svg_rect(11));
+	    var $stepName1= RTO_Calculate();
+	    _assertExists("Remote Precheck Time inSec", $stepName1);
+	    
+	  //MSSQLDBGetModeRAL Time From GUI
+	    _mouseOver(_svg_rect(12));
+	    var $stepName2= RTO_Calculate();
+	    _assertExists("MSSQLDBGetModeRAL Time inSec", $stepName2);
+	//DBMode Recovering Time From GUI
+	        _mouseOver(_svg_rect(13));
+	    var $stepName3= RTO_Calculate();  
+	_assertExists("DBMode Recovering Time inSec", $stepName3);
+
+	//MSSQLFailoverRAL  Time From GUI
+	_mouseOver(_svg_rect(14));
+	 var $stepName4= RTO_Calculate();  
+	_assertExists("MSSQLFailoverRAL Time inSec", $stepName4);
+
+
+	var $expectedCompletionTime = Math.floor($stepName1 + $stepName2 + $stepName3 + $stepName4);
+	_assertExists("Expected completion time", $expectedCompletionTime);
+
+	// Calling function Calculate_Rto from Group_manager.sah
+	$dbRto = Calculate_Rto($expectedCompletionTime);
+	return $dbRto;
+
+	} 
+
+/**
+ *Function is used to verify RPO Status before SO.
+ *@param :null
+ *@return : null
+ *@author : SAITEJA and OMPRAKASH
+ */
+function MSSQL_ALWAYS_ON_RPO()
+{
+  MSSQL_ALWAYS_ON_RPO_Status($ipPR,$database,$userPR, $pwdPR);
+	
+}
+/**
+ *Function is used to verify RPO Status post SO.
+ *@param :null
+ *@return : null
+ *@author : SAITEJA and OMPRAKASH
+ */
+function MSSQL_ALWAYS_ON_RPO_Post_SO(){
+	var $dbRecoveryPoint = MSSQL_ALWAYS_ON_RPO_Status_Post_SO($ipDR,$database,$userDR, $pwdDR);
+	return $dbRecoveryPoint;
+}
+
+/**
+ *Function is used to verify RPO Status 
+ *@param :$ipPR,$database,$userPR, $pwdPR
+ *@return : null
+ *@author : SAITEJA and OMPRAKASH
+ */
+
+function MSSQL_ALWAYS_ON_RPO_Status($ipPR,$database,$userPR, $pwdPR) {
+	
+	navigateToRPO($groupName);
+	
+	//PR
+	var $TransactionIDGuiPR=_getText(_cell(2, _near(_cell($Primary+$compNamePR))));
+  	_assertExists("TransactionID from Gui" , $TransactionIDGuiPR);
+  	
+  	var $TimeStampGuiPR=_getText(_cell(1, _near(_cell($Primary+$compNamePR))));
+  	_assertExists("$TimeStamp from Gui", $TimeStampGuiPR);
+  	
+  	var $date =$TimeStampGuiPR;
+    var $dateString = $date.toString();
+    var $TimeStampGUIPR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+    _assertExists("$TimeStamp from Gui After converting to Integer", $TimeStampGUIPR);
+    
+  	//PR2
+  	var $TransactionIDGuiPR2=_getText(_cell(2, _near(_cell($Remote+$compNamePR2))));
+  	_assertExists("TransactionID from Gui" , $TransactionIDGuiPR2);
+  	
+  	var $TimeStampGuiPR2=_getText(_cell(1, _near(_cell($Remote+$compNamePR2))));
+  	_assertExists("$TimeStamp from Gui", $TimeStampGuiPR2);
+  	
+  	var $date =$TimeStampGuiPR2;
+    var $dateString = $date.toString();
+    var $TimeStampGUIPR2 = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+    _assertExists("$TimeStamp from Gui After converting to Integer", $TimeStampGUIPR2);
+    
+     //DR
+     var $TransactionIDGuiDR=_getText(_cell(2, _near(_cell($Remote+$compNameDR))));
+    _assertExists("TransactionID from Gui", $TransactionIDGuiDR);
+
+    
+    var $TimeStampGuiDR=_getText(_cell(1, _near(_cell($Remote+$compNameDR))));;
+    _assertExists("TimeStamp from Gui", $TimeStampGuiDR);
+    
+    var $date =$TimeStampGuiDR;
+    var $dateString = $date.toString();
+    var $TimeStampGUIDR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+    _assertExists("$TimeStamp from Gui After converting to Integer", $TimeStampGUIDR);
+    
+    
+  //DR2
+    if($scenario==1){
+    var $TransactionIDGuiDR2=_getText(_cell(2, _near(_cell($Remote+$compNameDR2))));
+    _assertExists("TransactionID from Gui", $TransactionIDGuiDR2);
+
+    
+    var $TimeStampGuiDR2=_getText(_cell(1, _near(_cell($Remote+$compNameDR2))));;
+    _assertExists("TimeStamp from Gui", $TimeStampGuiDR2);
+    
+    var $date =$TimeStampGuiDR2;
+    var $dateString = $date.toString();
+    var $TimeStampGUIDR2 = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+    _assertExists("$TimeStamp from Gui After converting to Integer", $TimeStampGUIDR2);
+    }
+    else {
+    	_log("Since user input is given for 2:1, hence not capturing the transaction id and timestamp of DR2");
+    	}
+    
+    //CONNECTION PR
+  	_log("Generating load in PR machine");
+  	$db = Get_MSsql_Db_Connection_URL($ipPR,$database,$userPR, $pwdPR);
+  	 var $time = currentTime();
+  $db.update("CREATE TABLE [dbo].[Table_"+$time+"](" +
+  			"[col1] [varchar](50) NULL," +
+  			"[col2] [varchar](50) NULL," +
+  			"[col3] [varchar](50) NULL," +
+  			"[col4] [varchar](50) NULL," +
+  			"[col5] [varchar](50) NULL" +
+              ")"); 
+ 
+  
+  $db = Get_MSsql_Db_Connection_URL($ipPR,$database,$userPR, $pwdPR);
+  	
+  	var $TimeStampDB2 = $db.select("use "+ $database +" ;select TOP 1  [End Time] as endTime from ::fn_dblog (null, null) where ([End Time] is NOT NULL) ORDER BY [End Time] DESC;");
+  	var $TimeStampDB1=$TimeStampDB2;
+  	var $TimeStampDB = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss").parse($TimeStampDB1));
+  	var $TimeStampDB1=$TimeStampDB.split(":");
+  	var $TimeStampDB=$TimeStampDB1[0]+":"+$TimeStampDB1[1]+":"+$TimeStampDB1[2];
+  	_assertExists("Transaction Time DB",$TimeStampDB);
+  	
+  	var $date = $TimeStampDB;
+    var $dateString = $date.toString();
+    var $TimeStamp = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+    _assertExists("TimeStamp", $TimeStamp);
+  	
+    $count = 0;
+	while($count<20){
+		_wait(30000);
+		$count++;
+		}
+		
+  	
+	//PR
+	  var $TransactionIDPR=_getText(_cell(2, _near(_cell($Primary+$compNamePR))));
+	  _assertExists("TransactionID from Gui" , $TransactionIDPR);
+	 
+	var $ApplicatioTimeStampGuiPR=_getText(_cell(1, _near(_cell($Primary+$compNamePR))));
+	  var $date =$ApplicatioTimeStampGuiPR;
+	    var $dateString = $date.toString();
+	    var $TimeStampPR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+	    _assertExists("TimeStamp PR", $TimeStampPR);
+	    
+	    //PR2
+	    var $TransactionIDPR2=_getText(_cell(2, _near(_cell($Remote+$compNamePR2))));
+	  _assertExists("TransactionID from Gui" , $TransactionIDPR2);
+	 
+	var $ApplicatioTimeStampGuiPR2=_getText(_cell(1, _near(_cell($Remote+$compNamePR2))));
+	  var $date =$ApplicatioTimeStampGuiPR2;
+	    var $dateString = $date.toString();
+	    var $TimeStampPR2 = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+	    _assertExists("TimeStamp PR", $TimeStampPR2);
+	    
+	    
+	  //DR
+	  var $TransactionIDDR=_getText(_cell(2, _near(_cell($Remote+$compNameDR))));
+	    _assertExists("TransactionID from Gui", $TransactionIDDR);
+
+	    //TimeStamp from GUI
+	    var $ApplicationTimeStampGuiDR=_getText(_cell(1, _near(_cell($Remote+$compNameDR))));
+	    var $date = $ApplicationTimeStampGuiDR;
+	    var $dateString = $date.toString();
+	    var $TimeStampDR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+	    _assertExists("TimeStamp DR", $TimeStampDR);
+	    
+	  //DR2
+	    if($scenario==1){
+	    var $TransactionIDDR2=_getText(_cell(2, _near(_cell($Remote+$compNameDR2))));
+	    _assertExists("TransactionID from Gui", $TransactionIDDR2);
+
+	    //TimeStamp from GUI
+	    var $ApplicationTimeStampGuiDR2=_getText(_cell(1, _near(_cell($Remote+$compNameDR2))));
+	    var $date = $ApplicationTimeStampGuiDR2;
+	    var $dateString = $date.toString();
+	    var $TimeStampDR2 = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+	    _assertExists("TimeStamp DR", $TimeStampDR2);
+	    }
+	    else {
+	    	_log("Since user input is given for 2:1, hence not capturing the transaction id and timestamp of DR2 after load generation");
+	    	}
+	    
+	    _assertTrue($TransactionIDGuiPR<$TransactionIDPR,"TransactionID PR updated successfully");
+	    _assertTrue($TimeStampGUIPR<$TimeStampPR, "TimeStamp PR updated successfully");
+	    
+	    _assertTrue($TransactionIDGuiPR2<$TransactionIDPR2,"TransactionID PR updated successfully");
+	    _assertTrue($TimeStampGUIPR2<$TimeStampPR2, "TimeStamp PR2 updated successfully");
+
+	    _assertTrue($TransactionIDGuiDR<$TransactionIDDR, "TransactionID DR updated successfully");
+	    _assertTrue($TimeStampGUIDR<$TimeStampDR,"TimeStamp DR updated successfully" );
+	    if($scenario==1){
+	    _assertTrue($TransactionIDGuiDR2<$TransactionIDDR2, "TransactionID DR updated successfully");
+	    _assertTrue($TimeStampGUIDR2<$TimeStampDR2,"TimeStamp DR2 updated successfully" );
+	    }
+	    else {
+	    	_log("Since user input is given for 2:1, hence not comparing the transaction id and timestamp of DR2");
+	    	}
+}
+	    
+
+
+function MSSQL_ALWAYS_ON_RPO_Status_Post_SO($ipPR,$database,$userPR, $pwdPR) {
+	
+	navigateToRPO($groupName);
+	
+	//PR
+	var $TransactionIDGuiPR=_getText(_cell(2, _near(_cell($Primary+$compNameDR))));
+  	_assertExists("TransactionID from Gui" , $TransactionIDGuiPR);
+  	
+  	var $TimeStampGuiPR=_getText(_cell(1, _near(_cell($Primary+$compNameDR))));
+  	_assertExists("$TimeStamp from Gui", $TimeStampGuiPR);
+  	
+  	var $date =$TimeStampGuiPR;
+    var $dateString = $date.toString();
+    var $TimeStampGUIPR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+    _assertExists("$TimeStamp from Gui After converting to Integer", $TimeStampGUIPR);
+    
+  	//PR2
+  	var $TransactionIDGuiPR2=_getText(_cell(2, _near(_cell($Remote+$compNameDR2))));
+  	_assertExists("TransactionID from Gui" , $TransactionIDGuiPR2);
+  	
+  	var $TimeStampGuiPR2=_getText(_cell(1, _near(_cell($Remote+$compNameDR2))));
+  	_assertExists("$TimeStamp from Gui", $TimeStampGuiPR2);
+  	
+  	var $date =$TimeStampGuiPR2;
+    var $dateString = $date.toString();
+    var $TimeStampGUIPR2 = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+    _assertExists("$TimeStamp from Gui After converting to Integer", $TimeStampGUIPR2);
+    
+     //DR
+     var $TransactionIDGuiDR=_getText(_cell(2, _near(_cell($Remote+$compNamePR))));
+    _assertExists("TransactionID from Gui", $TransactionIDGuiDR);
+
+    
+    var $TimeStampGuiDR=_getText(_cell(1, _near(_cell($Remote+$compNamePR))));;
+    _assertExists("TimeStamp from Gui", $TimeStampGuiDR);
+    
+    var $date =$TimeStampGuiDR;
+    var $dateString = $date.toString();
+    var $TimeStampGUIDR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+    _assertExists("$TimeStamp from Gui After converting to Integer", $TimeStampGUIDR);
+    
+    //DR2
+    if($scenario==1){
+    var $TransactionIDGuiDR2=_getText(_cell(2, _near(_cell($Remote+$compNamePR2))));
+    _assertExists("TransactionID from Gui", $TransactionIDGuiDR2);
+
+    
+    var $TimeStampGuiDR2=_getText(_cell(1, _near(_cell($Remote+$compNamePR2))));;
+    _assertExists("TimeStamp from Gui", $TimeStampGuiDR2);
+    
+    var $date =$TimeStampGuiDR2;
+    var $dateString = $date.toString();
+    var $TimeStampGUIDR2 = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+    _assertExists("$TimeStamp from Gui After converting to Integer", $TimeStampGUIDR2);
+    }
+    else {
+    	_log("Since user input is given for 2:1, hence not capturing the transaction id and timestamp of DR2 after load generation");
+    	}
+    //CONNECTION PR
+    _log("Generating load/Creating table in current PR machine post SO");
+  	$db = Get_MSsql_Db_Connection_URL($ipPR,$database,$userPR, $pwdPR);
+  	 var $time = currentTime();
+  $db.update("CREATE TABLE [dbo].[Table_"+$time+"](" +
+  			"[col1] [varchar](50) NULL," +
+  			"[col2] [varchar](50) NULL," +
+  			"[col3] [varchar](50) NULL," +
+  			"[col4] [varchar](50) NULL," +
+  			"[col5] [varchar](50) NULL" +
+              ")"); 
+ 
+  
+  $db = Get_MSsql_Db_Connection_URL($ipPR,$database,$userPR, $pwdPR);
+  	
+  	var $TimeStampDB2 = $db.select("use "+ $database +" ;select TOP 1  [End Time] as endTime from ::fn_dblog (null, null) where ([End Time] is NOT NULL) ORDER BY [End Time] DESC;");
+  	var $TimeStampDB1=$TimeStampDB2;
+  	var $TimeStampDB = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss").parse($TimeStampDB1));
+  	var $TimeStampDB1=$TimeStampDB.split(":");
+  	var $TimeStampDB=$TimeStampDB1[0]+":"+$TimeStampDB1[1]+":"+$TimeStampDB1[2];
+  	_assertExists("Transaction Time DB",$TimeStampDB);
+  	
+  	var $date = $TimeStampDB;
+    var $dateString = $date.toString();
+    var $TimeStamp = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+    _assertExists("TimeStamp", $TimeStamp);
+  	
+    $count = 0;
+	while($count<20){
+		_wait(30000);
+		$count++;
+		}
+		
+  	
+	//PR
+	  var $TransactionIDPR=_getText(_cell(2, _near(_cell($Primary+$compNameDR))));
+	  _assertExists("TransactionID from Gui" , $TransactionIDPR);
+	 
+	var $ApplicatioTimeStampGuiPR=_getText(_cell(1, _near(_cell($Primary+$compNameDR))));
+	  var $date =$ApplicatioTimeStampGuiPR;
+	    var $dateString = $date.toString();
+	    var $TimeStampPR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+	    _assertExists("TimeStamp PR", $TimeStampPR);
+	    
+	    //PR2
+	    var $TransactionIDPR2=_getText(_cell(2, _near(_cell($Remote+$compNameDR2))));
+	  _assertExists("TransactionID from Gui" , $TransactionIDPR2);
+	 
+	var $ApplicatioTimeStampGuiPR2=_getText(_cell(1, _near(_cell($Remote+$compNameDR2))));
+	  var $date =$ApplicatioTimeStampGuiPR2;
+	    var $dateString = $date.toString();
+	    var $TimeStampPR2 = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+	    _assertExists("TimeStamp PR", $TimeStampPR2);
+	    
+	    
+	  //DR
+	  var $TransactionIDDR=_getText(_cell(2, _near(_cell($Remote+$compNamePR))));
+	    _assertExists("TransactionID from Gui", $TransactionIDDR);
+
+	    //TimeStamp from GUI
+	    var $ApplicationTimeStampGuiDR=_getText(_cell(1, _near(_cell($Remote+$compNamePR))));
+	    var $date = $ApplicationTimeStampGuiDR;
+	    var $dateString = $date.toString();
+	    var $TimeStampDR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+	    _assertExists("TimeStamp DR", $TimeStampDR);
+	    
+	    //DR2
+	    if($scenario==1){
+	    var $TransactionIDDR2=_getText(_cell(2, _near(_cell($Remote+$compNamePR2))));
+	    _assertExists("TransactionID from Gui", $TransactionIDDR2);
+
+	    //TimeStamp from GUI
+	    var $ApplicationTimeStampGuiDR2=_getText(_cell(1, _near(_cell($Remote+$compNamePR2))));
+	    var $date = $ApplicationTimeStampGuiDR2;
+	    var $dateString = $date.toString();
+	    var $TimeStampDR2 = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+	    _assertExists("TimeStamp DR", $TimeStampDR2);
+	    }
+	    else {
+	    	_log("Since user input is given for 2:1, hence not capturing the transaction id and timestamp of DR2");
+	    	}
+	    
+	    _assertTrue($TransactionIDGuiPR<$TransactionIDPR,"TransactionID PR updated successfully");
+	    _assertTrue($TimeStampGUIPR<$TimeStampPR, "TimeStamp PR updated successfully");
+	    
+	    _assertTrue($TransactionIDGuiPR2<$TransactionIDPR2,"TransactionID PR updated successfully");
+	    _assertTrue($TimeStampGUIPR2<$TimeStampPR2, "TimeStamp PR2 updated successfully");
+
+	    _assertTrue($TransactionIDGuiDR<$TransactionIDDR, "TransactionID DR updated successfully");
+	    _assertTrue($TimeStampGUIDR<$TimeStampDR,"TimeStamp DR updated successfully" );
+	    
+	    if($scenario==1){
+	    _assertTrue($TransactionIDGuiDR2<$TransactionIDDR2, "TransactionID DR updated successfully");
+	    _assertTrue($TimeStampGUIDR2<$TimeStampDR2,"TimeStamp DR2 updated successfully" );
+	    }
+	    else {
+	    	_log("Since user input is given for 2:1, hence not comparing the transaction id and timestamp of DR2 after load generation");
+	    	}
+}
+
+
+/**
+ *Function is used to verify Replication(page) 
+ *@param :$groupName
+ *@return : null
+ *@author : SAITEJA.M and Omprakash.V
+ */
+
+function MSSQL_ALWAYS_ON_Replication($groupName,$workflowType){
+	navigateToReplication($groupName);
+	$count = 0;
+	while($count<10){
+	_wait(30000);
+	$count++;
+	}
+	if ($workflowType =="NormalCopy") {
+	if($scenario==1)
+	{
+	MSSQL_ALWAYS_ON_Replication_for_2_1();
+	
+	//3rd secondary instance
+	_log($instanceDR2+" is 3rd secondary instance");
+	var $synchronizationStatus=_getText(_cell(2, _near(_cell($instanceDR2))));
+	_assertEqual($SYNCHRONIZING , $synchronizationStatus);
+	var $roleGUI=_getText(_cell(1, _near(_cell($instanceDR2))));
+	_assertEqual($SECONDARY , $roleGUI);
+	var $synchronizationHealth=_getText(_cell(4, _near(_cell($instanceDR2))));
+	_assertEqual($HEALTHY , $synchronizationHealth);
+	var $dataLag=_getText(_cell(6, _near(_cell($instanceDR2))));
+	_assertEqual("0 KB" , $dataLag);
+	} 
+	else
+	{
+	MSSQL_ALWAYS_ON_Replication_for_2_1();
+	}
+	  }
+	
+	else {
+		if ($workflowType =="Switchover") {
+	
+		if($scenario==1)
+		{
+			MSSQL_ALWAYS_ON_Replication_for_2_1_Post_SO();
+		
+		//3rd secondary instance
+		_log($instanceNearestPR+" is 3rd secondary instance post SO");
+		var $synchronizationStatus=_getText(_cell(2, _near(_cell($instanceNearestPR))));
+		_assertEqual($SYNCHRONIZING , $synchronizationStatus);
+		var $roleGUI=_getText(_cell(1, _near(_cell($instanceNearestPR))));
+		_assertEqual($SECONDARY , $roleGUI);
+		var $synchronizationHealth=_getText(_cell(4, _near(_cell($instanceNearestPR))));
+		_assertEqual($HEALTHY , $synchronizationHealth);
+		var $dataLag=_getText(_cell(6, _near(_cell($instanceNearestPR))));
+		_assertEqual("0 KB" , $dataLag);
+		} 
+		else
+		{
+			MSSQL_ALWAYS_ON_Replication_for_2_1_Post_SO();
+		}
+		}
+	}
+}
+
+ function MSSQL_ALWAYS_ON_Replication_for_2_1()
+	{
+
+
+	var $protectionGUI = _getText(_span(1, _near(_span($Protection))));
+	_assertEqual("MSSQL Always ON" , $protectionGUI);
+
+	var $replicationStatusGUI = _getText(_span(1, _near(_span($ReplicationStatus))));
+	_assertEqual($ACTIVE , $replicationStatusGUI);
+	var $availabilityGroupNameGUI = _getText(_span(1, _near(_span($AvailabilityGroupName))));
+	_assertEqual($availabilityGRPName , $availabilityGroupNameGUI);
+	var $availabilityDatabaseGUI = _getText(_span(1, _near(_span($AvailabilityDatabase))));
+	_assertEqual($database , $availabilityDatabaseGUI);
+	var $availabilityModeGUI = _getText(_span(1, _near(_span($AvailabilityMode))));
+	_assertEqual($SYNCHRONOUSCOMMIT , $availabilityModeGUI);
+	var $primaryInstanceGUI = _getText(_span(1, _near(_span($PrimaryInstance))));
+	_assertEqual($instancePR , $primaryInstanceGUI);
+	var $failoverModeGUI = _getText(_span(1, _near(_span($FailoverMode))));
+	_assertEqual($MANUAL , $failoverModeGUI);
+	/*var $clusterStateGUI = _getText(_span(1, _near(_span($ClusterState))));
+	_assertEqual("AutoSQLAlwaysOn(NORMAL_QUORUM)" , $clusterStateGUI);*/
+	
+	//1st secondary instance(nearest PR)
+	_log($instanceNearestPR+" is 1st secondary instance(nearest PR)");
+	var $synchronizationStatus=_getText(_cell(2, _near(_cell($instanceNearestPR))));
+	_assertEqual($SYNCHRONIZED , $synchronizationStatus);
+	var $roleGUI=_getText(_cell(1, _near(_cell($instanceNearestPR))));
+	_assertEqual($SECONDARY , $roleGUI);
+	var $synchronizationHealth=_getText(_cell(4, _near(_cell($instanceNearestPR))));
+	_assertEqual($HEALTHY , $synchronizationHealth);
+	var $dataLag=_getText(_cell(6, _near(_cell($instanceNearestPR))));
+	_assertEqual("0 KB" , $dataLag);
+	
+	//2nd secondary instance
+	_log($instanceDR1+" is 2nd secondary instance");
+	var $synchronizationStatus=_getText(_cell(2, _near(_cell($instanceDR1))));
+	_assertEqual($SYNCHRONIZING , $synchronizationStatus);
+	var $roleGUI=_getText(_cell(1, _near(_cell($instanceDR1))));
+	_assertEqual($SECONDARY , $roleGUI);
+	var $synchronizationHealth=_getText(_cell(4, _near(_cell($instanceDR1))));
+	_assertEqual($HEALTHY , $synchronizationHealth);
+	var $dataLag=_getText(_cell(6, _near(_cell($instanceDR1))));
+	_assertEqual("0 KB" , $dataLag);
+
+	}
+
+ function MSSQL_ALWAYS_ON_Replication_for_2_1_Post_SO()
+	{
+
+
+	var $protectionGUI = _getText(_span(1, _near(_span($Protection))));
+	_assertEqual("MSSQL Always ON" , $protectionGUI);
+
+	var $replicationStatusGUI = _getText(_span(1, _near(_span($ReplicationStatus))));
+	_assertEqual($ACTIVE , $replicationStatusGUI);
+	var $availabilityGroupNameGUI = _getText(_span(1, _near(_span($AvailabilityGroupName))));
+	_assertEqual($availabilityGRPName , $availabilityGroupNameGUI);
+	var $availabilityDatabaseGUI = _getText(_span(1, _near(_span($AvailabilityDatabase))));
+	_assertEqual($database , $availabilityDatabaseGUI);
+	var $availabilityModeGUI = _getText(_span(1, _near(_span($AvailabilityMode))));
+	_assertEqual($ASYNCHRONOUSCOMMIT , $availabilityModeGUI);
+	var $primaryInstanceGUI = _getText(_span(1, _near(_span($PrimaryInstance))));
+	_assertEqual($instanceDR1 , $primaryInstanceGUI);
+	var $failoverModeGUI = _getText(_span(1, _near(_span($FailoverMode))));
+	_assertEqual($MANUAL , $failoverModeGUI);
+	/*var $clusterStateGUI = _getText(_span(1, _near(_span($ClusterState))));
+	_assertEqual("AutoSQLAlwaysOn(NORMAL_QUORUM)" , $clusterStateGUI);*/
+	
+	//1st secondary instance(nearest PR) post SO
+	_log($instanceDR2+" is 1st secondary instance(nearest PR) post SO");
+	var $synchronizationStatus=_getText(_cell(2, _near(_cell($instanceDR2))));
+	_assertEqual($SYNCHRONIZING , $synchronizationStatus);
+	var $roleGUI=_getText(_cell(1, _near(_cell($instanceDR2))));
+	_assertEqual($SECONDARY , $roleGUI);
+	var $synchronizationHealth=_getText(_cell(4, _near(_cell($instanceDR2))));
+	_assertEqual($HEALTHY , $synchronizationHealth);
+	var $dataLag=_getText(_cell(6, _near(_cell($instanceDR2))));
+	_assertEqual("0 KB" , $dataLag);
+	
+	//2nd secondary instance  post SO
+	_log($instancePR+" is 2nd secondary instance post SO");
+	var $synchronizationStatus=_getText(_cell(2, _near(_cell($instancePR))));
+	_assertEqual($SYNCHRONIZING , $synchronizationStatus);
+	var $roleGUI=_getText(_cell(1, _near(_cell($instancePR))));
+	_assertEqual($SECONDARY , $roleGUI);
+	var $synchronizationHealth=_getText(_cell(4, _near(_cell($instancePR))));
+	_assertEqual($HEALTHY , $synchronizationHealth);
+	var $dataLag=_getText(_cell(6, _near(_cell($instancePR))));
+	_assertEqual("0 KB" , $dataLag);
+
+	}
+	 
+	
+function Select_instance($WFName)
+	 {
+    navigateDrillListing($groupName);
+	var $testStatus = _getText(_link("/.*/", _rightOf(_div("/" + $WFName +  "/")), _under(_div($obj_ExecutionStatus))));
+   _log($testStatus);
+   _assertExists("Test Status :", $testStatus);	
+ 	if ($testStatus == $AWAITINGINPUT||$testStatus == $EXECUTING) {
+	_click(_link(1, _near(_link($WFName))));
+	_wait(20000);
+	_click(_button($AwaitingInput1));
+}
+else{
+	_log("test status is success");	
+}
+ 	}
+

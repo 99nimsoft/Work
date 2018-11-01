@@ -1,0 +1,84 @@
+var $l_MssqlmirroringInputs = _readExcelFile($SAHI_HOME + "\\conf\\MSSQL_MIRRORING\\MSSQL_MIRR_Parameter.xls","Local");
+
+// DRM GUI Details
+var $username = $l_MssqlmirroringInputs[2][2]; // DRM server GUI user name e.g. "abc"
+var $password = $l_MssqlmirroringInputs[3][2]; // DRM server GUI pwd
+
+//Connectivity of mssql
+var $database= $l_MssqlmirroringInputs[6][2];
+var $userPR = $l_MssqlmirroringInputs[7][2]; // for mssql db connection
+var $pwdPR = $l_MssqlmirroringInputs[8][2];  // for mssql db connection
+var $userDR = $l_MssqlmirroringInputs[9][2];  // for mssql db connection
+var $pwdDR = $l_MssqlmirroringInputs[10][2];  // for mssqldb connection
+
+//This user Input required to create the Site
+var $locationPR = "PR"; // PR Site Location
+var $incharge = "drmadmin"; // Site Incharge
+var $addressPR = "Mumbai"; // PR site Address
+var $locationDR = "DR"; // DR Site Location
+var $addressDR = "Bangalore";// DR site Address
+ 
+// This user Input required to create the Component for Local or remote 
+var $systemType= "Windows";
+var $osType = "Windows";
+var $compNamePR= $l_MssqlmirroringInputs[2][5];  //"WIN_67_PR";   
+var $compNameDR= $l_MssqlmirroringInputs[3][5]; //"win_50_DR";    
+var $compIPPR= $l_MssqlmirroringInputs[4][5];
+var $compIPDR= $l_MssqlmirroringInputs[5][5];
+
+var $credList= "Add new credential";
+var $remoteUserNameValPR= $l_MssqlmirroringInputs[6][5];
+var $remotePwdValPR= $l_MssqlmirroringInputs[8][5];
+var $remoteUserNameValDR= $l_MssqlmirroringInputs[7][5];
+var $remotePwdValDR= $l_MssqlmirroringInputs[9][5];
+var $agentType = "Local";
+
+// This user Input required to create the dataset 
+var $systemTypeDataset= "MSSQL";
+var $datasetNamePR= $l_MssqlmirroringInputs[13][2]; //"MSSQL_PR_67";      
+var $datasetNameDR= $l_MssqlmirroringInputs[14][2]; //"MSSQL_DR_50";      
+var $instanceName= $l_MssqlmirroringInputs[15][2];  
+var $usernamedb= $l_MssqlmirroringInputs[16][2];      
+var $port= $l_MssqlmirroringInputs[17][2];         
+
+
+// This user Input required to create the Group
+var $groupName= $l_MssqlmirroringInputs[20][2];
+var $groupDescription= "MSSQL";
+var $SolutionSignature= "MSSQL with Mirroring";
+
+//
+var $pstoolPath = $SAHI_HOME + "\\tools\\PsExec"; //pstool file path
+
+
+//for Panaces agent property file for remote agents
+var $sourcePath= $SAHI_HOME + "\\tools\\sed";
+var $MsSqlAgentWindowCheck=$l_MssqlmirroringInputs[12][5];
+var $PfrAgentCheck="1";
+var $UserInstallDirforLocal=$l_MssqlmirroringInputs[13][5];
+var $UserInputResultJarMsSql=$l_MssqlmirroringInputs[14][5];
+var $UserInputResultPrimaryPanacesServerIP=$l_MssqlmirroringInputs[15][5];
+var $UserInputResultSecondaryPanacesServerIP=$l_MssqlmirroringInputs[16][5];
+var $AgentStartYes=$l_MssqlmirroringInputs[17][5];
+
+
+//for installing agents
+var $fileName=$l_MssqlmirroringInputs[21][5];//Panaces agent property file path
+var $installexepath=$l_MssqlmirroringInputs[22][5];//keep the path of install.exe same in pr and dr
+var $pfrexepath=$l_MssqlmirroringInputs[23][5];//keep the path of PFR.exe same in pr and dr
+
+
+//Common
+var $compsitePR = $locationPR;  
+var $compsiteDR = $locationDR; 
+var $dependentComponentNamePR= $compNamePR;
+var $dependentComponentNameDR= $compNameDR;
+var $primaryComponents=$compNamePR;
+var $remoteComponents=$compNameDR;
+var $primaryDatasets=$datasetNamePR;
+var $remoteDatasets=$datasetNameDR;
+var $databaseName= $database;
+var $ipPR= $compIPPR;
+var $ipDR=$compIPDR;
+var $installbinpath=$fileName;
+var $datasetType=$systemTypeDataset;

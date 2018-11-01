@@ -1,0 +1,370 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : Sanovi Cloud Continuity 
+ ** Objective : This script contains all the remote agent test cases for Oracle ArchiveLog NetAppSanpmirror remote Solution
+ ** AuthorName : Anita
+ ** Created Date : Jan 2017
+ ************************************************************************/
+
+_log("=================================Pre-Condition===================================","Custom1");
+
+//don't change the below line.
+
+_include("../Library/Solution_Signature/Include/Oracle_ArchLog_Netapp.sah");
+_include("../conf/DRMInstallation_Parameter.sah");
+_include("../conf/Oracle_ArchLog_Netapp/Oracle_ArchLog_Netapp_Remote_Agent_Parameter.sah");
+_include("../conf/Oracle_ArchLog_Netapp/UserSelected_Oracle_ArchLog_Netapp_Testcase.sah");
+_include("../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+
+// *************************************************************************************************************************************************
+// Notes: below test cases for Remote agent
+
+UnInstall_Remote_Agent_SilentMode_PR();  //uninstalling Pfr Services for PR
+UnInstall_Remote_Agent_SilentMode_DR(); //uninstalling Pfr Services for DR
+AgentBuild_Copy_into_PFRFile_PR();
+AgentBuild_Copy_into_PFRFile_DR();
+Update_PropertyFile_RemoteAgent_PR();
+Update_PropertyFile_RemoteAgent_DR();
+Install_Remote_Agent_SilentMode_PR();
+Install_Remote_Agent_SilentMode_DR();
+
+WorkFlow_copy_001();
+
+Login_001();
+
+_log("=================================Test========================================","Custom1");
+
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_siteOraFDB_NetApp == "Y"){
+	var $test0 = _testcase("Create New Site","Create New Site");
+	$test0.start(); 
+	Site_0003();
+	$test0.end();
+}
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_agentNodeOraFDB_NetApp == "Y"){
+	var $test1 = _testcase("Create Agent Node","Create Agent Node");
+	$test1.start();
+	Agent_node_001();
+	$test1.end();
+}
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_componentRemoteDiscoveryOraFDB_NetApp == "Y"){
+	var $test2 = _testcase(" Create New Component OraArchLog_NetAppr_0001","Create New Component");
+	$test2.start();
+	OracleArchLogNetApp_Component_Remote_Discovery_0018();
+	$test2.end();
+}
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_datasetDiscoveryOraFDB_NetApp == "Y"){
+	var $test3 = _testcase("Dataset Discovery/Dataset/APP/OraDiscovery_0006 ","Dataset Discovery");
+	$test3.start();
+	OracleArchLogNetApp_Dataset_Discovery_0007();
+	$test3.end();
+}
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_protectionSchemeDiscoveryOraFDB_NetApp == "Y"){
+	var $test4 = _testcase("Protection Scheme Discovery/ OraArchLog_NetAppr","Protection Scheme Discovery");
+	$test4.start();
+	OracleArchLogNetApp_Protectionscheme_Discovery_0018();
+	$test4.end();
+}
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_groupCreationOraFDB_NetApp == "Y"){
+	var $test5= _testcase("OraArchLog_NetAppr/Common/FG/Group/GroupCreation","OraArchLog_NetAppr Group Creation");
+	$test5.start();
+		OracleArchLogNetApp_GroupCreation_0022();
+	$test5.end();
+}
+
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_moveGroupToManageOraFDB_NetApp == "Y"){
+	var $test6 = _testcase("Continuity_Manager/Common/FG/Group/GroupCreation_0006","Move Group to Manage");
+	$test6.start();
+		OracleArchLogNetApp_Move_Group_Manage_0006();
+	$test6.end();
+}
+
+if ($g_executeOraFDB_NetAppAll == "Y" || $g_moveGroupToManageOraFDB_NetApp == "Y") {
+	var $test7 = _testcase("Continuity_Manager/Common/FG/Manage/Change_Continuity_State_0001", "Change Continuity State");
+	$test7.start();
+		 OracleArchLogNetApp_Change_Continuity_State_0001();
+	$test7.end();
+}
+
+
+if ($g_executeOraFDB_NetAppAll == "Y" || $g_postGroupCreationOracleDg == "Y") {
+	var $test10 = _testcase("Edit FOTE,SO,SB workflows/OracleArchLogNetApp_Edit_workflows005", "Edit_workflows");
+	$test10.start();
+	OracleArchLogNetApp_Edit_workflows005();
+	$test10.end();
+}
+
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_componentStatusOraFDB_NetApp == "Y"){
+	var $test8 = _testcase("Object_Manager/ Common/ Components/ Subsystem_Moinitoring_0001 ","Component Status");
+	$test8.start();
+     OracleArchLogNetApp_Component_Status_0001();
+	$test8.end();
+	}
+if ($g_executeOraFDB_NetAppAll == "Y" || $g_executeOraFDB_NetAppAll == "Y") {
+	var $test27 = _testcase("Object_Manager/Dataset/Oracle/Ora_Auto_DatasetDiscovery0009", "Dataset Status");
+	$test27.start();
+	OracleArchLogNetApp_Dataset_status_0011();
+	$test27.end();
+}
+  
+if($g_executeOraFDB_NetAppAll == "Y" || $g_continuityManagenentOraFDB_NetApp == "Y"){
+	var $test11 = _testcase("Continuity_Manager/Common/FG/Manage/Continuity_Management_0015","Continuity Management");
+	$test11.start();
+	OracleArchLogNetApp_Continuity_Management_0015();
+	$test11.end();
+}
+
+	
+if($g_executeOraFDB_NetAppAll == "Y" || $g_monitorRelationshipOraFDB_NetApp == "Y"){
+	var $test19 = _testcase("Monitor Relationship", "Monitor Relationship");
+	$test19.start();
+		OracleArchLogNetApp_Monitor_Relationship_0030();
+	$test19.end();
+}
+
+if ($g_executeOraFDB_NetAppAll == "Y" || $g_groupSnapshotOraFDB_NetApp == "Y") {
+	var $test22 = _testcase("Import FO WF", "Import FO");
+	$test22.start();
+	OracleArchLogNetApp_Import_FO_0010();
+	$test22.end();
+}
+
+if ($g_executeOraFDB_NetAppAll == "Y" || $g_groupSnapshotOraFDB_NetApp == "Y") {
+	var $test22 = _testcase("Import NC WF", "Import NormalCopy");
+	$test22.start();
+	OracleArchLogNetApp_Import_NC_0011();
+	$test22.end();
+}
+
+if ($g_executeOraFDB_NetAppAll == "Y" || $g_groupSnapshotOraFDB_NetApp == "Y") {
+	var $test22 = _testcase("Import RNC WF", "Import ReverseNormalCopy");
+	$test22.start();
+	OracleArchLogNetApp_Import_RNC_0012();
+	$test22.end();
+}
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_importSOSBOraFDB_NetApp == "Y"){
+	var $test26 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0007","Import SO & SB");
+	$test26.start();
+	    OracleArchLogNetApp_Import_SOSB_0007();
+	$test26.end();
+}
+
+if ($g_executeOraFDB_NetAppAll == "Y" || $g_groupSnapshotOraFDB_NetApp == "Y") {
+	var $test22 = _testcase("Start NormalCopy ", "Start NC");
+	$test22.start();
+	OracleArchLogNetApp_Start_NormalCopy_001();
+	$test22.end();
+}
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_replicationNCOraFDB_NetApp == "Y"){
+	var $test23 = _testcase("Verify NC Replication Page","NC Replication");
+	$test23.start();
+		OracleArchLogNetApp_NC_Replication_0028();
+	$test23.end();
+}
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_replicationNCOraFDB_NetApp == "Y"){
+	var $test23 = _testcase("Verify Backend Snapmirror Status on DR","DR Replication Status");
+	$test23.start();
+	Oracle_Replication_Status_backend_0029();
+	$test23.end();
+}
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_rpoNCOraFDB_NetApp == "Y"){
+	var $test24 = _testcase("Verify NC RTO deviation","NC RPO");
+	$test24.start();
+		OracleArchLogNetApp_NC_RPO_0026();
+	$test24.end();
+}
+
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_rtoNCOraFDB_NetApp == "Y"){
+	var $test25 = _testcase("Continuity_Manager/Common/FG/Monitor/RTO_0004","NC RTO");
+	$test25.start();
+		OracleArchLogNetApp_NC_RTO_0027();
+	$test25.end();
+}
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_rpoNCOraFDB_NetApp == "Y"){
+	var $test24 = _testcase("Verify NC RPO deviation","NC RPO deviation");
+	$test24.start();
+		OracleArchLogNetApp_NC_RPO_Deviation();
+	$test24.end();
+}
+
+if ($g_executeOraFDB_NetAppAll == "Y" || $g_groupSnapshotOraFDB_NetApp == "Y") {
+	var $test22 = _testcase("Stop NormalCopy ", "Stop NC");
+	$test22.start();
+	OracleArchLogNetApp_Stop_NormalCopy_002();
+	$test22.end();
+}
+
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_startSOOraFDB_NetApp == "Y"){
+	var $test28 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0011","Start SO");
+	$test28.start();
+		OracleArchLogNetApp_Start_SO_0011();
+	$test28.end();
+}
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_SOExecutionOraFDB_NetApp == "Y"){
+	var $test29 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0012","SO Execution");
+	$test29.start();
+		OracleArchLogNetApp_SO_Execution_0012();
+	$test29.end();
+}
+
+
+if ($g_executeOraFDB_NetAppAll == "Y" || $g_executeOraFDB_NetAppAll == "Y") {
+	var $test32 = _testcase("Verify Replication Status Post SO", "Replication Status Post SO");
+	$test32.start();
+	OracleArchLogNetApp_ReplicationStatus_PostSO();
+	$test32.end();
+}
+
+if ($g_executeOraFDB_NetAppAll == "Y" || $g_executeOraFDB_NetAppAll == "Y") {
+	var $test32 = _testcase("Perform Resync snapmirror after SO", "Resync snapmirror Post SO");
+	$test32.start();
+	OracleArchLogNetApp_Rsync_PostSO();
+	$test32.end();
+}
+
+if ($g_executeOraFDB_NetAppAll == "Y" || $g_executeOraFDB_NetAppAll == "Y") {
+	var $test32 = _testcase("Start Reverse Normal Copy", "Start RNC");
+	$test32.start();
+	OracleArchLogNetApp_Start_ReverseNormalCopy_002();
+	$test32.end();
+}
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_rpoNCOraFDB_NetApp == "Y"){
+	var $test24 = _testcase("Verify RNC RPO deviation","RNC RPO deviation");
+	$test24.start();
+		OracleArchLogNetApp_RNC_RPO_Deviation();
+	$test24.end();
+}
+
+
+if ($g_executeOraFDB_NetAppAll == "Y" || $g_executeOraFDB_NetAppAll == "Y") {
+	var $test32 = _testcase("Stop Reverse Normal Copy", "Stop RNC");
+	$test32.start();
+	OracleArchLogNetApp_Stop_ReverseNormalCopy_002();
+	$test32.end();
+}
+
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_startSBOraFDB_NetApp == "Y"){
+	var $test42 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0034","Start SB");
+	$test42.start();
+		OracleArchLogNetApp_Start_SB_0034();
+	$test42.end();
+}
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_SBExecutionOraFDB_NetApp == "Y"){
+	var $test43 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0035","SB Execution");
+	$test43.start();
+		OracleArchLogNetApp_SB_Execution_0035();
+	$test43.end();
+}
+
+if ($g_executeOraFDB_NetAppAll == "Y" || $g_executeOraFDB_NetAppAll == "Y") {
+	var $test32 = _testcase("Verify Replication Status after SwitchBack", "Replication Status Post SB");
+	$test32.start();
+	OracleArchLogNetApp_ReplicationStatus_PostSB();
+	$test32.end();
+}
+
+if ($g_executeOraFDB_NetAppAll == "Y" || $g_executeOraFDB_NetAppAll == "Y") {
+	var $test32 = _testcase("Perform Resync snapmirror after SwitchBack", "Resync snapmirror Post SB");
+	$test32.start();
+	OracleArchLogNetApp_Rsync_PostSB();
+	$test32.end();
+}
+if($g_executeOraFDB_NetAppAll == "Y" || $g_monitorManageSBAPP_PFR == "Y"){
+	var $test48 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0038","SB Monitor Manage");
+	$test48.start();
+	OracleArchLogNetApp_SB_Monitor_Manage_0038();
+	$test48.end();
+}
+
+
+//Events verify 
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_remoteStopOraFDB_NetAppAgent == "Y"){
+var $test44 = _testcase("OracleArchLogNetApp_Object_Health_Events0001","Stopping Remote Agent");
+$test44.start();
+	OracleArchLogNetApp_Remote_Stop_OracleArchLogNetApp_Agent_0039();
+$test44.end();
+}
+
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_remoteStartOraFDB_NetAppAgent == "Y"){
+var $test45 = _testcase("OracleArchLogNetApp_Object_Health_Events0001","Starting Remote Agent");
+$test45.start();
+	OracleArchLogNetApp_Remote_Start_OracleArchLogNetApp_Agent_0038();
+$test45.end();
+}
+
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_replicaionStopOraFDB_NetApp == "Y"){
+var $test46 = _testcase("OracleArchLogNetApp_Manage_Replication ","Stop Replication");
+$test46.start();
+	OracleArchLogNetApp_Remote_Stop_NetApp_Agent_0051();
+$test46.end();
+}
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_replicaionStartOraFDB_NetApp == "Y"){
+var $test47 = _testcase("OracleArchLogNetApp_Manage_Replication ","Start Replication");
+$test47.start();
+	OracleArchLogNetApp_Remote_Start_NetApp_Agent_0052();
+$test47.end();
+} 
+
+//Events end
+
+
+/* //failOver 
+if($g_executeOraFDB_NetAppAll == "Y" || $g_startFOOraFDB_NetApp == "Y"){
+var $test49 = _testcase("Continuity_Manager/ Common/ FG/ Monitor/ Failover_0001 ","Start FO");
+$test49.start();
+	OracleArchLogNetApp_Start_FO_0001();
+$test49.end();
+}
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_FOExecutionOraFDB_NetApp == "Y"){
+var $test50 = _testcase("Continuity_Manager/ Common/ FG/ Monitor/ Failover_0001 ","FO Execution");
+$test50.start();
+	OracleArchLogNetApp_FO_execution_0058();
+$test50.end();
+}
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_continuityStatusFOOraFDB_NetApp == "Y"){
+var $test51 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0007","Continuity Status During FO");
+$test51.start();
+	OracleArchLogNetApp_Continuity_Status_FO_0007();
+$test51.end();
+}
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_rpoFOOraFDB_NetApp == "Y"){
+var $test52 = _testcase("Continuity_Manager/Common/FG/Monitor/Failover_0003","RPO during FO");
+$test52.start();
+	OracleArchLogNetApp_FO_RPO_0003();
+$test52.end();
+}
+
+if($g_executeOraFDB_NetAppAll == "Y" || $g_monitorManageFOOraFDB_NetApp == "Y"){
+var $test53 = _testcase("Continuity_Manager/ Common/ FG/ Monitor/ Failover_0006 ","FO Monitor Manage");
+$test53.start();
+	OracleArchLogNetApp_FO_Monitor_Manage_0006();
+$test53.end();
+} */
+_log("================================Post-Condition================================== ","Custom1");
+
+Logout_001(); 

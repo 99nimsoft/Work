@@ -1,0 +1,41 @@
+//UCSD Parameters
+var $accountname="PR_78";
+var $ucsdiphostname="192.168.2.78";
+var $key="53A66B28768041F8AD14978AB4CB8CF8";
+
+var $accountname1="DR_79";
+var $ucsdiphostname1="192.168.2.79";
+var $key1="41CC376F9E144BA0856BEDD115C1970A";
+
+var $accountname2="test_ucsd2";
+
+var $accountname3="test_ucsd3";
+var $key3="5D3B0AD38B544CC4B88971035A106B81";
+var $ucsdiphostname3="192.168.2.160";
+
+var $accountname4="test_ucsd4";
+var $ucsdIpForUpdate="172.1.1.4";
+var $accountname5="test_ucsd5";
+
+var $key81="E4D54D373F65488EBDC2AB18A4F817AC";
+
+var $wrongkey="4FC33B62C84B62393129AD0";
+var $invalidServerIp="192.168.0.1";
+var $Invalidkey="4FC33B62C84B62393129AD0";
+var $invalidServerIp1="192.168.0.2";
+
+
+var $msSite="DRM_Site";
+var $site="Atlanta";
+var $address="PR";
+var $site_incharge="drmadmin";
+
+
+//DB PARAM
+var $hostUserNamePR="root";// 
+var $hostPasswordPR="sanovi";
+var $hostIPPR=$drmServer;
+var $hostPortPR="3306";
+
+
+

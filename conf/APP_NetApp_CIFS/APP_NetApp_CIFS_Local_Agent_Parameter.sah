@@ -1,0 +1,133 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the Local Agents parameters for APP NetApp CIFS
+ ** AuthorName : Rakhee hongunti
+ ** Created Date :
+ ***********************************************************************************************/
+
+
+
+var $l_APP_NetApp_CIFS=_readExcelFile($SAHI_HOME + "\\conf\\APP_NetApp_CIFS\\APP_NetApp_CIFS_Parameter.xls","Local");
+
+//var $filePath= $SAHI_HOME + "utility";
+
+
+
+//This user Input required to Login the DRM server
+var $username = $l_APP_NetApp_CIFS[3][2]; // DRM server GUI user name e.g. "swati"
+var $password = $l_APP_NetApp_CIFS[4][2]; // DRM server GUI pwd
+
+//This user Input required to install the local agents
+
+
+/*//Remote Agent Installation
+var $agentBuildPR =$l_APP_NetApp_CIFS[15][5];
+var $agentBuildDR=$l_APP_NetApp_CIFS[16][5];
+var $PfrStart="1";
+var $PfrServicePath=$l_APP_NetApp_CIFS[17][5];
+*/
+var $systemType = $l_APP_NetApp_CIFS[28][2];
+var $osType = $l_APP_NetApp_CIFS[27][2];
+var $NetAppFilerSytemType = $l_APP_NetApp_CIFS[29][2];
+var $NetAppFilerOSType = $l_APP_NetApp_CIFS[30][2];
+
+
+
+//This user Input required to create the Site
+var $locationPR = "PR"; // PR Site Location
+var $incharge = "drmadmin"; // Site Incharge
+var $addressPR = "Mumbai"; // PR site Address
+var $locationDR = "DR"; // DR Site Location
+var $addressDR = "Bangalore";// DR site Address
+
+//This user Input required to create the Component for Local or remote
+var $agentType = "Local"; // This if for agent type always enter as e.g. Local or Remote.Note Here first letter is upper case and remaining lower case.
+var $compIPPR = $l_APP_NetApp_CIFS[7][2]; // PR Componenet ID
+var $compIPDR = $l_APP_NetApp_CIFS[8][2]; // DR Componenet ID
+var $remoteUserNameValPR = $l_APP_NetApp_CIFS[9][2]; // PR Machine user name. this information required for both local and remote
+var $remotePwdValPR = $l_APP_NetApp_CIFS[10][2]; // PR Machine Pwd name. this information required for both local and remote
+var $remoteUserNameValDR = $l_APP_NetApp_CIFS[11][2];// DR Machine user name. this information required for both local and remote
+var $remotePwdValDR = $l_APP_NetApp_CIFS[12][2];// PR Machine Pwd name. this information required for both local and remote
+var $compNamePR = $l_APP_NetApp_CIFS[13][2]; // PR Componenet Name
+var $compNameDR = $l_APP_NetApp_CIFS[14][2]; // DR Componenet Name
+var $NetAppcompIPPR = $l_APP_NetApp_CIFS[15][2]; // PR NetApp Componenet ID
+var $NetAppcompIPDR = $l_APP_NetApp_CIFS[16][2]; // DR NetApp Componenet ID
+var $NetAppUserNameValPR = $l_APP_NetApp_CIFS[17][2]; // PR Machine user name. this information required for both local and remote
+var $NetAppPwdValPR = $l_APP_NetApp_CIFS[18][2]; // PR Machine Pwd name. this information required for both local and remote
+var $NetAppUserNameValDR = $l_APP_NetApp_CIFS[19][2];// DR Machine user name. this information required for both local and remote
+var $NetAppPwdValDR = $l_APP_NetApp_CIFS[20][2];// PR Machine Pwd name. this information required for both local and remote
+var $NetAppcompNamePR = $l_APP_NetApp_CIFS[21][2]; // PR Componenet Name
+var $NetAppcompNameDR = $l_APP_NetApp_CIFS[22][2]; // DR Componenet Name
+
+//This user Input required to create the dataset
+var $systemTypeDataset = "Application SubSystem";
+var $datasetNamePR = $l_APP_NetApp_CIFS[3][5]; // PR dataset name
+var $datasetNameDR = $l_APP_NetApp_CIFS[4][5]; // DR dataset name
+var $fileNameTextPathPR = $l_APP_NetApp_CIFS[5][5];
+var $fileNameTextPathDR = $l_APP_NetApp_CIFS[6][5];
+
+
+//This user Input required to create the protection Scheme
+var $sernamePR = $l_APP_NetApp_CIFS[9][5]; // PR Protection Scheme name
+var $sernameDR = $l_APP_NetApp_CIFS[10][5]; // DR Protection Scheme name
+var $mgmtHostNet_PR = $NetAppcompNamePR+" ("+$NetAppcompIPPR+ ")";
+var $mgmtHostNet_DR = $NetAppcompNameDR+" ("+$NetAppcompIPDR+")";
+var $volumeNamePR = $l_APP_NetApp_CIFS[11][5];
+var $volumeNameDR = $l_APP_NetApp_CIFS[12][5];
+var $NetAppRemoteAgentPath = $l_APP_NetApp_CIFS[22][5];
+
+
+
+
+//This user Input required to create the Group
+var $groupName = $l_APP_NetApp_CIFS[25][2];// Group name
+
+
+var $groupDescription = $l_APP_NetApp_CIFS[26][2]; // Group description
+
+
+//workflow path
+var $WFPath = "AppSubSystemNetApp";
+var $fileSO = "BCS-AppSubSystemNetApp-SO.xml"; // Location of SO xml file
+var $fileSB = "BCS-AppSubSystemNetApp-SB.xml"; // Location of SB xml file
+var $fileFO = "BCS-AppSubSystemNetApp-FO.xml"; // Location of FO xml file
+var $fileCIFS_MappedDrive= "BCS-AppSubSystemNetApp-FOTE-CIFS-MappedDrive.xml"; //Location of MappedDrive
+
+// *********************************************************************************************************************************************
+// Important Note : Please don't modify/edit any below variable or its value.
+// If you made any changes of variable and its value, script will not execute.
+// *********************************************************************************************************************************************
+
+var $primaryPanacesServer = $drmServer; // this is Primary DRM server
+var $panacesAgentNodeAddressPR = $compIPPR;
+var $panacesAgentNodeAddressDR = $compIPDR;
+var $compsitePR = $locationPR;
+var $compsiteDR = $locationDR;
+var $primaryComponents = $compNamePR;
+var $remoteComponents = $compNameDR;
+
+var $primaryNetAppComponent = $NetAppcompNamePR;
+var $remoteNetAppComponent = $NetAppcompNameDR;
+
+var $primaryDatasets = $datasetNamePR;
+var $remoteDatasets = $datasetNameDR;
+var $primaryProtections = $sernamePR;
+var $remoteProtections = $sernameDR;
+
+var $dependentComponentNamePR = $compNamePR;
+var $dependentComponentNameDR = $compNameDR;
+var $incharge = "drmadmin";
+var $desiredRpo = "300";
+var $rpoCompute = "300";
+var $systemTypeProtection = "NetApp SnapMirror"; // Protection Scheme type
+var $SolutionSignature = "Application SubSystem with NetApp SnapMirror"; // Solution type
+var $systemTypeDataset = "Application SubSystem"; // database subsystem
+var $datasetType = "Application SubSystem";// database Type
+var $drmDbUserName = "automation"; // DRM server database user id
+var $drmDbPassword = "sanovi";// DRM server database password
+var $APP_NetApp_CIFSAgentChk = "1";
+//var $NetAppRemoteAgentPath=$EAMSROOT;
+var $pstoolPath = $SAHI_HOME + "\\tools\\PsExec" ;//pstool file path
+
+

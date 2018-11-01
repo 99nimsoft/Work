@@ -1,0 +1,60 @@
+
+/****************************** MSSQL_PFR ******************************/
+
+var $Excel1=_getExcel($SAHI_HOME + "\\Library\\Database\\MSSQL\\ObjectRepository\\MSSQL_ObjectRepository.xls","MSSQL");
+
+
+var $Excel=$Excel1.getData();
+
+if($BrowserLang == "N"){
+
+	var $j = 2;
+}
+else if($BrowserLang == "Y-JA"){
+	
+	var $j = 3;
+	}
+
+else if($BrowserLang == "Y-EN"){
+		
+		var $j = 3;
+	}
+
+var $Subsystems=$Excel[2][$j];
+var $Datasets=$Excel[3][$j];
+var $systemType=$Excel[4][$j];
+var $Go=$Excel[5][$j];
+var $obj_dependentComponentName=$Excel[6][$j];
+var $datasetType=$Excel[7][$j];
+var $RegisterAgents=$Excel[8][$j];
+var $obj_datasetName=$Excel[9][$j];
+
+var $obj_serverName=$Excel[10][$j];
+var $obj_addNewServer=$Excel[11][$j];
+var $obj_username=$Excel[12][$j];
+var $obj_password=$Excel[13][$j];
+var $obj_port=$Excel[14][$j];
+var $obj_databaseName=$Excel[15][$j];
+var $obj_InstanceDefaultalreadyexists=$Excel[16][$j];
+var $obj_DatafilesGUI=$Excel[17][$j];
+var $obj_DatafilesDB=$Excel[18][$j];
+var $obj_TransactionLogFileGUI=$Excel[19][$j];
+var $TestCredentials1=$Excel[20][$j];
+var $TestCredentials=$Excel[21][$j];
+var $Default=$Excel[22][$j];
+var $InstanceAlert=$Excel[23][$j];
+var $Discover=$Excel[24][$j];
+var $Save=$Excel[25][$j];
+var $datasetcreatedsuccesfully=$Excel[26][$j];
+var $DataFileNames=$Excel[27][$j];
+var $Datasetalreadyexists=$Excel[28][$j];
+var $TransactionLogFileNames=$Excel[29][$j];
+
+
+
+
+
+
+
+
+

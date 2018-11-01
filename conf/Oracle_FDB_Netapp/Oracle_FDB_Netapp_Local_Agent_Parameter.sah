@@ -1,0 +1,111 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the Remote Agents parameters for APP PFR
+ ** AuthorName : Govinda Mengji
+ ** Created Date : May 2014
+ ***********************************************************************************************/
+
+
+var $l_Oracle_FDB_Netapp_Local=_readExcelFile($SAHI_HOME+ "\\conf\\Oracle_FDB_Netapp_Local\\Oracle_FDB_Netapp_Local_Parameter.xls","Local");
+
+
+//This user Input required to Login the DRM server
+var $username = $l_Oracle_FDB_Netapp_Local[3][2]; // DRM server GUI user name e.g. "padma"
+var $password = $l_Oracle_FDB_Netapp_Local[4][2]; // DRM server GUI pwd e.g. "Sanovi123$"
+
+//This user Input required to install the local agents
+var $localAgentPathPR = $l_Oracle_FDB_Netapp_Local[13][5]; // this is the Path where user has install the agent on PR "/opt/panaces/"
+var $localAgentPathDR = $l_Oracle_FDB_Netapp_Local[14][5]; // this is the Path where user has install the agent on DR "/opt/panaces/"
+
+
+//local Agent Installation
+var $agentBuildPR =$l_Oracle_FDB_Netapp_Local[15][5];
+var $agentBuildDR=$l_Oracle_FDB_Netapp_Local[16][5];
+var $systemType =  $l_Oracle_FDB_Netapp_Local[18][2];
+var $osType =  $l_Oracle_FDB_Netapp_Local[19][2];
+var $userPR = $l_Oracle_FDB_Netapp_Local[9][2];
+var $userDR = $l_Oracle_FDB_Netapp_Local[11][2];
+
+//This user Input required to create the Site
+var $locationPR = "PR"; // PR Site Location
+var $incharge = "drmadmin"; // Site Incharge
+var $addressPR = "Mumbai"; // PR site Address
+var $locationDR = "DR"; // DR Site Location
+var $addressDR = "Bangalore";// DR site Address
+
+//This user Input required to create the Component for Local or remote
+var $agentType = "Local"; // This if for agent type always enter as e.g. Local or Remote.Note Here first letter is upper case and remaining lower case.
+var $compIPPR = $l_Oracle_FDB_Netapp_Local[7][2]; // PR Componenet ID
+var $compIPDR = $l_Oracle_FDB_Netapp_Local[8][2]; // DR Componenet ID
+var $remoteUserNameValPR = $l_Oracle_FDB_Netapp_Local[9][2]; // PR Machine user name. this information required for both local and remote
+var $remotePwdValPR = $l_Oracle_FDB_Netapp_Local[10][2]; // PR Machine Pwd name. this information required for both local and remote
+var $remoteUserNameValDR = $l_Oracle_FDB_Netapp_Local[11][2];// DR Machine user name. this information required for both local and remote
+var $remotePwdValDR = $l_Oracle_FDB_Netapp_Local[12][2];// PR Machine Pwd name. this information required for both local and remote
+var $compNamePR = $l_Oracle_FDB_Netapp_Local[13][2]; // PR Componenet Name
+var $compNameDR = $l_Oracle_FDB_Netapp_Local[14][2]; // DR Componenet Name
+var $NetAppcompIPPR = $l_Oracle_FDB_Netapp_Local[15][2]; // PR NetApp Componenet ID
+var $NetAppcompIPDR = $l_Oracle_FDB_Netapp_Local[16][2]; // DR NetApp Componenet ID
+var $NetAppUserNameValPR = $l_Oracle_FDB_Netapp_Local[17][2]; // PR Machine user name. this information required for both local and remote
+var $NetAppPwdValPR = $l_Oracle_FDB_Netapp_Local[18][2]; // PR Machine Pwd name. this information required for both local and remote
+var $NetAppUserNameValDR = $l_Oracle_FDB_Netapp_Local[19][2];// DR Machine user name. this information required for both local and remote
+var $NetAppPwdValDR = $l_Oracle_FDB_Netapp_Local[20][2];// PR Machine Pwd name. this information required for both local and remote
+var $NetAppcompNamePR = $l_Oracle_FDB_Netapp_Local[21][2]; // PR Componenet Name
+var $NetAppcompNameDR = $l_Oracle_FDB_Netapp_Local[22][2]; // DR Componenet Name
+
+//This user Input required to create the dataset
+var $systemTypeDataset = "Oracle";
+var $datasetNamePR = $l_Oracle_FDB_Netapp_Local[3][5]; // PR dataset name
+var $datasetNameDR = $l_Oracle_FDB_Netapp_Local[4][5]; // DR dataset name
+var $fileNameTextPathPR = $l_Oracle_FDB_Netapp_Local[5][5];
+var $fileNameTextPathDR = $l_Oracle_FDB_Netapp_Local[6][5];
+
+//This user Input required to create the protection Scheme
+var $NetAppcompNamePR = $l_Oracle_FDB_Netapp_Local[9][5]; // PR Protection Scheme name
+var $NetAppcompNameDR = $l_Oracle_FDB_Netapp_Local[10][5]; // DR Protection Scheme name
+var $mgmtHostDGPR = $compNamePR + " (" + $NetAppcompIPPR + ")"; 
+var $mgmtHostDGDR = $compNameDR + " (" + $NetAppcompIPDR + ")"; 
+var $volumeNamePR = $l_Oracle_FDB_Netapp_Local[11][5];
+var $volumeNameDR = $l_Oracle_FDB_Netapp_Local[12][5];
+var $lunPathPR = $l_Oracle_FDB_Netapp_Local[13][5]; 
+var $lunPathDR = $l_Oracle_FDB_Netapp_Local[14][5]; 
+
+
+
+//This user Input required to create the Group
+var $groupName = $l_Oracle_FDB_Netapp_Local[17][2]; // Group name
+var $groupDescription = "Oracle Full Db Netapp"; // Group description
+
+
+// *********************************************************************************************************************************************
+// Important Note : Please don't modify/edit any below variable or its value.
+// If you made any changes of variable and its value, script will not execute.
+// *********************************************************************************************************************************************
+
+var $primaryPanacesServer = $drmServer; // this is Primary DRM server
+var $panacesAgentNodeAddressPR = $compIPPR;
+var $panacesAgentNodeAddressDR = $compIPDR;
+var $compsitePR = $locationPR;
+var $compsiteDR = $locationDR;
+var $primaryComponents = $compNamePR;
+var $remoteComponents = $compNameDR;
+var $primaryDatasets = $datasetNamePR;
+var $remoteDatasets = $datasetNameDR;
+var $primaryProtections = $NetAppcompNamePR;
+var $remoteProtections = $NetAppcompNameDR;
+var $mgmtHostPFRPR =$compNamePR+' ('+$NetAppcompIPPR+')';
+var $mgmtHostPFRDR = $compNameDR+' ('+$NetAppcompIPDR+')';
+var $dependentComponentNamePR = $compNamePR;
+var $dependentComponentNameDR = $compNameDR;
+var $incharge = "drmadmin";
+var $desiredRpo = "300";
+var $rpoCompute = "300";
+var $systemTypeProtection = "NetApp SnapMirror"; // Protection Scheme type
+var $SolutionSignature = "Oracle FullDB with NetApp SnapMirror"; // Solution type
+var $datasetType = "Oracle";// database Type
+var $drmDbUserName = "automation"; // DRM server database user id
+var $drmDbPassword = "sanovi";// DRM server database password
+var $pfrAgentChk="1";
+var $oracleAgentChk = "1";
+
+

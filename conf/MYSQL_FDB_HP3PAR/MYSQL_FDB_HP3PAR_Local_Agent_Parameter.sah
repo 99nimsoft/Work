@@ -1,0 +1,130 @@
+var $l_MySql_Local=_readExcelFile($SAHI_HOME + "\\conf\\MYSQL_FDB_HP3PAR\\MYSQL_FDB_HP3PAR_Parameter.xls","Local");
+//This user Input required to Login the DRM server
+
+var $username = $l_MySql_Local[3][2]; // DRM server GUI user name e.g. "xyz"
+var $password = $l_MySql_Local[4][2]; // DRM server GUI pwd
+
+// This user Input required to create the Site
+var $locationPR = "PR"; // PR Site Location
+var $incharge = "drmadmin"; // Site Incharge
+var $addressPR = "Mumbai"; // PR site Address
+var $locationDR = "DR"; // DR Site Location
+var $addressDR = "Bangalore";// DR site Address
+
+// This user Input required to create the Component for Local or remote
+var $agentType = "Local"; // This if for agent type always enter as e.g. Local or Remote.Note Here first letter is upper case and remaining lower case.
+var $compIPPR = $l_MySql_Local[7][2]; // PR Componenet ID
+var $compIPDR = $l_MySql_Local[8][2]; // DR Componenet ID
+var $remoteUserNameValPR = $l_MySql_Local[9][2]; // PR Machine user name. this information required for both local and remote
+var $remotePwdValPR = $l_MySql_Local[10][2]; // PR Machine Pwd name. this information required for both local and remote
+var $remoteUserNameValDR = $l_MySql_Local[11][2];// DR Machine user name. this information required for both local and remote
+var $remotePwdValDR = $l_MySql_Local[12][2];// PR Machine Pwd name. this information required for both local and remote
+var $compNamePR = $l_MySql_Local[13][2]; // PR Componenet Name
+var $compNameDR = $l_MySql_Local[14][2]; // DR Componenet Name
+
+//This user Input required to create the dataset
+var $dbClusterDirectoryPR = $l_MySql_Local[3][5];// this is Cluster Data Directory for PR
+var $dbClusterDirectoryDR = $l_MySql_Local[4][5];// this is Cluster Data Directory for DR
+var $binLogDirectoryPR = $l_MySql_Local[5][5];// this is Binary Log Directory for PR
+var $binLogDirectoryDR = $l_MySql_Local[6][5];// this is Binary Log Directory for DR
+var $databaseNamePR = $l_MySql_Local[7][5];// This is Database Name for PR
+var $databaseNameDR = $l_MySql_Local[8][5];// This is Database Name for DR
+var $datasetNamePR = $l_MySql_Local[9][5]; // PR dataset name
+var $datasetNameDR = $l_MySql_Local[10][5]; // DR dataset name
+
+// This user Input required to while configure the agent for data set
+var $hostIPPR = $l_MySql_Local[14][5]; // IP of Host PR
+var $hostIPDR = $l_MySql_Local[15][5];// IP of Host DR
+var $hostPortPR = $l_MySql_Local[16][5]; // Port of Host PR
+var $hostPortDR = $l_MySql_Local[17][5];// Port of Host DR
+var $hostUserNamePR = $l_MySql_Local[18][5]; // PR host user name
+var $hostPasswordPR = $l_MySql_Local[19][5];// PR host password
+var $hostUserNameDR =$l_MySql_Local[20][5];// DR host user name
+var $hostPasswordDR = $l_MySql_Local[21][5];// DR host password
+var $addDataDirPR = $l_MySql_Local[22][5];// this is required when we configure the agent for PR
+var $addDataDirDR = $l_MySql_Local[23][5]; // this is required when we configure the agent for DR
+
+// This user Input required to create the protection Scheme
+var $sernamePR =$l_MySql_Local[18][2]; // PR Protection Scheme name
+var $sernameDR = $l_MySql_Local[19][2]; // DR Protection Scheme name
+
+var $remotecopyVolGrp = $l_MySql_Local[28][2];
+var $verVolList = $l_MySql_Local[29][2];
+var $lunList = $l_MySql_Local[30][2];
+var $hostList = $l_MySql_Local[31][2];
+
+// This user Input required to create the Group
+var $groupName = $l_MySql_Local[23][2]; // Group name
+var $groupDescription = "MYSQL_HP3PAR_local"; // Group description
+var $replicationUserName = $l_MySql_Local[24][2]; // replication user name required while creating the group
+var $replicationPassword = $l_MySql_Local[25][2]; // replication password required while creating the group
+
+//This user Input required to Login the the PR and DR machine from backend
+var $prUserID = $remoteUserNameValPR; // PR machine user Id
+var $prPassword =  $remotePwdValPR ; // PR machine password
+var $drUserID = $remoteUserNameValDR;// DR machine user Id
+var $drPassword = $remotePwdValDR; // DR machine password
+
+//This user Input required to install the local agents
+var $localAgentPathPR = $l_MySql_Local[26][5]; // this is the Path where user has install the agent on PR "/opt/panaces/"
+var $localAgentPathDR = $l_MySql_Local[27][5]; // this is the Path where user has install the agent on DR "/opt/panaces/"
+var $localAgentPathtcleditPR=$localAgentPathPR + "DRMAgents";
+var $localAgentPathtcleditDR=$localAgentPathDR + "DRMAgents";
+var $refInfoTclPathPRDR="DRMAgents/agents/HP3PAR_RepInfo.tcl";
+//This user Input required to update Mysql Local Agent PanacesAgentsInstaller.properties
+var $agentBuildPR = "/opt/";
+var $agentBuildDR = "/opt/";
+
+
+//Datalag values
+var $datalag="30";
+var $datalag1="0";
+
+//for MYsql FDB 
+
+var $mysqldbusername =$l_MySql_Local[33][2];
+var $mysqldbpswd = $l_MySql_Local[34][2];
+
+// *********************************************************************************************************************************************
+// Important Note : Please DON'T modify/edit any below variable or its value.
+// If you made any changes of variable and its value, script will not execute.
+// *********************************************************************************************************************************************
+
+var $panacesAgentNodeAddressPR = $compIPPR;
+var $panacesAgentNodeAddressDR = $compIPDR;
+var $compsitePR = $locationPR;
+var $compsiteDR = $locationDR;
+var $ProtectionUserNamePR = $hostUserNamePR;
+var $ProtectionPasswordPR = $hostPasswordPR;
+var $ProtectionPortnumberPR = $hostPortPR;
+var $ProtectionUserNameDR = $hostUserNameDR;
+var $ProtectionPasswordDR = $hostPasswordDR;
+var $ProtectionPortnumberDR = $hostPortDR;
+var $primaryComponents = $compNamePR;
+var $remoteComponents = $compNameDR;
+var $primaryDatasets = $datasetNamePR;
+var $remoteDatasets = $datasetNameDR;
+var $primaryProtections = $sernamePR;
+var $remoteProtections = $sernameDR;
+var $mgmtHostMySQLHP3PARPR = $compNamePR;
+var $mgmtHostMySQLHP3PARDR = $compNameDR;
+var $ProtectionIPAddressPR = $hostIPPR;
+var $ProtectionIPAddressDR = $hostIPDR;
+var $dependentComponentNamePR = $compNamePR;
+var $dependentComponentNameDR = $compNameDR;
+var $incharge = "drmadmin";
+//var $Status = "NormalCopy";
+var $desiredRpo = "300";
+var $rpoCompute = "300";
+var $systemTypeProtection = "HP3PAR"; // Protection Scheme type
+var $SolutionSignature = "MYSQL Full Database with HP3PAR"; // Solution type
+var $systemTypeDataset = "MySQL"; // database subsystem
+var $datasetType = "MySQL"; // database Type
+var $systemType = "Linux";
+var $osType = "Linux";
+
+var $mysqlAgentChk = "1";
+var $WFPath = "MySQL"; // Location of SO xml file
+// Location of SB xml file
+var $fileFO = "BCS-MySQLSR-FO.xml"; // Location of FO xml file
+

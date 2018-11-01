@@ -1,0 +1,66 @@
+
+function Oracle_FullDB_SRDF_ProtectionScheme_PR()
+{
+	navigateToDiscovery();
+	_click(_link("Subsystems"));
+	_click(_link("Protection Schemes"));
+	if (_exists(_link($sernamePR), _under(_tableHeader("Name[2]")))) {
+		_assertExists("Protection Scheme already exists");
+	} else {
+	Oracle_FullDB_SRDF_ProtectionScheme_Status($systemTypeProtection, $mgmtHostSRDFPR,$opt_emc_SYMCLI_bin,$DBgroupName,$sernamePR)
+	_click(_button("/Finish/"));
+	}
+}
+
+function Oracle_FullDB_SRDF_ProtectionScheme_DR()
+{
+	navigateToDiscovery();
+	_click(_link("Subsystems"));
+	_click(_link("Protection Schemes"));
+	if (_exists(_link($sernameDR), _under(_tableHeader("Name[2]")))) {
+		_assertExists("Protection Scheme already exists");
+	} else {
+	Oracle_FullDB_SRDF_ProtectionScheme_Status($systemTypeProtection, $mgmtHostSRDFDR,$opt_emc_SYMCLI_bin,$DBgroupName,$sernameDR)
+	_click(_link("/Advanced Configuration/",_rightOf(_cell("/BCV/",_rightOf(_row($DBgroupName),[1])))));
+	_click(_button("/Save/"));
+	_click(_button("/Finish/"));
+	}
+}
+/* --Objects Definitions Above-- */
+
+function Oracle_FullDB_SRDF_ProtectionScheme_Status($systemTypeProtection, $mgmtHostSRDF,$opt_emc_SYMCLI_bin,$DBgroupName,$sername){
+
+	_setSelected(_select("systemType"), $systemTypeProtection);
+	_click(_button("/Go/"));
+	_setSelected(_select("mgmtHost_SRDF"), $mgmtHostSRDF);
+	var $i=0;
+	while ($i<10) {
+		if (_exists(_link("Register Agent"))) {
+			_click(_link("Register Agent"));
+			_wait(30000);
+		}
+		else if (_exists(_cell("Agent is not registered."))) {
+			_wait(5000);
+			navigateToDiscovery();
+			_click(_link("Subsystems"));
+			_click(_link("Protection Schemes"));
+			_setSelected(_select("systemType"), $systemTypeProtection);
+			_click(_button("/Go/"));
+			_setSelected(_select("mgmtHost_SRDF"), $mgmtHostSRDF);
+		}
+		 else {
+				_log("go ahead");
+				break;
+			}
+		$i++;
+	}
+	_click(_link("configure agents"));
+	_setValue(_textbox("symclipath"), $opt_emc_SYMCLI_bin);
+	_click(_button("/Save/"));
+	_click(_button("Discover now"));
+	_click(_link("/Advanced Configuration/",_rightOf(_row($DBgroupName),[0])));
+	_setValue(_textbox("serviceName"), $sername);
+	_click(_button("/Save/"));
+		
+	}
+

@@ -1,0 +1,129 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are the part of  MSSQL FullDB Hitachi solution screen wise fetching and comparing data from DB and GUI. 
+ ** @AuthorName : Aditi Jain
+ ** Created Date : April 2015
+ ************************************************************************/
+
+
+/**
+* Function is for Functional Group creation for MssqlFdbHUR solution.
+*@param : null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+
+
+function MssqlFdbHUR_Group_Creation()
+{
+	MssqlFdbHUR_Group_Creation_Status($groupName, $groupDescription, $SolutionSignature,$compIPPR, $compIPstoragePR,$compIPDR, $compIPstorageDR, $primaryComponents,$compNamestoragePR, $remoteComponents, $compNamestorageDR,$primaryDatasets, $remoteDatasets,$primaryProtections,$remoteProtections);
+}
+
+/**
+* Function is for Functional Group creation for MssqlFdbHUR solution.
+*@param :  $groupName, $groupDescription, $SolutionSignature, $primaryComponents, $remoteComponents,
+*          $primaryDatasets, $remoteDatasets, $primaryProtections, $remoteProtections
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+
+function MssqlFdbHUR_Group_Creation_Status($groupName, $groupDescription, $SolutionSignature,$compIPPR, $compIPstoragePR,$compIPDR, $compIPstorageDR,$primaryComponents,$compNamestoragePR, $remoteComponents, $compNamestorageDR,$primaryDatasets, $remoteDatasets,$primaryProtections,$remoteProtections)
+{
+	navigateToDiscovery();
+	_click(_link("Groups"));
+	var $flag;
+	if (_exists(_link($groupName))) {
+		$flag = 0;
+	} else {
+		$flag = 1;
+		_setSelected(_select("createGroup"),"Functional Group");
+		_wait(1000);
+		_click(_button("/Go/"));
+		_setValue(_textbox("groupName"), $groupName);
+		_setValue(_textarea("groupDescription"), $groupDescription);
+		_setSelected(_select("solutionType"), $SolutionSignature);
+		_click(_button("/Next/"));
+		_wait(10000);
+		_click(_link("Server Component"));
+		if ($compIPPR == $compIPstoragePR){
+		_click(_checkbox($primaryComponents, _near(_cell($primaryComponents, _under(_tableHeader("PrimaryComponent"))))));
+		}
+		else{
+		_click(_checkbox($primaryComponents, _near(_cell($primaryComponents, _under(_tableHeader("PrimaryComponent"))))));
+		_click(_checkbox($compNamestoragePR, _near(_cell($compNamestoragePR, _under(_tableHeader("PrimaryComponent"))))));
+	
+		}
+		if ($compIPDR == $compIPstorageDR){
+		_click(_checkbox($remoteComponents, _near(_cell($remoteComponents, _under(_tableHeader("RemoteComponent"))))));
+		}
+		else{
+		_click(_checkbox($remoteComponents, _near(_cell($remoteComponents, _under(_tableHeader("RemoteComponent"))))));
+		_click(_checkbox($compNamestorageDR, _near(_cell($compNamestorageDR, _under(_tableHeader("RemoteComponent"))))));
+		}
+		_click(_submit("Save"));
+		_wait(2000);
+		_click(_link("Application Dataset"));
+		_click(_checkbox("showAll"));
+		_setSelected(_select("primaryDatasets[1]"), $primaryDatasets);
+		_setSelected(_select("remoteDatasets[1]"), $remoteDatasets);
+		_click(_submit("/Save/"));
+		_click(_link("Data Protection"));
+		_setSelected(_select("primaryProtections"), $primaryProtections);
+		_setSelected(_select("remoteProtections"), $remoteProtections);
+		_click(_button("/Save/"));
+		_click(_button("/Next/"));
+	    _wait(1000);
+	    _click(_link("2.Choose the PIT/snapshot copies to be used with this group"));
+	    _click(_checkbox("drServiceIdList"));
+	    _click(_button("/Save/"));
+	    _wait(1000);
+	    _click(_span(".For device groups discovered on the primary, map mount points to device path"));
+	    _setValue(_textbox(0), $devicePathPR);	 
+	    _setValue(_textbox(1),$mountPointPR);
+	   _click(_button("Save[1]"));
+	   _wait(1000);
+	   _click(_span(".For device groups discovered on the DR, map mount points to device path"));
+
+	   _setValue(_textbox(2),$devicePathDR);	  
+	   _setValue(_textbox(3),$mountPointDR);	 
+	   _setValue(_textbox(4),$devicePathSC);	
+	   _setValue(_textbox(5),$mountPointSC);
+	   _click(_button("Save[2]"));
+	   _wait(1000);
+	   _click(_link("5.Choose device group to be used for App RPO calculation"));
+	   _click(_radio("drRpoCalculatedGroup[1]"));
+	    _click(_button("Save[3]"));
+	    _wait(1000);
+	   _click(_link("6.Choose device group to be used when Failover (to DR) workflow is invoked"));
+	   _click(_radio("drFailoverGroup[1]"));
+	   _click(_button("Save[4]"));
+	   _wait(1000);
+	   
+		_click(_button("Finish"));
+	   
+		_wait(2000);
+		_click(_link("License"));
+		_click(_checkbox("Recovery"));
+		_click(_checkbox("Test"));
+		_wait(1000);
+		_click(_button("Save[2]"));
+		_click(_button("Finish"));
+		_wait(5000);
+		navigateToDiscovery();
+		_click(_link("Groups"));
+		if (_exists(_link($groupName))) {
+			_assertExists("Group created succesfully");
+		} else {
+			_fail("Group not created succesfully.So that stopping execution.");
+		}
+	}
+
+}// End Of MssqlFdbHUR_Group_Creation
+
+
+
+
+

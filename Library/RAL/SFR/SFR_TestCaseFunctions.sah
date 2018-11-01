@@ -1,0 +1,223 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the common test cases functions which are the part of SFR RAL( Recovery automation library). 
+ **@AuthorName : Anantha Sakthi
+ ** Created Date : July 2015
+ ************************************************************************/
+
+/**
+ * Function is used to add the custom action for command execution with sudo and dry run option. 
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+
+
+function SFR_CreateFileSet(){	
+	
+	createWorkFlow($WorkflowName);
+	NavigateToDrillWorkflowEditor($groupName,$workflowName);	
+	AddRalIntoLayout($ralString,$ralCategory,$ralName);	
+	Add_SfrRAL_CreateFileset($mgmtHostPFRPR.replace(" ",""),$mgmtHostPFRDR.replace(" ",""),$sernamePR,$fileNameTextPathPR,$fileNameTextPathDR);	
+
+	SFR_saveClose($ralName);
+	PublishTheWorkflow();
+
+	publishWorkflow();
+
+	executeWorkflow($WorkflowName);
+	TestWorkflow($WorkflowName,$ralName);
+	ValidateTheWorkflowListingPage($WorkflowName);			
+	//validateTheReplicationPage();	
+}
+
+/**
+ * Function is used to add the custom action for command execution with sudo and dry run option. 
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+
+
+function SFR_DeleteFileSet(){	
+	
+	createWorkFlow($WorkflowName);	
+	$versionNo = _getText(_span(0, _rightOf(_link($WorkflowName))));	
+	if("Version: 0" == $versionNo){		
+		NavigateToDrillWorkflowEditor($groupName,$workflowName);
+		AddRalIntoLayout($ralString,$ralCategory,$ralName);
+	} else {
+		NavigateToDrillWorkflowEditor($groupName,$workflowName);
+	}		
+	Add_SfrRAL_DeleteFileset($datasetNamePR,$sernamePR);	
+	publishWorkflow();
+	executeWorkflow($WorkflowName);
+	TestWorkflow($WorkflowName);	
+	ValidateTheWorkflowListingPage($WorkflowName);		
+	//validateTheReplicationPage();	
+}
+
+/**
+ * Function is used to add the custom action for command execution with sudo and dry run option. 
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+
+
+function SFR_DisableFileSet(){	
+	
+	createWorkFlow($WorkflowName);
+	
+	$versionNo = _getText(_span(0, _rightOf(_link($WorkflowName))));
+	
+	if("Version: 0" == $versionNo){		
+		NavigateToDrillWorkflowEditor($groupName,$workflowName);
+		AddRalIntoLayout($ralString,$ralCategory,$ralName);
+	} else {
+		NavigateToDrillWorkflowEditor($groupName,$workflowName);
+	}
+		
+	Add_SfrRAL_DisableFileset($datasetNamePR,$sernamePR);	
+	publishWorkflow();
+	executeWorkflow($WorkflowName);
+	TestWorkflow($WorkflowName,$ralName);	
+	ValidateTheWorkflowListingPage($WorkflowName);	
+	
+	//validateTheReplicationPage();	
+}
+
+/**
+ * Function is used to add the custom action for command execution with sudo and dry run option. 
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+
+
+function SFR_EnableFileSet(){	
+	
+	createWorkFlow($WorkflowName);
+	
+	$versionNo = _getText(_span(0, _rightOf(_link($WorkflowName))));
+	
+	if("Version: 0" == $versionNo){		
+		NavigateToDrillWorkflowEditor($groupName,$workflowName);
+		AddRalIntoLayout($ralString,$ralCategory,$ralName);
+	} else {
+		NavigateToDrillWorkflowEditor($groupName,$workflowName);
+	}
+		
+	Add_SfrRAL_EnableFileset($datasetNamePR,$sernamePR);	
+	publishWorkflow();
+	executeWorkflow($WorkflowName);
+	TestWorkflow($WorkflowName,$ralName);	
+	ValidateTheWorkflowListingPage($WorkflowName);	
+	
+	//validateTheReplicationPage();	
+}
+
+
+/**
+ * Function is used to add the custom action for command execution with sudo and dry run option. 
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+
+
+function SFR_StartFileSet(){	
+	
+	createWorkFlow($WorkflowName);
+	
+	$versionNo = _getText(_span(0, _rightOf(_link($WorkflowName))));
+	
+	if("Version: 0" == $versionNo){		
+		NavigateToDrillWorkflowEditor($groupName,$workflowName);
+		AddRalIntoLayout($ralString,$ralCategory,$ralName);
+	} else {
+		NavigateToDrillWorkflowEditor($groupName,$workflowName);
+	}
+		
+	Add_SfrRAL_StartFileset($datasetNamePR,$sernamePR);	
+	publishWorkflow();
+	executeWorkflow($WorkflowName);
+	TestWorkflow($WorkflowName);
+	ValidateTheWorkflowListingPage($WorkflowName);			
+	//validateTheReplicationPage();	
+}
+
+
+/**
+ * Function is used to add the custom action for command execution with sudo and dry run option. 
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+
+
+function SFR_StopFileSet(){	
+	
+	createWorkFlow($WorkflowName);
+	
+	$versionNo = _getText(_span(0, _rightOf(_link($WorkflowName))));
+	
+	if("Version: 0" == $versionNo){		
+		NavigateToDrillWorkflowEditor($groupName,$workflowName);
+		AddRalIntoLayout($ralString,$ralCategory,$ralName);
+	} else {
+		NavigateToDrillWorkflowEditor($groupName,$workflowName);
+	}
+		
+	Add_SfrRAL_StopFileset($datasetNamePR,$sernamePR);	
+	publishWorkflow();
+	executeWorkflow($WorkflowName);
+	TestWorkflow($WorkflowName);
+	ValidateTheWorkflowListingPage($WorkflowName);			
+	//validateTheReplicationPage();	
+}
+
+/**
+ * Function is used to add all he pre-requisite for SFR automation like, componet creaion and group creation. 
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+
+function preConditionForSFR_GroupCreation(){
+	navigateToGroups();
+	if (_exists(_link($groupName))) {
+		_log("Group already exists");		
+	} else {	
+	Site_0003();
+	Agent_node_001();
+	APP_PFR_Component_Remote_Discovery_0018();
+	APP_PFR_Dataset_Discovery_0007();
+	APP_PFR_Auto_DatasetDiscovery0009();
+	APP_PFR_Protectionscheme_Discovery_0018();
+	APP_PFR_GroupCreation_0022();
+	Move_To_Manage_Group($groupName);
+	}
+}

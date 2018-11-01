@@ -1,0 +1,2084 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are the part of  Mssql Logshipping solution screen wise fetching and comparing data from Db and GUI. 
+ **@AuthorName : Aditi Jain,Govinda Mengji
+ ** Created Date : June 2013
+ ************************************************************************/
+
+var $diskUtilisation="fsutil volume diskfree c: ";
+var $hostNameCommand="Hostname";
+/**
+* Function is for Group Creation of MSSQL.
+*@param :  null
+*@return : null
+*@Author:Govinda Mengji
+*
+*/
+
+function Create_Mssql_Group($backupPR,$backupPR, $undoPR,$undoDR) {
+	
+	_log($backupPR);
+	_log($backupPR);
+	_log($undoPR);
+	_log($undoDR);
+	
+	$groupCreation = Create_FG($groupName, $groupDescription, $SolutionSignature, $primaryComponents, $remoteComponents, $primaryDatasets, $remoteDatasets, $primaryProtections, $remoteProtections);
+	
+	if ($groupCreation.get("flag") == 0) 
+	{
+		_assertExists("Same group name already exists");
+	} 
+	else 
+	{
+	_log($groupName);
+	_wait(5000);
+	//added anita
+	if (_isVisible(_textbox("primaryBaseDir")) != null) {
+		_wait(10000);
+		//_setValue(_textbox("primaryBaseDir"), "");   //enable in chrome browser
+		_setValue(_textbox("primaryBaseDir"), $backupPR);
+		//_setValue(_textbox("remoteBaseDir"), "");
+		_setValue(_textbox("remoteBaseDir"), $backupDR);
+		
+		//_setValue(_textbox("PrimaryUndoFileDir"), "");
+		_setValue(_textbox("PrimaryUndoFileDir"), $undoPR);
+		//_setValue(_textbox("RemoteUndoFileDir"), "");
+		_setValue(_textbox("RemoteUndoFileDir"), $undoDR);
+		
+	} else {
+		_wait(10000);
+		//_setValue(_textbox("primaryBaseDir"), ""); //enable in chrome browser
+		_setValue(_textbox("primaryBaseDir"), $backupPR);
+		//_setValue(_textbox("remoteBaseDir"), "");
+		_setValue(_textbox("remoteBaseDir"), $backupDR);
+		_setValue(_textbox("primaryBaseDir"), $backupPR); // reconfirm
+		_setValue(_textbox("remoteBaseDir"), $backupDR);
+		
+		//_setValue(_textbox("PrimaryUndoFileDir"), "");
+		_setValue(_textbox("PrimaryUndoFileDir"), $undoPR);
+		//_setValue(_textbox("RemoteUndoFileDir"), "");
+		_setValue(_textbox("RemoteUndoFileDir"), $undoDR);
+
+	}
+	_click(_button("Submit"));
+	_wait(10000);
+	//_click(_link("Show Advanced Configuration"));
+	//_wait(3000);
+	//_setValue(_textbox("primaryBaseDir"), $backupPR);
+	//_wait(2000);
+	//_setValue(_textbox("remoteBaseDir"), $backupDR);
+	//_wait(1000);
+	//_setValue(_textbox("PrimaryUndoFileDir"), $undoPR);
+	//_wait(1000);
+	//_setValue(_textbox("RemoteUndoFileDir"), $undoDR);
+	//_wait(1000);
+	//_click(_button("Submit"));
+	//_click(_submit("Submit"));
+	
+	_click(_link("License")); //added anita
+	_click(_checkbox("Recovery"));
+	_click(_checkbox("Test"));
+	_click(_button("licensebutton"));		
+	
+	_click(_link("RPO/RTO"));
+	_setValue(_textbox("rpoint1"), "180");
+	_click(_button("apply"));
+	_click(_button("Finish"));
+	_wait(5000);
+	navigateToGroups();
+		if (_exists(_link($groupName))) {
+			_assertExists("Group created succesfully");
+		} else {
+			_fail("Group not created succesfully.");
+		}
+	
+	}
+}
+
+/**
+ *Function is used validate data after group creation.
+ *@param :$ip,$remoteUserNameVal,$remotePwdVal
+ *@return :$diskUtility:It will return three variables $spaceUsedDB,$diskUtilizationPRGui,$diskUtilizationDRGui
+ *@Author : Govinda Mengji
+ */
+
+function Post_Group_Creation($ip,$remoteUserNameVal,$remotePwdVal){
+	navigateToGroups();
+	_click(_link($groupName));
+	_click(_link("Solution Details"));
+	_click(_link("Show Advanced Configuration"));
+	
+	// Threshold Value 
+	var $thresholdPRGui=_getCellText(_textbox("PrimarySize0"));
+	_assertExists("Threshhold at GUI",$thresholdPRGui);
+	var $thresholdDRGui=_getCellText(_textbox("SecondarySize1"));
+	_assertExists("Threshhold at GUI",$thresholdDRGui);
+	
+	//Current Disk Utilization
+	var $diskUtilizationPRGui=_getCellText(_cell(1, _near(_cell("Current Disk Utilization:"))));
+	_assertExists("Disk Space in PR GUI",$diskUtilizationPRGui);
+	var $diskUtilizationDRGui=_getCellText(_cell(1, _near(_cell("Current Disk Utilization:[1]"))));
+	_assertExists("Disk Space in DR GUI",$diskUtilizationDRGui);
+	 var $command = $diskUtilisation + ">diskspace.txt";
+	 _wait(1000);
+     
+	 Event_Action($ip,$remoteUserNameVal,$remotePwdVal,$command);
+     var $diskSpace1=_readFile($SAHI_HOME +"tools\\PsExec\\diskspace.txt");
+     _wait(10000);
+    
+     var $diskSpace=$diskSpace1.toString();
+     var $l_lines = $diskSpace.replace(/\r/g, '').split("\n");
+     var $freeSpace=$l_lines[0].split(":");
+     var $diskfree=parseInt($freeSpace[1]);
+     var $totalSpace=$l_lines[1].split(":");
+     var $diskTotalSpace=parseInt($totalSpace[1]);   
+     var $usedSpace=parseInt($diskTotalSpace-$diskfree);
+     var $spaceUsedDB=Math.round(($usedSpace/$diskTotalSpace)*100)+" %";
+     _assertExists("Disk Utilization in DB",$spaceUsedDB);
+   
+     var $diskUtility = new java.util.Properties();
+     $diskUtility.put("Disk Utilization in DB", $spaceUsedDB);
+     $diskUtility.put("Disk Space in PR GUI", $diskUtilizationPRGui);
+     $diskUtility.put("Disk Space in DR GUI", $diskUtilizationDRGui);
+     return $diskUtility;
+    
+   }
+
+
+/**
+ *Function is used validate data from PR after group creation.
+ *@param :null
+ *@return :null
+ *@Author : Govinda Mengji
+ */
+function Post_Group_Creation_PR(){
+	var $diskUtility=Post_Group_Creation($ipPR,$remoteUserNameValPR,$remotePwdValPR);
+	 _assertEqual($diskUtility.get("Disk Utilization in DB"),$diskUtility.get("Disk Space in PR GUI"),"Comparing Disk Utilization from DB and GUI for PR");
+	}
+
+
+
+/**
+ *Function is used validate data from DR after group creation.
+ *@param :null
+ *@return :null
+ *@Author : Govinda Mengji
+ */
+function Post_Group_Creation_DR(){
+	var $diskUtility=Post_Group_Creation($ipDR,$remoteUserNameValDR,$remotePwdValDR);
+	 _assertEqual($diskUtility.get("Disk Utilization in DB"),$diskUtility.get("Disk Space in DR GUI"),"Comparing Disk Utilization from DB and GUI for DR");
+}
+
+
+/**
+* Function is for Group Snapshot of MSSQL post SO.
+*@param :  null
+*@return : null
+* Author:Govinda Mengji
+*
+*/
+function MSSQL_GroupSnapshot_Post_SO(){
+	Mssql_GroupSnapshot_Status($groupName,"SO",$ipDR,$database,$userDR, $pwdDR,$ipPR,$userPR, $pwdPR);
+
+}// End of Mssql_GroupSnapshot_Post_SO()
+
+/**
+* Function is for Group Snapshot of MSSQL before SO.
+*@param :  null
+*@return : null
+* Author:Govinda Mengji
+*
+*/
+
+function Mssql_GroupSnapshot(){
+	Mssql_GroupSnapshot_Status($groupName,$WFType,$ipPR,$database,$userPR, $pwdPR,$ipDR,$userDR, $pwdDR);
+	
+}//End of Mssql_GroupSnapshot()
+/**
+* Function is for Group Snapshot of MSSQL.
+*@param :  $groupName,$ipPR,$database,$userPR, $pwdPR,$ipDR,$userDR, $pwdDR
+*@return : null
+* Author: Govinda Mengji
+*
+*/
+function Mssql_GroupSnapshot_Status($groupName,$WFType,$ipPR,$database,$userPR, $pwdPR,$ipDR,$userDR, $pwdDR){
+	
+	
+	Popup_Handler();
+	_click(_link("Monitor"));
+	Popup_Handler();
+	_click(_link($groupName));
+	_click(_link("Group Snapshot"));
+	
+	
+//verifying Recovery Point
+	if ($WFType == "SO") {
+	if (_exists(_cell("Not supported in Switchover mode"))) {
+		_log("So done successfully");
+	} else {
+		_log("Gui not showing correct value");
+	}
+	// calling Mssql_RPO_Post_SO function
+      MSSQL_RPO_Post_SO();
+	
+	} else {
+	// calling Mssql_RPO function
+       MSSQL_RPO();
+	}
+	var $recoveryPointGui1 = _getText(_span(1, _near(_span("DR Data Consistent up to:"), _near(_cell("Continuity")))));
+	var $date = $recoveryPointGui1;
+    var $dateString = $date.toString();
+    var $recoveryPointGui = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+	_assertExists("Recovery Point DR Data Consistent up to:", $recoveryPointGui);
+	if ($recoveryPointinDB == $recoveryPointGui){
+	_assertEqual($recoveryPointinDB , $recoveryPointGui, "Comparing Recovery Point DR Data Consistent upto from DB and GUI");
+	}
+	else {
+ 		_log("Validating Recovery Point DR Data Consistent is not  correct in GUI");
+ 	}
+	Popup_Handler();
+	// Verfing Recovery time
+	if ($WFType == "SO") {
+	if (_exists(_cell("Not supported in Switchover mode"))) {
+		_log("Not supported in Switchover mode");
+	}
+	} else {
+
+	Popup_Handler();
+	_click(_link("Monitor"));
+	Popup_Handler();
+	_click(_link($groupName));
+	_click(_link("Group Snapshot"));
+	var $recoveryTimeGui1 = _getText(_cell(5, _near(_span("Est. time to recover:", _near((_cell("Recovery Time"))))))).split("Est. time to recover:");
+	var $recoveryTimeGui = $recoveryTimeGui1[1];
+	_assertExists("Recovery Time  Est. time to recover:", $recoveryTimeGui);
+	
+	Popup_Handler();
+	// calling function to calculate rto for Recovery Time
+    var $dbRto = MsSql_Rto($groupName);
+	
+    Popup_Handler();
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("Group Snapshot"));
+	_assertEqual($dbRto.get("actualRtoDB"), $recoveryTimeGui, "Comparing Recovery Time  Est. time to recover from DB and GUI");
+	}
+	
+	Popup_Handler();
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("Group Snapshot"));
+	var $continuityOperation = _getText(_cell(1, _near(_cell("Continuity Operation:"))));
+	_assertExists("Continuity Operation:", $continuityOperation);
+
+    
+    //PR
+
+	var $i=0;
+	while($i<5){
+		var $lastLogFilebackedupGui=_getText(_cell(1,_near(_cell("Last Log File backed up:"))));
+		_assertExists("Last Log File backed up from Gui" , $lastLogFilebackedupGui);
+	if($lastLogFilebackedupGui =="N/A"){
+		_wait(30000);
+	}
+	else
+		{
+		break;
+		_log("Go Ahead");
+		}
+	$i++;
+	}    	
+    	var $lastLogFilebackedupatGui=_getText(_cell(1,_near(_cell("Last Log File backed up at :"))));
+	_assertExists("Last Log File backed up at from Gui", $lastLogFilebackedupatGui);
+      
+       //DR
+      //Last Log File Restored from GUI
+	  var $lastLogFileRestoredGui=_getText(_cell(1,_near(_cell("Last Log File Restored:"))));
+	  _assertExists("Last Log File Restored from Gui", $lastLogFileRestoredGui);
+
+      
+     //Last Log File Restored at from GUI
+	 var $lastLogFileRestoredatGui=_getText(_cell(1,_near(_cell("Last Log File Restored at:"))));
+	 _assertExists("Last Log File Restored at from Gui", $lastLogFileRestoredatGui);
+
+      //CONNECTION PR
+    	
+    	$db = Get_MSsql_Db_Connection_URL($ipPR,$database,$userPR, $pwdPR);
+          var $time = currentTime();
+      $db.update("CREATE TABLE [dbo].[Table_"+$time+"](" +
+    			"[col1] [varchar](50) NULL," +
+    			"[col2] [varchar](50) NULL," +
+    			"[col3] [varchar](50) NULL," +
+    			"[col4] [varchar](50) NULL," +
+    			"[col5] [varchar](50) NULL" +
+                ")"); 
+    	
+        
+    _wait(100);
+    
+     var $lastLogFilebackedupatdbPR=_getText(_cell(1,_near(_cell("Last Log File backed up at :"))));
+	_assertExists("Last Log File backed up at from Gui", $lastLogFilebackedupatdbPR);
+    
+    	
+     var $date = $lastLogFilebackedupatdbPR;
+      var $dateString = $date.toString();
+      var $lastLogFilebackedupatPRDB = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+      _assertExists("TimeStamp", $lastLogFilebackedupatPRDB);
+	  
+	  
+	  var $lastLogFileRestoredatGuiDR =_getText(_cell(1,_near(_cell("Last Log File Restored at:"))));
+	 _assertExists("Last Log File Restored at from Gui", $lastLogFileRestoredatGuiDR);
+    	
+      var $date = $lastLogFileRestoredatGuiDR;
+      var $dateString = $date.toString();
+      var $lastLogFilebackedupatDRDB = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+      _assertExists("Last Log File Restored at", $lastLogFilebackedupatDRDB);
+    	
+				
+      $count = 0;
+  	while($count<5){
+  		_wait(30000);
+  		$count++;
+  		}
+  		
+    	
+		
+    	//PR
+    	var $lastLogFilebackedupGuiPR=_getText(_cell(1,_near(_cell("Last Log File backed up:"))));
+		_assertExists("Last Log File backed up from Gui" , $lastLogFilebackedupGuiPR);
+    	
+  	var $lastLogFilebackedupatGuiPR=_getText(_cell(1,_near(_cell("Last Log File backed up at :"))));
+	_assertExists("Last Log File backed up at from Gui", $lastLogFilebackedupatGuiPR);
+    	
+    	var $date = $lastLogFilebackedupatGuiPR;
+      var $dateString = $date.toString();
+      var $TimeStampPR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+      _assertExists("Last Log File backed up at", $TimeStampPR);
+      
+    	//DR
+      var $lastLogFileRestoredGuiDR=_getText(_cell(1,_near(_cell("Last Log File Restored:"))));
+	  _assertExists("Last Log File Restored from Gui", $lastLogFileRestoredGuiDR);
+
+      var $lastLogFileRestoredatGuiDR =_getText(_cell(1,_near(_cell("Last Log File Restored at:"))));
+	 _assertExists("Last Log File Restored at from Gui", $lastLogFileRestoredatGuiDR);
+    	
+      var $date = $lastLogFileRestoredatGuiDR;
+      var $dateString = $date.toString();
+      var $TimeStampDR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+      _assertExists("Last Log File Restored at", $TimeStampDR);
+      
+      _assertTrue($lastLogFilebackedupGui<=$lastLogFilebackedupGuiPR, "Last Log File backed up Equal in GUI and db");
+      
+	 _assertTrue($lastLogFilebackedupatPRDB<=$TimeStampPR, "Last Log File backed up at is Equal in GUI and db");
+     
+	 _assertTrue($lastLogFileRestoredGui<=$lastLogFileRestoredGuiDR, "Last Log File Restored  Equal in GUI and db");
+	 
+	  _assertTrue($lastLogFilebackedupatDRDB<=$TimeStampDR, "Last Log File Restored at is Equal in GUI and db");
+  
+
+}
+/**
+* Function is forGroup Information of MSSQL post SO.
+*@param :  null
+*@return : null
+* Author: Govinda Mengji
+*
+*/
+function MSSQL_GroupInformation_Post_SO(){
+	
+	Mssql_GroupInformation_Status($groupName,$ipDR,$database,$userDR, $pwdDR,$ipPR,$userPR, $pwdPR,"SO");
+	
+}// End of Mssql_GroupInformation_Post_SO()
+
+/**
+* Function is forGroup Information of MSSQL before SO.
+*@param :  null
+*@return : null
+* Author: Govinda Mengji
+*
+*/
+function Mssql_GroupInformation(){
+	Mssql_GroupInformation_Status($groupName,$ipPR,$database,$userPR, $pwdPR,$ipDR,$userDR, $pwdDR);
+	
+}//End of Mssql_GroupInformation()
+
+/**
+* Function is forGroup Information of MSSQL .
+*@param : $groupName,$ipPR,$database,$userPR, $pwdPR,$ipDR,$userDR, $pwdDR
+*@return : null
+* Author: Govinda Mengji
+*
+*/
+
+function Mssql_GroupInformation_Status($groupName,$ipPR,$database,$userPR, $pwdPR,$ipDR,$userDR, $pwdDR,$WFType)
+{
+	
+    //CONNECTION PR
+	
+	$db = Get_MSsql_Db_Connection_URL($ipPR,$database,$userPR, $pwdPR);
+      var $time = currentTime();
+  $db.update("CREATE TABLE [dbo].[Table_"+$time+"](" +
+			"[col1] [varchar](50) NULL," +
+			"[col2] [varchar](50) NULL," +
+			"[col3] [varchar](50) NULL," +
+			"[col4] [varchar](50) NULL," +
+			"[col5] [varchar](50) NULL" +
+            ")"); 
+	
+    
+   _wait(100);
+	
+    _click(_link("Manage"));
+	_click(_link("Groups List View"));
+	_click(_link($groupName));
+	_click(_link("Group Information"));
+// calling Group_ManageGroupInformation to verify the PR and DR site status
+      Group_Managegroupinformation($groupName, $WFType);
+           
+      
+    //PR
+
+	var $i=0;
+	while($i<5){
+		var $lastLogFilebackedupGui=_getText(_cell(1,_near(_cell("Last Log File backed up:"))));
+		_assertExists("Last Log File backed up from Gui" , $lastLogFilebackedupGui);
+	if($lastLogFilebackedupGui =="N/A"){
+		_wait(30000);
+	}
+	else
+		{
+		break;
+		_log("Go Ahead");
+		}
+	$i++;
+	}    	
+    	var $lastLogFilebackedupatGui=_getText(_cell(1,_near(_cell("Last Log File backed up at :"))));
+	_assertExists("Last Log File backed up at from Gui", $lastLogFilebackedupatGui);
+      
+       //DR
+      //Last Log File Restored from GUI
+	  var $lastLogFileRestoredGui=_getText(_cell(1,_near(_cell("Last Log File Restored:"))));
+	  _assertExists("Last Log File Restored from Gui", $lastLogFileRestoredGui);
+
+      
+     //Last Log File Restored at from GUI
+	 var $lastLogFileRestoredatGui=_getText(_cell(1,_near(_cell("Last Log File Restored at:"))));
+	 _assertExists("Last Log File Restored at from Gui", $lastLogFileRestoredatGui);
+
+      //CONNECTION PR
+    	
+    	$db = Get_MSsql_Db_Connection_URL($ipPR,$database,$userPR, $pwdPR);
+          var $time = currentTime();
+      $db.update("CREATE TABLE [dbo].[Table_"+$time+"](" +
+    			"[col1] [varchar](50) NULL," +
+    			"[col2] [varchar](50) NULL," +
+    			"[col3] [varchar](50) NULL," +
+    			"[col4] [varchar](50) NULL," +
+    			"[col5] [varchar](50) NULL" +
+                ")"); 
+    	
+        
+      _wait(100);
+      
+      var $lastLogFilebackedupatdbPR=_getText(_cell(1,_near(_cell("Last Log File backed up at :"))));
+ 	_assertExists("Last Log File backed up at from Gui", $lastLogFilebackedupatdbPR);
+     
+     	
+      var $date = $lastLogFilebackedupatdbPR;
+       var $dateString = $date.toString();
+       var $lastLogFilebackedupatPRDB = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+       _assertExists("TimeStamp", $lastLogFilebackedupatPRDB);
+ 	  
+ 	  
+ 	  var $lastLogFileRestoredatGuiDR =_getText(_cell(1,_near(_cell("Last Log File Restored at:"))));
+ 	 _assertExists("Last Log File Restored at from Gui", $lastLogFileRestoredatGuiDR);
+     	
+       var $date = $lastLogFileRestoredatGuiDR;
+       var $dateString = $date.toString();
+       var $lastLogFilebackedupatDRDB = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+       _assertExists("Last Log File Restored at", $lastLogFilebackedupatDRDB);
+     	
+ 		
+ 		
+ 		
+ 		
+       $count = 0;
+   	while($count<5){
+   		_wait(30000);
+   		$count++;
+   		}
+   		
+     	
+ 		
+     	//PR
+     	var $lastLogFilebackedupGuiPR=_getText(_cell(1,_near(_cell("Last Log File backed up:"))));
+ 		_assertExists("Last Log File backed up from Gui" , $lastLogFilebackedupGuiPR);
+     	
+   	var $lastLogFilebackedupatGuiPR=_getText(_cell(1,_near(_cell("Last Log File backed up at :"))));
+ 	_assertExists("Last Log File backed up at from Gui", $lastLogFilebackedupatGuiPR);
+     	
+     	var $date = $lastLogFilebackedupatGuiPR;
+       var $dateString = $date.toString();
+       var $TimeStampPR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+       _assertExists("Last Log File backed up at", $TimeStampPR);
+       
+     	//DR
+       var $lastLogFileRestoredGuiDR=_getText(_cell(1,_near(_cell("Last Log File Restored:"))));
+ 	  _assertExists("Last Log File Restored from Gui", $lastLogFileRestoredGuiDR);
+
+       var $lastLogFileRestoredatGuiDR =_getText(_cell(1,_near(_cell("Last Log File Restored at:"))));
+ 	 _assertExists("Last Log File Restored at from Gui", $lastLogFileRestoredatGuiDR);
+     	
+       var $date = $lastLogFileRestoredatGuiDR;
+       var $dateString = $date.toString();
+       var $TimeStampDR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+       _assertExists("Last Log File Restored at", $TimeStampDR);
+       
+       _assertTrue($lastLogFilebackedupGui<=$lastLogFilebackedupGuiPR, "Last Log File backed up Equal in GUI and db");
+       
+       _assertTrue($lastLogFilebackedupatPRDB<=$TimeStampPR, "Last Log File backed up at is Equal in GUI and db");
+       
+       _assertTrue($lastLogFileRestoredGui<=$lastLogFileRestoredGuiDR, "Last Log File Restored  Equal in GUI and db");
+ 	  
+ 	  _assertTrue($lastLogFilebackedupatDRDB<=$TimeStampDR, "Last Log File Restored at is Equal in GUI and db");
+   
+
+ }
+/**
+ *Function is used to verify RPO Status before SO.
+ *@param :null
+ *@return : null
+ *@author : Govinda Mengji
+ */
+function MSSQL_RPO()
+{
+	var $dbRecoveryPoint = MSSQL_RPO_Status($ipPR,$database,$userPR, $pwdPR);
+	return $dbRecoveryPoint;
+}
+/**
+ *Function is used to verify RPO Status post SO.
+ *@param :null
+ *@return : null
+ *@author : Aditi
+ */
+function MSSQL_RPO_Post_SO(){
+	var $dbRecoveryPoint =  MSSQL_RPO_Status($ipDR,$database,$userDR, $pwdDR);
+	return $dbRecoveryPoint;
+}
+
+/**
+ *Function is used to verify RPO Status 
+ *@param :$ipPR,$database,$userPR, $pwdPR
+ *@return : null
+ *@author : Govinda Mengji
+ *Modifier: Padmavathi
+ *Updated: Anita
+ */
+
+function MSSQL_PFR_Rpo() {
+	
+	navigateToRPO($groupName);
+	// Transaction ID PR
+	var $lastTransactionIDPRGui = _getText(_div(1,_near(_div("Last Transaction ID(LSN)"))));
+	_assertExists("Last Transaction ID from GUI PR", $lastTransactionIDPRGui);
+
+	// Transaction Time PR
+	var $lastTransactionTimePRGui = _getText(_div(1,_near(_div("Last Transaction Time"))));
+	_assertExists("Last Transaction Time from GUI PR",
+			$lastTransactionTimePRGui);
+
+	// Transaction ID from DB
+	var $db = Get_MSsql_Db_Connection_URL($ipPR,$database,$userPR,$pwdPR);
+	// executing query on PR
+	var $rpoStatus1 = $db
+			.select("use "
+					+ ""
+					+ $database
+					+ ""
+					+ ";select TOP 1 [Current LSN] as lsn,CONVERT (VARCHAR(24),[End Time],113)as Endtime from ::fn_dblog (null, null) where ([End Time] is NOT NULL) ORDER BY [End Time] DESC;");
+	var $lastTransactionIDPRDB1 = $rpoStatus1.toString();
+	var $lastTransactionIDPRDB2 = $lastTransactionIDPRDB1.split(",");
+	var $lastTransactionIDPRDB = $lastTransactionIDPRDB2[0];
+	_assertExists("RPO value DB PR", $lastTransactionIDPRDB);
+
+	var $i = 0;
+	while ($i < 5) {
+		if ($lastTransactionIDPRGui == $lastTransactionIDPRDB) {
+			_assertEqual($lastTransactionIDPRDB, $lastTransactionIDPRGui,
+					"PR Last Transaction ID is same on GUI and DB");
+			break;
+		} else if ($lastTransactionIDPRGui < $lastTransactionIDPRDB) {
+			_wait(30000);
+			Popup_Handler();
+			_windowAction("refresh");
+			_click(_link("RPO"));
+			var $lastTransactionTimePRGui = _getText(_div(1,
+					_near(_div("Last Transaction Time"))));
+			_assertExists("PR Last Transaction ID from GUI", $lastTransactionTimePRGui);
+		} else if ($lastTransactionIDPRGui > $lastTransactionIDPRDB) {
+			_wait(30000);
+			Popup_Handler();
+			_windowAction("refresh");
+			_click(_link("RPO"));
+			// Transaction ID PR from GUI
+			var $lastTransactioIDPRGui = _getText(_div(1,
+					_near(_div("Last Transaction ID(LSN)"))));
+			_assertExists("PR Last Transaction ID from GUI ",
+					$lastTransactioIDPRGui);
+			
+			// Transaction ID from DB
+			var $db = Get_MSsql_Db_Connection_URL($ipPR, $database, $userPR, $pwdPR);
+			// executing query on PR
+			var $rpoStatus1 = $db
+					.select("use "
+							+ ""
+							+ $database
+							+ ""
+							+ ";select TOP 1 [Current LSN] as lsn, [End Time] as endTime, [Transaction ID] as transId from ::fn_dblog (null, null) where ([End Time] is NOT NULL) ORDER BY [End Time] DESC;");
+			var $lastTransactionIDPRDB1 = $rpoStatus1.toString();
+			var $lastTransactionIDPRDB2 = $lastTransactionIDPRDB1.split(",");
+			var $lastTransactionIDPRDB = $lastTransactionIDPRDB2[0];
+			_assertExists("RPO value DB", $lastTransactionIDPRDB);
+		}
+		$i = $i + 1;
+	}// End Of Transaction ID while loop
+
+	
+	// Transaction Time from GUI
+	var $lastTransactionTimePRGui = _getText(_div(1,_near(_div("Last Transaction Time"))));
+	_assertExists("PR Last Transaction Time from GUI", $lastTransactionTimePRGui);
+
+	// Transaction Time from DB
+	var $lastTransactionTimePRDB1 = ($lastTransactionIDPRDB2[1]);
+	var $lastTransactionTimePRDB2 = new java.text.SimpleDateFormat(
+			"dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat(
+			"yyyy/MM/dd HH:mm:ss").parse($lastTransactionTimePRDB1));
+	var $lastTransactionTimePRDB3 = $lastTransactionTimePRDB2.split(":");
+	var $lastTransactionTimePRDB = $lastTransactionTimePRDB3[0] + ":"
+			+ $lastTransactionTimePRDB3[1] + ":" + $lastTransactionTimePRDB3[2];
+	_assertExists("Last Transaction Time DB", $lastTransactionTimePRDB);
+	var $i = 0;
+	while ($i < 10) {
+		if ($lastTransactionTimePRGui == $lastTransactionTimePRDB) {
+			_assertEqual($lastTransactionTimePRDB, $lastTransactionTimePRGui,"PR Last Transaction time is same on DB and GUI");
+			break;
+		} else {
+			_wait(30000);
+			Popup_Handler();
+			_windowAction("refresh");
+			_click(_link("RPO"));
+			var $lastTransactionTimePRGui = _getText(_div(1,_near(_div("Last Transaction Time"))));
+			_assertExists("PR Last Transaction time from GUI",$lastTransactionTimePRGui);
+
+			// Transaction Time from DB
+			var $lastTransactionTimePRDB1 = $lastTransactionIDPRDB2[1];
+			var $lastTransactionTimePRDB2 = new java.text.SimpleDateFormat(
+					"dd MMM, yyyy HH:mm:ss")
+					.format(new java.text.SimpleDateFormat(
+							"yyyy/MM/dd HH:mm:ss")
+							.parse($lastTransactionTimePRDB1));
+			var $lastTransactionTimePRDB3 = $lastTransactionTimePRDB2.split(":");
+			var $lastTransactionTimePRDB = $lastTransactionTimePRDB3[0] + ":"
+					+ $lastTransactionTimePRDB3[1] + ":"
+					+ $lastTransactionTimePRDB3[2];
+			_assertExists("PR Last Transaction time from DB", $lastTransactionTimePRDB);
+
+		}
+		$i = $i + 1;
+	}
+
+	// Transaction ID DR
+	var $db = Get_MSsql_Db_Connection_URL($ipDR, $database, $userDR, $pwdDR);
+
+	// Transaction ID from GUI DR
+	var $lastTransactionIDDRGui = _getText(_div(1,_near(_div("Last Transaction ID(LSN)[1]"))));
+	_assertExists("DR Last Transaction ID from GUI", $lastTransactionIDDRGui);
+
+	// Transaction ID from DB
+	var $LSNGui = $db
+			.select("Declare "
+					+ "@LSN varchar(22),"
+					+ "@LSN1 varchar(11), "
+					+ "@LSN2 varchar(10), "
+					+ "@LSN3 varchar(5),"
+					+ "@NewLSN varchar(26)"
+					+ "Set @LSN = "
+					+ "'"
+					+ $lastTransactionIDDRGui
+					+ "'"
+					+ ";"
+					+ "Set @LSN1 = LEFT(@LSN, 8);"
+					+ "Set @LSN2 = SUBSTRING(@LSN, 10, 8);"
+					+ "Set @LSN3 = RIGHT(@LSN, 4);"
+					+ "Set @LSN1 = CAST(CONVERT(VARBINARY, '0x' +RIGHT(REPLICATE('0', 8) + @LSN1, 8), 1) As int);"
+					+ "Set @LSN2 = CAST(CONVERT(VARBINARY, '0x' +RIGHT(REPLICATE('0', 8) + @LSN2, 8), 1) As int);"
+					+ "Set @LSN3 = CAST(CONVERT(VARBINARY, '0x' +RIGHT(REPLICATE('0', 8) + @LSN3, 8), 1) As int);"
+					+ "Select CAST(@LSN1 as varchar(8)) +CAST(RIGHT(REPLICATE('0', 10) + @LSN2, 10) as varchar(10)) +CAST(RIGHT(REPLICATE('0', 5) + @LSN3, 5) as varchar(5))");
+	_assertExists("RPO value GUI in Hex Format", $LSNGui);
+
+	// executing query on DR
+	var $rpoStatusDR1 = $db
+			.select("use msdb ; select bs.backup_start_date as TIME ,bs.last_lsn  as LSN from backupset bs inner join backupmediafamily fm on bs.media_set_id = fm.media_set_id where fm.physical_device_name = (select TOP 1 fm.physical_device_name from backupset bs inner join  backupmediafamily fm on bs.media_set_id = fm.media_set_id where bs.database_name="
+					+ "'"
+					+ $database
+					+ "'"
+					+ " order by fm.media_set_id desc);");
+	var $lastTransactionIDDRDB1 = $rpoStatusDR1.toString();
+	_assertExists("*********", $rpoStatusDR1);
+	var $lastTransactionIDDRDB2 = $lastTransactionIDDRDB1.split(",");
+	var $lastTransactionIDDRDB = $lastTransactionIDDRDB2[1];
+	_assertExists("DR Last Transaction ID from GUI", $lastTransactionIDDRDB);
+
+	var $i = 0;
+	while ($i < 15) {
+
+		if ($LSNGui == $lastTransactionIDDRDB) {
+			_assertEqual($lastTransactionIDDRDB, $LSNGui,"DR Last Transaction ID is same on DB and GUI");
+			break;
+		} else if ($LSNGui < $lastTransactionIDDRDB) {
+			_wait(30000);
+			Popup_Handler();
+			_windowAction("refresh");
+			_click(_link("RPO"));
+			var $tlastTransactionIDDRGui = __getText(_div(1,
+					_near(_div("Last Transaction ID(LSN)[1]"))));
+			_assertExists("DR Last Transaction ID from GUI", $lastTransactionIDDRGui);
+			var $LSNGui = $db
+					.select("Declare "
+							+ "@LSN varchar(22),"
+							+ "@LSN1 varchar(11), "
+							+ "@LSN2 varchar(10), "
+							+ "@LSN3 varchar(5),"
+							+ "@NewLSN varchar(26)"
+							+ "Set @LSN = "
+							+ "'"
+							+ $lastTransactionIDDRGui
+							+ "'"
+							+ ";"
+							+ "Set @LSN1 = LEFT(@LSN, 8);"
+							+ "Set @LSN2 = SUBSTRING(@LSN, 10, 8);"
+							+ "Set @LSN3 = RIGHT(@LSN, 4);"
+							+ "Set @LSN1 = CAST(CONVERT(VARBINARY, '0x' +RIGHT(REPLICATE('0', 8) + @LSN1, 8), 1) As int);"
+							+ "Set @LSN2 = CAST(CONVERT(VARBINARY, '0x' +RIGHT(REPLICATE('0', 8) + @LSN2, 8), 1) As int);"
+							+ "Set @LSN3 = CAST(CONVERT(VARBINARY, '0x' +RIGHT(REPLICATE('0', 8) + @LSN3, 8), 1) As int);"
+							+ "Select CAST(@LSN1 as varchar(8)) +CAST(RIGHT(REPLICATE('0', 10) + @LSN2, 10) as varchar(10)) +CAST(RIGHT(REPLICATE('0', 5) + @LSN3, 5) as varchar(5))");
+			_assertExists("RPO value GUI in Hex Format", $LSNGui);
+		} else if ($LSNGui > $lastTransactionIDDRDB) {
+			_wait(30000);
+			Popup_Handler();
+			_windowAction("refresh");
+			_click(_link("RPO"));
+			// Transaction ID from GUI DR
+			var $lastTransactionIDDRGui = _getText(_div(1,
+					_near(_div("Last Transaction ID(LSN)[1]"))));
+			_assertExists("RPO value GUI", $lastTransactionIDDRGui);
+			var $LSNGui = $db
+					.select("Declare "
+							+ "@LSN varchar(22),"
+							+ "@LSN1 varchar(11), "
+							+ "@LSN2 varchar(10), "
+							+ "@LSN3 varchar(5),"
+							+ "@NewLSN varchar(26)"
+							+ "Set @LSN = "
+							+ "'"
+							+ $lastTransactionIDDRGui
+							+ "'"
+							+ ";"
+							+ "Set @LSN1 = LEFT(@LSN, 8);"
+							+ "Set @LSN2 = SUBSTRING(@LSN, 10, 8);"
+							+ "Set @LSN3 = RIGHT(@LSN, 4);"
+							+ "Set @LSN1 = CAST(CONVERT(VARBINARY, '0x' +RIGHT(REPLICATE('0', 8) + @LSN1, 8), 1) As int);"
+							+ "Set @LSN2 = CAST(CONVERT(VARBINARY, '0x' +RIGHT(REPLICATE('0', 8) + @LSN2, 8), 1) As int);"
+							+ "Set @LSN3 = CAST(CONVERT(VARBINARY, '0x' +RIGHT(REPLICATE('0', 8) + @LSN3, 8), 1) As int);"
+							+ "Select CAST(@LSN1 as varchar(8)) +CAST(RIGHT(REPLICATE('0', 10) + @LSN2, 10) as varchar(10)) +CAST(RIGHT(REPLICATE('0', 5) + @LSN3, 5) as varchar(5))");
+			_assertExists("RPO value GUI in Hex Format", $LSNGui);
+			// Transaction ID from DB
+
+			// executing query on PR
+			var $rpoStatusDR1 = $db
+					.select("use msdb ; select bs.backup_start_date as TIME ,bs.last_lsn  as LSN from backupset bs inner join backupmediafamily fm on bs.media_set_id = fm.media_set_id where fm.physical_device_name = (select TOP 1 fm.physical_device_name from backupset bs inner join  backupmediafamily fm on bs.media_set_id = fm.media_set_id where bs.database_name="
+							+ "'"
+							+ $database
+							+ "'"
+							+ " order by fm.media_set_id desc);");
+			var $lastTtransactionIDRDB1 = $rpoStatusDR1.toString();
+			_assertExists("*********", $rpoStatusDR1);
+			var $lastTransactionIDDRDB2 = $lastTtransactionIDRDB1.split(",");
+			var $lastTransactionIDDRDB = $lastTransactionIDDRDB2[1];
+			_assertExists("DR Last Transaction ID from DB", $lastTransactionIDDRDB);
+		}
+		$i = $i + 1;
+	}
+
+	// Transaction Time from GUI DR
+	var $lastTransactionTimeDRGui = _getText(_div(1,
+			_near(_div("Last Transaction Time[1]"))));
+	_assertExists("DR Last Transaction Time from GUI", $lastTransactionTimeDRGui);
+	// Transaction Time from DB DR
+	var $rpoStatusDR1 = $db
+			.select("use msdb ; select bs.backup_start_date as TIME ,bs.last_lsn  as LSN from backupset bs inner join backupmediafamily fm on bs.media_set_id = fm.media_set_id where fm.physical_device_name = (select TOP 1 fm.physical_device_name from backupset bs inner join  backupmediafamily fm on bs.media_set_id = fm.media_set_id where bs.database_name="
+					+ "'"
+					+ $database
+					+ "'"
+					+ " order by fm.media_set_id desc);");
+	var $lastTransactionTimeDRDB1 = $rpoStatusDR1.toString();
+	var $lastTransactionTimeDRDB2 = $lastTransactionTimeDRDB1.split(",");
+	var $lastTransactionTimeDRDB3 = $lastTransactionTimeDRDB2[0];
+	var $lastTransactionTimeDRDB4 = new java.text.SimpleDateFormat(
+			"dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat(
+			"yyyy-MM-dd HH:mm:ss").parse($lastTransactionTimeDRDB3));
+	var $lastTransactionTimeDRDB5 = $lastTransactionTimeDRDB4.split(":");
+	var $lastTransactionTimeDRDB = $lastTransactionTimeDRDB5[0] + ":"
+			+ $lastTransactionTimeDRDB5[1] + ":" + $lastTransactionTimeDRDB5[2];
+	_assertExists("DR Last Transaction Time from DB", $lastTransactionTimeDRDB);
+	var $i = 0;
+	while ($i < 5) {
+		if ($lastTransactionTimeDRGui == $lastTransactionTimeDRDB) {
+			_assertEqual($lastTransactionTimeDRDB, $lastTransactionTimeDRGui,
+					"DR Last Transaction Time is same on Db and GUI");
+			break;
+		}
+
+		else {
+			_wait(30000);
+			Popup_Handler();
+			_windowAction("refresh");
+			_click(_link("RPO"));
+			
+			// Transaction Time from GUI DR
+			var $lastTransactionTimeDRGui = _getText(_div(1,
+					_near(_div("Last Transaction Time[1]"))));
+			_assertExists("DR Last Transaction Time from GUI",
+					$lastTransactionTimeDRGui);
+			// Transaction Time from DB DR
+			var $rpoStatusDR1 = $db
+					.select("use msdb ; select bs.backup_start_date as TIME ,bs.last_lsn  as LSN from backupset bs inner join backupmediafamily fm on bs.media_set_id = fm.media_set_id where fm.physical_device_name = (select TOP 1 fm.physical_device_name from backupset bs inner join  backupmediafamily fm on bs.media_set_id = fm.media_set_id where bs.database_name="
+							+ "'"
+							+ $database
+							+ "'"
+							+ " order by fm.media_set_id desc);");
+			var $lastTransactionTimeDRDB1 = $rpoStatusDR1.toString();
+			var $lastTransactionTimeDRDB2 = $lastTransactionTimeDRDB1.split(",");
+			var $lastTransactionTimeDRDB3 = $lastTransactionTimeDRDB2[0];
+			var $lastTransactionTimeDRDB4 = new java.text.SimpleDateFormat(
+					"dd MMM, yyyy HH:mm:ss")
+					.format(new java.text.SimpleDateFormat(
+							"yyyy-MM-dd HH:mm:ss")
+							.parse($lastTransactionTimeDRDB3));
+			var $lastTransactionTimeDRDB5 = $lastTransactionTimeDRDB4.split(":");
+			var $lastTransactionTimeDRDB = $lastTransactionTimeDRDB5[0] + ":"
+					+ $lastTransactionTimeDRDB1[1] + ":"
+					+ $lastTransactionTimeDRDB1[2];
+			_assertExists("DR Last Transaction Time from DB", $lastTransactionTimeDRDB);
+
+		}
+		$i = $i + 1;
+	}
+
+	//Calling Calulate_Rpo function to verify RPO calculation from gui
+	var $dbRpo = Calulate_Rpo($lastTransactionTimePRDB, $lastTransactionTimeDRDB);
+	var $recoveryPointinDB = $dbRpo.get("recoveryPointDB");
+
+	//var $dbRecoveryPoint = new java.util.Properties();
+	//$dbRecoveryPoint.put("RecoveryPointDB", $recoveryPointinDB);
+	return $dbRpo;
+	return $recoveryPointinDB;
+}
+
+
+/**
+ *Function is used to verify RTO Status for MSSQL LOG PFR
+ *@param :null
+ *@return : null
+ *@author : Padmavathi
+ *Modified:Anita //as per JR_7.1 P1
+ */
+
+function MSSQL_PFR_Rto() {
+	
+	navigateToRTO($groupName);
+	// verification of current RTO :
+
+//Custom action for Remote
+	_mouseOver(_svg_rect(14));
+    var $stepName1= RTO_Calculate();
+	
+//Custom Action 1
+	_mouseOver(_svg_rect(15));
+    var $stepName2= RTO_Calculate();
+	
+//Load the pending
+	_mouseOver(_svg_rect(16));
+    var $stepName3= RTO_Calculate();
+	
+//Block the database on
+	_mouseOver(_svg_rect(17));
+    var $stepName4= RTO_Calculate();
+	
+//Recover the database on
+	_mouseOver(_svg_rect(18));
+    var $stepName5= RTO_Calculate();
+	
+//Check database
+	_mouseOver(_svg_rect(19));
+    var $stepName6= RTO_Calculate();
+	
+//Start the application on
+	_mouseOver(_svg_rect(20));
+    var $stepName7= RTO_Calculate();
+	
+var $expectedCompletionTime = Math.floor($stepName1 + $stepName2 + $stepName3 + $stepName4 + $stepName5 + $stepName6 + $stepName7);
+	_assertExists("Expected completion time", $expectedCompletionTime);
+	// Calling function Calculate_Rto from Group_manager.sah
+		var $dbRto = Calculate_Rto($expectedCompletionTime);
+		return $dbRto;
+
+	} // End of MSSQL_PFR RTO
+
+/**
+*
+*This function is used to get the ServerName(HostName) from PR Windows machine
+*@param :  null
+*@return : null
+*@Author : Govinda Mengji
+*/
+
+function Get_Servername_PR(){
+      var $command = "cmd /c call " + $hostNameCommand + "> servernamePR.txt";
+      Event_Action($ipPR,$remoteUserNameValPR,$remotePwdValPR,$command);
+      _wait(10000);
+      var $serverName1=_readFile($SAHI_HOME +"tools\\PsExec\\servernamePR.txt");
+      var $serverName2=$serverName1.toString();
+      var $serverName3=$serverName2.split("\r");
+      var $serverName=$serverName3[0];
+      _assertExists($serverName);
+      return $serverName;
+}
+
+/**
+*This function is used to get the ServerName(HostName) from DR Windows machine
+*@param :  null
+*@return : null
+*@Author : Govinda Mengji
+*/
+
+function Get_Servername_DR(){
+      var $command = "cmd /c call " + $hostNameCommand + "> servernameDR.txt";
+      Event_Action($ipDR,$remoteUserNameValDR,$remotePwdValDR,$command);
+      _wait(10000);
+      var $serverName1=_readFile($SAHI_HOME +"tools\\PsExec\\servernameDR.txt");
+      var $serverName2=$serverName1.toString();
+      var $serverName3=$serverName2.split("\r");
+      var $serverName=$serverName3[0];
+      _assertExists($serverName);
+      return $serverName;
+}
+
+
+/**
+ *Function is used to verify Replication(page) 
+ *@param :$groupName
+ *@return : null
+ *@author : Govinda Mengji
+ *Modifier: Padmavathi
+ */
+
+function MSSQL_PFR_Replication($groupName){
+	navigateToReplication($groupName);
+	Replication_Details($groupName, $WFType);
+	_click(_span("glyphicon icon-caret-right"));
+	var $totalReplicatedActualSize = _getText(_span(1, _near(_span("Total Replicated Actual Size"))));
+	_assertExists("Total Replicated Actual Size from GUI" ,  $totalReplicatedActualSize);
+
+	var $lastReplicatedFile = _getText(_span(1, _near(_span("Last Replicated File"))));
+	_assertExists("Last Replicated File from GUI" , $lastReplicatedFile);
+
+	var $lastReplicatedFilesize = _getText(_span(1, _near(_span("Last Replicated File size"))));
+	_assertExists("Last Replicated File size from GUI" ,$lastReplicatedFilesize);
+
+	var $fileSystemModifiedFile = _getText(_span(1, _near(_span("File System Modified File"))));
+	_assertExists("File System Modified File from GUI",  $fileSystemModifiedFile);
+
+	var $totalPendingfiles = _getText(_div(1, _near(_span("Total Pending files"))));
+	_assertExists("Total Pending files  from GUI" , $totalPendingfiles);
+
+	var $totalReplicatedSizeIO = _getText(_span(1, _near(_span("Total Replicated Size (IO)"))));
+	_assertExists("Total Replicated Size (IO) from GUI", $totalReplicatedSizeIO);
+
+	var $lastReplicatedFiletime = _getText(_span(1, _near(_span("Last Replicated File time"))));
+	_assertExists("Last Replicated File time from GUI", $lastReplicatedFiletime);
+
+	var $throughput = _getText(_span(1, _near(_span("Throughput"))));
+	_assertExists("Throughtput from ", $throughput);
+	}
+
+
+
+/**
+ * This function is used to Edit SO Workflow for MSSQL LOG PFR Solution
+ * @param :$file,$primaryLogPath,$database,$secondaryLogPath
+ * @return : null
+ * @Author : Govinda Mengji
+ * Modified: Anita  //updated Trans log path
+ */
+function Edit_SO_Workflow($fileSO,$transPathPR,$undoPR)
+{
+	 
+	  var $fileRead= _userDataDir() +"\\MSSQL\\\MSSQLLogPFR\\" + $fileSO;
+	  
+	  var $xmlStr = _readFile($fileRead); 
+	 
+	  var $newXmlStr = $xmlStr.replace('<?xml version="1.0" encoding="UTF-8"?>',"");
+     
+	  var $xml = new XML($newXmlStr); 
+	 
+	  
+	  $xml..userDef..entry.(@key=="PRI_TRANS_LOG_PATH").(@value=$transPathPR);
+	 
+	  $xml..userDef..entry.(@key=="PRI_DB_UNDO_PATH").(@value=$undoPR);
+	  
+	  $xml..userDef..entry.(@key=="DR_TRANS_LOG_PATH").(@value=$transPathPR);
+		 
+	  $xml..userDef..entry.(@key=="DR_DB_UNDO_PATH").(@value=$undoPR);
+	 
+	  $xml..userDef..entry.(@key=="PRI_SWITCH_LOG_UNDO_FILE_WITH_PATH").(@value=$undoPR+"SO.DAT"); //:\dbname\undo\SO.DAT
+	  
+	  $xml..userDef..entry.(@key=="PRI_SWITCH_LOG_FILE_WITH_PATH").(@value=$transPathPR+"\\SO.TRN"); //C:\dbname\backup\SO.TRN
+	 
+	  //$xml..userDef..entry.(@key=="DR_TRANS_LOG_PATH").(@value=$backupPathPR);
+	 
+	  //$xml..userDef..entry.(@key=="DR_DB_UNDO_PATH").(@value=$undoPR);
+	    
+      
+	   _writeFile($xml.toString(),$fileRead, true);
+	  
+
+
+
+}
+
+/**
+ * This function is used to Edit SB Workflow for MSSQL LOG PFR Solution
+ * @param :$file,$primaryLogPath,$database,$secondaryLogPath
+ * @return : null
+ * @Author : Govinda Mengji
+ * Modified:Anita //updated Trans log path
+ */
+function Edit_SB_Workflow($fileSB,$transPathDR,$undoPathDR)
+{
+	 
+	  var $fileRead= _userDataDir() +"\\MSSQL\\\MSSQLLogPFR\\" + $fileSB;
+	  
+	  var $xmlStr = _readFile($fileRead); 
+	 
+	  var $newXmlStr = $xmlStr.replace('<?xml version="1.0" encoding="UTF-8"?>',"");
+     
+	  var $xml = new XML($newXmlStr); 
+	 
+	  
+	  $xml..userDef..entry.(@key=="PRI_TRANS_LOG_PATH").(@value=$transPathDR);
+		 
+	  $xml..userDef..entry.(@key=="PRI_DB_UNDO_PATH").(@value=$undoDR);
+	 
+	  $xml..userDef..entry.(@key=="DR_TRANS_LOG_PATH").(@value=$transPathDR);
+	 
+	  $xml..userDef..entry.(@key=="DR_DB_UNDO_PATH").(@value=$undoDR);
+	    
+	  $xml..userDef..entry.(@key=="DR_SWITCH_LOG_UNDO_FILE_WITH_PATH").(@value=$undoDR+"SB.DAT"); //:\dbname\undo\SB.DAT
+	  
+	  $xml..userDef..entry.(@key=="DR_SWITCH_LOG_FILE_WITH_PATH").(@value=$transPathDR+"\\SB.TRN"); //C:\dbname\backup\SB.TRN
+	    
+      
+	   _writeFile($xml.toString(),$fileRead, true);
+	  
+
+
+
+}
+
+/**
+* Function is for Switchback status verification from Tests List View .
+*@param : $groupName
+*@return : null
+*@Author: Govinda Mengji
+*
+*//*
+
+function SO_Execution_Status_Log_PFR($groupName) {
+	
+	Waitfor_TestWF_Completion_MSSQL_Log_PFR_SO($groupName, "Switchover");
+
+}// End of SB_Execution_Status
+
+
+*//**
+* Function is for Switchback status verification from Tests List View .
+*@param : $groupName
+*@return : null
+*@Author: Govinda Mengji
+*
+*//*
+
+function SB_Execution_Status_log_PFR($groupName) {
+	
+	Waitfor_TestWF_Completion_MSSQL_Log_PFR_SB($groupName, "Switchback");
+
+}// End of SB_Execution_Status
+
+
+*//**
+* Function is to verify test workflow execution status verification from Tests List View (Waitfor_TestWF_Completion_Log_Shipping_SO).
+*@param : $groupName, $WFName
+*@return : null
+*@Author: Govinda Mengji
+*
+*//*
+
+
+
+function Waitfor_TestWF_Completion_MSSQL_Log_PFR_SO($groupName, $WFName) {
+	var $i = 0;
+	// Looping till SO execution Complete
+	while ($i < 50) {
+		_log($i);
+		_wait(10000);
+		Popup_Handler();
+		_click(_link("Test"));
+		_click(_link("Test List View"));
+		_click(_link($groupName));
+		
+		//_click(_link($WFName));
+
+		var $testStatus = _getText(_span(6, _near(_link($WFName))));
+		_assertExists("Test Status :", $testStatus);
+		
+		if ($testStatus == "FAILED") {
+			_wait(1000);
+			_fail($WFName, "workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+		} else if ($testStatus == "EXECUTING") {
+
+		} else if ($testStatus == "AWAITING INPUT") {
+			_click(_link(1, _near(_link($WFName))));
+	
+
+			if (_exists(_submit("OK=true userInputButton btn btn-primary btn-xs btn btn-info"))) {
+				_click(_submit("OK=true userInputButton btn btn-primary btn-xs btn btn-info"));
+				_call(window.history.back());
+			} 
+			
+			else if(_exists(_paragraph("PAN-TSQL-0083: Switchover failed for group " + $groupName + ""))) {
+				
+				_click(_submit("Continue=CONTINUE userInputButton btn btn-primary btn-xs btn btn-info"));
+				_call(window.history.back());
+			} 
+		
+				} 
+		
+
+		else if ($testStatus == "EXECUTING") {
+	_wait(10000);
+	_click(_link("Go back"));
+} 
+else if ($testStatus == "SUCCESS") {
+	_assertExists($WFName, "workflow executed succesfully.");
+	_click(_link("Go back"));
+	break;
+	_click(_link("Go back"));
+}
+	
+	
+	else if ($testStatus == "EXECUTING") {
+		_wait(10000);			
+	} else if ($testStatus == "SUCCESS") {
+		_assertExists($WFName, "workflow executed succesfully.");
+		break;
+	}
+	$i = $i + 1;
+	
+
+}
+
+$i = $i + 1;
+_click(_link("Go back"));
+
+
+}
+
+_click(_link("Go back"));
+
+if ($testStatus == "EXECUTING") {
+_fail("Failed because of waiting for user input");
+}// End of while loop
+
+
+
+var $testStatus = _getText(_span(6, _near(_link($WFName))));
+_assertExists("Test Status :", $testStatus);
+if ($testStatus == "AWAITING INPUT") {
+	_fail("Failed because of waiting for user input");
+}  // End of while loop
+// End of Waitfor_TestWF_Completion()
+
+
+
+
+
+
+
+
+*//**
+* Function is to verify test workflow execution status verification from Tests List View (Waitfor_TestWF_Completion_Log_Shipping_SB).
+*@param : $groupName, $WFName
+*@return : null
+*@Author: Govinda Mengji
+*
+*//*
+
+
+
+
+function Waitfor_TestWF_Completion_MSSQL_Log_PFR_SB($groupName, $WFName) {
+	var $i = 0;
+	// Looping till SO execution Complete
+	while ($i < 50) {
+		_log($i);
+		_wait(10000);
+		Popup_Handler();
+		_click(_link("Test"));
+		_click(_link("Test List View"));
+		_click(_link($groupName));
+		
+		//_click(_link($WFName));
+
+		var $testStatus = _getText(_span(6, _near(_link($WFName))));
+		_assertExists("Test Status :", $testStatus);
+		
+		if ($testStatus == "FAILED") {
+			_wait(1000);
+			_fail($WFName, "workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+
+		} else if ($testStatus == "EXECUTING") {
+
+		} else if ($testStatus == "AWAITING INPUT") {
+
+			_click(_link(1, _near(_link($WFName))));
+			_click(_button("Awaiting Input"));
+			if (_exists(_submit("OK=true userInputButton btn btn-primary btn-xs btn btn-info"))) {
+				_click(_submit("OK=true userInputButton btn btn-primary btn-xs btn btn-info"));
+				_call(window.history.back());
+			} 
+			else if(_exists(_paragraph("PAN-TSQL-0084: Switchback failed for group " + $groupName + ""))){
+				_click(_submit("Continue=CONTINUE userInputButton btn btn-primary btn-xs btn btn-info"));
+				_call(window.history.back());
+			} 
+			} 
+
+			else if ($testStatus == "EXECUTING") {
+		_wait(10000);
+		_click(_link("Go back"));
+	} 
+	else if ($testStatus == "SUCCESS") {
+		_assertExists($WFName, "workflow executed succesfully.");
+		_click(_link("Go back"));
+		break;
+		_click(_link("Go back"));
+	}
+		
+		
+		else if ($testStatus == "EXECUTING") {
+			_wait(10000);			
+		} else if ($testStatus == "SUCCESS") {
+			_assertExists($WFName, "workflow executed succesfully.");
+			break;
+		}
+		$i = $i + 1;
+		
+
+	}
+
+	$i = $i + 1;
+	_click(_link("Go back"));
+
+	
+}
+	
+	_click(_link("Go back"));
+
+if ($testStatus == "EXECUTING") {
+	_fail("Failed because of waiting for user input");
+}// End of while loop
+
+
+	
+	var $testStatus = _getText(_span(6, _near(_link($WFName))));
+	_assertExists("Test Status :", $testStatus);
+	if ($testStatus == "AWAITING INPUT") {
+		_fail("Failed because of waiting for user input");
+	}  // End of while loop
+ // End of Waitfor_TestWF_Completion()
+
+
+
+	
+	
+	
+	
+	
+	*/
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+/**
+*This function Create fileset
+*@param :  null
+*@return : null
+*@Author : Govinda Mengji
+*/
+
+
+function Create_fileset()
+{	
+	_navigateTo('http://' + $drmServer + ':8080/PFRGUI');
+	_setValue(_textbox("username"), "sfradmin");
+	_setValue(_password("password"), "sfradmin");
+	_click(_button("Login"));
+	_setValue(_textbox("server"), $compIPPR);
+	_click(_button("add server"));
+	_click(_link($compIPPR));
+	_click(_link("Add"));
+  _setValue(_textbox("fsName"), $filesetName);
+	_setValue(_textbox("sourceIP"), $compIPPR);
+   _setValue(_textbox("targetIP"), $compIPDR);
+	_setValue(_textbox("repinterval"), "300");
+	_setValue(_textbox("sourcePath"), $installexepathPR);
+	_setValue(_textbox("targetPath"), $installexepathDR);
+	_click(_button("Add"));
+	_click(_checkbox("cb"));
+	_click(_button("Add Fileset"));
+	_wait(1000);
+	_click(_link($filesetName));
+   if(_exists(_link("Disable"))){
+	_click(_link("Logout"));
+   }
+	
+}
+
+/**
+*This function Fetching fileset Name
+*@param :  null
+*@return : null
+*@Author : Govinda Mengji
+*/
+
+function filesetName(){
+	navigateToDiscovery();
+	_click(_link("Subsystems"));
+	_click(_link("Protection Schemes"));
+	_click(_link($sernamePR));
+	$filesetName=_getText(_cell(1, _near(_cell("Protection Scheme Fileset Name:"))));
+	_log("filesetName",$filesetName);
+	return $filesetName;
+	
+	}
+
+/**
+* Continuity Workflows Function for MSSQL_LOG__PFR solution after SO
+*@param : null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+
+function MSSQL_PFR_Continuity_Workflows_Post_SO() {
+	Continuity_Workflows($groupName,$datasetNameDR,$compIPDR,$remoteUserNameValDR,$remotePwdValDR, "ReverseNormalCopy");
+}// End of MSSQL_PFR_Continuity_Workflows_Post_SO()
+
+
+/**
+* Continuity Workflows Function for MSSQL_LOG__PFR solution Before SO
+*@param : null
+*@return : null
+*@Author: Padmavathi
+*
+*/
+function MSSQL_PFR_Continuity_Workflows_Pre_SO() {
+	Continuity_Workflows($groupName,$datasetNamePR,$compIPPR,$remoteUserNameValPR,$remotePwdValPR, "NormalCopy");
+}// End of MSSQL_PFR_Continuity_Workflows_Pre_SO()
+
+
+/**
+*Continuity Workflows Function for MSSQL_LOG__PFR solution 
+*@param : $groupName,$datasetName,$compIP,$remoteUserNameVal,$remotePwdVal,$WFType
+*@return : null
+*@Author: Padmavathi
+*
+*/
+
+function Continuity_Workflows($groupName,$datasetName,$compIP,$remoteUserNameVal,$remotePwdVal,$WFType) 
+{
+NavigateToRGDetailsPage($groupName);
+_click(_link("icon-right-arrow ex-col-arrow collapsed", _near(_link($WFType))));
+
+// PR Side
+
+var $lastBackedUpLogFile1 = _getText(_heading5("/Last Log File backed up: .*/"));
+var $lastBackedUpLogFile2 = $lastBackedUpLogFile1.split(": ");
+var $lastBackedUpLogFile = $lastBackedUpLogFile2[1];
+var $i = 0;
+while ($i < 10) {
+	var $lastBackedUpLogFile1 = _getText(_heading5("/Last Log File backed up: .*/"));
+	var $lastBackedUpLogFile2 = $lastBackedUpLogFile1.split(": ");
+	var $lastBackedUpLogFile = $lastBackedUpLogFile2[1];
+	
+if ($lastBackedUpLogFile == "N/A") {
+		_wait(30000);
+		} else {
+			break;
+			_log("Go Ahead");
+		}
+		$i++;
+		}
+_assertExists("Last Log File backed up ", $lastBackedUpLogFile);
+var $lastBackedUpLogFile3 = $lastBackedUpLogFile.split("tlog_");
+var $lastBackedUpLogFile4 = $lastBackedUpLogFile3[1];
+var $lastBackedUpLogFile5 = $lastBackedUpLogFile4.split(".TRN");
+var $lastBackedUpLogFileNomber = $lastBackedUpLogFile5[0];
+_assertExists("Last Backed Up Log File Nomber: ", $lastBackedUpLogFileNomber);
+
+
+var $lastLogFileBackedupAt1 = _getText(_heading5("/Last Log File backed up at: .*/"));
+var $lastLogFileBackedupAt2 = $lastLogFileBackedupAt1.split(": ");
+var $lastLogFileBackedupAt = $lastLogFileBackedupAt2[1];
+var $i = 0;
+while ($i < 10) {
+var $lastLogFileBackedupAt1 = _getText(_heading5("/Last Log File backed up at: .*/"));
+var $lastLogFileBackedupAt2 = $lastLogFileBackedupAt1.split(": ");
+var $lastLogFileBackedupAt = $lastLogFileBackedupAt2[1];
+		if ($lastLogFileBackedupAt == "N/A") {
+			_wait(30000);
+		} else {
+			break;
+			_log("Go Ahead");
+		}
+		$i++;
+		}
+//var lastLogFileBackedupAtFromGUITimeStamp = _getText(_heading5("/Last Log File backed up at: .*/"))
+_assertExists("Last Log File backed up at ", $lastLogFileBackedupAt);
+
+//DR Side
+//Last Restored Log File Name
+var $lastRestoredLogFile1 = _getText(_heading5("/Last Log File Restored: .*/"));
+var $lastRestoredLogFile2 = $lastRestoredLogFile1.split(": ");
+var $lastRestoredLogFile = $lastRestoredLogFile2[1];
+var $i = 0;
+while ($i < 10) {
+	var $lastRestoredLogFile1 = _getText(_heading5("/Last Log File Restored: .*/"));
+	var $lastRestoredLogFile2 = $lastRestoredLogFile1.split(": ");
+	var $lastRestoredLogFile = $lastRestoredLogFile2[1];
+		if ($lastRestoredLogFile == "N/A") {
+			_wait(30000);
+		} else {
+			break;
+			_log("Go Ahead");
+		}
+		$i++;
+		}
+_assertExists("Last Log File Restored: ",$lastRestoredLogFile);
+var $lastRestoredLogFile3 = $lastRestoredLogFile.split("tlog_");
+var $lastRestoredLogFile4 = $lastRestoredLogFile3[1];
+var $lastRestoredLogFile5 = $lastRestoredLogFile4.split(".TRN")
+var $lastRestoredLogFileNomber = $lastRestoredLogFile5[0];
+_assertExists("Last Restored Log File Nomber: ", $lastRestoredLogFileNomber);
+
+//Last Log File Restored At
+var $lastLogFileRestoredAt1 = _getText(_heading5("/Last Log File Restored at: .*/"));
+var $lastLogFileRestoredAt2 = $lastLogFileRestoredAt1.split(": ");
+var $lastLogFileRestoredAt = $lastLogFileRestoredAt2[1];
+var $i = 0;
+while ($i < 10) {
+	var $lastLogFileRestoredAt1 = _getText(_heading5("/Last Log File Restored at: .*/"));
+	var $lastLogFileRestoredAt2 = $lastLogFileRestoredAt1.split(": ");
+	var $lastLogFileRestoredAt = $lastLogFileRestoredAt2[1];
+		if ($lastLogFileRestoredAt == "N/A") {
+			_wait(30000);
+		} else {
+			break;
+			_log("Go Ahead");
+		}
+		$i++;
+		}
+_assertExists("Last Log File Restored At: ",$lastLogFileRestoredAt);
+
+//CONNECTION PR
+
+$db = Get_MSsql_Db_Connection_URL($ipPR,$database,$userPR, $pwdPR);
+  var $time = currentTime();
+$db.update("CREATE TABLE [dbo].[Table_"+$time+"](" +
+		"[col1] [varchar](50) NULL," +
+		"[col2] [varchar](50) NULL," +
+		"[col3] [varchar](50) NULL," +
+		"[col4] [varchar](50) NULL," +
+		"[col5] [varchar](50) NULL" +
+        ")"); 
+
+_wait(1000);
+
+//PR Side
+var $lastBackedUpLogFilePR1 = _getText(_heading5("/Last Log File backed up: .*/"));
+var $lastBackedUpLogFilePR2 = $lastBackedUpLogFilePR1.split(": ");
+var $lastBackedUpLogFilePR = $lastBackedUpLogFilePR2[1];
+var $i = 0;
+while ($i < 10) {
+	var $lastBackedUpLogFilePR1 = _getText(_heading5("/Last Log File backed up: .*/"));
+	var $lastBackedUpLogFilePR2 = $lastBackedUpLogFilePR1.split(": ");
+	var $lastBackedUpLogFilePR = $lastBackedUpLogFilePR2[1];
+	
+if ($lastBackedUpLogFilePR == "N/A") {
+		_wait(30000);
+		} else {
+			break;
+			_log("Go Ahead");
+		}
+		$i++;
+		}
+_assertExists("Last Log File backed up ", $lastBackedUpLogFilePR);
+var $lastBackedUpLogFilePR3 = $lastBackedUpLogFilePR.split("tlog_");
+var $lastBackedUpLogFilePR4 = $lastBackedUpLogFilePR3[1];
+var $lastBackedUpLogFilePR5 = $lastBackedUpLogFilePR4.split(".TRN");
+var $lastBackedUpLogFileNomberPR = $lastBackedUpLogFilePR5[0];
+_assertExists("Last Backed Up Log File Nomber: ", $lastBackedUpLogFileNomberPR);
+
+var $lastLogFileBackedupAtPR1 = _getText(_heading5("/Last Log File backed up at: .*/"));
+var $lastLogFileBackedupAtPR2 = $lastLogFileBackedupAtPR1.split(": ");
+var $lastLogFileBackedupAtPR = $lastLogFileBackedupAtPR2[1];
+var $i = 0;
+while ($i < 10) {
+var $lastLogFileBackedupAtPR1 = _getText(_heading5("/Last Log File backed up at: .*/"));
+var $lastLogFileBackedupAtPR2 = $lastLogFileBackedupAtPR1.split(": ");
+var $lastLogFileBackedupAtPR = $lastLogFileBackedupAtPR2[1];
+		if ($lastLogFileBackedupAtPR == "N/A") {
+			_wait(30000);
+		} else {
+			break;
+			_log("Go Ahead");
+		}
+		$i++;
+		}
+//var lastLogFileBackedupAtFromGUITimeStamp = _getText(_heading5("/Last Log File backed up at: .*/"))
+_assertExists("Last Log File backed up at ", $lastLogFileBackedupAt);
+
+//DR Side
+//Last Restored Log File
+var $lastRestoredLogFileDR1 = _getText(_heading5("/Last Log File Restored: .*/"));
+var $lastRestoredLogFileDR2 = $lastRestoredLogFileDR1.split(": ");
+var $lastRestoredLogFileDR = $lastRestoredLogFileDR2[1];
+var $i = 0;
+while ($i < 10) {
+	var $lastRestoredLogFileDR1 = _getText(_heading5("/Last Log File Restored: .*/"));
+	var $lastRestoredLogFileDR2 = $lastRestoredLogFileDR1.split(": ");
+	var $lastRestoredLogFileDR = $lastRestoredLogFileDR2[1];
+		if ($lastRestoredLogFileDR == "N/A") {
+			_wait(30000);
+		} else {
+			break;
+			_log("Go Ahead");
+		}
+		$i++;
+		}
+_assertExists("Last Log File Restored: ",$lastRestoredLogFile);
+var $lastRestoredLogFileDR3 = $lastRestoredLogFileDR.split("tlog_");
+var $lastRestoredLogFileDR4 = $lastRestoredLogFileDR3[1];
+var $lastRestoredLogFileDR5 = $lastRestoredLogFileDR4.split(".TRN")
+var $lastRestoredLogFileNomberDR = $lastRestoredLogFileDR5[0];
+_assertExists("Last Restored Log File Nomber: ", $lastRestoredLogFileNomber);
+
+//Last Log File Restored At
+var $lastLogFileRestoredAtDR1 = _getText(_heading5("/Last Log File Restored at: .*/"));
+var $lastLogFileRestoredAtDR2 = $lastLogFileRestoredAtDR1.split(": ");
+var $lastLogFileRestoredAtDR = $lastLogFileRestoredAtDR2[1];
+var $i = 0;
+while ($i < 10) {
+	var $lastLogFileRestoredAtDR1 = _getText(_heading5("/Last Log File Restored at: .*/"));
+	var $lastLogFileRestoredAtDR2 = $lastLogFileRestoredAtDR1.split(": ");
+	var $lastLogFileRestoredAtDR = $lastLogFileRestoredAtDR2[1];
+		if ($lastLogFileRestoredAtDR == "N/A") {
+			_wait(30000);
+		} else {
+			break;
+			_log("Go Ahead");
+		}
+				$i++;
+				}
+_assertExists("Last Log File Restored At: ",$lastLogFileRestoredAtDR);
+
+_assertTrue($lastBackedUpLogFileNomberPR >= $lastBackedUpLogFileNomber, "Comparing the Last Backed Up Log File after creating a table on db");
+
+_assertTrue($lastLogFileBackedupAtPR >= $lastLogFileBackedupAt, "Comparing the Last Log File Backed Up At after creating a table on db");
+
+_assertTrue($lastRestoredLogFileNomberDR >= $lastRestoredLogFileNomber, "Comparing the Last Restored Log File after creating a table on db");
+
+_assertTrue($lastLogFileRestoredAtDR >= $lastLogFileRestoredAt, "Comparing the Last Log File Restored At after creating a table on db");
+
+}
+
+
+/**
+ *Function is used to verify RPO Status 
+ *@param :$ipPR,$database,$userPR, $pwdPR
+ *@return : null
+ *@author : Aditi
+ */
+
+function MSSQL_RPO_Status($ipPR,$database,$userPR, $pwdPR) {
+	
+	navigateToRPO($groupName);
+//Transaction ID from GUI
+	
+	var $transactionIDPRGui=_getText(_div(1, _near(_div("Last Transaction ID(LSN)"))));
+	_assertExists("RPO value GUI",$transactionIDPRGui);
+	//Transaction ID from DB
+	$db = Get_MSsql_Db_Connection_URL($ipPR,$database,$userPR, $pwdPR);
+	// executing query on PR
+	var $rpoStatus1 = $db.select("use "+ "" + $database + ""+";select TOP 1 [Current LSN] as lsn,CONVERT (VARCHAR(24),[End Time],113)as Endtime from ::fn_dblog (null, null) where ([End Time] is NOT NULL) ORDER BY [End Time] DESC;");
+	var $transactionPRDB1 = $rpoStatus1.toString();
+	var $transactionIDPRDB2=$transactionPRDB1.split(",");
+	var $transactionIDPRDB=$transactionIDPRDB2[0];
+	_assertExists("RPO value DB PR",$transactionIDPRDB);
+	
+	var $i = 0;
+	while($i < 15){
+	if($transactionIDPRGui == $transactionIDPRDB){
+	_assertEqual($transactionIDPRDB,$transactionIDPRGui,"Comparing Transaction ID from GUI and DB");
+	break;
+	}
+	else if($transactionIDPRGui < $transactionIDPRDB){
+	_wait(30000);
+	//Popup_Handler();
+	var $transactionIDPRGui=_getText(_div(1, _near(_div("Last Transaction ID(LSN)"))));
+	_assertExists("RPO value GUI",$transactionIDPRGui);
+	}
+	else if($transactionIDPRGui > $transactionIDPRDB){
+	_wait(30000);
+	//Popup_Handler();
+	//Transaction ID from GUI
+	var $transactionIDPRGui=_getText(_div(1, _near(_div("Last Transaction ID(LSN)"))));
+	_assertExists("RPO value GUI",$transactionIDPRGui);
+	//Transaction ID from DB
+	$db = Get_MSsql_Db_Connection_URL($ipPR,$database,$userPR, $pwdPR);
+	// executing query on PR
+	var $rpoStatus1 = $db.select("use "+ "" + $database + ""+";select TOP 1 [Current LSN] as lsn, [End Time] as endTime, [Transaction ID] as transId from ::fn_dblog (null, null) where ([End Time] is NOT NULL) ORDER BY [End Time] DESC;");
+	var $transactionPRDB1 = $rpoStatus1.toString();
+	var $transactionIDPRDB2=$transactionPRDB1.split(",");
+	var $transactionIDPRDB=$transactionIDPRDB2[0];
+	_assertExists("RPO value DB",$transactionIDPRDB);
+	}
+	$i = $i + 1;
+	}//End Of Transaction ID while loop
+	//Transaction Time from GUI at PR
+	var $transactionTimePRGui=_getText(_div(1, _near(_div("Last Transaction Time"))));
+	_assertExists("Transaction Time in GUI",$transactionTimePRGui);
+		
+	var $PRRpoTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($transactionTimePRGui).getTime();
+	
+	
+	//Transaction Time from DB
+	var $transactionTimePRDB1=($transactionIDPRDB2[1]);
+	var $transactionTimePRDB = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss").parse($transactionTimePRDB1));
+	var $transactionTimePRDB1=$transactionTimePRDB.split(":");
+	var $transactionTimePRDB=$transactionTimePRDB1[0]+":"+$transactionTimePRDB1[1]+":"+$transactionTimePRDB1[2];
+	_assertExists("Transaction Time DB",$transactionTimePRDB);
+	
+	var $i = 0;
+	while($i < 10){
+	if($transactionTimePRGui == $transactionTimePRDB){
+	_assertEqual($transactionTimePRDB,$transactionTimePRGui,"Comparing Transaction time from Db and GUI");
+	break;
+	}
+	else {
+	_wait(30000);
+		//Popup_Handler();
+		var $transactionTimePRGui=_getText(_div(1, _near(_div("Last Transaction Time"))));
+		_assertExists("Transaction Time in GUI",$transactionTimePRGui);
+		//Transaction Time from DB
+		var $transactionTimePRDB1=$transactionIDPRDB2[1];
+		var $transactionTimePRDB = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss").parse($transactionTimePRDB1));
+		var $transactionTimePRDB1=$transactionTimePRDB.split(":");
+		var $transactionTimePRDB=$transactionTimePRDB1[0]+":"+$transactionTimePRDB1[1]+":"+$transactionTimePRDB1[2];
+		_assertExists("Transaction Time DB",$transactionTimePRDB);
+	
+        }
+	$i = $i + 1;
+    }
+	
+	//Transaction ID DR
+	
+	$db = Get_MSsql_Db_Connection_URL($ipDR,$database,$userDR, $pwdDR);
+	//Transaction ID from GUI DR
+	var $transactionIDDRGui=_getText(_div(1, _near(_div("Last Transaction ID(LSN)[1]"))));
+	_assertExists("RPO value GUI",$transactionIDDRGui);
+	var $LSNGui = $db.select("Declare " +
+		"@LSN varchar(22)," +
+		"@LSN1 varchar(11), " +
+		"@LSN2 varchar(10), " +
+		"@LSN3 varchar(5)," +
+		"@NewLSN varchar(26)" +
+		"Set @LSN = "+"'"+ $transactionIDDRGui +"'"+";" +
+				"Set @LSN1 = LEFT(@LSN, 8);" +
+				"Set @LSN2 = SUBSTRING(@LSN, 10, 8);" +
+				"Set @LSN3 = RIGHT(@LSN, 4);" +
+				"Set @LSN1 = CAST(CONVERT(VARBINARY, '0x' +RIGHT(REPLICATE('0', 8) + @LSN1, 8), 1) As int);" +
+				"Set @LSN2 = CAST(CONVERT(VARBINARY, '0x' +RIGHT(REPLICATE('0', 8) + @LSN2, 8), 1) As int);" +
+				"Set @LSN3 = CAST(CONVERT(VARBINARY, '0x' +RIGHT(REPLICATE('0', 8) + @LSN3, 8), 1) As int);" +
+				"Select CAST(@LSN1 as varchar(8)) +CAST(RIGHT(REPLICATE('0', 10) + @LSN2, 10) as varchar(10)) +CAST(RIGHT(REPLICATE('0', 5) + @LSN3, 5) as varchar(5))");
+	_assertExists("RPO value GUI in Hex Format",$LSNGui);
+	//Transaction ID from DB
+
+	//executing query on DR
+	var $rpoStatusDR1 = $db.select("use msdb ; select bs.backup_start_date as TIME ,bs.last_lsn  as LSN from backupset bs inner join backupmediafamily fm on bs.media_set_id = fm.media_set_id where fm.physical_device_name = (select TOP 1 fm.physical_device_name from backupset bs inner join  backupmediafamily fm on bs.media_set_id = fm.media_set_id where bs.database_name="+"'"+ $database +"'"+" order by fm.media_set_id desc);");
+	var $transactionDRDB1 = $rpoStatusDR1.toString();
+	_assertExists("*********",$rpoStatusDR1);
+	var $transactionIDDRDB2=$transactionDRDB1.split(",");
+	var $transactionIDDRDB=$transactionIDDRDB2[1];
+	_assertExists("RPO value DB DR",$transactionIDDRDB);
+	
+	var $i = 0;
+	while($i < 15){
+	
+	if($LSNGui == $transactionIDDRDB){
+	
+	break;
+    }
+	else if($LSNGui < $transactionIDDRDB){
+	_wait(30000);
+	//Popup_Handler();
+	var $transactionIDDRGui=_getText(_div(1, _near(_div("Last Transaction ID(LSN)[1]"))));
+	_assertExists("RPO value GUI",$transactionIDDRGui);
+	var $LSNGui = $db.select("Declare " +
+			"@LSN varchar(22)," +
+			"@LSN1 varchar(11), " +
+			"@LSN2 varchar(10), " +
+			"@LSN3 varchar(5)," +
+			"@NewLSN varchar(26)" +
+			"Set @LSN = "+"'"+ $transactionIDDRGui +"'"+";" +
+					"Set @LSN1 = LEFT(@LSN, 8);" +
+					"Set @LSN2 = SUBSTRING(@LSN, 10, 8);" +
+					"Set @LSN3 = RIGHT(@LSN, 4);" +
+					"Set @LSN1 = CAST(CONVERT(VARBINARY, '0x' +RIGHT(REPLICATE('0', 8) + @LSN1, 8), 1) As int);" +
+					"Set @LSN2 = CAST(CONVERT(VARBINARY, '0x' +RIGHT(REPLICATE('0', 8) + @LSN2, 8), 1) As int);" +
+					"Set @LSN3 = CAST(CONVERT(VARBINARY, '0x' +RIGHT(REPLICATE('0', 8) + @LSN3, 8), 1) As int);" +
+					"Select CAST(@LSN1 as varchar(8)) +CAST(RIGHT(REPLICATE('0', 10) + @LSN2, 10) as varchar(10)) +CAST(RIGHT(REPLICATE('0', 5) + @LSN3, 5) as varchar(5))");
+	_assertExists("RPO value GUI in Hex Format",$LSNGui);
+    }
+	else if($LSNGui > $transactionIDDRDB){
+	_wait(30000);
+	//Popup_Handler();
+	//Transaction ID from GUI DR
+	var $transactionIDDRGui=_getText(_div(1, _near(_div("Last Transaction ID(LSN)[1]"))));
+	_assertExists("RPO value GUI",$transactionIDDRGui);
+	var $LSNGui = $db.select("Declare " +
+			"@LSN varchar(22)," +
+			"@LSN1 varchar(11), " +
+			"@LSN2 varchar(10), " +
+			"@LSN3 varchar(5)," +
+			"@NewLSN varchar(26)" +
+			"Set @LSN = "+"'"+ $transactionIDDRGui +"'"+";" +
+					"Set @LSN1 = LEFT(@LSN, 8);" +
+					"Set @LSN2 = SUBSTRING(@LSN, 10, 8);" +
+					"Set @LSN3 = RIGHT(@LSN, 4);" +
+					"Set @LSN1 = CAST(CONVERT(VARBINARY, '0x' +RIGHT(REPLICATE('0', 8) + @LSN1, 8), 1) As int);" +
+					"Set @LSN2 = CAST(CONVERT(VARBINARY, '0x' +RIGHT(REPLICATE('0', 8) + @LSN2, 8), 1) As int);" +
+					"Set @LSN3 = CAST(CONVERT(VARBINARY, '0x' +RIGHT(REPLICATE('0', 8) + @LSN3, 8), 1) As int);" +
+					"Select CAST(@LSN1 as varchar(8)) +CAST(RIGHT(REPLICATE('0', 10) + @LSN2, 10) as varchar(10)) +CAST(RIGHT(REPLICATE('0', 5) + @LSN3, 5) as varchar(5))");
+	_assertExists("RPO value GUI in Hex Format",$LSNGui);
+	//Transaction ID from DB
+	
+	//executing query on PR
+	var $rpoStatusDR1 = $db.select("use msdb ; select bs.backup_start_date as TIME ,bs.last_lsn  as LSN from backupset bs inner join backupmediafamily fm on bs.media_set_id = fm.media_set_id where fm.physical_device_name = (select TOP 1 fm.physical_device_name from backupset bs inner join  backupmediafamily fm on bs.media_set_id = fm.media_set_id where bs.database_name="+"'"+ $database +"'"+" order by fm.media_set_id desc);");
+	var $transactionDRDB1 = $rpoStatusDR1.toString();
+	_assertExists("*********",$rpoStatusDR1);
+	var $transactionIDDRDB2=$transactionDRDB1.split(",");
+	var $transactionIDDRDB=$transactionIDDRDB2[1];
+	_assertExists("RPO value DB DR",$transactionIDDRDB);
+    }	
+	$i = $i + 1;
+    }
+
+	_assertEqual($transactionIDDRDB,$LSNGui,"Comparing Transaction Id from DB and GUI");
+	
+	//Transaction Time from GUI DR
+	var $transactionTimeDRGui=_getText(_div(1, _near(_div("Last Transaction Time[1]"))));
+	_assertExists("Transaction Time in GUI",$transactionTimeDRGui);
+	
+
+	
+	var $DRRpoTime = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($transactionTimeDRGui).getTime();
+
+
+	
+	//Transaction Time from DB DR
+	var $rpoStatusDR1 = $db.select("use msdb ; select bs.backup_start_date as TIME ,bs.last_lsn  as LSN from backupset bs inner join backupmediafamily fm on bs.media_set_id = fm.media_set_id where fm.physical_device_name = (select TOP 1 fm.physical_device_name from backupset bs inner join  backupmediafamily fm on bs.media_set_id = fm.media_set_id where bs.database_name="+"'"+ $database +"'"+" order by fm.media_set_id desc);");
+	var $transactionDRDB1 = $rpoStatusDR1.toString();
+	var $transactionIDDRDB2=$transactionDRDB1.split(",");
+	var $transactionTimeDRDB1=$transactionIDDRDB2[0];
+	var $transactionTimeDRDB = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse($transactionTimeDRDB1));
+	var $transactionTimeDRDB1=$transactionTimeDRDB.split(":");
+	var $transactionTimeDRDB=$transactionTimeDRDB1[0]+":"+$transactionTimeDRDB1[1]+":"+$transactionTimeDRDB1[2];
+	_assertExists("Transaction Time DB",$transactionTimeDRDB);
+	var $i = 0;
+	while($i < 10){
+	if($transactionTimeDRGui == $transactionTimeDRDB){
+	_assertEqual($transactionTimeDRDB,$transactionTimeDRGui,"Comparing Transaction time from Db and GUI");
+	break;
+    }
+    else {
+	_wait(30000);
+	//Popup_Handler();
+	//Transaction Time from GUI DR
+	var $transactionTimeDRGui=_getText(_div(1, _near(_div("Last Transaction Time[1]"))));
+	_assertExists("Transaction Time in GUI",$transactionTimeDRGui);
+	//Transaction Time from DB DR
+	var $rpoStatusDR1 = $db.select("use msdb ; select bs.backup_start_date as TIME ,bs.last_lsn  as LSN from backupset bs inner join backupmediafamily fm on bs.media_set_id = fm.media_set_id where fm.physical_device_name = (select TOP 1 fm.physical_device_name from backupset bs inner join  backupmediafamily fm on bs.media_set_id = fm.media_set_id where bs.database_name="+"'"+ $database +"'"+" order by fm.media_set_id desc);");
+	var $transactionDRDB1 = $rpoStatusDR1.toString();
+	var $transactionIDDRDB2=$transactionDRDB1.split(",");
+	var $transactionTimeDRDB1=$transactionIDDRDB2[0];
+	var $transactionTimeDRDB = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse($transactionTimeDRDB1));
+	var $transactionTimeDRDB1=$transactionTimeDRDB.split(":");
+	var $transactionTimeDRDB=$transactionTimeDRDB1[0]+":"+$transactionTimeDRDB1[1]+":"+$transactionTimeDRDB1[2];
+	_assertExists("Transaction Time DB",$transactionTimeDRDB);
+	
+    }
+    $i = $i + 1;
+    }
+	if ($PRRpoTime < $DRRpoTime){
+		var $currentRpoGui = _getText(__heading5("/Current App RPO :*/")).split(": ");
+		var $currenRpoGui  =  $currentRpoGui[1];
+		_assertExists("Current RPO GUI", $currenRpoGui);
+		_assertEqual("00:00:00",$currenRpoGui, "If DR is head of PR then Current APP RPO will be 00:00:00");
+	    }
+
+	
+
+	//Calling Calulate_Rpo function to verify RPO calculation from gui
+	$dbRpo = Calulate_Rpo($transactionTimePRDB, $transactionTimeDRDB);
+	$dbRecoveryPoint = $dbRpo.get("recoveryPointDB");
+
+	//$dbRecoveryPoint = new java.util.Properties();
+	//$dbRecoveryPoint.put("RecoveryPointDB", $$dbRecoveryPoint);
+	return $dbRpo;
+	return $dbRecoveryPoint;
+
+}
+
+////
+/**
+* Function is to Initiate switch back from Tests List View for MSSQL LOG PFR .
+*@param : $groupName
+*@return : null
+*@Author: Anita
+*
+*/
+
+function Start_SB_MSSQL_LOG_PFR($groupName) {
+	publishDrill($groupName,"Switchback");
+	
+	navigateToGroups();
+	var $continuityStatus;
+	var $continuity = _getText(_cell(1, _near(_cell($groupName), _under(_tableHeader("Status")))));
+
+	 _log($continuity);
+
+	// Looping till Continuity status is "DR Ready or DR Active Reverse
+	var $i = 0;
+	// Looping till SB execution Complete
+	while ($i < 20) {
+		_log($i);
+		if (($continuity == "DR Resync is Aborted") || ($continuity == "DR Resync is not started") || ($continuity == "DR Resync In Progress") || ($continuity == "DR Resync Paused"))  {
+			break;
+		} else {
+			_wait(30000);
+			navigateToGroups();
+			var $continuity = _getText(_cell(1, _near(_cell($groupName), _under(_tableHeader("Status")))));
+			 _log($continuity);
+		}
+		$i++;
+	} // while ended
+
+	navigateDrillListing($groupName);
+	
+	_click(_image("Execute Workflow", _near(_link("Switchback"))));
+	//_click(_image("[Groupworkflow.executeworkflow]", _near(_link("Switchback"))));
+	
+	_click(_link("Execute"));
+	
+	_wait(1000);
+	// _wait(5000);
+	var $i = 0;
+	// Looping till Stop Test button appears
+	while ($i < 10) {
+		_log($i);
+		
+	if (_exists(_span("EXECUTING"))) {
+	_log("Switchback Started");
+	
+		break;
+	} else {
+	    _log("SB not started.");
+	}
+	$i = $i + 1;
+	_wait(5000);
+    } // End of while loop
+
+	_log("SwitchBack already Inprogress");
+	_assertExists((_span("EXECUTING")));
+	_wait(2000);
+
+	//navigateDrillExecutingPage();
+	//var $workflowType= _getText(_link(1, _near(_link($groupName))));
+	// added- anita
+	navigateDrillListing($groupName);
+	var $workflowType= _getText(_link(1, _near(_link($groupName))));
+	_assertEqual("Switchback", $workflowType, "Validating workflow Type");
+} // End of Start_SB ()
+
+///Temp added code below -anita
+
+function Change_ContinuityStatus_Group_NC($groupName, $cstate) {
+	_wait(1000);
+	navigateToGroups();
+	_click(_image("movetomaintenance_enabled.gif", _near(_link($groupName))));
+	_wait(5000);
+	_click(_link("Click here to change Continuity State"));
+	_setSelected(_select("cstate"), $cstate);
+	_click(_button("Continue"));
+	if(_exists(_lastAlert())){
+		_assertExists(_lastAlert());
+	}
+	navigateToGroups();
+	_click(_image("movetomaintenance_enabled.gif", _near(_link($groupName))));
+	_wait(5000);
+	_click(_link("Click here to change Continuity State"));
+	var $currentState1 = _getText(_cell(1, _near(_cell("Current Group State:"))));
+	_assertExists($currentState1);
+	_click(_button("/Cancel/"));
+}
+
+/**
+* Function is for SO/SB execution status verification from Tests List View .
+*@param : $groupName
+*@return : null
+*@Author: Anita
+*
+*/
+
+function SO_Execution_Status_MSSQL_PFR_SO($groupName) {
+	SO_steps($groupName);
+	Waitfor_TestWF_Completion_MSSQL_PFR($groupName, "Switchover");
+
+} // end of SO_Execution_Status()
+
+function SB_Execution_Status_MSSQL_PFR_SB($groupName) {
+	Waitfor_TestWF_Completion_MSSQL_PFR($groupName, "Switchback");
+}// End of SB_Execution_Status
+
+/**
+* Function is to verify test workflow execution status verification from Tests List View .
+*@param : $groupName, $WFName
+*@return : null
+*@Author: Swati Choudhary
+*@Modified By:Anita
+*
+*/
+function Waitfor_TestWF_Completion_MSSQL_PFR($groupName, $WFName) {
+	var $i = 0;
+	// Looping till SO execution Complete
+	while ($i < 20){
+		_log($i);
+		_wait(20000);
+		navigateDrillListing($groupName);
+		// updated --anita
+	  	if(_exists(_link("/.*/", _rightOf(_div("/" + $WFName +  "/")), _under(_div("Execution Status"))))){ 
+			var $testStatus = _getText(_link("/.*/", _rightOf(_div("/" + $WFName +  "/")), _under(_div("Execution Status"))));
+			_log($testStatus);
+			_assertExists("Test Status :", $testStatus);	
+		} 	
+	  	else {
+			var $testStatus = _getText(_span("/.*/", _rightOf(_div("/" + $WFName +  "/")), _under(_div("Execution Status")))); 			
+			_assertExists("Test Status :", $testStatus);
+		}
+		
+		if ($testStatus == "FAILED") {
+			_wait(1000);
+			_fail($WFName, "workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+		} 
+		else if ($testStatus == "AWAITING INPUT") {
+			_click(_link(1, _near(_link($WFName))));
+			_click(_button("Awaiting Input"));
+
+			if (_exists(_submit("OK=true userInputButton btn btn-primary btn-xs btn btn-info"))) {				
+				_click(_submit("OK=true userInputButton btn btn-primary btn-xs btn btn-info"));		
+				//_call(window.history.back());
+			} 
+			else if (_exists(_paragraph("PAN-TSQL-0083: Switchover failed for group "+$groupName))) {
+				_click(_submit("Retry=RETRY userInputButton btn btn-primary btn-xs btn btn-info"));
+				_wait(20000);
+				_click(_submit("Continue as success=CONTINUE_AS_SUCCESS userInputButton btn btn-primary btn-xs btn btn-info"));
+				//_call(window.history.back());
+				}
+			else if (_exists(_submit("Continue=true userInputButton btn btn-primary btn-xs btn btn-info")) && _exists(_submit("Retry=RETRY userInputButton btn btn-primary btn-xs btn btn-info"))){
+				_click(_submit("Retry=RETRY userInputButton btn btn-primary btn-xs btn btn-info"));		
+				//_call(window.history.back());
+			}
+			
+			else if (_exists(_submit("Retry=RETRY userInputButton btn btn-primary btn-xs btn btn-info"))) {
+			_click(_submit("Retry=RETRY userInputButton btn btn-primary btn-xs btn btn-info"));
+			//_call(window.history.back());
+			}
+			else if (_exists(_submit("Retry=RETRY userInputButton btn btn-primary btn-xs btn btn-info"))) {
+			_click(_submit("Retry=RETRY userInputButton btn btn-primary btn-xs btn btn-info"));
+			//_call(window.history.back());
+			}
+					
+			else if (_exists(_submit("Continue=true userInputButton btn btn-primary btn-xs btn btn-info"))) {
+				_click(_submit("Continue=true userInputButton btn btn-primary btn-xs btn btn-info"));
+				}		
+		}  
+		else if ($testStatus == "SUCCESS"){
+			_assertExists($WFName, "workflow executed succesfully.");
+			break;	
+		}
+		$i++;
+	}//while loop end
+	navigateDrillListing($groupName);
+	if(_exists(_link("/.*/", _rightOf(_div("/" + $WFName +  "/")), _under(_div("Execution Status"))))){ 
+		var $testStatus = _getText(_link("/.*/", _rightOf(_div("/" + $WFName +  "/")), _under(_div("Execution Status"))));
+		_log($testStatus);
+		if ($testStatus == "AWAITING INPUT") {
+			_click(_link(1, _near(_link($WFName))));
+			_click(_button("Awaiting Input"));
+			_focusWindow();
+			_takeScreenShot(); 
+		}
+		_assertExists("Test Status :", $testStatus);	
+	} else {
+		var $testStatus = _getText(_span("/.*/", _rightOf(_div("/" + $WFName +  "/")), _under(_div("Execution Status")))); 			
+		_assertExists("Test Status :", $testStatus);
+	}            
+	_assertExists("Test Status :", $testStatus);
+	if ($testStatus == "AWAITING INPUT") {
+		_fail("Failed because of waiting for user input");
+	}	else if ($testStatus == "SUCCESS") {
+		_assertExists($WFName, "workflow executed succesfully.");		
+	}else if ($testStatus == "EXECUTING") {
+		_assertExists($WFName, "workflow executed succesfully.");
+		_fail("Failed because of executing for long time");
+    }
+
+}

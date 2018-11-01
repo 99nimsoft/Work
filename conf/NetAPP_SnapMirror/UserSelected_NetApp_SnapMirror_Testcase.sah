@@ -1,0 +1,170 @@
+
+var $l_userInputsDataAPP_PFR = _readExcelFile($SAHI_HOME + "\\conf\\APP_PFR\\APP_PFR_Parameter.xls","User Seleeted Case");
+var $userDataLengthAPP_PFR  = $l_userInputsDataAPP_PFR.length-1;
+
+var $flag = 0;
+for($i = 3 ; $i <= $userDataLengthAPP_PFR ; $i++){
+	if($l_userInputsDataAPP_PFR[$i][4] == "Y"){	
+		$flag=$flag+1;	
+	}
+}
+
+//-----------Execution of Individual Testcase------------------------------
+
+var $g_siteNetApp_SnapMirror = $l_userInputsDataAPP_PFR[17][4];
+var g_agentNodeNetApp_SnapMirror = $l_userInputsDataAPP_PFR[18][4];
+var $g_componentRemoteDiscoveryNetApp_SnapMirror = $l_userInputsDataAPP_PFR[19][4];
+var $g_componentLocalDiscoveryAPP_PFR= $l_userInputsDataAPP_PFR[20][4];
+var $g_datasetDiscoveryNetApp_SnapMirror = $l_userInputsDataAPP_PFR[21][4];;
+var $g_datasetAutoDiscoveryNetApp_SnapMirror = $l_userInputsDataAPP_PFR[22][4];
+var $g_protectionSchemeDiscoveryNetApp_SnapMirror = $l_userInputsDataAPP_PFR[23][4];;
+var $g_protectionSchemeDetailsNetApp_SnapMirror = $l_userInputsDataAPP_PFR[24][4];
+var $g_groupCreationNetApp_SnapMirror = $l_userInputsDataAPP_PFR[25][4];
+var $g_moveGroupToManageNetApp_SnapMirror = $l_userInputsDataAPP_PFR[26][4];
+
+var $g_changeContinuityStateNetApp_SnapMirror = $l_userInputsDataAPP_PFR[27][4];
+var $g_postGroupCreationNetApp_SnapMirror = $l_userInputsDataAPP_PFR[28][4];
+var $g_componentStatusNetApp_SnapMirror = $l_userInputsDataAPP_PFR[29][4];
+var $g_datasetStatusNetApp_SnapMirror = $l_userInputsDataAPP_PFR[30][4];
+var $g_protectionSchemeStatusNetApp_SnapMirror = $l_userInputsDataAPP_PFR[31][4];
+
+var $g_continuityManagenentNetApp_SnapMirror = $l_userInputsDataAPP_PFR[32][4];
+var $g_importNCNetApp_SnapMirror = $l_userInputsDataAPP_PFR[33][4];
+var $g_importFONetApp_SnapMirror = $l_userInputsDataAPP_PFR[34][4];
+var $g_startNCNetApp_SnapMirror = $l_userInputsDataAPP_PFR[35][4];
+var $g_monitorRelationshipNetApp_SnapMirror = $l_userInputsDataAPP_PFR[36][4];
+
+var $g_manageDRSolutionNetApp_SnapMirror = $l_userInputsDataAPP_PFR[37][4];
+var $g_groupInformationNetApp_SnapMirror = $l_userInputsDataAPP_PFR[38][4];;
+var $g_groupSnapshotNetApp_SnapMirror = $l_userInputsDataAPP_PFR[39][4];;
+var $g_replicationNCNetApp_SnapMirror = $l_userInputsDataAPP_PFR[40][4];
+var $g_rpoNCNetApp_SnapMirror = $l_userInputsDataAPP_PFR[41][4];
+var $g_rtoNCNetApp_SnapMirror = $l_userInputsDataAPP_PFR[42][4];
+var $g_importSOSBNetApp_SnapMirror = $l_userInputsDataAPP_PFR[43][4];
+var $g_stopNCNetApp_SnapMirror = $l_userInputsDataAPP_PFR[44][4];
+var $g_startSONetApp_SnapMirror = $l_userInputsDataAPP_PFR[45][4];
+var $g_SOExecutionNetApp_SnapMirror = $l_userInputsDataAPP_PFR[46][4];
+
+var $g_replicationSONetApp_SnapMirror = $l_userInputsDataAPP_PFR[47][4];
+var $g_importRNCNetApp_SnapMirror = $l_userInputsDataAPP_PFR[48][4];
+var $g_startRNCNetApp_SnapMirror = $l_userInputsDataAPP_PFR[49][4];
+var $g_groupInformaitionRNCNetApp_SnapMirror = $l_userInputsDataAPP_PFR[50][4];
+var $g_groupSnapshotNetApp_SnapMirror= $l_userInputsDataAPP_PFR[51][4];
+var $g_rpoRNCAPP_PFR = $l_userInputsDataAPP_PFR[52][4];
+var $g_replicationRNCNetApp_SnapMirror = $l_userInputsDataAPP_PFR[53][4];
+var $g_stopRNCNetApp_SnapMirror = $l_userInputsDataAPP_PFR[54][4];
+var $g_startSBNetApp_SnapMirror = $l_userInputsDataAPP_PFR[55][4];
+var $g_SBExecutionNetApp_SnapMirror = $l_userInputsDataAPP_PFR[56][4];
+
+var $g_monitorManageSBNetApp_SnapMirror = $l_userInputsDataAPP_PFR[57][4];
+var $g_remoteStopNetApp_SnapMirrorAgent = $l_userInputsDataAPP_PFR[58][4];
+var $g_remoteStartNetApp_SnapMirrorAgent = $l_userInputsDataAPP_PFR[59][4];
+var $g_localStopNetApp_SnapMirrorAgent = $l_userInputsDataAPP_PFR[60][4];
+var $g_localStartNetApp_SnapMirrorAgent = $l_userInputsDataAPP_PFR[61][4];
+var $g_replicaionStopNetApp_SnapMirror = $l_userInputsDataAPP_PFR[62][4];
+var $g_replicaionStartNetApp_SnapMirror = $l_userInputsDataAPP_PFR[63][4];
+var $g_startFONetApp_SnapMirror = $l_userInputsDataAPP_PFR[64][4];
+var $g_FOExecutionNetApp_SnapMirror = $l_userInputsDataAPP_PFR[65][4];
+var $g_continuityStatusFONetApp_SnapMirror = $l_userInputsDataAPP_PFR[66][4];
+
+var $g_rpoFONetApp_SnapMirror = $l_userInputsDataAPP_PFR[67][4];
+var $g_monitorManageFONetApp_SnapMirror = $l_userInputsDataAPP_PFR[68][4];
+
+//---------------For Executing All the Testcases------------------------
+var $g_executeNetApp_SnapMirrorAll = $l_userInputsDataAPP_PFR[4][4];
+var $g_groupCreationNetApp_SnapMirror = $l_userInputsDataAPP_PFR[8][4];
+var $g_postGroupCreationNetApp_SnapMirror = $l_userInputsDataAPP_PFR[9][4];
+var $g_executeNCNetApp_SnapMirror = $l_userInputsDataAPP_PFR[10][4];
+var $g_executeSOSBNetApp_SnapMirror = $l_userInputsDataAPP_PFR[11][4];
+var $g_eventExecutionNetApp_SnapMirror = $l_userInputsDataAPP_PFR[12][4];
+var $g_executeFONetApp_SnapMirrro = $l_userInputsDataAPP_PFR[13][4];
+
+//--------------For Group Creation--------------------------------------
+
+if ($g_groupCreationNetApp_SnapMirror == "Y"){
+
+var $g_siteNetApp_SnapMirror = "Y";
+var $g_agentNodeNetApp_SnapMirror = "Y";
+	if($agentType == "Remote"){
+		var $g_componentRemoteDiscoveryNetApp_SnapMirror = "Y";
+	}else{
+		var $g_componentLocalDiscoveryNetApp_SnapMirror= "Y";
+	}
+var $g_datasetDiscoveryNetApp_SnapMirror = "Y";
+var $g_datasetAutoDiscoveryNetApp_SnapMirror = "Y";
+var $g_protectionSchemeDiscoveryNetApp_SnapMirror = "Y";
+var $g_protectionSchemeDetailsNetApp_SnapMirror = "Y";
+var $g_groupCreationNetApp_SnapMirror = "Y";
+var $g_moveGroupToManageNetApp_SnapMirror = "Y";
+var $g_changeContinuityStateNetApp_SnapMirror = "Y";
+}
+//-------------Post Group Creation-------------------------------------------------
+
+if ($g_postGroupCreationNetApp_SnapMirror == "Y"){
+var $g_postGroupCreationNetApp_SnapMirror = "Y";
+var $g_componentStatuNetApp_SnapMirror = "Y";
+var $g_datasetStatusNetApp_SnapMirror = "Y";
+var $g_protectionSchemeStatusNetApp_SnapMirror = "Y";
+var $g_continuityStatusNetApp_SnapMirror ="Y";
+var $g_continuityManagenentNetApp_SnapMirror = "Y";
+}
+//-----------Start NC ,Import FO WorkFlow and Verify Screens During NC---------------
+
+if ($g_executeNCNetApp_SnapMirror == "Y"){
+var $g_importNCNetApp_SnapMirror = "Y";
+var $g_importFONetApp_SnapMirror = "Y";
+var $g_startNCNetApp_SnapMirror = "Y";
+var $g_monitorRelationshipNetApp_SnapMirror = "Y";
+var $g_manageDRSolutionNetApp_SnapMirror = "Y";
+var $g_groupInformationNetApp_SnapMirror = "Y";
+var $g_groupSnapshotNetApp_SnapMirror = "Y";
+var $g_replicationNCNetApp_SnapMirror = "Y";
+var $g_rpoNCNetApp_SnapMirror = "Y";
+var $g_rtoNCNetApp_SnapMirror = "Y";
+var $g_executeFONetApp_SnapMirror = "Y"
+}
+//------------Import SO and SB Workflow,stop NC and start SO,RNC and SB------------------------
+
+if ($g_executeSOSBNetApp_SnapMirror == "Y"){
+var $g_importSOSBNetApp_SnapMirror = "Y";
+var $g_stopNCNetApp_SnapMirror = "Y";
+var $g_startSONetApp_SnapMirror = "Y";
+var $g_SOExecutionNetApp_SnapMirror = "Y";
+var $g_replicationSONetApp_SnapMirror = "Y";
+var $g_importRNCNetApp_SnapMirror = "Y";
+var $g_startRNCNetApp_SnapMirror = "Y";
+var $g_groupInformaitionRNCNetApp_SnapMirror = "Y";
+var $g_groupSnapshotNetApp_SnapMirror = "Y";
+var $g_rpoRNCNetApp_SnapMirror = "Y";
+var $g_replicationRNCNetApp_SnapMirror = "Y";
+var $g_stopRNCNetApp_SnapMirror = "Y";
+var $g_startSBNetApp_SnapMirror = "Y";
+var $g_SBExecutionNetApp_SnapMirror = "Y";
+var $g_monitorManageSBNetApp_SnapMirror = "Y";
+}
+//------------Event for Agent and Replication start and Stop-------------------------
+if ($g_eventExecutionNetApp_SnapMirror == "Y"){	
+	if($agentType == "Remote"){
+var $g_remoteStopNetApp_SnapMirrorAgent = "Y";
+var $g_remoteStartNetApp_SnapMirrorAgent = "Y";
+	}else {
+var $g_localStopNetApp_SnapMirrorAgent = "Y";
+var $g_localStartNetApp_SnapMirrorAgent = "Y";
+	}
+var $g_replicaionStopNetApp_SnapMirror = "Y";
+var $g_replicaionStartNetApp_SnapMirror = "Y";
+}
+//--------------FO Execution-----------------------------------------------
+if($g_executeFONetApp_SnapMirror == "Y"){
+var $g_startFONetApp_SnapMirror = "Y";
+var $g_FOExecutionNetApp_SnapMirror = "Y";
+var $g_continuityStatusFONetApp_SnapMirror = "Y";
+var $g_rpoFONetApp_SnapMirror = "Y";
+var $g_monitorManageFONetApp_SnapMirror = "Y";
+}
+
+
+
+if($flag == 0){
+	$g_executeNetApp_SnapMirrorAll = "Y";
+}

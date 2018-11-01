@@ -1,0 +1,343 @@
+
+function Oracle_FG_SRDF_Group_Creation(){
+	Oracle_FG_SRDF_Group_Creation_Status($groupName, $groupDescription, $SolutionSignature, $primaryComponents,$compNameSrdfPR, $remoteComponents, $compNameSrdfDR,$primaryDatasets, $remoteDatasets, $primaryProtections, $remoteProtections,$devicePath_RDF1_ctrl,$devicePath_RDF1_data,$devicePath_RDF1_redo,$mountPoint_RDF1_ctrl,$mountPoint_RDF1_data,$mountPoint_RDF1_redo,$devicePath_RDF2_ctrl,$devicePath_RDF2_data,$devicePath_RDF2_redo,$mountPoint_RDF2_ctrl,$mountPoint_RDF2_data,$mountPoint_RDF2_redo,$devicePath_BCV_ctrl,$devicePath_BCV_data,$devicePath_BCV_redo,$mountPoint_BCV_ctrl,$mountPoint_BCV_data,$mountPoint_BCV_redo);
+}
+
+function Oracle_FG_SRDF_Group_Creation_Status($groupName, $groupDescription, $SolutionSignature, $primaryComponents,$compNameSrdfPR, $remoteComponents, $compNameSrdfDR,$primaryDatasets, $remoteDatasets, $primaryProtections, $remoteProtections,$devicePath_RDF1_ctrl,$devicePath_RDF1_data,$devicePath_RDF1_redo,$mountPoint_RDF1_ctrl,$mountPoint_RDF1_data,$mountPoint_RDF1_redo,$devicePath_RDF2_ctrl,$devicePath_RDF2_data,$devicePath_RDF2_redo,$mountPoint_RDF2_ctrl,$mountPoint_RDF2_data,$mountPoint_RDF2_redo,$devicePath_BCV_ctrl,$devicePath_BCV_data,$devicePath_BCV_redo,$mountPoint_BCV_ctrl,$mountPoint_BCV_data,$mountPoint_BCV_redo)
+{
+	navigateToDiscovery();
+	_click(_link("Groups"));
+	var $flag;
+	if (_exists(_link($groupName))) {
+		$flag = 0;
+	} else {
+		$flag = 1;
+		_setSelected(_select("createGroup"),"Functional Group");
+		_wait(1000);
+		_click(_button("/Go/"));
+		_setValue(_textbox("groupName"), $groupName);
+		_setValue(_textarea("groupDescription"), $groupDescription);
+		_setSelected(_select("solutionType"), $SolutionSignature);
+		_click(_button("/Next/"));
+		_wait(10000);
+		_click(_link("Server Component"));
+		_click(_checkbox($primaryComponents, _near(_cell($primaryComponents, _under(_tableHeader("PrimaryComponent"))))));
+		_click(_checkbox($compNameSrdfPR, _near(_cell($compNameSrdfPR, _under(_tableHeader("PrimaryComponent"))))));
+		_click(_checkbox($remoteComponents, _near(_cell($remoteComponents, _under(_tableHeader("RemoteComponent"))))));
+		_click(_checkbox($compNameSrdfDR, _near(_cell($compNameSrdfDR, _under(_tableHeader("RemoteComponent"))))));
+		_click(_submit("Save"));
+		_wait(2000);
+		_click(_link("Application Dataset"));
+		_click(_checkbox("showAll"));
+		_setSelected(_select("primaryDatasets[1]"), $primaryDatasets);
+		_setSelected(_select("remoteDatasets[1]"), $remoteDatasets);
+		_click(_submit("/Save/"));
+		_click(_link("Data Protection"));
+		_setSelected(_select("primaryProtections"), $primaryProtections);
+		_setSelected(_select("remoteProtections"), $remoteProtections);
+		_click(_button("/Save/"));
+		_click(_button("/Next/"));
+		_wait(1000);
+		_click(_link("2.Choose the PIT/snapshot copies to be used with this group"));
+		_click(_checkbox("drServiceIdList"));
+		_click(_button("Save"));
+		_wait(2000);
+		_click(_span(".For device groups discovered on the primary, map mount points to device path"));
+		_setValue(_textbox(0), $devicePath_RDF1_ctrl);
+		_setValue(_textbox(2), $devicePath_RDF1_data);
+		_setValue(_textbox(4), $devicePath_RDF1_redo);
+		_setValue(_textbox(1), $mountPoint_RDF1_ctrl);
+		_setValue(_textbox(3), $mountPoint_RDF1_data);
+		_setValue(_textbox(5), $mountPoint_RDF1_redo);
+		_click(_button("Save[1]"));
+		_wait(2000);
+		_click(_span(".For device groups discovered on the DR, map mount points to device path"));
+		_setValue(_textbox(6), $devicePath_RDF2_ctrl);
+		_setValue(_textbox(8), $devicePath_RDF2_data);
+		_setValue(_textbox(10), $devicePath_RDF2_redo);
+		_setValue(_textbox(7), $mountPoint_RDF2_ctrl);
+		_setValue(_textbox(9), $mountPoint_RDF2_data);
+		_setValue(_textbox(11), $mountPoint_RDF2_redo);
+
+		_setValue(_textbox(12), $devicePath_BCV_ctrl);
+		_setValue(_textbox(14), $devicePath_BCV_data);
+		_setValue(_textbox(16), $devicePath_BCV_redo);
+		_setValue(_textbox(13), $mountPoint_BCV_ctrl);
+		_setValue(_textbox(15), $mountPoint_BCV_data);
+		_setValue(_textbox(17), $mountPoint_BCV_redo);
+		
+		_click(_button("Save[2]"));
+		_wait(2000);
+		_click(_link("5.Choose device group to be used for RPO calculation"));
+		_click(_radio("drRpoCalculatedGroup[1]"));
+		_click(_button("Save[3]"));
+		_wait(2000);
+		_click(_link("6.Choose device group to be used when Failover (to DR) workflow is invoked"));
+		_click(_radio("drFailoverGroup[1]"));
+		_click(_button("Save[4]"));
+		_wait(2000);
+		_click(_button("Finish"));
+		
+		_click(_link("License"));
+		_click(_checkbox("Recovery"));
+		_click(_checkbox("Test"));
+		_wait(1000);
+		_click(_button("licensebutton"));
+		_wait(5000);
+		navigateToDiscovery();
+		_click(_link("Groups"));
+		if (_exists(_link($groupName))) {
+			_assertExists("Group created succesfully");
+		} else {
+			_fail("Group not created succesfully.So that stopping execution.");
+		}
+	}
+
+}// End Of Oracle__FG_DG_Group_Creation
+/*
+function test()
+{
+	var $sshCommand = "symrdf -g AutoOraFDB query";
+	$status = Execute_Ssh_Command($compIPSrdfPR, $remoteUserNameValSrdfPR, $remotePwdValSrdfPR, $sshCommand);
+	var $action = $status.get("output");
+	var $actionStatus = $action.toString();
+_log($actionStatus);
+}
+*/
+
+/**
+* Function is for Monitor Relationship Screen.
+*@param :  $groupName.
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+
+function OracleSRDF_Monitor_Relationship($groupName){
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("Relationship"));
+	_click(_link("Expand All"));
+
+	// Validation of Solution Signature
+	var $drSolutionSignature = _getText(_cell(1, _near(_cell("DR Solution Signature[1]"))));
+	_assertEqual($SolutionSignature, $drSolutionSignature, "Checking DR Solution Signature from the user input and GUI showing for group");
+
+	// Validation of Replication Details for PR
+	var $primaryService = _getText(_link(0, _near(_strong("Primary Service"))));
+	_assertEqual($sernamePR, $primaryService, "Checking Protection Scheme name from user input and GUI showing for PR");
+
+	// Splitting the strings to get the replication type for PR
+	var $replicationTypePR = _getText(_cell(0, _near(_strong("Primary Service"))));
+	var $replicationPR = $replicationTypePR.split(":");
+	var $replication_PR = $replicationPR[1].split("[");
+	var $primaryServiceType = $replication_PR[1].split("]");
+	_assertEqual($systemTypeProtection, $primaryServiceType[0], "Checking System type Protection from user input and GUI showing for PR");
+
+	var $primaryServiceStatus = _getText(_cell(0, _near(_strong("Primary Service Status"))));
+	_assertExists("Primary Service Status:", $remoteServiceStatus);
+
+	// Validation of Replication Details for DR
+	var $remoteService = _getText(_link(0, _near(_strong("Remote Service"))));
+	_assertEqual($sernameDR, $remoteService, "Checking Protection Scheme from user input and GUI for DR");
+
+	// Splitting the strings to get the replication type for DR
+	var $replicationTypeDR = _getText(_cell(0, _near(_strong("Primary Service"))));
+	var $replicationDR = $replicationTypeDR.split(":");
+	var $replication_DR = $replicationDR[1].split("[");
+	var $remoteServiceType = $replication_DR[1].split("]");
+	_assertEqual($systemTypeProtection, $remoteServiceType[0], "Checking System type Protection from user input and GUI showing for DR");
+
+	var $remoteServiceStatus = _getText(_cell(0, _near(_strong("Remote Service Status"))));
+	_assertExists("Remote Service Status:", $remoteServiceStatus);
+
+	// Validation of Data set for PR
+	var $primaryDataset = _getText(_link(1, _near(_strong("Primary Dataset"))));
+	_assertExists("Primary Dataset:", $primaryDataset);
+	_assertEqual($datasetNamePR, $primaryDataset, "Checking Dataset from user input and GUI for PR");
+
+	// Splitting the strings to get the Data set type for PR
+	var $datasetPR = _getText(_cell(0, _near(_strong("Primary Dataset"))));
+	var $datasetTypePR = $datasetPR.split(":");
+	var $prDataset = $datasetTypePR[1].split("[");
+	var $prDatasetType = $prDataset[1].split("]");
+	_assertEqual($datasetType, $prDatasetType[0], "Checking Dataset Type from user input and GUI for PR");
+
+	var $primaryDataset = _getText(_cell(0, _near(_strong("Primary Dataset Status"))));
+	var $primaryDatasetPR = $primaryDataset.split(":");
+	_assertExists("Primary Dataset Status:", $primaryDatasetPR[2]);
+
+	// Validation of Data set for DR
+	var $remoteDataset = _getText(_link(0, _near(_strong("Remote Dataset"))));
+	_assertEqual($datasetNameDR, $remoteDataset, "Checking Dataset from user input and GUI for DR");
+
+	// Splitting the strings to get the Data set type for DR
+	var $datasetDR = _getText(_cell(0, _near(_strong("Remote Dataset"))));
+	var $datasetType_DR = $datasetDR.split(":");
+	var $drDataset = $datasetType_DR[1].split("[");
+	var $drDatasetType = $drDataset[1].split("]");
+	_assertEqual($datasetType, $drDatasetType[0], "Checking Dataset Type from user input and GUI for DR");
+
+	var $remoteDataset = _getText(_cell(0, _near(_strong("Remote Dataset Status"))));
+	var $remoteDataset_DR = $remoteDataset.split(":");
+	_assertExists("Remote Dataset Status:", $remoteDataset_DR[2]);
+
+	
+	
+	
+	// Validation of Component for PR
+	var $primaryComponent = _getText(_link(0, _near(_strong("Primary Component 1"))));
+	_assertEqual($compNamePR, $primaryComponent, "Checking Component from user input and GUI for PR");
+
+	// Splitting the strings to get the Component type for PR
+	var $componentPR = _getText(_cell(0, _near(_strong("Primary Component 1"))));
+	var $systemTypePR = $componentPR.split(":");
+	var $prComponent = $systemTypePR[1].split("[");
+	var $prSystemType = $prComponent[1].split("]");
+	_assertEqual($systemType, $prSystemType[0], "Checking System type component from user input and GUI for PR");
+
+	var $prComponent1 = _getText(_cell(0, _near(_strong("Primary Component 1 Status"))));
+	var $prComponent = $prComponent1.split(":");
+	_assertExists("Primary Component Status", $prComponent[1]);
+	
+	
+	//PR for SRDF
+	var $primaryComponent2 = _getText(_link(0, _near(_strong("Primary Component 2"))));
+	_assertEqual($compNameSrdfPR, $primaryComponent2, "Checking Component from user input and GUI for PR");
+
+	// Splitting the strings to get the Component type for PR
+	var $componentPR2 = _getText(_cell(0, _near(_strong("Primary Component 2"))));
+	var $systemTypePR2 = $componentPR2.split(":");
+	var $prComponent2 = $systemTypePR2[1].split("[");
+	var $prSystemType2 = $prComponent2[1].split("]");
+	_assertEqual($systemType, $prSystemType2[0], "Checking System type component from user input and GUI for PR");
+
+	var $prComponentSRDF1 = _getText(_cell(0, _near(_strong("Primary Component 2 Status"))));
+	var $prComponentSRDF2 = $prComponentSRDF1.split(":");
+	_assertExists("Primary Component Status", $prComponentSRDF2[1]);
+
+	// Validation of Component for DR
+	var $remoteComponent = _getText(_link(0, _near(_strong("Remote Component 1"))));
+	_assertEqual($compNameDR, $remoteComponent, "Checking Component from user input and GUI for DR");
+
+	// Splitting the strings to get the Component type for DR
+	var $componentDR = _getText(_cell(0, _near(_strong("Remote Component 1"))));
+	var $systemTypeDR = $componentDR.split(":");
+	var $drComponent = $systemTypeDR[1].split("[");
+	var $drSystemType = $drComponent[1].split("]");
+	_assertEqual($systemType, $drSystemType[0], "Checking System type component from user input and GUI for DR");
+
+	var $remoteComponent = _getText(_cell(0, _near(_strong("Remote Component 1 Status"))));
+	var $remoteComponentDR = $remoteComponent.split(":");
+	_assertExists("Remote Component Status:", $remoteComponentDR[1]);
+	
+	
+	// Validation of Component for DR SRDF
+	var $remoteComponent2 = _getText(_link(0, _near(_strong("Remote Component 2"))));
+	_assertEqual($compNameSrdfDR, $remoteComponent2, "Checking Component from user input and GUI for DR");
+
+	// Splitting the strings to get the Component type for DR
+	var $componentDR2 = _getText(_cell(0, _near(_strong("Remote Component 2"))));
+	var $systemTypeDR2 = $componentDR2.split(":");
+	var $drComponent2 = $systemTypeDR2[1].split("[");
+	var $drSystemType2 = $drComponent2[1].split("]");
+	_assertEqual($systemType, $drSystemType2[0], "Checking System type component from user input and GUI for DR");
+
+	var $remoteComponent2 = _getText(_cell(0, _near(_strong("Remote Component 2 Status"))));
+	var $remoteComponentDR2 = $remoteComponent2.split(":");
+	_assertExists("Remote Component Status:", $remoteComponentDR2[1]);
+
+}
+
+
+
+/**
+* Function is for Verification of the all RPO detail from RPO/RTO screen for oracle SRDF solution Post SO
+*@param : null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+function OracleSRDF_Rpo_Post_SO() {
+	_assertExists(_cell("RPO Monitoring in Switchover Mode is not supported"));
+
+} // End of Oracle_Rpo_Post_SO()
+
+/**
+* Function is for Verification of the all RPO detail from RPO/RTO screen for oracle SRDF solution before SO
+*@param : null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+function OracleSRDF_Rpo() {
+	return OracleSRDF_RPO_Status($userPR, $pwdPR, $internalLogon, $oracleListenerIPPR, $dbSidSelect,$userDR, $pwdDR, $internalLogon, $oracleListenerIPDR, $dbSidSelect);
+
+}
+
+
+
+
+function OracleSRDF_RPO_Status($userPR, $pwdPR, $internalLogon, $oracleListenerIPPR, $dbSidSelect,$userDR, $pwdDR, $internalLogon, $oracleListenerIPDR, $dbSidSelect){
+	//PR values
+	var $transactionIDGuiPR=_getCellText(_cell(0,_rightOf(_cell("Current Transaction ID:",_under(_cell("Primary"))))));
+	_log($transactionIDGuiPR);
+	var $transTimeGuiPR=_getCellText(_cell(0,_rightOf(_cell("Current Transaction Time:",_under(_cell("Primary"))))));
+	_log($transTimeGuiPR);
+	
+	//DR values
+	var $transactionIDGuiDR=_getCellText(_cell(0,_rightOf(_cell("Current Transaction ID:",_under(_cell("Remote"))))));
+	_log($transactionIDGuiDR);
+	var $transTimeGuiDR=_getCellText(_cell(0,_rightOf(_cell("Current Transaction Time:",_under(_cell("Remote"))))));
+	_log($transTimeGuiDR);
+	
+	
+	var $props = Get_User_Properties_for_OracleDb_Connection($userPR, $pwdPR, $internalLogon);
+	var $conn = Get_Oracle_Db_Connection_URL($oracleListenerIPPR, $dbSidSelect);
+	var $db = _getDB("oracle.jdbc.driver.OracleDriver", $conn, $props);
+	var $tableCreationDBPR = $db.update("CREATE TABLE aditi (PersonID int,LastName varchar(255),FirstName varchar(255),Address varchar(255),City varchar(255))");
+	
+	
+}
+
+
+
+function OracleSRDF_RTO() {
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("RPO/RTO"));
+
+	// verification of current RTO :
+
+	var $stepName1 = parseInt(_getText(_cell(1, _near(_cell("Custom action for FailOver"), _under(_cell("Expected Completion Time (sec)"))))));
+	
+	var $expectedCompletionTime = Math.floor($stepName1);
+	_assertExists("Expected completion time", $expectedCompletionTime);
+
+	// Calling function Calculate_Rto from Group_manager.sah
+	var $dbRto = Calculate_Rto($expectedCompletionTime);
+	return $dbRto;
+
+} // End of OracleSRDF RTO
+
+
+function OracleSRDF_Replication(){
+	
+	var $sshCommand = "symrdf -g AutoOraFDB query";
+	$status = Execute_Ssh_Command($compIPSrdfPR, $remoteUserNameValSrdfPR, $remotePwdValSrdfPR, $sshCommand);
+	var $action = $status.get("output");
+	var $actionStatus = $action.toString();
+	var $deviceSplit = $actionStatus.split(",,");
+_log($deviceSplit[3]);
+
+	
+	
+	var $sshCommand = "symmir -g AutoOraFDB query";
+	$status = Execute_Ssh_Command($compIPSrdfDR, $remoteUserNameValSrdfDR, $remotePwdValSrdfDR, $sshCommand);
+	var $action = $status.get("output");
+	var $actionStatus = $action.toString();
+	var $deviceSplit1 = $actionStatus.split(",,");
+_log($deviceSplit1[3]);
+
+	
+}

@@ -1,0 +1,103 @@
+var  $l_Syslog = _readExcelFile($SAHI_HOME+"\\conf\\SYSTEM_CAPTURE_LOG\\SystemCaptureInput.xls","SysCapt");  //To read the inputs from the drm_inputs excel file.
+
+
+	//The below parameter is used for Linux OS
+	var $SerIP = $l_Syslog[3][3];
+	var $SerUserNm = $l_Syslog[4][3];
+	var $SerPassWord =$l_Syslog[5][3];
+	
+	var $supadmin=$l_Syslog[3][6];
+	var $admin=$l_Syslog[4][6];
+	var $operator=$l_Syslog[5][6];
+	var $notification=$l_Syslog[6][6];
+	var $password=$l_Syslog[7][6];
+	var $logspath=$l_Syslog[8][6];
+	var $errorvalue=$l_Syslog[9][6];
+	
+	var $username= $l_Syslog[8][3];
+	var $password= $l_Syslog[9][3];
+	
+	var $groupName = $l_Syslog[21][3]; // group details
+	var $compPR = $l_Syslog[12][6];
+	var $compDR = $l_Syslog[13][6];
+	
+	var $dataPR = $l_Syslog[14][6];
+	var $dataDR = $l_Syslog[15][6];
+	
+	var $protPR = $l_Syslog[16][6];
+	var $protDR = $l_Syslog[17][6];
+	
+	var $solSign = $l_Syslog[18][6];
+	
+	var $bcoNC=$l_Syslog[3][9];
+	var $descNC=$l_Syslog[3][11];
+	var $bcoNFC=$l_Syslog[4][9];
+	var $descNFC=$l_Syslog[4][11];
+	var $bcoFO=$l_Syslog[5][9];
+	var $descFO=$l_Syslog[5][11];
+	var $bcoFB=$l_Syslog[6][9];
+	var $descFB=$l_Syslog[6][11];
+	var $bcoFBRSync=$l_Syslog[7][9];
+	var $descFBRSync=$l_Syslog[7][11];
+	var $bcoRNC=$l_Syslog[8][9];
+	var $descRNC=$l_Syslog[8][11];
+	
+	var $TestNmSO=$l_Syslog[10][9];
+	var $TestDescSO=$l_Syslog[10][11];
+	var $TestExecSO=$l_Syslog[10][13];
+	
+	var $TestNmSB=$l_Syslog[11][9];
+	var $TestDescSB=$l_Syslog[11][11];
+	var $TestExecSB=$l_Syslog[11][13];
+	
+	var $TestNmFO=$l_Syslog[12][9];
+	var $TestDescFO=$l_Syslog[12][11];
+	var $TestExecFO=$l_Syslog[12][13];
+	 
+	var $TestNmRDCC=$l_Syslog[13][9];
+	var $TestDescRDCC=$l_Syslog[13][11];
+	var $TestExecRDCC=$l_Syslog[13][13];
+	
+	var $TestNmRDCC=$l_Syslog[13][9];
+	var $TestDescRDCC=$l_Syslog[13][11];
+	var $TestExecRDCC=$l_Syslog[13][13];
+	
+	var $TestNmStAppPr=$l_Syslog[14][9];
+	var $TestDescStAppPr=$l_Syslog[14][11];
+	var $TestExecStAppPr=$l_Syslog[14][13];
+	
+	var $TestNmStopAppPr=$l_Syslog[15][9];
+	var $TestDescStopAppPr=$l_Syslog[15][11];
+	var $TestExecStopAppPr=$l_Syslog[15][13];
+	
+	var $TestNmStAppDr=$l_Syslog[16][9];
+	var $TestDescStAppDr=$l_Syslog[16][11];
+	var $TestExecStAppDr=$l_Syslog[16][13];
+	
+	var $TestNmStopAppDr=$l_Syslog[17][9];
+	var $TestDescStopAppDr=$l_Syslog[17][11];
+	var $TestExecStopAppDr=$l_Syslog[17][13];
+	
+	var $TestNmStopAppDr=$l_Syslog[18][9];
+	var $TestDescStopAppDr=$l_Syslog[18][11];
+	var $TestExecStopAppDr=$l_Syslog[18][13];
+	
+	var $TestNmRlPr=$l_Syslog[19][9];
+	var $TestDescRlPr=$l_Syslog[19][11];
+	var $TestExecRlPr=$l_Syslog[19][13];
+	
+	var $TestNmRlDr=$l_Syslog[20][9];
+	var $TestDescRlDr=$l_Syslog[20][11];
+	//var $TestExecStopAppDr=$l_Syslog[20][13];
+	var $TestExecRlDr=$l_Syslog[20][13];
+	
+	var $TestNmIntChk=$l_Syslog[20][9];
+	var $TestDescIntChk=$l_Syslog[20][11];
+	var $TestExecIntChk=$l_Syslog[20][13];
+	
+	
+	
+	
+	
+	
+	

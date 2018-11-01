@@ -1,0 +1,31 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains Import EBS RAL
+ ** AuthorName : Govinda Mengji
+ ** Created Date : Oct 2013
+ ***********************************************************************************************/
+
+var $l_EBSRAL= _readExcelFile($SAHI_HOME + "\\conf\\AWS_RALS_conf\\VM_AWS_Parameter.xls","EBSRAL");
+
+var $username =$l_EBSRAL[3][2];
+var $password = $l_EBSRAL[4][2];
+
+
+
+// This user Input required to create the Component for Local or remote
+
+
+
+
+var  $mgmtServiceName=$l_EBSRAL[7][2];
+var $region= $l_EBSRAL[8][2];
+var  $availabilityZone = $l_EBSRAL[9][2];
+var  $replicationApplianceName =  $l_EBSRAL[10][2];
+var  $rawFilePath=  $l_EBSRAL[11][2];
+var  $fileFormat=  $l_EBSRAL[12][2];
+var  $volumesizeEBS =  $l_EBSRAL[13][2];
+var  $bucketName= $l_EBSRAL[14][2];
+var $groupName=  $l_EBSRAL[17][2];
+var $keyvalueEBS=$l_EBSRAL[18][2];
+

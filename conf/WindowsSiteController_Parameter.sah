@@ -1,0 +1,108 @@
+
+var $winSiteList = _readExcelFile("../conf/WindowsSiteControllerInputs.xls","WinSiteList");
+
+//////////////////////////////////////  Windows SiteControllerInputs ////////////////////////////////////////////////////
+
+//This user Input required to create the Site
+var $incharge = "drmadmin"; // Site Incharge
+var $addressPR = "Mumbai"; // PR site Address
+var $addressDR = "Bangalore";// DR site Address
+
+var $agentBuildPR=$winSiteList[2][2];
+var $localAgentPathPR = $winSiteList[3][2];
+var $compIPPR=$winSiteList[4][2];
+var $remoteUserNameValPR=$winSiteList[5][2];
+var $remotePwdValPR= $winSiteList[6][2];
+var $locationPR= $winSiteList[7][2]; //PR Site Location
+
+var $agentBuildDR=$winSiteList[2][4];
+var $localAgentPathDR = $winSiteList[3][4];
+var $compIPDR=$winSiteList[4][4];
+var $remoteUserNameValDR=$winSiteList[5][4];
+var $remotePwdValDR= $winSiteList[6][4];
+var $locationDR= $winSiteList[7][4]; // DR Site Location
+
+var $siteIPPR= $compIPPR;
+var $siteIPDR= $compIPDR;
+var $primaryPanacesServer = $drmServer; // this is Primary DRM server
+var $panacesAgentNodeAddressPR = $compIPPR;
+var $panacesAgentNodeAddressDR = $compIPDR;
+
+var $agentNodefilePath  = "/SanoviDRM/AgentNode/PanacesAgentNodeInstaller.properties";
+
+var $compNamePR = $winSiteList[8][2]; // PR Componenet Name
+var $compNameDR = $winSiteList[8][4];// DR Componenet Name
+var $portValue = $winSiteList[9][2]; //PortNo
+
+var $prIP = $winSiteList[11][1];
+var $drIP = $winSiteList[12][2];
+var $sytemType ="Windows";
+
+var $compsitePR = $locationPR;
+var $compsiteDR = $locationDR;
+
+var $securedTLSFlag = $winSiteList[2][6]; //yes or no
+
+
+//////////////////////////////////////Windows SiteControllerInstallation Details ////////////////////////////////////////////////////
+
+
+var $winSiteControllerInstall = _readExcelFile("../conf/WindowsSiteControllerInputs.xls","SiteControllerInstallDetails");
+
+////////  Data related to Uninstallation
+var $RemoteAgentPathPR     = $winSiteControllerInstall[1][7];
+var $RemoteAgentPathDR     = $winSiteControllerInstall[1][9];
+var $sfrInstallledPathPR   = $winSiteControllerInstall[2][7];
+var $sfrInstallledPathDR   = $winSiteControllerInstall[2][9];
+var $PfrServicePath = $sfrInstallledPathPR;
+var $PfrServicePath = $sfrInstallledPathDR;
+////////Data related to Installation
+var $agentBuildPathPR              = $winSiteControllerInstall[1][2];
+var $agentBuildPathDR              = $winSiteControllerInstall[1][4];
+var $agentInstallationPathPR       = $winSiteControllerInstall[2][2];
+var $agentInstallationPathDR       = $winSiteControllerInstall[2][4];
+var $compIPPR                      = $winSiteControllerInstall[3][2];
+var $compIPDR                      = $winSiteControllerInstall[3][4];
+var $remoteUserNameValPR           = $winSiteControllerInstall[4][2];
+var $remoteUserNameValDR           = $winSiteControllerInstall[4][4];
+var $remotePwdValPR                = $winSiteControllerInstall[5][2];
+var $remotePwdValDR                = $winSiteControllerInstall[5][4];
+var $siteControllerAgentNodeNamePR = $winSiteControllerInstall[6][2];
+var $siteControllerAgentNodeNameDR = $winSiteControllerInstall[6][4];
+var $powerShellExePath_PR          = $winSiteControllerInstall[7][2];
+var $powerShellExePath_DR          = $winSiteControllerInstall[7][4];
+var $buildInfo         			   = $winSiteControllerInstall[8][2];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

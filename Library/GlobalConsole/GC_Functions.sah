@@ -1,0 +1,1205 @@
+
+function Create_GCRemote_ComponentPR() {
+	$dependentComponentNamePR = Create_Remote_Component($systemType, $compNamePR, $compIPPR, $compsitePR, $remoteUserNameValPR, $remotePwdValPR);
+	//$compNamePR = $compName;	
+}
+
+
+function Create_GCRemote_ComponentDR() {
+	$dependentComponentNameDR = Create_Remote_Component($systemType, $compNameDR, $compIPDR, $compsiteDR, $remoteUserNameValDR, $remotePwdValDR);
+	//$compNameDR=$compName;
+}
+
+
+function GC_Component_Remote_Discovery() {
+	try {
+		Create_GCRemote_ComponentPR();
+		Create_GCRemote_ComponentDR();
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("Component creation got failed, kindly check the log for more details");
+		_log("component not created succesfully.So that stopping execution.","FAILURE");
+	}
+}
+
+
+function AG_GlobalConsole_Creation() {
+	try {
+		
+		_click(_link("Admin"));
+		_click(_link("Discover"));
+		_click(_link("Groups"));
+		_click(_button("Discover Application Group"));
+		_setSelected(_select("subscriberId"), "Default");
+		_click(_button("//Next »//"));
+
+		var $countGrps = _count("_option", "/.*/",_in(_select("unassignedFunctionalGroups")));
+
+		if($countGrps<1){
+			_log("No groups exist which are in managed state and which are not tagged to any AG, So cant create AG","CUSTOM4");
+		}
+		for(var $i=1;$i<=$countGrps;$i++){
+			
+			_click(_link("Admin"));
+			_click(_link("Discover"));
+			_click(_link("Groups"));
+			_click(_button("Discover Application Group"));
+			_setSelected(_select("subscriberId"), "Default");
+			_click(_button("/Next/"));
+			_setValue(_textbox("name"),"AG"+$i);
+			_setValue(_textarea("description"),$i+" AG On Server "+$drmServer);
+			_setSelected(_select("unassignedFunctionalGroups"), 0);
+			_click(_button("smlbtn"));
+			_click(_button("/Next/"));
+			_dragDrop(_xy(_listItem("/.*/", _under(_paragraph("/Move Funtional Groups/"))),10,20),_xy(_list("/box/"),10,10));
+			_click(_button("/Next/"));
+			_setValue(_textbox("configuredRTOValue"),300);
+			_setValue(_textbox("configuredRPOValue"),300);
+			_click(_button("/Finish/"));
+			
+			//Publish AG
+			_click(_span("img-wrench text-black settings ", _near(_link("AG"+$i))));
+			_click(_submit("Manage Group"));
+			_assertEqual("Group Mode Change OperationManage Groupsuccessfully performed on groupAG"+$i, _lastAlert());
+		}
+		
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("AG Creation Failed for Global Console","FAILURE");
+		//_fail("AG Creation Failed for Global Console");
+	}
+}
+
+function count_AG_RG() {
+	
+	var $countAG;
+	var $countRG;
+	
+	try {
+		navigateToGroups();
+		
+		$countAG=_getText(_span("/.*/", _in(_heading4("/Application Groups[0-9()]/")))).replace(/[()]/g,"");
+		$countRG=_getText(_span("/.*/", _in(_heading4("/Recovery Groups[0-9()]/")))).replace(/[()]/g,"");
+		
+		var $rowNumUsed = getExcelRows_CleanUp($SAHI_HOME +"conf/GlobalConsole/GlobalConsole.xls","RealTimeData","");
+		
+		setDataInExcelSheet($SAHI_HOME +"conf/GlobalConsole/GlobalConsole.xls","RealTimeData","ro",$drmServer,$rowNumUsed);
+		setDataInExcelSheet($SAHI_HOME +"conf/GlobalConsole/GlobalConsole.xls","RealTimeData","ag",$countAG,$rowNumUsed);
+		setDataInExcelSheet($SAHI_HOME +"conf/GlobalConsole/GlobalConsole.xls","RealTimeData","rg",$countRG,$rowNumUsed);
+		
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+	}
+}
+
+
+function setDataInExcelSheet($argExcelWorkBookPath,$argExcelSheetName,$argColumnName,$argData,$rowNum){
+	
+	switch($argColumnName) {
+	
+    case "ro":
+    	editExcelData($rowNum,1,$argData,$argExcelWorkBookPath,$argExcelSheetName);
+    break;
+    
+    case "ag":
+    	editExcelData($rowNum,2,$argData,$argExcelWorkBookPath,$argExcelSheetName);
+    break;
+    
+    case "rg":
+    	editExcelData($rowNum,3,$argData,$argExcelWorkBookPath,$argExcelSheetName);
+    break;    
+  }
+}
+
+function editExcelData($rowIndex,$columnIndex,$value,$filePath,$sheetName)
+{
+      //var $readExcel=_readExcelFile($filePath,$sheetName);
+      var $excel= _getExcel($filePath,$sheetName);
+      //var $noOfRows = $rowIndex.length;
+      $excel.set($rowIndex,$columnIndex, $value);
+      var $wb = $excel.getRawWorkbook();
+          var $sheet = $wb.getSheet($sheetName);
+          //var $cellStyle = $wb.createCellStyle();
+          //var $createHelper = $wb.getCreationHelper();
+          var $lastRowNum = $sheet.getLastRowNum();
+ 
+          if ($lastRowNum == 0 && $sheet.getRow(0) == null) {
+              $lastRowNum = 0;
+          }
+          //var $last= $rowIndex+$noOfRows;
+              var $cell = $sheet.getRow($rowIndex).getCell($columnIndex);  // get the contents of first columns at each row (here getcell(0) means get 1st column cell);
+              try{
+            	  var $data = java.lang.Integer.parseInt($cell.getStringCellValue());// converting the string value in to integer
+              }
+              catch ($e) {
+            	  var $data = $cell.getStringCellValue();
+              }
+              $cell.setCellValue($data); // set the integer value back to the cell.
+      
+          var $out;
+          try {
+              $out = new java.io.FileOutputStream(_resolvePath($filePath)); // here the variable name was different due to which Sahi was not able to write the integer values to xlsx.
+              $wb.write($out);
+          }
+          
+          catch ($e) {
+          } 
+          finally {
+              try {
+                  $out.close();
+              } catch ($e) {}
+          }
+}
+
+
+function getExcelRows_CleanUp($argExcelWorkBookPath,$argExcelSheetName,$argStartingRow){
+	var $excel= _getExcel($argExcelWorkBookPath,$argExcelSheetName);
+	var $data= $excel.getData();	
+	
+	if($argStartingRow !=""){
+		try{
+			for(var $i=$argStartingRow;$i<=$data.length;$i++){
+				$excel.deleteRows($i);
+			}
+		}
+		catch ($e) {
+			_log($e.toString(),"Custom1");
+		}
+	}
+	else{
+		return $data.length;
+	}
+}
+
+function configureROInstances($argExcelWorkBookPath,$argExcelSheetName){
+	
+	navigateToGlobalConsole();
+	
+	if($argExcelSheetName!="AdditionalROServers"){
+		//removing all instances of global console which are already added
+		while(_exists(_image("Delete"))==true){
+			_click(_image("Delete"));
+		}
+	}
+		
+	var $excel= _getExcel($argExcelWorkBookPath,$argExcelSheetName);
+	var $data= $excel.getData();
+
+	for(var $i=9;$i<$data.length;$i++){
+		try {
+			if ($data[$i][1] != $drmServer
+					&& _exists(_cell($data[$i][1], _under(_tableHeader(
+							"RO IP Address", _near(_image("Delete")))))) == false) {
+				_setValue(_textbox("ip_addr"), $data[$i][1]);
+				_click(_button("Add"));
+			}
+		} catch ($e) {
+			_log("Could not add RO:-"+$data[$i][1]);
+		}				
+	}
+
+//	_call(history.back());
+//	_call(history.forward());
+	_windowAction("refresh");
+	
+	for(var $j=9;$j<$data.length;$j++){
+		try {
+			if ($data[$j][1] != $drmServer) {
+				if (_exists(_cell($data[$j][1], _under(_tableHeader(
+						"RO IP Address", _near(_image("Delete")))))) == false) {
+					_log("Fail to add RO Server:-" + $data[$j][1],"FAILURE");
+				}
+			}
+		} catch ($e) {
+			_log("Could not verify added RO:-"+$data[$j][1]);
+		}		
+	}
+	
+	_set($tmp,_table(_byXPath("//table[@class='table globalConsoleTable']")).rows.length-1);
+	
+	_log("RO count present on Configuring RO instances page:-"+$tmp,"CUSTOM4");	
+	return $tmp;
+}
+
+function verifyManagementServerAvailability(){
+	
+	var $countActiveIP=0;
+	var $countInActiveIP=0;
+	
+	var $ManagementServerAvailability_Active = _getText(_span("/.*/", _in(_paragraph("/Management Server availability/")))).split("/")[0];
+	var $ManagementServerAvailability_Available = _getText(_span("/.*/", _in(_paragraph("/Management Server availability/")))).split("/")[1];
+
+	_click(_span("/.*/", _in(_paragraph("/Management Server availability/"))));
+
+	var $excel= _getExcel($SAHI_HOME +"conf/GlobalConsole/GlobalConsole.xls","Installation");
+	var $data= $excel.getData();
+	for(var $i=9;$i<$data.length;$i++){
+	try {
+		_log("Verifying IP:-"+$data[$i][1]+" ,in the Management Server availability popup","CUSTOM4");
+		if(_exists(_cell($data[$i][1], _under(_tableHeader("Management Server"))))==true){
+			_log("RO IP :-"+$data[$i][1]+" ,is present, now verifying weather its Active or not","CUSTOM4");
+			if(_exists(_image("yes.png", _rightOf(_cell($data[$i][1])))) == true){
+				_log("Verified RO IP :-"+$data[$i][1]+" ,is present and active in the popup box of ManagementServerAvailability","CUSTOM4");
+				$countActiveIP++;
+			}
+			else{
+				_log("RO IP :-"+$data[$i][1]+" ,is PRESENT BUT INACTIVE in the popup box of ManagementServerAvailability","FAILURE");
+				$countInActiveIP++;
+			}
+		}
+		else{
+			_log("IP:-"+$data[$i][1]+" , NOT PRESENT in the Management Server availability popup","FAILURE");
+		}	
+	} 
+	catch ($e) {
+		_log("Could not open and verify Management Server Availability popup","FAILURE");
+	}
+	}
+	
+	_click(_button("bx--modal-close"));
+	
+	_log("Verifying count inside popup and on the page are equal","CUSTOM4");
+
+	if($countActiveIP==$ManagementServerAvailability_Active){
+		_log("Count inside pop up and on page are same for active RO IPs","CUSTOM4");
+	}
+	else{
+		_log("Count inside pop up and page are different for active, on Page it is:-"+$ManagementServerAvailability_Active+" ,& count inside popup is"+$countActiveIP,"FAILURE");
+	}
+
+//	_log("Verifying count inside popup and on the page are equal for Active ROs","CUSTOM4");
+//
+//	if($countActiveIP==$ManagementServerAvailability_Active){
+//		_log("Count inside pop up and on page are same for active RO IPs","CUSTOM4");
+//	}
+//	else{
+//		_log("Count inside pop up and page are different for active, on Page it is:-"+$ManagementServerAvailability_Active+" ,& count inside popup is"+$countActiveIP,"FAILURE");
+//	}
+	_log("Verifying count inside popup and on the page are equal for InActive ROs","CUSTOM4");
+
+	if($countInActiveIP==($ManagementServerAvailability_Available - $ManagementServerAvailability_Active)){
+		_log("Count inside pop up and on page are same for InActive RO IPs","CUSTOM4");
+	}
+	else{
+		_log("Count inside pop up and page are different for InActive","FAILURE");
+	}
+	
+	//_getText(_byXPath("//table[@id='mgntServerAvailContentId']/tbody/tr[1]/td"))
+	//var $countRows = _table(_byXPath("//table[@id='mgntServerAvailContentId']")).rows.length;
+}
+
+function navigateToGCAndVerify(){
+	if(_exists(_image("IBM"))==true){
+		_click(_image("IBM"));
+	}	
+	_click(_div("/drManager/"));
+	_selectWindow($IBMResiliencyOrchestrationManagerDashboard);
+		verifyManagementServerAvailability();
+	_popup($IBMResiliencyOrchestrationManagerDashboard).close();
+	_selectWindow();
+	_click(_div("/opertator/"));
+	_selectWindow($IBMResiliencyOrchestrationOperationalDashboard);
+		verifyManagementServerAvailability();
+	_popup($IBMResiliencyOrchestrationOperationalDashboard).close();
+	_selectWindow();
+}
+
+function removeRO($argCountROToBeRemoved){
+	
+	_set($countAlreadyAddedRO,_table(_byXPath("//table[@class='table globalConsoleTable']")).rows.length-1);
+	_log("Count of ROs which are already present:-"+$countAlreadyAddedRO,"CUSTOM4");
+	_log("Count of ROs which needs to be removed:-"+$argCountROToBeRemoved,"CUSTOM4");
+	
+	if($argCountROToBeRemoved>$countAlreadyAddedRO){
+		_log("There are only "+$countAlreadyAddedRO+" ,cant remove "+$argCountROToBeRemoved+" ,give lesser than "+$countAlreadyAddedRO,"FAILURE");
+		return "no removal";
+	}
+	else{
+		for(var $i=1;$i<=$argCountROToBeRemoved;$i++){
+			var $tmp = _getText(_byXPath("//table[@class='table globalConsoleTable']/tbody/tr["+$i+"]/td[1]"));
+			_log("Deleting RO:-"+$tmp,"CUSTOM4");
+			_click(_byXPath("//table[@class='table globalConsoleTable']/tbody/tr["+$i+"]/td[2]"));
+			
+			_expectConfirm("Would you like to delete "+$tmp+" ?", true);
+			_click(_image("Delete["+($i-1)+"]"));
+			_assertEqual("Would you like to delete "+$tmp+" ?", _lastConfirm());
+			//_assertEqual("Deleted successfully", _lastAlert());
+			
+			_windowAction("refresh");
+
+			if(_exists(_cell($tmp))==true){
+				_log("Failed to delete RO with IP:-"+$tmp,"FAILURE");
+			}
+		}
+	}
+	
+	_set($countAlreadyAddedRO,_table(_byXPath("//table[@class='table globalConsoleTable']")).rows.length-1);
+	
+	_log("Number of ROs which are left"+$countAlreadyAddedRO,"CUSTOM4");	
+	for(var $i=1;$i<=$countAlreadyAddedRO;$i++){
+		_log("Remaining ROs which are still there:-"+_getText(_byXPath("//table[@class='table globalConsoleTable']/tbody/tr["+$i+"]/td[1]")),"CUSTOM4");		
+	}
+	return $countAlreadyAddedRO;
+}
+
+function getInGCTab($argDashboardName){
+
+	if(_exists(_image("IBM"))==true){
+		_click(_image("IBM"));
+	}
+	_click(_div($argDashboardName));
+	
+	if($argDashboardName=="/drManager/"){
+		_selectWindow($IBMResiliencyOrchestrationManagerDashboard);	
+	}
+	if($argDashboardName=="/opertator/"){
+		_selectWindow($IBMResiliencyOrchestrationOperationalDashboard);
+	}
+}
+
+function count_AG_RG_OnROServer($argROServer,$argSecuredURL,$argUrlPortNo) {
+	                                         
+	var $tmpDRMServer = $drmServer;
+	var $tmpsecuredUrl = $securedUrl;
+	var $tmpurlPortNo = $urlPortNo;
+
+	var $countAG=0;
+	var $countRG=0;
+
+	$drmServer= $argROServer;
+	$securedUrl=$argSecuredURL;
+	$urlPortNo=$argUrlPortNo;
+
+	Login_001();
+	
+	navigateToGroups();
+	
+	////************  It will fetch data only for managed AGs and RGs
+	//$countAG=_getText(_span("/.*/", _in(_heading4("/Application Groups[0-9()]/")))).replace(/[()]/g,"");
+	_click(_heading4(9));
+	$countAG=_count("_link",{class:"disabled text-black"},_in(_byXPath("//div[@id='applicationGroupList']")))/2;
+	//$countRG=_getText(_span("/.*/", _in(_heading4("/Recovery Groups[0-9()]/")))).replace(/[()]/g,"");
+	_click(_heading4(10));
+	$countRG=_count("_link",{class:"disabled text-black"},_in(_byXPath("//div[@id='recoveryGroupList']")))/2;
+	_log("AG count on RO Server "+$argROServer+" ,is "+$countAG,"CUSTOM4");
+	_log("RG count on RO Server "+$argROServer+" ,is "+$countRG,"CUSTOM4");
+	
+	$drmServer=$tmpDRMServer;
+	$securedUrl=$tmpsecuredUrl;
+	$urlPortNo=$tmpurlPortNo;
+	
+	Login_001();
+	
+	return $countAG+"-"+$countRG;
+}
+
+
+
+
+
+
+
+
+function navigateToGCTabs($argDRMServer,$argCases){
+	
+	switch($argCases) {
+		
+	    case "manager":
+	        _navigateTo('https://' + $argDRMServer + ':'+ $urlPortNo +'/PanacesGUI/static/cdsDashboard/managerDashboard.jsp');	
+	    break;
+	    
+	    case "operational":
+	    	_navigateTo('https://' + $argDRMServer + ':'+ $urlPortNo +'/PanacesGUI/static/cdsDashboard/operationalDashboard.jsp');
+	    break;
+	   
+	  }
+	
+}
+
+function removeROReturnItsAGCount($argROIP,$argSecuredURL,$argUrlPortNo){
+	
+	_log("------------------------------------------------------Navigate to Global Console on admin Page to remove RO","CUSTOM4");
+	navigateToGlobalConsole();
+	
+	_log("Deleting RO:-"+$argROIP,"CUSTOM4");
+	_click(_image("Delete", _rightOf(_cell($argROIP))));
+	_expectConfirm("Would you like to delete "+$argROIP+" ?", true);
+	_assertEqual("Would you like to delete "+$argROIP+" ?", _lastConfirm());
+	
+	_windowAction("refresh");
+
+	if(_exists(_cell($argROIP))==true){
+		_log("Failed to delete RO with IP:-"+$argROIP,"FAILURE");
+	}
+	$countAG = count_AG_RG_OnROServer($argROIP,$argSecuredURL,$argUrlPortNo).split("-")[0];
+	return $countAG;
+}
+
+
+
+function addROInstance($argROIP){
+	
+	navigateToGlobalConsole();
+	
+	if(_exists(_cell($argROIP, _under(_tableHeader("RO IP Address", _near(_image("Delete")))))) == false){
+		_setValue(_textbox("ip_addr"), $argROIP);
+		_click(_button("Add"));
+	}
+	
+	_windowAction("refresh");
+	
+	if (_exists(_cell($argROIP, _under(_tableHeader("RO IP Address", _near(_image("Delete")))))) == false) {
+		_log("Fail to add RO Server:-" + $argROIP,"FAILURE");
+	}
+	else{
+		_log("Added RO instance :-"+$argROIP,"CUSTOM4");
+	}
+}
+
+
+
+function totalAGCount_ConfiguredROs($argCountType,$argPathWorkBook,$argSheetName){
+	
+	var $totalAG=0;
+	var $totalRG=0;
+	
+	var $excel= _getExcel($argPathWorkBook,$argSheetName);
+	var $data= $excel.getData();
+	for(var $i=9;$i<$data.length;$i++){
+		try {
+			var $tmp = count_AG_RG_OnROServer($data[$i][1],$data[$i][4],$data[$i][5]);
+			$totalAG += parseInt($tmp.split("-")[0]);
+			$totalRG += parseInt($tmp.split("-")[1]);
+		}
+		catch ($e) {
+			_log("could not count total ag rg on configured ro server, exception"+$e,"FAILURE");
+		}
+	}
+	if($argCountType=="ag"){
+		_log("TOTAL AG COUNT FOR ALL RO SERVERS:-"+$totalAG,"CUSTOM4");
+		return $totalAG;
+	}
+	if($argCountType=="rg"){
+		_log("TOTAL RG COUNT FOR ALL RO SERVERS:-"+$totalRG,"CUSTOM4");
+		return $totalRG;
+	}
+}
+
+function removeAllROInstances(){
+	
+	navigateToGlobalConsole();
+	
+	_set($countAlreadyAddedRO,_table(_byXPath("//table[@class='table globalConsoleTable']")).rows.length-1);
+	_log("Count of ROs which are already present:-"+$countAlreadyAddedRO,"CUSTOM4");
+	
+	for(var $i=1;$i<=$countAlreadyAddedRO;$i++){
+		var $tmp = _getText(_byXPath("//table[@class='table globalConsoleTable']/tbody/tr[1]/td[1]"));
+		_log("Deleting RO:-"+$tmp,"CUSTOM4");
+		_click(_byXPath("//table[@class='table globalConsoleTable']/tbody/tr[1]/td[2]"));	
+		_expectConfirm("Would you like to delete "+$tmp+" ?", true);
+		_click(_image("Delete[0]"));
+		_assertEqual("Would you like to delete "+$tmp+" ?", _lastConfirm());	
+		
+		_windowAction("refresh");
+
+		if(_exists(_cell($tmp))==true){
+			_log("Failed to delete RO with IP:-"+$tmp,"FAILURE");
+		}
+	}
+}
+
+function deleteUserFromRO($argROIP,$argUserName){
+	
+	var $rndmStr=Math.random().toString(36).substr(7).replace(/[0-9]/g,'');
+	
+	createUserWithDifferentPriviledges("tmpGC"+$rndmStr,"SUPER ADMINISTRATOR","tmpGC"+$rndmStr);
+	_click(_link("/Admin/"));
+	_click(_link("/Go to Users/"));
+	if(_exists(_image("/ico_delete.gif/", _near(_link($argUserName))))==true){
+		_click(_image("/ico_delete.gif/", _near(_link($argUserName))));
+		_assertEqual("Are you sure you wish to delete this user "+$argUserName+" ?", _lastConfirm());
+	}
+		
+	if(_exists(_link($argUserName)) == true){
+		_log("Could not Delete User:-"+$argUserName,"FAILURE");
+	}
+	else{
+		_log("Successfully deleted user :-"+$argUserName+" ,from IP"+$argROIP,"CUSTOM4");
+	}
+	return "tmpGC"+$rndmStr;
+}
+
+function verifyActiveInActiveManagementServer($argROIP){
+	
+	var $tmp="";
+
+	try{
+		_click(_span("/.*/", _in(_paragraph("/Management Server availability/"))));
+
+		_log("Verifying IP:-"+$argROIP+" ,in the Management Server availability popup","CUSTOM");
+
+		if(_exists(_cell($argROIP, _under(_tableHeader("Management Server"))))==true){
+			_log("RO IP :-"+$argROIP+" ,is present, now verifying weather its Active or not","CUSTOM");
+
+			if(_exists(_image("yes.png", _rightOf(_cell($argROIP)))) == true){
+				_log("Verified RO IP :-"+$argROIP+" ,is present and active in the popup box of ManagementServerAvailability","CUSTOM4");
+				$tmp="active";
+			}
+			else{
+				_log("RO IP :-"+$argROIP+" ,is PRESENT BUT INACTIVE in the popup box of ManagementServerAvailability","CUSTOM4");
+				$tmp="inactive";
+			}
+		}
+		else{
+			_log("IP:-"+$argROIP+" , NOT PRESENT in the Management Server availability popup","FAILURE");
+			$tmp="not present";
+		}	
+	}
+	catch ($e) {
+		_log("Exception while checking under popup management server"+$e,"FAILURE");
+	}
+	finally{
+		_click(_button("bx--modal-close"));
+	}
+	
+	return $tmp;
+}
+
+function navigateToDashboardsReturnCount($argDashboardType){
+	
+	var $countAG=0;
+
+	if($argDashboardType=="manager"){
+		clickNavigateToGCTabs("manager");
+		$countAG=parseInt(_getText(_span("/.*/", _in(_paragraph("/bx--type-delta manager-db-heading/")))));
+		clickNavigateToGCTabs("close manager");
+	}
+	if($argDashboardType=="opertator"){
+		clickNavigateToGCTabs("opertator");
+		$countAG=parseInt(_getText(_span("/.*/", _in(_paragraph("/bx--type-delta manager-db-heading/")))));
+		clickNavigateToGCTabs("close opertator");
+	}
+	return $countAG;
+}
+
+
+function clickNavigateToGCTabs($argCases){
+	
+	if(_exists(_image("IBM"))==true){
+		_click(_image("IBM"));
+	}
+	
+	switch($argCases) {
+		
+	    case "manager":
+	    	_click(_div("Disaster Recovery") || _div("drManagerHtmlEnabled"));
+	    	_wait(3000);
+			if(_windowExists("IBM Resiliency Orchestration :: Login")==true){
+				_selectWindow("IBM Resiliency Orchestration :: Login");
+				_popup("IBM Resiliency Orchestration :: Login").close();
+				_selectWindow();
+				_click(_div("Disaster Recovery") || _div("drManagerHtmlEnabled"));
+			}
+			_selectWindow($IBMResiliencyOrchestrationManagerDashboard);
+	    break;
+	    
+	    case "opertator":
+	    	_click(_div("Operation") || _div("opertatorHtmlEnabled"));
+	    	_wait(3000);
+	    	if(_windowExists("IBM Resiliency Orchestration :: Login")==true){
+				_selectWindow("IBM Resiliency Orchestration :: Login");
+				_popup("IBM Resiliency Orchestration :: Login").close();
+				_selectWindow();
+				_click(_div("Operation") || _div("opertatorHtmlEnabled"));
+			}
+	    	
+			_selectWindow($IBMResiliencyOrchestrationOperationalDashboard);			
+	    break;
+
+	    case "close manager":
+	    	_selectWindow($IBMResiliencyOrchestrationManagerDashboard);
+			_popup($IBMResiliencyOrchestrationManagerDashboard).close();
+			_selectWindow();
+	    break;
+	    
+	    case "close opertator":
+	    	_selectWindow($IBMResiliencyOrchestrationOperationalDashboard);
+			_popup($IBMResiliencyOrchestrationOperationalDashboard).close();
+			_selectWindow();
+	    break;
+	  }
+	
+}
+
+
+
+
+function unAssignGroupFromUser($argROIP,$argUserName,$argUserPassword,$argSecuredUrl,$argUrlPortNo,$argGroupToRemove,$blnAssign){
+
+	var $countGroups=0;
+	
+	var $tmpDRMServer = $drmServer;
+	var $tmpsecuredUrl=$securedUrl;
+	var $tmpurlPortNo=$urlPortNo;
+	
+	$drmServer =$argROIP;
+	$securedUrl =$argSecuredUrl;
+	$urlPortNo = $argUrlPortNo;
+	
+	login($argUserName, $argUserPassword);
+
+	try{
+		_click(_link($Admin));
+		_click(_link($GotoUsers));
+		_click(_image("edit.png", _near(_link($argUserName))));
+		
+		if($blnAssign==false){
+			
+				 if($argGroupToRemove=="all"){
+					 $countGroups=selectValueFromSelectBox("assignedGroups","left");
+				 }
+				 else{
+					 if(_getOptions(_select("assignedGroups"),"value").indexOf($argGroupToRemove)<0){
+						 _log("Group to remove is not present in assigned box, so cant unassign group","FAILURE");
+					 }
+					 else{
+						 _setSelected(_select("assignedGroups"),$argGroupToRemove);
+						 _click(_byXPath("//nobr/input[1]"));
+							
+						 if(_getOptions(_select("remainingGroups"), "value").indexOf($argGroupToRemove)>=0){
+								_log("Successfully moved group to Available Group box to unassign group from user","CUSTOM4");
+						 } 
+					 }
+				 }
+		}
+		else{
+			if($argGroupToRemove=="all"){
+				 $countGroups=selectValueFromSelectBox("remainingGroups","right");
+			}	
+			 else{
+				 if(_getOptions(_select("remainingGroups"),"value").indexOf($argGroupToRemove)<0){
+					 _log("Group to assign is not present in Available Group box, so cant assign group","FAILURE");
+				 }
+				 else{
+					 _setSelected(_select("remainingGroups"),$argGroupToRemove);
+					 _click(_byXPath("//nobr/input[2]"));
+					
+					if(_getOptions(_select("assignedGroups"), "value").indexOf($argGroupToRemove)>=0){
+						_log("Successfully moved group to Selected Group box to assign group for user","CUSTOM4");
+					} 
+				 }
+				
+			 }
+		} 
+		 _click(_button("Save"));
+	}
+	catch ($e) {
+		_log("Exception occurred while performing the assignation:-"+$e,"FAILURE");
+	}
+	finally{
+		$drmServer=$tmpDRMServer;
+		$securedUrl=$tmpsecuredUrl;
+		$urlPortNo=$tmpurlPortNo;
+		
+		login($argUserName, $argUserPassword);
+	}    
+	return $countGroups;
+}
+
+
+function selectValueFromSelectBox($argLocator1,$argLocator2){
+	try{
+		var $tmpCount = _getOptions(_select($argLocator1),"value").length;
+		var $list = _getOptions(_select($argLocator1), "value");
+		
+		for(var $i=0;$i<$tmpCount;$i++){
+			_setSelected(_select($argLocator1),$list[$i]);
+			if($argLocator2=="left"){
+				_click(_byXPath("//nobr/input[1]"));
+			}
+			else{
+				_click(_byXPath("//nobr/input[2]"));
+			}
+		}
+		
+		var $tmpCount2 = _getOptions(_select($argLocator1),"value").length;
+		
+		if($tmpCount2==0){
+			_log("Successfully moved all groups","CUSTOM4");
+			return $tmpCount;
+		}
+		else{
+			_log("Failed to move all groups","FAILURE");
+		}
+	}
+	catch ($e) {
+		_log("Exception thrown while moving groups"+$e,"FAILURE");
+	}
+}
+
+function moveAGsToMaintenance($argROIP,$argUserName,$argPassword,$argSecuredUrl,$argUrlPortNo){
+	
+	var $instanceID="";
+	
+	var $modechangedFor = new Array();
+	
+	var $tmpDRMServer = $drmServer;
+	var $tmpsecuredUrl=$securedUrl;
+	var $tmpurlPortNo=$urlPortNo;
+	
+	$drmServer =$argROIP;
+	$securedUrl =$argSecuredUrl;
+	$urlPortNo = $argUrlPortNo;
+	
+	var $url="";
+	if($securedUrl =="yes" || $securedUrl =="YES" || $securedUrl =="Yes"){
+		$url = 'https://' + $drmServer + ':'+ $urlPortNo +'/PanacesGUI';
+	}
+	else if ($urlPortNo != "na" || $urlPortNo != ""){
+		$url = 'http://' + $drmServer + ':'+ $urlPortNo +'/PanacesGUI';
+	}
+	
+	$instanceID=openBrowserLogin($url,$argUserName,$argPassword);
+	
+	navigateToGroups();
+	
+	_click(_heading4(9));
+	_click(_link("View All"));
+	
+	try{	
+		var $namesAG=_collectAttributes("_link", "/.*/", "title", _under(_heading5("Name")));
+		
+		for(var $i=0;$i<$namesAG.length;$i++){
+			try{
+				if(_exists(_byXPath("//div[@data-gname='"+$namesAG[$i]+"']//span[contains(@title,'Delete')]/parent::a[contains(@class,'disabled')]"))==true){
+					_click(_span("/wrench/", _near(_link($namesAG[$i]))));
+					_click(_submit("Move to Maintenance"));
+					if(_exists(_byXPath("//div[@data-gname='"+$namesAG[$i]+"']//span[contains(@title,'Delete')]/parent::a[contains(@class,'disabled')]"))==true){
+						_click(_span("/wrench/", _near(_link($namesAG[$i]))));
+						_click(_submit("Move to Maintenance"));
+						$modechangedFor.push($namesAG[$i]);
+					}
+					$modechangedFor.push($namesAG[$i]);
+				}
+				if(_exists(_byXPath("//div[@data-gname='"+$namesAG[$i]+"']//span[contains(@title,'Delete')]/parent::a[contains(@class,'disabled')]"))==true){
+					_log("Could not change group:"+$namesAG[$i]+" ,to maintenance","FAILURE");
+				}
+				else{
+					_log("Successfully changed group:"+$namesAG[$i]+" ,of RO Server:"+$argROIP+" ,to maintenace mode","CUSTOM4");
+				}
+			}
+			catch ($e) {
+				
+			}
+			
+		}
+	}
+	catch ($e) {
+		_log("Exception while changing to maintenance:"+$e,"FAILURE");
+	}
+    finally{
+    	$drmServer=$tmpDRMServer;
+    	$securedUrl=$tmpsecuredUrl;
+    	$urlPortNo=$tmpurlPortNo;
+    	
+    	closeOpenedBrowser($instanceID);
+    	//login($argUserName, $argPassword);
+    }
+    return $modechangedFor;
+}
+
+function moveAGsToManaged($argROIP,$argUserName,$argPassword,$argSecuredUrl,$argUrlPortNo,$arrGroupNames){
+	
+	var $tmpDRMServer = $drmServer;
+	var $tmpsecuredUrl=$securedUrl;
+	var $tmpurlPortNo=$urlPortNo;
+	
+	$drmServer =$argROIP;
+	$securedUrl =$argSecuredUrl;
+	$urlPortNo = $argUrlPortNo;
+	
+	login($argUserName, $argPassword);
+	
+	navigateToGroups();
+	
+	_click(_heading4(9));
+	_click(_link("View All"));
+	
+	try{
+		for(var $i=0;$i<$arrGroupNames.length;$i++){
+			_click(_span("/wrench/", _near(_link($arrGroupNames[$i]))));
+			_click(_submit("Manage Group"));
+			_log("Changed to managed mode to group:"+$arrGroupNames[$i],"CUSTOM4");
+		}
+	}
+	catch ($e) {
+		_log("Exception while changing to maintenance:"+$e,"FAILURE");
+	}
+    finally{
+    	$drmServer=$tmpDRMServer;
+    	$securedUrl=$tmpsecuredUrl;
+    	$urlPortNo=$tmpurlPortNo;
+    	
+    	login($argUserName, $argPassword);
+    }
+}
+
+
+function fetchDataFromWidget($argID){
+	
+	var $data = new Array();
+	var $tmpVal="";
+	
+	var $count=_count("/li/","/.*/",_in(_byXPath("//div[@id='"+$argID+"']/ul")));
+	
+	for(var $i=1;$i<=$count;$i++){
+		
+		if(_exists(_byXPath("//div[@id='"+$argID+"']/ul/li["+$i+"]/p"))==true){
+			$tmpVal=_getText (_byXPath("//div[@id='"+$argID+"']/ul/li["+$i+"]/p"))+"#"+_getText (_byXPath("//div[@id='"+$argID+"']/ul/li["+$i+"]/p[2]"));
+		}
+		if(_exists(_byXPath("//div[@id='"+$argID+"']/ul/li["+$i+"]/span"))==true){
+			$tmpVal=_getText (_byXPath("//div[@id='"+$argID+"']/ul/li["+$i+"]/span"))+"#"+_getText (_byXPath("//div[@id='"+$argID+"']/ul/li["+$i+"]/span"));	
+		}			
+		$data.push($tmpVal);
+	}
+	
+	return $data;
+}
+
+function fetchDataFromDashboard($argNameDashBoard,$argNameWidget){
+	
+	var $arrTmp = new Array();
+	
+	if($argNameDashBoard=="ManagerDashboard"){
+		
+		switch($argNameWidget) {
+		
+	    case "ApplicationStatus":
+	    	 $arrTmp = fetchDataFromWidget("applicationStatusContentId");
+	    break;
+	    
+	    case "DrillStatus":
+	    	 $arrTmp = fetchDataFromWidget("drillStatusContentId");
+	    break;
+	    
+	    case "EventStatus":
+	    	 $arrTmp = fetchDataFromWidget("eventStatusContentId");
+	    break;
+	    
+	    case "RPODeviation":
+	    	 $arrTmp = fetchDataFromWidget("rpoStatusContentId");
+	    break;
+	    
+	    case "WorkflowSnapshot":
+	    	 $arrTmp = fetchDataFromWidget("workflowStatusContentId");
+	    break;
+	    
+	    case "ReplicationSnapshot":
+	    	 $arrTmp = fetchDataFromWidget("replicationStatusContentId");
+	    break;
+	    
+	    case "DatalagDeviation":
+	    	 $arrTmp = fetchDataFromWidget("datalagStatusContentId");
+	    break;
+	  }
+	}
+	if($argNameDashBoard=="OperationalDashboard"){
+			
+			switch($argNameWidget) {
+			
+		    case "ApplicationStatus":
+		    	 $arrTmp = fetchDataFromWidget("applicationStatusContentId");
+		    break;
+		    
+		    case "ServerSnapshot":
+		    	 $arrTmp = fetchDataFromWidget("serverSnapshotStatusContentId");
+		    break;
+		    
+		    case "EventStatus":
+		    	 $arrTmp = fetchDataFromWidget("eventStatusContentId");
+		    break;
+		    
+		    case "WorkflowSnapshot":
+		    	 $arrTmp = fetchDataFromWidget("workflowStatusContentId");
+		    break;
+		    
+		    case "ReplicationSnapshot":
+		    	 $arrTmp = fetchDataFromWidget("replicationStatusContentId");
+		    break;
+		  }
+		}
+	return $arrTmp;
+}
+
+function fetchDataFromTable($argID){
+	
+	var $countRows=0;
+	var $countCol=0;
+	var $arrTable=[];
+	
+	_set($countRows,_table(_byXPath("//table[contains(@id,'"+$argID+"')]")).rows.length);
+	
+	for(var $i=0;$i<$countRows;$i++){
+		$arrTable[$i]=[];
+		_set($countCol, _table(_byXPath("//table[contains(@id,'"+$argID+"')]")).rows[$i].cells.length);
+		for(var $j=0;$j<$countCol;$j++){
+			$arrTable[$i][$j] = _getText(_cell(_table(_byXPath("//table[contains(@id,'"+$argID+"')]")),$i,$j));			
+		}
+	}
+	return $arrTable;
+}
+
+
+function moveAllAGToManage($argROIP,$argUserName,$argPassword,$argSecuredUrl,$argUrlPortNo){
+	
+	var $tmpDRMServer = $drmServer;
+	var $tmpsecuredUrl=$securedUrl;
+	var $tmpurlPortNo=$urlPortNo;
+	
+	$drmServer =$argROIP;
+	$securedUrl =$argSecuredUrl;
+	$urlPortNo = $argUrlPortNo;
+	
+	login($argUserName, $argPassword);
+	
+	navigateToGroups();
+	
+	_click(_heading4(9));
+	_click(_link("View All"));
+	
+	try{	
+		var $namesAG=_collectAttributes("_link", "/.*/", "title", _under(_heading5("Name")));
+		
+		for(var $i=0;$i<$namesAG.length;$i++){
+			try{
+				if(_exists(_byXPath("//div[@data-gname='"+$namesAG[$i]+"']//span[contains(@title,'Delete')]/parent::a[contains(@class,'disabled')]"))==false){
+					_click(_span("/wrench/", _near(_link($namesAG[$i]))));
+					_click(_submit("Manage Group"));
+					if(_exists(_byXPath("//div[@data-gname='"+$namesAG[$i]+"']//span[contains(@title,'Delete')]/parent::a[contains(@class,'disabled')]"))==false){
+						_click(_span("/wrench/", _near(_link($namesAG[$i]))));
+						_click(_submit("Manage Group"));
+					}
+				}
+				if(_exists(_byXPath("//div[@data-gname='"+$namesAG[$i]+"']//span[contains(@title,'Delete')]/parent::a[contains(@class,'disabled')]"))==false){
+					_log("Could not change group:"+$namesAG[$i]+" ,to manage mode","FAILURE");
+				}
+				else{
+					_log("Successfully changed group:"+$namesAG[$i]+" ,of RO Server:"+$argROIP+" ,to manage mode","CUSTOM4");
+				}
+			}
+			catch ($e) {
+				
+			}
+			
+		}
+	}
+	catch ($e) {
+		_log("Exception while changing to manage mode:"+$e,"FAILURE");
+	}
+    finally{
+    	$drmServer=$tmpDRMServer;
+    	$securedUrl=$tmpsecuredUrl;
+    	$urlPortNo=$tmpurlPortNo;
+    	
+    	login($argUserName, $argPassword);
+    }
+}
+
+function deleteUser($argUserName){
+	_click(_link("/Admin/")||_label("/Admin/"));
+	_click(_link("/Go to Users/"));
+	if(_exists(_image("/ico_delete.gif/", _near(_link($argUserName))))==true){
+		_click(_image("/ico_delete.gif/", _near(_link($argUserName))));
+		_assertEqual("Are you sure you wish to delete this user "+$argUserName+" ?", _lastConfirm());
+	}
+		
+	if(_exists(_link($argUserName)) == true){
+		_log("Could not Delete User:-"+$argUserName,"FAILURE");
+	}
+	else{
+		_log("Successfully deleted user :-"+$argUserName,"CUSTOM4");
+	}
+}
+
+function removeConfiguredRO($argROIP){
+
+	var $bln= true;
+	_log("------------------------------------------------------Navigate to Global Console on admin Page to remove RO","CUSTOM4");
+	navigateToGlobalConsole();
+	
+	_log("Deleting RO:-"+$argROIP,"CUSTOM4");
+	_click(_image("Delete", _rightOf(_cell($argROIP))));
+	_expectConfirm("Would you like to delete "+$argROIP+" ?", true);
+	_assertEqual("Would you like to delete "+$argROIP+" ?", _lastConfirm());
+	
+	_windowAction("refresh");
+
+	if(_exists(_cell($argROIP))==true){
+		$bln=false;
+		_log("Failed to delete RO with IP:-"+$argROIP,"FAILURE");
+	}
+	return $bln;
+}
+
+function precondition_CheckhttpsAccess($argIPAddress,$argSecuredURL,$argPort){
+	
+	var $bln=true;
+	var $tmpDRMServer = $drmServer;
+	var $tmpsecuredUrl=$securedUrl;
+	var $tmpurlPortNo=$urlPortNo;
+	
+	try{
+		$drmServer=$argIPAddress;
+		$securedUrl=$argSecuredURL;
+		$urlPortNo=$argPort;
+		
+		Login_001();
+		
+		_log("Precondition Check For https/http access passed for RO Server:"+$argIPAddress,"CUSTOM4");
+	}
+	catch ($e) {
+		_log("Precondition Check for https/http access FAILED for IP:"+$argIPAddress,"CUSTOM4");
+		$bln=false;
+	}
+	finally{
+		$drmServer=$tmpDRMServer;
+		$securedUrl=$tmpsecuredUrl;
+		$urlPortNo=$tmpurlPortNo;
+	}
+	return $bln;
+}
+
+function createCommonUserAcrossServers($argPathWB,$argNameSheet,$argUserName){
+
+	var $tmpDRMServer="";
+	var $tmpsecuredUrl="";
+	var $tmpurlPortNo="";
+	
+	try{
+		//$username=$argUserName;
+		var $counter=0;
+		var $roles = new Array("SUPER ADMINISTRATOR", "OPERATOR", "ADMINISTRATOR");
+		
+		var $excel= _getExcel($argPathWB,$argNameSheet);
+		var $data= $excel.getData();
+
+		for(var $i=9;$i<$data.length;$i++){
+			$tmpDRMServer = $drmServer;
+			$tmpsecuredUrl=$securedUrl;
+			$tmpurlPortNo=$urlPortNo;
+			
+			$drmServer =$data[$i][1];
+			$securedUrl =$data[$i][4];
+			$urlPortNo = $data[$i][5];
+
+		//----------------------------------------------------------------------------------- Create User Start
+			if($counter==3){
+				$counter=0;
+			}
+			createUserWithDifferentPriviledges($argUserName,$roles[$counter],$argUserName);	
+			$counter++;
+		//----------------------------------------------------------------------------------- Create User End	
+		}
+	}
+	catch($e){
+		_log("Exception thrown while creating common user across servers: "+$e,"FAILURE");
+	}
+	finally{
+		$drmServer=$tmpDRMServer;
+		$securedUrl=$tmpsecuredUrl;
+		$urlPortNo=$tmpurlPortNo;
+	}
+	
+}
+
+function openBrowserLogin($argURL,$argUserName,$argPassword){
+	var $instanceId;
+	try{
+		$instanceId=_launchNewBrowser($argURL);
+		_selectBrowser($instanceId);  
+		login($argUserName,$argPassword);
+	}
+	catch ($e) {
+		_log("Could not open browser and log in , exception thrown:"+$e,"FAILURE");
+	}
+	return $instanceId;
+}
+
+
+function closeOpenedBrowser($argInstanceID){
+	try{
+		_selectBrowser($argInstanceID);
+		_closeBrowser();    // closing the newly opened browser window
+		_selectBrowser();   // selecting the base browser
+		_selectWindow();    // selecting the base window tab
+	}
+	catch ($e) {
+		_log("Could not close opened browser ,exception thrown:","FAILURE");
+	}
+}
+
+
+function URL(){
+	var $url="";
+	if($securedUrl.toLowerCase() =="yes"){
+		$url = 'https://' + $drmServer + ':'+ $urlPortNo +'/PanacesGUI';
+	}
+	else if ($urlPortNo != "na" || $urlPortNo != ""){
+		$url = 'http://' + $drmServer + ':'+ $urlPortNo +'/PanacesGUI';
+	}
+	return $url;
+}
+
+
+function cleanUp(){
+	
+_log("****************************************************************** CLEANUP STEPS START *********************************","CUSTOM5");
+	var $count = 0;
+	var $tmp = fireWindowsCommandAndReadResponse("taskKill /F /IM firefox.exe");
+	while($tmp.indexOf("not found")<0 && $count<3){
+		_log("Waiting for 10 seconds before trying to kill instance of browser","CUSTOM5");
+		_wait(10000);
+		$tmp = fireWindowsCommandAndReadResponse("taskKill /F /IM firefox.exe");
+		$count++;
+	}
+    if($tmp.indexOf("not found")<0){
+    	_log("Could not kill firefox browser instance even after trying for 30 seconds","Failure");
+    }
+    
+    $count = 0;
+    $tmp = fireWindowsCommandAndReadResponse("taskKill /F /IM chrome.exe");
+	while($tmp.indexOf("not found")<0 && $count<3){
+		_log("Waiting for 10 seconds before trying to kill instance of browser","CUSTOM5");
+		_wait(10000);
+		$tmp = fireWindowsCommandAndReadResponse("taskKill /F /IM chrome.exe");
+		$count++;
+	}
+    if($tmp.indexOf("not found")<0){
+    	_log("Could not kill chrome browser instance even after trying for 30 seconds","Failure");
+    }
+
+    _log("Waiting for 1 minute before launching fresh instance of browser and log in again","CUSTOM5");
+    _wait(60000);
+    
+	var $instanceId=_launchNewBrowser(URL());
+	_selectBrowser($instanceId);  
+	Login_001();
+_log("****************************************************************** CLEANUP STEPS STOP *********************************","CUSTOM5");    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

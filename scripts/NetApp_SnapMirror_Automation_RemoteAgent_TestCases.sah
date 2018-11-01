@@ -1,0 +1,353 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the remote agent test cases which are the part of  APP_PFR solution. 
+ ** AuthorName : Padmavathi
+ ** Created Date : June 2013
+ ************************************************************************/
+
+_log("=================================Pre-Condition===================================","Custom1");
+
+//don't change the below line.
+
+_include("../Library/Solution_Signature/Include/NetApp_SnapMirror_Include.sah");
+_include("../conf/DRMInstallation_Parameter.sah");
+_include("../conf/NetApp_SnapMirror/NetApp_SnapMirror_Remote_Agent_Parameter.sah");
+_include("../conf/NetApp_SnapMirror/UserSelected_NetApp_SnapMirror_Testcase.sah");
+_include("../Library/Common/Common_Function.sah");
+
+// *************************************************************************************************************************************************
+// Notes: below test cases for Remote agent
+
+
+/*UnInstall_Remote_Agent_SilentMode_PR();  //uninstalling remote Agent. Pfr Services for PR
+UnInstall_Remote_Agent_SilentMode_DR(); //uninstalling remote Agent. Pfr Services for DR
+AgentBuild_Copy_into_PFRFile_PR();
+AgentBuild_Copy_into_PFRFile_DR();
+Copy_Property_file();
+Update_PropertyFile_RemoteAgent_PR();
+Update_PropertyFile_RemoteAgent_DR();
+Install_Remote_Agent_SilentMode_PR();
+Install_Remote_Agent_SilentMode_DR();*/
+
+Login_001();
+
+_log("=================================Test========================================","Custom1");
+
+
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_siteNetApp_SnapMirror == "Y"){
+var $test0 = _testcase("Site_0003","Create New Site");
+$test0.start(); 
+	Site_0003();
+$test0.end();
+}
+
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_agentNodeNetApp_SnapMirror == "Y"){
+var $test1 = _testcase("Misc/ Pumice/ Solution_Sanity/ NetApp_SnapMirror/ Netapp_SnapMirror_0001","Create Agent Node");
+$test1.start();
+	Agent_node_001();
+$test1.end();
+}
+
+
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_componentRemoteDiscoveryNetApp_SnapMirror == "Y"){
+var $test2 = _testcase("Continuity_Manager/ Template/ NetApp_SnapMirror/ Netapp_SnapMirror_0001");
+$test2.start();
+NetApp_Component_Remote_Discovery_0018();
+$test2.end();
+}
+
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_datasetDiscoveryNetApp_SnapMirror == "Y"){
+var $test3 = _testcase("Object_Manager/Dataset/APP/OraDiscovery_0006 ","Dataset Discovery");
+$test3.start();
+APP_PFR_Dataset_Discovery_0007();
+$test3.end();
+}
+
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_protectionSchemeDiscoveryNetApp_SnapMirror == "Y"){
+	var $test4 = _testcase("ID: Continuity_Manager/ Template/ NetApp_SnapMirror/ Netapp_SnapMirror_0004","Protection Scheme Discovery");
+	$test4.start();
+	NetAPP_SnapMirror_ProtectionschemePR_Discovery();
+$test4.end();
+}
+
+
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_groupCreationNetApp_SnapMirror == "Y"){
+var $test5= _testcase("Continuity_Manager/Common/FG/Group/GroupCreation_0001","Netapp_SnapMirror Group Creation");
+$test5.start();
+NetAPP_SnapMirror_GroupCreation_0022();
+$test5.end();
+}
+
+
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_moveGroupToManageNetApp_SnapMirror == "Y"){
+	var $test6 = _testcase("Continuity_Manager/Common/FG/Group/GroupCreation_0006","Move Group to Manage");
+	$test6.start();
+	NetAPP_SnapMirror_Move_Group_Manage_0006();
+	$test6.end();
+	}
+
+if ($g_executeNetApp_SnapMirrorAll == "Y" || $g_changeContinuityStateNetApp_SnapMirror == "Y") {
+	var $test7 = _testcase("Continuity_Manager/Common/FG/Manage/Change_Continuity_State_0001", "Change Continuity State");
+	$test7.start();
+	 NetAPP_SnapMirror_Change_Continuity_State_0001();
+	$test7.end();
+}
+
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_componentStatusNetApp_SnapMirror == "Y"){
+	var $test8 = _testcase("ID: Continuity_Manager/ Template/ NetApp_SnapMirror/ Netapp_SnapMirror_0002","Component Status");
+	$test8.start();
+	NetAPP_SnapMirror_Component_Status_0001();
+	$test8.end();
+	}
+
+ 
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_datasetStatusNetApp_SnapMirror == "Y"){
+	var $test9 = _testcase("Object_Manager/Dataset/APP/Ora_Auto_DatasetDiscovery0009","Dataset Status");
+	$test9.start();
+	APP_PFR_Dataset_status_0011();
+	$test9.end();
+	}
+
+
+/*if($g_executeNetApp_SnapMirrorAll == "Y" || $g_protectionSchemeStatusNetApp_SnapMirror == "Y"){
+	var $test10 = _testcase("ID: Continuity_Manager/ Template/ NetApp_SnapMirror/ Netapp_SnapMirror_0008","Protection Scheme Status");
+	$test10.start();
+	NetApp_SnapMirror_Protectionscheme_status_0021();
+	$test10.end();
+    }*/
+
+
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_continuityManagenentNetApp_SnapMirror == "Y"){
+	var $test11 = _testcase("Continuity_Manager/Common/FG/Manage/Continuity_Management_0015","Continuity Management");
+	$test11.start();
+	NetAPP_SnapMirror_Continuity_Management_0015();
+	$test11.end();
+}
+
+
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_continuityStateNetApp_SnapMirror == "Y"){
+	var $test12 = _testcase("Continuity_Manager/Common/FG/Monitor/MON_0002","Continuity Status");
+	$test12.start();
+	NetAPP_SnapMirror_Contiunity_Status_0002();
+	$test12.end();
+    }
+
+
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_startNCNetApp_SnapMirror == "Y"){
+	var $test13 = _testcase("Continuity_Manager/Template/APP_Log/APP_PFR/APP_PFR_ProtectionMonitoring0001","Start NC");
+	$test13.start();
+		NetAPP_SnapMirror_Start_NormalCopy_0001()
+	$test13.end();
+}
+
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_monitorRelationshipNetApp_SnapMirror == "Y"){
+var $test15 = _testcase("Continuity_Manager/Template/APP_Log/APP_PFR/APP_PFR_ProtectionMonitoring0001","Monitor Relationship");
+$test15.start();
+	NetAPP_SnapMirror_Monitor_Relationship_0030();
+$test15.end();
+}
+
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_groupInformationNetApp_SnapMirror == "Y"){
+var $test17 = _testcase("Continuity_Manager/Template/APP_Log/APP_PFR/APP_PFR_ProtectionMonitoring0001","Group Information");
+$test17.start();
+  NetAPP_SnapMirror_GroupInformation_Manage_0007();
+$test17.end();
+}
+
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_manageDRSolutionNetApp_SnapMirror == "Y"){
+var $test16 = _testcase("Continuity_Manager/Template/APP_Log/APP_PFR/APP_PFR_ProtectionMonitoring0001","Manage DR Solution");
+$test16.start();
+NetAPP_SnapMirror_Manage_DRsolution_0029();
+$test16.end();
+}
+
+
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_groupSnapshotNetApp_SnapMirror == "Y"){
+	var $test14 = _testcase("Continuity_Manager/ Template/ NetApp_SnapMirror/ Netapp_SnapMirror_0013 ","Group SnapShot");
+	$test14.start();
+	NetAPP_SnapMirror_Groupsnapshot_Monitor_0001();
+	$test14.end();
+	}
+
+
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_rpoNCAPP_PFR == "Y"){
+	var $test15 = _testcase("Continuity_Manager/ Template/ NetApp_SnapMirror/ Netapp_SnapMirror_0009","NC RPO");
+	$test15.start();
+	NetAPP_SnapMirror_NC_RPO_0026();
+	$test15.end();
+	}
+
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_rtoNCAPP_PFR == "Y"){
+	var $test16 = _testcase("IContinuity_Manager/ Template/ NetApp_SnapMirror/ Netapp_SnapMirror_0009","NC RTO");
+	$test16.start();
+	NetAPP_SnapMirror_NC_RTO_0027();
+	$test16.end();
+	}
+
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_replicationNCAPP_PFR == "Y"){
+	var $test17 = _testcase("Continuity_Manager/Template/APP_Log/APP_PFR/APP_PFR_ProtectionMonitoring0001","NC Replication");
+	$test17.start();
+	NetAPP_SnapMirror_NC_Replication_0028();
+	$test17.end();
+	}
+
+
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_stopNCAPP_PFR == "Y"){
+	var $test18 = _testcase("Continuity_Manager/Template/APP_Log/APP_PFR/APP_PFR_ProtectionMonitoring0001","Stop NC");
+	$test18.start();
+	NetAPP_SnapMirror_Stop_NC_0002();
+	$test18.end();
+	}
+
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_stopNCAPP_PFR == "Y"){
+    var $test19 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0007 ", "Import SwitchOver workflow");
+    $test19.start();
+    NetApp_SnapMirror_Import_SO_For_Local0007();
+    $test19.end();
+}
+
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_stopNCAPP_PFR == "Y"){
+	var $test20 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0011","Start SO");
+	$test20.start();
+	NetAPP_SnapMirror_Start_SO_0011();
+	$test20.end();
+	}
+
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_stopNCAPP_PFR == "Y"){
+	var $test20 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0012","SO Execution");
+	$test20.start();
+	Waitfor_TestWF_Completion_NetApp_SnapMirror_SO($groupName, "Switchover");
+	$test20.end();
+}
+
+
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_replicationSOAPP_PFR == "Y"){
+	var $test22 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0013","SO Replication");
+	$test22.start();
+	NetAPP_SnapMirro_SO_Verify_Continuitystatus_013();
+	$test22.end();
+	}
+
+
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_startRNCAPP_PFR == "Y"){
+	var $test23 = _testcase("Continuity_Manager/Template/APP_Log/Monitor/OraLog_RNC_0001","Start RNC");
+	$test23.start();
+	NetAPP_SnapMirror_Start_RNC_0033();
+	$test23.end();
+	}
+
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_groupInformaitionRNCAPP_PFR == "Y"){
+	var $test24 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0022","RNC Group Information Monitor");
+	$test24.start();
+	NetAPP_SnapMirror_RNC_Groupinformation_Monitor_0022();
+	$test24.end();
+	}
+
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_groupSnapshotAPP_PFR == "Y"){
+	var $test25 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0021","RNC Group SnapShot Monitor");
+	$test25.start();
+	NetAPP_SnapMirror_RNC_Groupsnapshot_Monitor_0021();
+	$test25.end();
+	}
+
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_rpoRNCAPP_PFR == "Y"){
+	var $test26 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0023","RNC RPO Monitor");
+	$test26.start();
+	NetAPP_SnapMirror_RNC_Rpo_Monitor_0023();
+	$test26.end();
+	}
+ 
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_replicationRNCAPP_PFR == "Y"){
+	var $test27 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0024","RNC Replication");
+	$test27.start();
+	NetAPP_SnapMirror_RNC_Replication_0024();
+	$test27.end();
+	}
+
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_stopRNCAPP_PFR == "Y"){
+	var $test28 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0033","Stop RNC");
+	$test28.start();
+	NetAPP_SnapMirror_Stop_RNC_0033();
+	$test28.end();
+	}
+
+	if($g_executeNetApp_SnapMirrorAll == "Y" || $g_stopNCAPP_PFR == "Y"){
+	    var $test29 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0007 ", "Import Switchback workflow");
+	    $test29.start();
+	    NetApp_SnapMirror_Import_SB_For_Local0008();
+	    $test29.end();
+	}
+	
+	if($g_executeNetApp_SnapMirrorAll == "Y" || $g_startSBAPP_PFR == "Y"){
+		var $test30 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0034","Start SB");
+		$test30.start();
+		NetAPP_SnapMirror_Start_SB_0034();
+		$test30.end();
+		}
+	
+	if($g_executeNetApp_SnapMirrorAll == "Y" || $g_SBExecutionAPP_PFR == "Y"){
+		var $test31 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0035","SB Execution");
+		$test31.start();
+		NetAPP_SnapMirror_SB_Execution_0035();
+		$test31.end();
+		}
+	
+	if($g_executeNetApp_SnapMirrorAll == "Y" || $g_SBExecutionAPP_PFR == "Y"){
+		var $test32 = _testcase("Continuity_Manager/Common/FG/Tests/SOSB_0035","SB Execution");
+		$test32.start();
+		NetAPP_SnapMirro_SB_Verify_Continuitystatus_014();
+		$test32.end();
+		}
+
+
+if($g_executeNetApp_SnapMirrorAll == "Y" || $g_remoteStopAPP_PFRAgent == "Y"){
+	var $test37 = _testcase("Continuity_Manager/Template/APP_Log/APP_NetAPP_SnapMirror/APP_NetAPP_SnapMirror_Object_Health_Events0001","Stopping Remote Agent");
+	$test37.start();
+	NetAPP_SnapMirror_Remote_Stop_Linux_Agent_DS_OS();
+	$test37.end();
+	}
+
+	if($g_executeNetApp_SnapMirrorAll == "Y" || $g_remoteStartAPP_PFRAgent == "Y"){
+	var $test38 = _testcase("Continuity_Manager/Template/APP_Log/APP_NetAPP_SnapMirror/APP_NetAPP_SnapMirror_Object_Health_Events0001","Starting Remote Agent");
+	$test38.start();
+	NetAPP_SnapMirror_Remote_Start_Linux_Agent_DS_OS();
+	$test38.end();
+	}
+	
+	
+/*
+	if($g_executeNetApp_SnapMirrorAll == "Y" || $g_replicaionStopAPP_PFR == "Y"){
+	var $test35 = _testcase("Continuity_Manager/ Template/ APP_Log/ APP_NetAPP_SnapMirror/ APP_NetAPP_SnapMirror_Manage_Replication ","Stop Replication");
+	$test35.start();
+	NetAPP_SnapMirror_Remote_Stop_Linux_Agent_0039();
+	$test35.end();
+	}
+
+	
+	if($g_executeNetApp_SnapMirrorAll == "Y" || $g_replicaionStartAPP_PFR == "Y"){
+	var $test36 = _testcase("Continuity_Manager/ Template/ APP_Log/ APP_NetAPP_SnapMirror/ APP_NetAPP_SnapMirror_Manage_Replication ","Start Replication");
+	$test36.start();
+	NetAPP_SnapMirror_Remote_Start_Linux_Agent_0038();
+	$test36.end();
+	}
+
+
+    if($g_executeNetApp_SnapMirrorAll == "Y" || $g_remoteStopAPP_PFRAgent == "Y"){
+	   var $test33 = _testcase("Continuity_Manager/Template/APP_Log/APP_NetAPP_SnapMirror/APP_NetAPP_SnapMirror_Object_Health_Events0001","Stopping Remote Agent");
+	   $test33.start();
+	   NetAPP_SnapMirror_Remote_Stop_SnapMirror_Agent_0039();
+	   $test33.end();
+	}
+
+	if($g_executeNetApp_SnapMirrorAll == "Y" || $g_remoteStartAPP_PFRAgent == "Y"){
+	var $test34 = _testcase("Continuity_Manager/Template/APP_Log/APP_NetAPP_SnapMirror/APP_NetAPP_SnapMirror_Object_Health_Events0001","Starting Remote Agent");
+	$test34.start();
+	NetAPP_SnapMirror_Remote_Start_SnapMirror_Agent_0038();
+	$test34.end();
+	}
+*/
+	_log("================================Post-Condition================================== ","Custom1");
+
+	//Logout_001(); 
+	

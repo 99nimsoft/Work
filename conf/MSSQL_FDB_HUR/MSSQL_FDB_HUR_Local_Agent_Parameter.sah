@@ -1,0 +1,123 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the Local agent parameter File of MSSQL FullDB Hitachi solution. 
+ ** AuthorName : Aditi Jain
+ ** Created Date : April 2015
+ ************************************************************************/
+
+
+
+var $l_MssqlFdbHUR = _readExcelFile($SAHI_HOME + "\\conf\\MSSQL_FDB_HUR\\MSSQL_FDB_HUR_Parameter.xls","Local");
+
+// DRM GUI Details
+var $username = $l_MssqlFdbHUR[2][2]; // DRM server GUI user name e.g. "abc"
+var $password = $l_MssqlFdbHUR[3][2]; // DRM server GUI pwd
+
+
+
+//This user Input required to create the Site
+var $locationPR = "PR"; // PR Site Location
+var $incharge = "drmadmin"; // Site Incharge
+var $addressPR = "Mumbai"; // PR site Address
+var $locationDR = "DR"; // DR Site Location
+var $addressDR = "Bangalore";// DR site Address
+ 
+// This user Input required to create the Component for Local or remote 
+var $systemType= $l_MssqlFdbHUR[22][2];
+var $osType = $l_MssqlFdbHUR[23][2];
+var $systemTypeCCI= $l_MssqlFdbHUR[24][2];
+var $osTypeCCI = $l_MssqlFdbHUR[25][2];
+    
+var $compIPPR= $l_MssqlFdbHUR[6][2];
+var $compIPDR= $l_MssqlFdbHUR[7][2];
+var $credList= "Add new credential";
+var $remoteUserNameValPR= $l_MssqlFdbHUR[8][2];
+var $remotePwdValPR= $l_MssqlFdbHUR[9][2];
+var $remoteUserNameValDR= $l_MssqlFdbHUR[10][2];
+var $remotePwdValDR= $l_MssqlFdbHUR[11][2];
+var $compNamePR= $l_MssqlFdbHUR[12][2];; //"WIN_67_PR";   
+var $compNameDR= $l_MssqlFdbHUR[13][2]; //"win_50_DR";
+var $compIPstoragePR= $l_MssqlFdbHUR[14][2];
+var $compIPstorageDR= $l_MssqlFdbHUR[15][2];
+var $remoteUserNameValSrdfPR= $l_MssqlFdbHUR[16][2];
+var $remotePwdValSrdfDR= $l_MssqlFdbHUR[17][2];
+var $remoteUserNameValSrdfDR =$l_MssqlFdbHUR[18][2];
+var	$remotePwdValSrdfDR =$l_MssqlFdbHUR[19][2];
+var $compNamestoragePR= $l_MssqlFdbHUR[20][2];
+var $compNamestorageDR= $l_MssqlFdbHUR[21][2];
+var $agentType = "Local";
+
+
+
+// This user Input required to create the dataset 
+var $systemTypeDataset= "MSSQL";
+var $datasetNamePR= $l_MssqlFdbHUR[2][5]; //"MSSQL_PR_67";      
+var $datasetNameDR= $l_MssqlFdbHUR[3][5]; //"MSSQL_DR_50";      
+var $instanceName= $l_MssqlFdbHUR[4][5];  
+
+ 
+
+//Connectivity of mssql
+var $database= $l_MssqlFdbHUR[5][5];
+var $userPR = $l_MssqlFdbHUR[6][5]; // for mssql db connection
+var $pwdPR = $l_MssqlFdbHUR[7][5];  // for mssql db connection
+var $userDR = $l_MssqlFdbHUR[8][5];  // for mssql db connection
+var $pwdDR = $l_MssqlFdbHUR[9][5];  // for mssqldb connection
+
+var $port= $l_MssqlFdbHUR[10][5];         
+
+// This user Input required to create the protection Scheme
+var $systemTypeProtection = "PFR";
+var $sernamePR =  $l_MssqlFdbHUR[16][5];  //"MSSQL_PFR_PR";  
+var $sernameDR =  $l_MssqlFdbHUR[17][5]; //"MSSQL_PFR_DR";
+var $sernameHCMDR=$l_MssqlFdbHUR[18][5];
+var $VolsizePR=$l_MssqlFdbHUR[19][5];
+var $VolsizeDR=$l_MssqlFdbHUR[20][5];
+var $VolsizeDRSC=$l_MssqlFdbHUR[21][5];
+var $mgmtHostPFRPR = $compNamePR + " (" + $compIPPR + ")"; //"Win_67_PR (192.168.20.67)"; 
+var $mgmtHostPFRDR = $compNameDR + " (" + $compIPDR + ")"; //"win_50_DR (172.168.20.50)";
+
+// This user Input required to create the Group
+var $groupName = $l_MssqlFdbHUR[13][5];
+var $groupDescription = "MSSQL-FullDB-with-Hitachi";
+var $SolutionSignature ="MSSQL-FullDB-with-Hitachi-Replication";
+var $devicePathPR=$l_MssqlFdbHUR[24][5];
+var $mountPointPR=$l_MssqlFdbHUR[25][5];
+var $devicePathDR=$l_MssqlFdbHUR[26][5];
+var $mountPointDR=$l_MssqlFdbHUR[27][5];
+var	$devicePathSC=$l_MssqlFdbHUR[28][5];
+var	$mountPointSC=$l_MssqlFdbHUR[29][5];
+
+//workflow path
+//var $WFPath = $l_MssqlFdbHUR[26][2]; // Location of SO/SB/FO xml file
+var $WFPathForPFR = "/Oracle/OracleArLogPFR/";
+var $fileNC = "MSSQL-LogShipping-Dummy.xml";
+var $fileRNC = "MSSQL-LogShipping-Dummy.xml"; 
+var $fileSO = "MSSQL-LogShipping-SO.xml"; // Location of SO xml file
+var $fileSB = "MSSQL-LogShipping-SB.xml"; // Location of SB xml file
+var $fileFO = "MSSQL-LogShipping-FO.xml"; // Location of FO xml file
+var $filePFRral= "BCS-OracleArLogPFR-SetupPFRReplication.xml"; //Location of PFR fileset Ral 
+var $pstoolPath = $SAHI_HOME + "\\tools\\PsExec"; //pstool file path
+
+
+
+var $usernamedb= $userPR  ; 
+//Common
+var $compsitePR = $locationPR;  
+var $compsiteDR = $locationDR; 
+var $dependentComponentNamePR= $compNamePR;
+var $dependentComponentNameDR= $compNameDR;
+var $primaryComponents=$compNamePR;
+var $remoteComponents=$compNameDR;
+var $primaryDatasets=$datasetNamePR;
+var $remoteDatasets=$datasetNameDR;
+var $primaryProtections=$sernamePR;
+var $remoteProtections=$sernameDR;
+var $databaseName= $database;
+var $datasetType=$systemTypeDataset;
+var $ipPR= $compIPPR;
+var $ipDR=$compIPDR;
+var $installbinpath=$fileName;
+var $sourcePath = $SAHI_HOME +"\\tools\\sed";
+

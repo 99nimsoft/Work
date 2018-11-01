@@ -1,0 +1,548 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the test cases functions which are the part of Forkjoin RAL( Recovery automation library). 
+ **@AuthorName : Anita 
+ ** Created Date : Nov 2016
+ ************************************************************************/
+
+/**
+ * Function is used to import the forkjoin workflow RAL. 
+ * @param :$groupName,$ralName,$workflowXMlFile
+ * @return : null
+ * @Author:Anita
+ * 
+ */
+
+function Import_Forkjoin_RAL($groupName,$ralName,$workflowXMlFile){
+	Import_Forkjoin_WF_RAL($groupName,$ralName,$BusinessProcess,$workflowXMlFile);
+	_log("Forkjoin RAL published successfully");
+}
+
+function Import_Forkjoin_WF_RAL($groupName,$ralName,$linkType,$workflowXMlFile) {
+	var $fileWFRal = $SAHI_HOME +"Library\\RAL\\Forkjoin\\ForkjoinWF\\" + $workflowXMlFile;
+	_log($fileWFRal);
+	Import_WF_Ral($groupName, $fileWFRal, $linkType, $ralName);
+}
+
+function Import_WF_Ral($groupName, $fileWFRal, $linkType, $ralName) {
+	isAlreadyExistsWorkflow($groupName,$linkType,$ralName);
+	createNewBPWorkflow($groupName,$ralName,$BusinessProcess);	
+	importWorkFLowPublish($fileWFRal);
+
+} // End of Import_WF_Ral();
+
+// import workflow and publish
+
+function importWorkFLowPublish($file){
+    importFileWorkflowEditPage($file);
+    waitTillSaveNowBtnExists();
+    _wait(3000);
+	_click(_link($SaveNow));
+	_wait(5000);
+	_click(_link($Next));
+	waitTillPublishpage();
+	clickPublishButton();
+	waitTillBCOWFpage();
+}
+
+function importFileWorkflowEditPage($file){
+	_click(_span("glyphIon"	));
+	_click(_link($Workflows));
+	_click(_button($ImportWorkflow));
+    _wait(3000);
+    
+    $file = $file.replace(/\//g, "\\");
+    _log($file + "workflow file path");
+    
+    if (_isChrome()){
+    	_log($SAHI_HOME+"utility\\importChrome.exe"+" "+$file);
+    	_execute($SAHI_HOME+"utility\\importChrome.exe"+" "+$file);
+	}else{
+		_log($SAHI_HOME+"utility\\import.exe"+" "+$file);
+		_execute($SAHI_HOME+"utility\\import.exe"+" "+$file);
+	}
+    if($file=="Forkjoin_Workflow_9.xml" || $file=="Forkjoin_Workflow_10.xml"){
+    	_wait(60000); //loading time
+    }
+    else{
+    	_wait(5000);
+    }
+}
+
+
+/**
+ * Function is used to Execute the forkjoin workflow RAL. 
+ * @param :$groupName,$ralName  
+ * @return : null
+ * @Author:Anita
+ * 
+ */
+
+function Execute_Forkjoin_RAL($groupName,$ralName,$userInput){
+	TriggerWorkflowExec($groupName,$ralName);
+	Waitfor_TestWF_Completion($groupName, $ralName,$userInput);
+}
+
+// WF exec status check
+
+function Waitfor_TestWF_Completion($groupName, $ralName,$userInput) {
+	var $i = 0;
+	while ($i < 20) {
+		_log($i);
+		navigateBPworkflows($groupName);
+		var $testStatus = _getText(_strong(1, _near(_link($ralName))));
+		_log($testStatus);
+		if($testStatus ==$obj_SUCCESS){
+			_log("Execution Status as : " + $testStatus);
+			break;		
+		}
+		if($testStatus ==$obj_ABORTED){
+			_log("Execution Execution Status: " + $testStatus);
+			break;		
+		}	
+		if ($testStatus == $obj_Failed) {
+			_wait(1000);
+			_log("Execution Execution Status: " + $testStatus);
+			break;
+		} 
+		
+		if ($testStatus == $obj_AWAITINGINPUT) {
+			_click(_link(1, _near(_link($ralName))));
+			_wait(3000);
+			_click(_button($obj_AWAITINGINPUT));
+			_wait(3000);
+			if($userInput=="UserInputQuit"){
+				click_QuitABORT($ralName);
+			}
+			if($userInput=="UserInputContinueAsSuccess"){
+				click_CONTINUE_AS_SUCCESS($ralName);
+			}
+			if($userInput=="UserInputContinueAsFailure"){
+				click_CONTINUE_AS_Failure($ralName);
+			}/*
+			if($userInput=="CreateUserB"){
+				_log("Create UserB");
+				CreateUser($usernameB);
+				break;
+			}*/
+		}
+	    if ($testStatus == $obj_EXECUTING){
+			_click(_link(1, _near(_link($ralName))));
+			_wait(3000);
+			_click(_link($Abort));
+			_setValue(_textarea("textReason"), "AbortingExecution");
+			_click(_button($ReasonToabort));
+		}		
+		_wait(3000);
+		$i++;
+	}//end of loop
+	
+	if($userInput=="CreateUserB"){
+		_log("Create UserB");
+		CreateUser($usernameB);
+	}
+}
+
+
+
+// function edit forkjoin ral workflow
+
+function Edit_Forkjoin_RAL($groupName,$ralName,$actionRalType,$nestedRalType,$optionSel,$actionPropWFtype){
+	navigateBPworkflows($groupName);
+	_click(_link($obj_editworkflow, _near(_link($ralName))));
+	_wait(3000);
+	if($actionRalType == $TEAction || $actionRalType ==$BPIAction){
+		_doubleClick(_paragraph($actionRalType));
+		_wait(3000);
+	}
+	if($actionRalType == $TriggerBCO){
+		_doubleClick(_span($actionRalType));
+		_wait(3000);
+	}
+	_click(_link($ActionProperties));
+	_wait(1000);
+	_setSelected(_select("groupName"), $groupName);
+	_wait(3000);
+	_setSelected(_select($actionPropWFtype), $nestedRalType);
+	_wait(3000);
+	selectOptionType($actionRalType,$optionSel);
+	_click(_div("myModal"));
+	_click(_link($SaveNow));
+	_click(_link($Next));
+	_click(_div($PublishWorkflow));
+	_wait(3000);
+}
+
+
+// select option type 
+
+function selectOptionType($actionRalType,$optionSel){
+	if($actionRalType ==$TEAction){
+		if($optionSel=="Option1"){
+			_click(_radio("teAction")); //default option
+		}
+		else{
+			_log($optionSel +" = selected option");
+			var $i=0;
+			for($i=2; $i<4; $i++){
+				var $optn="Option"+$i;
+				if($optionSel==$optn){
+					$i=$i-1;
+					var $ele="teAction[" + $i +"]";
+					_click(_radio($ele));
+				}	break;
+			}	
+		}
+		
+	}
+	if($actionRalType ==$BPIAction){
+		if($optionSel=="Option1"){
+			_click(_radio("bpiAction")); //default option
+		}
+		else{
+			_log($optionSel +" = selected option");
+			var $i=0;
+			for($i=2; $i<4; $i++){
+				var $optn="Option"+$i;
+				if($optionSel==$optn){
+					$i=$i-1;
+					var $ele="bpiAction[" + $i +"]";
+					_log($ele);
+					_click(_radio($ele));
+				}	break;
+			}	
+		}
+	}
+}//end of func
+
+// function Check_Forkjoin_RAL_Exists then reuse the RAL
+
+function Create_Forkjoin_RAL_UserA($groupName,$ralName,$workflowXMlFile,$username){
+	
+	navigateGroupConfig($groupName);
+	_click(_link($BusinessProcess));
+	
+	if (_exists(_link($ralName))){		
+		_log($ralName+" RAL already exists");
+		var $loggedUserA = $UserFetch+$username;
+		_assertExists(_getText(_cell($loggedUserA)));
+		
+	}
+	else{
+		Import_Forkjoin_WF_RAL($groupName,$ralName,$workflowXMlFile);
+	}
+	_log($ralName+" Created_Forkjoin_RAL with UserA");
+}
+
+// Execute_Forkjoin_RAL_UserA
+
+function Execute_Forkjoin_RAL_UserA($groupName,$ralName,$userInput){
+	Execute_Forkjoin_RAL($groupName,$ralName,$userInput);
+}
+
+//Execute_Forkjoin_RAL_UserB
+
+function Execute_Forkjoin_RAL_UserB($groupName,$ralName,$userInput){
+	Waitfor_TestWF_Completion($groupName, $ralName,$userInput);
+}
+
+//Login As USerA 
+function LoginAsUserA($username,$password){
+	_log("Logout from current userB ");
+	Logout_001();
+	_log("Login as UserA");
+	login($username, $password);
+}
+
+// Login As USerB and Assign Group
+function LoginAsUserB($usernameB,$password,$groupName){
+	_log("Logout from current userA ");
+	Logout_001();
+	_log("Login as UserB and got RAL and Stop the execution");
+	login($usernameB, $password);
+	AssignGroupToUserB($groupName,$usernameB);
+}
+
+//create user and Assign the group access
+
+function AssignGroupToUserB($groupName,$usernameB){
+	
+	_click(_link($Admin));
+	_click(_link($GotoUsers));
+	_click(_image("edit.png", _near(_link($usernameB))));
+	_wait(3000);
+	_setSelected(_select("remainingGroups"), [$groupName]);
+	_click(_button("smlbtn[1]"));
+	_click(_button($Save));
+	_assertEqual($UserDetailsModifiedSuccessfully, _lastAlert());
+	
+}
+
+// Create_ActionGroup_Forkjoin workflow and verify Error message displayed successfully in workflow editor page
+
+function Create_ActionGroup_Forkjoin($groupName,$ralName){
+	createNewBPWorkflow($groupName,$ralName,$BusinessProcess);
+	_click(_button("addFork"));
+	_wait(3000);
+	_dragDrop(_image("notifications_green.png[1]"), _image("notifications_yellow.png[1]"));
+	_wait(3000);
+    _click(_button("addJoin"));
+    _wait(3000);
+	_click(_button("addActionGroup"));
+	_wait(3000);
+	_dragDrop(_image("notifications_green.png[2]"), _image("notifications_yellow.png[3]"));
+	_wait(3000);
+	if (_exists(_div($Onlyregularnodecanbeapartofforkgroup))){
+           _log("Only regular node can be a part of fork group");
+           _log("Error message displayed successfully in workflow editor page");
+    }
+	else{
+         _log("Error message not displayed properly in workflow editor page");
+   }
+}
+
+// Add TEaction RAL in DRill page
+
+function Add_TEactionRAL($groupName,$workflowXMlFile,$nestedRalType){
+	var $fileWFRal = $SAHI_HOME +"Library\\RAL\\Forkjoin\\ForkjoinWF\\" + $workflowXMlFile;
+	_log($fileWFRal);
+	Import_WF_Drill($groupName,$fileWFRal,$Drills,$nestedRalType);
+	_wait(3000);
+	_log("IntegrityCheck RAL published successfully");
+}
+
+//import WF for Drill page
+
+function Import_WF_Drill($groupName, $file, $linkName, $nestedRalType){
+	navigateGroupConfig($groupName);
+	_click(_link($linkName));
+	_click(_link($nestedRalType));
+	_wait(5000);
+	importWorkFLowPublish($file);
+}
+
+//Execute TEaction RAL / BPi action Rals
+
+function Execute_ForkjoinNested_RAL($groupName,$ralName,$userInput){
+	TriggerWorkflowExec($groupName,$ralName);
+	Waitfor_NestedWF_Completion($groupName, $ralName,$userInput);
+	_wait(5000);
+	Waitfor_TestWF_Completion($groupName, $ralName,$userInput);
+}
+
+// wait for TEaction workflow execution complete
+
+function Waitfor_NestedWF_Completion($groupName, $ralName,$userInput) {
+	var $i = 0;
+	while ($i < 20) {
+		_log($i);
+		navigateBPworkflows($groupName);
+		var $testStatus = _getText(_strong(1, _near(_link($ralName))));
+		_log($testStatus);
+		if($testStatus ==$obj_SUCCESS){
+			_log("Execution Status as : " + $testStatus);
+			break;
+		}		
+		if ($testStatus == $obj_EXECUTING) {	
+			_click(_link(1, _near(_link($ralName))));
+			_wait(3000);
+			_log("check if Recursive enabled for nested workflow execution status");
+			var $exeStatus = _getText(_span($executionCurrentStatus));
+			_log($exeStatus);
+			if($exeStatus==$obj_AWAITINGINPUT){			
+				_click(_link($obj_AWAITINGINPUT));
+				_wait(3000);
+				_click(_button($obj_AWAITINGINPUT));
+				if(_exists(_link($Nestedworkflow))){
+					_click(_link($Nestedworkflow));
+					_wait(5000);
+					_click(_button($obj_AWAITINGINPUT));
+					_wait(3000);
+				}			
+				_click(_submit($QuitABORTuserInputButtonbtnbtnprimarybtnxsbtnbtninfo));
+				_setValue(_textarea("reasonname"), "Aborting Execution");
+				_click(_button($Ok));
+				_wait(5000);
+				break;
+				
+			}			
+			if($exeStatus==$obj_EXECUTING){							
+				_click(_link($Abort));
+				_setValue(_textarea("textReason"), "abort");
+				_click(_button($ReasonToabort));
+				_wait(3000);
+				//break;
+			}				
+		}
+		if ($testStatus == $obj_AWAITINGINPUT) {
+			_click(_link($obj_AWAITINGINPUT));
+			_wait(3000);
+			_click(_button($obj_AwaitingInput));
+			if(_exists(_link($Nestedworkflow))){
+				_click(_link($Nestedworkflow));
+				_wait(5000);
+				_click(_button($AwaitingInput));
+				_wait(3000);
+			}			
+			_click(_submit($QuitABORTuserInputButtonbtnbtnprimarybtnxsbtnbtninfo));
+			_setValue(_textarea("reasonname"), "Aborting Execution");
+			_click(_button($Ok));
+			_wait(5000);
+			break;
+		}
+		_wait(3000);
+		$i++;
+	}//end of loop
+}
+
+// verify BCO ral execution status
+
+function Verify_BCO_Ral_Exec_Status($groupName,$userInput){
+	navigateBCOworkflows($groupName);
+	var $i = 0;
+	while ($i < 20) {
+		var $execStatus = _getText(_strong(1, _near(_link("NormalCopy"))));
+		_log("Current Execustion Status is  "+$execStatus);
+		if($execStatus ==$obj_EXECUTING){
+			break;	
+		}
+		if($execStatus ==$obj_ABORTED){
+			break;
+		}	
+		if ($execStatus == $obj_Failed) {
+			break;
+		} 
+		if ($execStatus == $obj_AWAITINGINPUT) {
+			_log("BCO RAL if rise awaiting input hence quit the WF");
+			_click(_strong(1, _near(_link("NormalCopy"))));
+			_wait(3000);
+			_click(_button($obj_AWAITINGINPUT));
+			_wait(3000);
+			if($userInput=="UserInputQuit"){
+				_click_QuitABORT($ralName);
+				_wait(3000);
+			}			
+		} 
+		_wait(5000);
+		$i++;
+	}
+}
+
+// verify BCO workflow execution report page
+
+function Verify_BCO_Ral_Exec_report($groupName,$ralName8,$bcoRalWF){
+	Navigate_Report_Page($groupName,"Workflow Execution","WorkflowExecution Analysis");
+	var $execReport1 = _getText(_cell(6, _near(_cell($ralName8))));
+	_assertExists("Execution Report for Forkjoin BP RAL "+$ralName8+"is=",$execReport1);
+	var $execReport2 = _getText(_cell(6, _near(_cell($bcoRalWF))));
+	_assertExists("Execution Report for BCO RAL "+$bcoRalWF+"is=",$execReport2);
+}
+
+// verify export RAL
+
+function Forkjoin_Export_RAL($groupName,$ralName){
+	navigateBPworkflows($groupName);
+	_click(_link("Edit Workflow", _near(_link($ralName))));
+	waitTillSaveNowBtnExists();
+	if(_exists(_link($Export))){
+		_clearLastDownloadedFileName();
+		_wait(3000);
+		_click(_link($Export));
+		_click(_button($Yes));
+		_wait(10000);
+      var $expFileName = _lastDownloadedFileName();
+      var $WFfilepath= $SAHI_HOME +"Library\\RAL\\Forkjoin\\ForkjoinWF\\";
+      _saveDownloadedAs($WFfilepath + _lastDownloadedFileName());
+      _assertExists("Workflow Exported successfully: "+$expFileName);
+      return $expFileName;
+	}
+	else{
+		_log("export button not working");
+	}
+}
+
+// verify eidt ral and publish
+
+function Edit_RAL_Publish($groupName,$ralName){
+	navigateBPworkflows($groupName);
+	_click(_link("Edit Workflow", _near(_link($ralName))));
+	 waitTillSaveNowBtnExists();
+	_click(_span("glyphIon"));
+	_click(_link("select2-choice"));
+	_setValue(_textbox(10), "Workflow");
+	_click(_span("Workflow[2]"));
+	_wait(1000);
+	_click(_span("glyphicon icon-blue-plus plusIconRals[1]")); // add grp healthcheck ral
+	_wait(3000);
+	_click(_span("glyphIon"));
+	_click(_button("arrangeWorkflow"));
+	_wait(3000);
+	_dragDrop(_image("notifications_green.png[2]"), _image("notifications_yellow.png[5]"));
+	 _wait(7000);
+	 _dragDrop( _image("notifications_green.png[6]"), _image("notifications_yellow.png[3]"));
+	 _wait(7000);
+	 _click(_button("arrangeWorkflow"));
+	 _wait(2000);
+	 _click(_div("myModal"));	  
+	 _click(_link($SaveNow));
+	 _wait(3000);
+	_click(_link($Next));
+	waitTillPublishpage();
+	clickPublishButton();
+	waitTillBCOWFpage();
+}
+
+// Create New workflow and import the workflow which has Exported successfully and publish 
+
+function CreateNewRAL_Import_ExportedWF_Publish($groupName,$ralName,$workflowXMlFile){
+	Import_Forkjoin_WF_RAL($groupName,$ralName,"Business Processes",$workflowXMlFile);
+}
+
+// create new Create_ActionGroup_RAL workflow in BP
+
+function Create_ActionGroup_RAL($groupName,$ralName,$workflowXMlFile){
+	Import_Forkjoin_WF_RAL($groupName,$ralName,"Business Processes",$workflowXMlFile);
+}
+
+// execute Execute_ActionGroup_RAL()
+function Execute_ActionGroup_RAL($groupName,$ralName,$userInput){
+	Execute_Forkjoin_RAL($groupName,$ralName,$userInput);
+}
+
+// function Create_ForkjoinActionGroup_RAL
+
+function Create_ForkjoinActionGroup_RAL($groupName,$ralName,$workflowXMlFile){
+	Import_Forkjoin_WF_RAL($groupName,$ralName,"Business Processes",$workflowXMlFile);
+	Edit_ForkjoinActionGroup_RAL($groupName,$ralName);
+}
+
+// function edit Edit_ForkjoinActionGroup_RAL
+
+function Edit_ForkjoinActionGroup_RAL($groupName,$ralName){
+	navigateBPworkflows($groupName);
+	_click(_link($obj_editworkflow, _near(_link($ralName))));
+	waitTillSaveNowBtnExists();
+	_log("add action grp ral");
+	_click(_button("addActionGroup"));
+	_wait(3000);
+	_dragDrop(_image("notifications_green.png[5]"), _image("notifications_yellow.png[5]"));
+	_wait(5000);
+	_click(_button("arrangeWorkflow"));
+	 _wait(2000);
+	 AddRal_Inside_ActionGrp( "ActionGrpPR","PRIMARY","Production Server");
+	 _click(_link($SaveNow));
+	 _wait(3000);
+	_click(_link($Next));
+	waitTillPublishpage();
+	clickPublishButton();
+	waitTillBCOWFpage();
+}
+
+// verify the group execution  report with given data passed
+
+function Verify_Execution_Report($groupName,$selectReportType,$detailView){
+	Navigate_Report_Page($groupName,$selectReportType,$detailView);
+	var $exeList= _getText(_table("sortable report"));
+	_assertExists($exeList);
+}

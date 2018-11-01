@@ -1,0 +1,54 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains Creation of Component(WINDOWS) for both remote and local agents. 
+ ** AuthorName : Govinda Mengji
+ ** Created Date : July 2013
+ ************************************************************************/
+
+
+/**
+* Function is for Remote Component creation at PR  .
+*@param :  null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function Create_Remote_ComponentPR() {
+	Create_Remote_Component($systemType, $compNamePR, $compIPPR, $compsitePR, $remoteUserNameValPR, $remotePwdValPR);
+}// End of RemoteComponentPR()
+
+/**
+* Function is for Remote Component creation at DR  .
+*@param :  null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function Create_Remote_ComponentDR() {
+	Create_Remote_Component($systemType, $compNameDR, $compIPDR, $compsiteDR, $remoteUserNameValDR, $remotePwdValDR);
+}// End of RemoteComponentDR()
+
+/**
+* Function is for Local Component creation at PR  .
+*@param :  null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+// Description: Local Component creation
+
+function Create_Local_ComponentPR() {
+	Create_Local_Component($systemType, $compNamePR, $compIPPR, $compsitePR);
+}// End of LocalComponentPR()
+
+/**
+* Function is for Local Component creation at DR  .
+*@param :  null
+*@return : null
+*@Author: Govinda Mengji
+*
+*/
+function Create_Local_ComponentDR() {
+	Create_Local_Component($systemType, $compNameDR, $compIPDR, $compsiteDR);
+}// End of LocalComponentDR()

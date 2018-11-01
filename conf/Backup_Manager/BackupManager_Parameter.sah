@@ -1,0 +1,12 @@
+var $l_backupManager = _readExcelFile($SAHI_HOME + "\\conf\\Backup_Manager\\BackupManager_Parameter.xls","Backup");  
+
+var $username = $l_backupManager[3][2];
+var $password = $l_backupManager[4][2];
+
+var $backupPath = $l_backupManager[5][2];//Backup path
+var $backuptime = $l_backupManager[6][2];//backup time
+var $region = $l_backupManager[7][2];
+var $country = $l_backupManager[8][2];
+var $copies = $l_backupManager[9][2];
+var $backupFailPath=$l_backupManager[10][2];//Backup fail path
+var $g_BackupManager_executeAll=$l_backupManager[11][2];

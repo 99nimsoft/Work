@@ -1,0 +1,25 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the Local agent test cases which are the part of  APP_PFR solution. 
+ ** AuthorName : Padma
+ ** Created Date : June 2013
+ ************************************************************************/
+
+_include("../Library/Common/Common_Function.sah");
+
+// Enable the firewall through command line using Psexec tool.
+
+	var $userName = "Administrator";
+	var $password = "Sanovi123";
+	var $ipAddress = "172.168.1.20";
+				
+	var $command = $SAHI_HOME + "tools\\PsExec\\PsExec.exe \\\\" + $ipAddress +" -u " + $userName + " -p " + $password + " \"c:\\FirewallEnable.bat\"";
+	
+	writeToFile($command,$SAHI_HOME + "utility\\Firewall.bat");
+	
+	_execute($SAHI_HOME + "utility\\Firewall.bat","true");
+	
+	
+	
+

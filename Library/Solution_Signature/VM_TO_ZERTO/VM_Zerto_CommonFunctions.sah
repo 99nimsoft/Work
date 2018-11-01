@@ -1,0 +1,366 @@
+/*************************************************************************
+ ** Application Name : CMM
+ ** Objective : This script contains all the common functions specifics to VM to Zerto solution
+ ** AuthorName : Anita
+ ** Created Date : June 2018
+ ************************************************************************/
+
+
+// Wait for Management Service Status
+
+function waitForManagmentServiceStatus($vcenterName,$Active){
+		
+	Navigate_Management_Service();
+	// Looping till VCENTER status becomes ACTIVE	
+	var $i = 1;
+	while ( $i < 10 ) {
+		var $msPRStatus =  _getText(_cell(4, _near(_link($vcenterName))));
+		_log($msPRStatus);
+		if ( $msPRStatus == $Active) {
+			break;
+		} 
+		_wait(30000);
+		Navigate_Management_Service();
+		$i++ ;
+	} // while ended
+	var $msPRStatus =  _getText(_cell(4, _near(_link($vcenterName))));
+	return $msPRStatus;
+}
+
+// verifyManagementServiceExists
+function verifyManagementServiceExists($vcenterName,$msTypeInput){
+	Navigate_Management_Service();
+	_wait(5000,_isVisible(_cell($ManagementServiceList)));		
+	var $msNameExist = _getText(_link($vcenterName, _near(_cell($msTypeInput))));
+	_assertExists("Management Service created",$msNameExist);
+}
+
+//Delete delete Vcenter/zerto MS test
+function deleteMangService($vcenterName){
+	Navigate_Management_Service();
+	_assertExists(_image($Delete, _near(_link($vcenterName))));
+	_click(_image($Delete, _near(_link($vcenterName))));
+	_assertEqual($Wouldyouliketodelete, _lastConfirm());
+	Navigate_Management_Service();
+	var $mangList = _getText(_table($reportMgmtStatus));
+	_log($mangList);
+	var $vcenterExists = $mangList.match($vcenterName);
+	_log($vcenterExists);
+	if($vcenterExists ==null){
+		_assertExists($vcenterName," Management Service Delete Successfully");
+	}
+	else{
+		_log($vcenterName +" Management Service Delete functionality is not working");
+	}
+}
+
+// check CheckTestCred_Save button
+
+function checkTestCred_Save(){
+	_click(_button($TestCredentials));		
+    _wait(10000,_isVisible(_span($CredentialCheckPassed)));
+    var $credvcenterchk=_getText(_span($CredentialCheckPassed));
+    _assertExists($credvcenterchk);
+    if($credvcenterchk!=$CredentialCheckMsg){
+    	_log("Credential Check Failed due to wrong test cred");
+    }
+    else{
+    	_log("Credential Check Passed");
+    }
+	_click(_submit($Save));
+}
+
+
+function NavigateToVMRecZertoWizard(){
+	_click(_link($obj_admin));	
+	_click(_link($obj_discover));
+
+	_click(_link($Groups));
+	if(_exists(_heading4($ApplicationRecovery))){
+		_click(_heading4($ApplicationRecovery));
+	}
+	else{
+		_click(_link($ApplicationRecovery));
+	}
+	_link($ViewAll);
+	_wait(3000);
+}
+
+function NavigateTOGroups(){
+	_click(_link($obj_admin));	
+	_click(_link($obj_discover));
+	_click(_link($Groups));
+	_wait(2000);
+}
+
+function NavigateToSubsystems(){
+	_click(_link($obj_admin));	
+	_click(_link($obj_discover));
+	_click(_link($Subsystems));
+	_wait(3000);
+}
+function NavigateToAG(){
+	NavigateTOGroups();
+	if(_exists(_heading4($ApplicationGroup))){
+		_click(_heading4($ApplicationGroup));
+	}
+	else{
+		_click(_link($ApplicationGroup));
+	}
+	_click(_link($ViewAll));
+	_wait(3000);
+	
+}
+function NavigateToRG(){	
+	NavigateTOGroups();
+	if(_exists(_heading4($RecoveryGroup))){
+		_click(_heading4($RecoveryGroup));
+	}
+	else{
+		_click(_heading4(10));
+	}
+	_click(_link($ViewAll));
+	_wait(3000);
+	
+}
+
+function VerifyAG_DeleteIfExists($noOfAGs,$appstackName){
+	NavigateToAG();
+	for(var $i=0; $i<=$noOfAGs;$i++){
+		
+		var $agName = "AG_"+$appstackName[$i];
+		if(_exists(_link( $agName))){
+			_log( $agName + " Group Already exists... move to maintence state then delete");
+			_click(_span($imgwrenchtextblacksettings, _near(_link($agName))));
+			_click(_submit($MovetoMaintenance));
+			//_assertEqual("/Group Mode Change Operation Move to Maintenance successfully performed on group/", _lastAlert());
+			_assertEqual($GroupModeChangeAlertMsg, _lastAlert());
+			_click(_span($glyphicon_trash, _near(_link($agName))));
+			_assertEqual($deleteGroupConf, _lastConfirm());
+			_click(_div("Deleted successfully"));
+		}
+		else{
+			_log("Group name does not exists");
+		}
+	}	
+}
+
+function Verify_VM2ZertoAG_Name($apstkName){
+	NavigateToAG();			
+	var $agName = "AG_"+$apstkName;
+	if(_exists(_link( $agName))){
+		_log( $agName + " Group Created Successfully");
+		return $agName;
+	}
+	else{
+		_fail("Group is not created successfull");
+	}
+}
+
+function CreateAppstack_VM2Zerto($vpgCount,$noOfAGs,$tierNum,$appstackName,$zertoMSNamePR,$zertoMSNameDR){
+	
+	for(var $i=0; $i<$vpgCount;$i++){	
+		
+		 var $appstk = $appstackName[$i];
+		    _log($appstk + " = Appstack Name");
+		
+		 NavigateToVMRecZertoWizard();
+		_click(_button($VMRecoverywithZerto));
+		
+		_setValue(_textbox($appname), $appstk);
+		_wait(2000);
+		selectTierType($tierNum);
+		_wait(2000);
+		_click(_submit($AddServer));
+		_wait(5000);
+		_setSelected(_select($mgmt_svc_select), $zertoMSNamePR);
+		_wait(3000);
+		 
+		_setSelected(_select($vpgnameselect), $vpgName[$i]);
+		_wait(3000);
+		_click(_submit($DiscoverVMs));
+		_wait(30000);
+					
+		_click(_button($Apply));
+		_wait(5000);
+   
+		createAppGroup($appstk,$vpgName[$i]);
+		
+		var $groupAGName = Verify_VM2ZertoAG_Name($appstk);
+		_assertExists($groupAGName);
+	}
+}
+// create Application Group for zerto
+
+function createAppGroup($appstk,$vpgNm){
+
+	NavigateToVMRecZertoWizard();
+	if(_exists(_link($appstk))){
+		_log($appstk + "  Appstack created ");
+		_click(_link($appstk));
+	}
+	else{
+		_log($appstk + "  Appstack not found");
+	}
+	_click(_submit($CreateApplicationGroup));
+	var $j=0;
+	while ($j<20){
+		_wait(1000);
+		if(_exists(_div($CreateGroupErrorMsg))){
+			_fail("verify and Set the RO server backend -VM protection.proerties flag 1 and restart RO");
+			break;
+		}
+		NavigateToAG();			
+		var $agName = "AG_"+$appstk;
+		if(_exists(_link($agName))){
+			_log( $agName + " Group Created Successfully");
+			break;
+		}
+		_wait(3000);
+	}	
+}
+
+
+function selectTierType($tierNum){
+
+	for(var $trNum=0; $trNum<$tierNum; $trNum++){
+		
+		_click(_submit($AddTier));
+		_wait(3000);
+		_click(_button($SelectTier));
+		_wait(2000);
+		_log($selTier[$trNum] +" = select tier type");
+		_mouseOver(_link($selTier[$trNum]));
+		_click(_link($selTier[$trNum]));
+		_wait(2000);
+		if($selTier[$trNum]==$Custom){
+			_click(_link($selTier[$trNum]));
+			_wait(1000);
+			_highlight(_textbox($tiertextcustominput, _near(_image($custompng))));
+			_setValue(_textbox($tiertextcustominput, _near(_image($custompng))), "CustomTier");
+			_wait(2000);
+		}
+	}
+}
+
+
+function verifyAppstackName($vpgCount,$appstackName){
+	NavigateToVMRecZertoWizard();
+	for(var $i=0; $i<=$vpgCount;$i++){
+		
+		if(_exists(_link($appstackName[$i]))){
+			_log($appstackName[$i] + "  Appstack already exists");
+		}
+	}
+}
+
+
+function deleteAppstackIfExists($vpgCount,$appstackName){
+	NavigateToVMRecZertoWizard();
+	for(var $i=0; $i<$vpgCount;$i++){
+		
+		if(_exists(_link($appstackName[$i]))){
+			_log($appstackName[$i] + "  Appstack already exists");
+			_click(_span($glyphicon_trash, _near(_link($appstackName[$i]))));
+			_click(_button($Confirm));
+			_wait(5000);
+			_log($appstackName[$i] +" Appstack deleted succesfully");
+		}
+		else{
+			_log($appstackName[$i] + "  Appstack not found");
+		}
+	}
+}
+
+// check subsystem status
+
+function checkComponentStatus($vpgNm){
+	if ($vpgNm ==$vpgName1){
+		checkComponentStatusOnGUI($vp1VMcnt,$vpg1VMs);
+	}
+	if ($vpgNm ==$vpgName2){
+		checkComponentStatusOnGUI($vp2VMcnt,$vpg2VMs);
+	}
+	if ($vpgNm ==$vpgName3){
+		checkComponentStatusOnGUI($vp3VMcnt,$vpg3VMs);
+	}
+	if ($vpgNm ==$vpgName4){
+		checkComponentStatusOnGUI($vp4VMcnt,$vpg4VMs);
+	}
+}
+
+function checkComponentStatusOnGUI($vmcnt,$vpgVMs){
+
+	for (var $k=0; $k < $vmcnt; $k++){
+		
+		var $vpgVMIP = $vpgVMs[$k];
+		_log("VPG VM IP= " + $vpgVMIP);
+		NavigateToSubsystems();
+		if(_exists(_cell($vpgVMIP))){
+			_click(_link(0, _near(_cell($vpgVMIP))));
+			var $statuschk = _getText(_cell(1, _near(_cell($Status))));
+			_log($vpgVMIP + " Status= " + $statuschk);
+		}
+	}
+}
+
+function editCompStatusGUI($vmcnt,$vpgVMs){
+	
+	for (var $k=0; $k < $vmcnt; $k++){
+			
+			var $vpgVMIP = $vpgVMs[$k];
+			_log("VPG VM IP= " + $vpgVMIP);
+			NavigateToSubsystems();
+			if(_exists(_cell($vpgVMIP))){
+				_click(_link(0, _near(_cell($vpgVMIP))));
+				var $statuschk = _getText(_cell(1, _near(_cell($Status))));
+				_log($vpgVMIP + " Status= " +$statuschk);
+				if($statuschk == $UNKNOWN){
+					_click(_button($Edit));
+					_click(_checkbox($remoteaccess));
+					_click(_button($Save));
+					_wait(3000);
+					_log("Component Updated Successfully");
+				}
+				else{
+					_log($vpgVMIP + " Status= " +$statuschk);
+				}
+			}
+		}
+}
+
+function getVPG_VMName($vpgNa){
+	if($vpgName1==$vpgNa){
+		var $vpgVMsName =[$vpg1_VM1_Name,$vpg1_VM2_Name];
+		return $vpgVMsName;
+	}
+	else if($vpgName2==$vpgNa){
+		var $vpgVMsName =[$vpg2_VM1_Name,$vpg2_VM2_Name];
+		return $vpgVMsName;
+	}
+
+	else if($vpgName3==$vpgNa){
+		var $vpgVMsName =[$vpg3_VM1_Name,$vpg3_VM2_Name];
+		return $vpgVMsName;
+	}
+	else if($vpgName4==$vpgNa){
+		var $vpgVMsName =[$vpg4_VM1_Name,$vpg4_VM2_Name];
+		return $vpgVMsName;
+	}
+}
+
+function ManagementServiceAgentStatus($msName){
+	adminPage_NavigateToAgentPage();
+	var $obj_element = $msName +"(Mgmt Service)" ;
+	 if(_exists(_image("/up.gif/", _near(_cell($obj_element))))){
+		 _assertExists($obj_element," Connected in RO agent page");
+	 }
+	 else{
+		 _log($obj_element +" is not Connected in RO agent page -try once restart");
+	 }
+	
+}
+
+
+
+

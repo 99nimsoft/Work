@@ -1,0 +1,180 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are the part of Postgres SR solution for generating events. 
+ ** AuthorName : Aditi Jain
+ ** Created Date : nov 2013
+ ************************************************************************/
+
+/**
+* Function is for remote agent stop the linux agent from back end for PR.
+*@param : null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+function PostgresSR_Remote_PR_Linux_Agent_Stop_Event() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "LinuxOSAgent.sh stop ");
+//$EventSecMentioned = "BCSPGSQLSREvent001";
+	//Event_Verification($server.get("Server Time"), $groupName, "BCSPostgreSQLSR005", "Primary:Replication Status Unknown.", "Serious");
+//$EventSecMentioned = "BCSPostgreSQLSR005";
+Event_Verification($server.get("Server Time"), $groupName, "BCSPGSQLSREvent001", "OS agent is down on primary server.", "Critical");
+
+}
+
+/**
+* Function is for remote agent stop the linux agent from back end for DR.
+*@param : null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+function PostgresSR_Remote_DR_Linux_Agent_Stop_Event() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "LinuxOSAgent.sh stop ");
+//$EventSecMentioned = "BCSPGSQLSREvent002"; 
+//Event_Verification($server.get("Server Time"), $groupName, "BCSPostgreSQLSR006", "DR:Replication Status Unknown.", "Serious");
+//$EventSecMentioned = "BCSPostgreSQLSR006";
+Event_Verification($server.get("Server Time"), $groupName, "BCSPGSQLSREvent002", "OS agent is down on DR server.", "Critical");
+
+}
+/**
+* Function is for remote agent start the linux agent from back end for PR.
+*@param : null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+
+function PostgresSR_Remote_PR_Linux_Agent_Start_Event() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "LinuxOSAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSPGSQLSREvent004", "OS Agent is up on primary server ", "Information");
+}// End of Remote_PR_LinuxAgent_Start
+
+/**
+* Function is for remote agent start the linux agent from back end for DR.
+*@param : null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+function PostgresSR_Remote_DR_Linux_Agent_Start_Event() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "LinuxOSAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSPGSQLSREvent005", "OS Agent is up on DR server ", "Information");
+}// End of Remote_DR_LinuxAgent_Start
+
+
+
+
+//Local OS Agent
+/**
+**
+*Function is for local agent stop the Linux agent from back end for PR
+*@param :  null
+*@return : null
+*@Author :Aditi Jain
+*/
+function PostgresSR_Local_PR_Linux_Agent_Stop_Event() {
+	var $server = Get_Local_Agent_Event($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR,"LinuxOSAgent.sh stop ");
+	var $action = $status.get("output");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSPGSQLSREvent001", "OS agent is down on primary server.", "Critical");
+}// End of PostgresSR_Local_PR_Linux_Agent_Stop_Event
+
+/**
+*Function is for local agent stop the Linux agent from back end for DR
+*@param :  null
+*@return : null
+*@Author :Aditi Jain
+*/
+function PostgresSR_Local_DR_Linux_Agent_Stop_Event() {
+	var $server = Get_Local_Agent_Event($compIPDR, $remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR,"LinuxOSAgent.sh stop ");
+	var $action = $status.get("output");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSPGSQLSREvent002", "OS agent is down on DR server.", "Critical");
+}// End of Remote_PR_LinuxAgent_Stop
+
+/**
+*Function is for local agent start the Linux agent from back end for PR
+*@param :  null
+*@return : null
+*@Author :Aditi Jain
+*/
+function PostgresSR_Local_PR_Linux_Agent_Start_Event() {
+	var $server = Get_Local_Agent_Event($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR,"LinuxOSAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSPGSQLSREvent004", "OS Agent is up on primary server", "Information");
+}// End of PostgresSR_Local_PR_Postgres_Agent_Start_Event
+
+
+/**
+*Function is for local agent start the Linux agent from back end for DR
+*@param :  null
+*@return : null
+*@Author :Aditi Jain
+*/
+function PostgresSR_Local_DR_Linux_Agent_Start_Event() {
+	var $server = Get_Local_Agent_Event($compIPDR, $remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR,"LinuxOSAgent.sh start " );
+	Event_Verification($server.get("Server Time"), $groupName, "BCSPGSQLSREvent005", "OS Agent is up on DR server", "Information");
+}// End of PostgresSR_Local_DR_Postgres_Agent_Start_Event
+
+
+
+
+
+
+
+
+//Local Postgres Agent
+
+
+/**
+ *Function is for local agent stop the Postgres agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Aditi Jain
+ */
+function PostgresSR_Local_PR_Postgres_Agent_Stop_Event() {
+	var $server = Get_Local_Agent_Event($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR,"PostgresAgent.sh stop ");
+	var $action = $status.get("output");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSPGSQLSREvent101", "Primary:PostgreSQL Agent is Down ", "Critical");
+}// End of PostgresSR_Local_PR_Mysq_Agent_Stop_Event
+
+/**
+ *Function is for local agent stop the Postgres agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :Aditi Jain
+ */
+function PostgresSR_Local_DR_Postgres_Agent_Stop_Event() {
+	var $server = Get_Local_Agent_Event($compIPDR, $remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR,"PostgresAgent.sh stop ");
+	var $action = $status.get("output");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSPGSQLSREvent102", "DR:PostgreSQL Agent is Down ", "Critical");
+}// End of Remote_PR_LinuxAgent_Stop
+
+/**
+ *Function is for local agent start the Postgres agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :Aditi Jain
+ */
+function PostgresSR_Local_PR_Postgres_Agent_Start_Event() {
+	var $server = Get_Local_Agent_Event($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR,"PostgresAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSPGSQLSREvent104", "Primary:PostgreSQL Agent is UP ", "Information");
+}// End of PostgresSR_Local_PR_Postgres_Agent_Start_Event
+
+
+/**
+ *Function is for local agent start the Postgres agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :Aditi Jain
+ */
+function PostgresSR_Local_DR_Postgres_Agent_Start_Event() {
+	var $server = Get_Local_Agent_Event($compIPDR, $remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR,"PostgresAgent.sh start " );
+	Event_Verification($server.get("Server Time"), $groupName, "BCSPGSQLSREvent105", "DR:PostgreSQL Database is up now ", "Information");
+}// End of PostgresSR_Local_DR_Postgres_Agent_Start_Event
+
+
+
+
+
+
+
+

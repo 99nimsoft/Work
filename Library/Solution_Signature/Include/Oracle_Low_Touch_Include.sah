@@ -1,0 +1,9 @@
+_include("../../../Library/Common/Common_Function.sah");
+_include("../../../Library/Solution_Signature/Include/Common_Automation_testcase_Function.sah");
+_include("../../../Library/Common/Operation_On_FG/Group_Operation.sah");
+_include("../../../Library/LowTouch/LowTouch_Common.sah");
+_include("../../../Library/Solution_Signature/Oracle_Low_Touch/Oracle_Low_Touch_Solution.sah");
+_include("../../../Library/Solution_Signature/Oracle_Low_Touch/Oracle_Low_Touch_Automation_testcase_Function.sah");
+_include("../../../Library/Database/Oracle/Oracle.sah");
+
+

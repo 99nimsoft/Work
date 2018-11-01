@@ -1,0 +1,161 @@
+
+var $l_userInputsDataSybase_PFR = _readExcelFile($SAHI_HOME + "\\conf\\Sybase_PFR\\Sybase_PFR_Parameter.xls","User Seleeted Case");
+var $userDataLengthSybase_PFR  = $l_userInputsDataSybase_PFR.length-1;
+
+var $flag = 0;
+for($i = 3 ; $i <= $userDataLengthSybase_PFR ; $i++){
+	if($l_userInputsDataSybase_PFR[$i][4] == "Y"){	
+		$flag=$flag+1;	
+	}
+}
+
+//-----------Execution of Individual Testcase------------------------------
+
+var $g_siteSybase_PFR = $l_userInputsDataSybase_PFR[17][4];
+var $g_agentNodeSybase_PFR = $l_userInputsDataSybase_PFR[18][4];
+
+var $g_componentLocalDiscoverySybase_PFR= $l_userInputsDataSybase_PFR[19][4];
+var $g_datasetDiscoverySybase_PFR = $l_userInputsDataSybase_PFR[20][4];;
+var $g_datasetAutoDiscoverySybase_PFR = $l_userInputsDataSybase_PFR[21][4];
+var $g_protectionSchemeDiscoverySybase_PFR = $l_userInputsDataSybase_PFR[22][4];;
+var $g_protectionSchemeDetailsSybase_PFR = $l_userInputsDataSybase_PFR[23][4];
+var $g_groupCreationSybase_PFR = $l_userInputsDataSybase_PFR[24][4];
+var $g_moveGroupToManageSybase_PFR = $l_userInputsDataSybase_PFR[25][4];
+
+var $g_changeContinuityStateSybase_PFR = $l_userInputsDataSybase_PFR[26][4];
+var $g_postGroupCreationSybase_PFR = $l_userInputsDataSybase_PFR[27][4];
+var $g_componentStatusSybase_PFR = $l_userInputsDataSybase_PFR[28][4];
+var $g_datasetStatusSybase_PFR = $l_userInputsDataSybase_PFR[29][4];
+var $g_protectionSchemeStatusSybase_PFR = $l_userInputsDataSybase_PFR[30][4];
+
+var $g_continuityManagenentSybase_PFR = $l_userInputsDataSybase_PFR[31][4];
+var $g_importNCSybase_PFR = $l_userInputsDataSybase_PFR[32][4];
+var $g_importFOSybase_PFR = $l_userInputsDataSybase_PFR[33][4];
+var $g_startNCSybase_PFR = $l_userInputsDataSybase_PFR[34][4];
+var $g_monitorRelationshipSybase_PFR = $l_userInputsDataSybase_PFR[35][4];
+
+var $g_manageDRSolutionSybase_PFR = $l_userInputsDataSybase_PFR[36][4];
+var $g_groupInformationSybase_PFR = $l_userInputsDataSybase_PFR[37][4];;
+var $g_groupSnapshotSybase_PFR = $l_userInputsDataSybase_PFR[38][4];;
+var $g_replicationNCSybase_PFR = $l_userInputsDataSybase_PFR[39][4];
+var $g_rpoNCSybase_PFR = $l_userInputsDataSybase_PFR[40][4];
+var $g_rtoNCSybase_PFR = $l_userInputsDataSybase_PFR[41][4];
+var $g_importSOSBSybase_PFR = $l_userInputsDataSybase_PFR[42][4];
+var $g_stopNCSybase_PFR = $l_userInputsDataSybase_PFR[43][4];
+var $g_startSOSybase_PFR = $l_userInputsDataSybase_PFR[44][4];
+var $g_SOExecutionSybase_PFR = $l_userInputsDataSybase_PFR[45][4];
+
+var $g_replicationSOSybase_PFR = $l_userInputsDataSybase_PFR[46][4];
+var $g_importRNCSybase_PFR = $l_userInputsDataSybase_PFR[47][4];
+var $g_startRNCSybase_PFR = $l_userInputsDataSybase_PFR[48][4];
+var $g_groupInformaitionRNCSybase_PFR = $l_userInputsDataSybase_PFR[49][4];
+var $g_groupSnapshotSybase_PFR = $l_userInputsDataSybase_PFR[50][4];
+var $g_rpoRNCSybase_PFR = $l_userInputsDataSybase_PFR[51][4];
+var $g_replicationRNCSybase_PFR = $l_userInputsDataSybase_PFR[52][4];
+var $g_stopRNCSybase_PFR = $l_userInputsDataSybase_PFR[53][4];
+var $g_startSBSybase_PFR = $l_userInputsDataSybase_PFR[54][4];
+var $g_SBExecutionSybase_PFR = $l_userInputsDataSybase_PFR[55][4];
+
+var $g_monitorManageSBSybase_PFR = $l_userInputsDataSybase_PFR[56][4];
+
+var $g_localStopSybase_PFRAgent = $l_userInputsDataSybase_PFR[57][4];
+var $g_localStartSybase_PFRAgent = $l_userInputsDataSybase_PFR[58][4];
+var $g_replicaionStopSybase_PFR = $l_userInputsDataSybase_PFR[59][4];
+var $g_replicaionStartSybase_PFR = $l_userInputsDataSybase_PFR[60][4];
+var $g_startFOSybase_PFR = $l_userInputsDataSybase_PFR[61][4];
+var $g_FOExecutionSybase_PFR = $l_userInputsDataSybase_PFR[62][4];
+var $g_continuityStatusFOSybase_PFR = $l_userInputsDataSybase_PFR[63][4];
+var $g_rpoFOSybase_PFR = $l_userInputsDataSybase_PFR[64][4];
+var $g_monitorManageFOSybase_PFR = $l_userInputsDataSybase_PFR[65][4];
+
+//---------------For Executing All the Testcases------------------------
+var $g_executeSybase_PFRAll = $l_userInputsDataSybase_PFR[4][4];
+var $g_groupCreationSybase_PFR = $l_userInputsDataSybase_PFR[8][4];
+var $g_postGroupCreationSybase_PFR = $l_userInputsDataSybase_PFR[9][4];
+var $g_executeNCSybase_PFR = $l_userInputsDataSybase_PFR[10][4];
+var $g_executeSOSBSybase_PFR = $l_userInputsDataSybase_PFR[11][4];
+var $g_eventExecutionSybase_PFR = $l_userInputsDataSybase_PFR[12][4];
+var $g_executeFOSybase_PFR = $l_userInputsDataSybase_PFR[13][4];
+
+//--------------For Group Creation--------------------------------------
+
+if ($g_groupCreationSybase_PFR == "Y"){
+
+var $g_siteSybase_PFR = "Y";
+var $g_agentNodeSybase_PFR = "Y";
+var $g_componentLocalDiscoverySybase_PFR= "Y";
+	
+var $g_datasetDiscoverySybase_PFR = "Y";
+var $g_datasetAutoDiscoverySybase_PFR = "Y";
+var $g_protectionSchemeDiscoverySybase_PFR = "Y";
+var $g_protectionSchemeDetailsSybase_PFR = "Y";
+var $g_groupCreationSybase_PFR = "Y";
+var $g_moveGroupToManageSybase_PFR= "Y";
+var $g_changeContinuityStateSybase_PFR= "Y";
+}
+//-------------Post Group Creation-------------------------------------------------
+
+if ($g_postGroupCreationSybase_PFR == "Y"){
+var $g_postGroupCreationSybase_PFR= "Y";
+var $g_componentStatusSybase_PFR= "Y";
+var $g_datasetStatusSybase_PFR= "Y";
+var $g_protectionSchemeStatusSybase_PFR= "Y";
+var $g_continuityStatusSybase_PFR="Y";
+var $g_continuityManagenentSybase_PFR= "Y";
+}
+//-----------Start NC ,Import FO WorkFlow and Verify Screens During NC---------------
+
+if ($g_executeNCSybase_PFR == "Y"){
+var $g_importNCSybase_PFR= "Y";
+var $g_importFOSybase_PFR= "Y";
+var $g_startNCSybase_PFR= "Y";
+var $g_monitorRelationshipSybase_PFR= "Y";
+var $g_manageDRSolutionSybase_PFR= "Y";
+var $g_groupInformationSybase_PFR= "Y";
+var $g_groupSnapshotSybase_PFR= "Y";
+var $g_replicationNCSybase_PFR= "Y";
+var $g_rpoNCSybase_PFR= "Y";
+var $g_rtoNCSybase_PFR= "Y";
+}
+//------------Import SO and SB Workflow,stop NC and start SO,RNC and SB------------------------
+
+if ($g_executeSOSBSybase_PFR == "Y"){
+var $g_importSOSBSybase_PFR= "Y";
+var $g_stopNCSybase_PFR= "Y";
+var $g_startSOSybase_PFR= "Y";
+var $g_SOExecutionSybase_PFR= "Y";
+var $g_replicationSOSybase_PFR= "Y";
+var $g_importRNCSybase_PFR= "Y";
+var $g_startRNCSybase_PFR= "Y";
+var $g_groupInformaitionRNCSybase_PFR= "Y";
+var $g_groupSnapshotSybase_PFR= "Y";
+var $g_rpoRNCSybase_PFR= "Y";
+var $g_replicationRNCSybase_PFR= "Y";
+var $g_stopRNCSybase_PFR= "Y";
+var $g_startSBSybase_PFR= "Y";
+var $g_SBExecutionSybase_PFR= "Y";
+var $g_monitorManageSBSybase_PFR= "Y";
+}
+//------------Event for Agent and Replication start and Stop-------------------------
+if ($g_eventExecutionSybase_PFR == "Y"){	
+	
+var $g_localStopSybase_PFRAgent= "Y";
+var $g_localStartSybase_PFRAgent= "Y";
+	
+var $g_replicaionStopSybase_PFR= "Y";
+var $g_replicaionStartSybase_PFR= "Y";
+}
+//--------------FO Execution-----------------------------------------------
+if($g_executeFOSybase_PFR == "Y"){
+var $g_startFOSybase_PFR= "Y";
+var $g_FOExecutionSybase_PFR= "Y";
+var $g_continuityStatusFOSybase_PFR= "Y";
+var $g_rpoFOSybase_PFR= "Y";
+var $g_monitorManageFOSybase_PFR= "Y";
+}
+
+
+
+if($flag == 0){
+	$g_executeSybase_PFRAll = "Y";
+}

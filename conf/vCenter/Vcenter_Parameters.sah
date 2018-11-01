@@ -1,0 +1,36 @@
+//vcs param
+var $msType = "VCENTER";
+var $msVcsName = "new_pr_170";
+var $msName = "dr_170";
+var $NewVcsName = "pr_170";
+var $vcsName1 = "vcs1";
+var $vcsName2 = "vcs2";
+var $vcsName3 = "vcs3";
+var $vcsName4 = "vcs4";
+var $vcsName5 = "vcs5";
+var $vCenterServer = "172.168.1.170";
+var $vCenterServer2 = "172.168.20.34";
+var $vCenterServer3 = "172.1.1.1";
+var $InvalidVCenterServer = "172.168.1.1";
+var $InvalidVCenterServer2 = "172.168.1.2";
+var $userName1 = "Deepak";
+var $password1 = "Sanovi123";
+var $wrongUserName = "test";
+var $wrongPassword = "Sanovi12";
+var $userName3 = "Administrator";
+var $password3 = "Sanovi@123";
+var $changeVcenterServer = "172.168.1.170";
+var $changeUserName = "Deepak";
+var $changePassword = "Sanovi123";
+
+var $msSite="DRM_Site";
+var $site="PR";
+var $address="PR";
+var $site_incharge="drmadmin";
+
+
+//DB PARAM
+var $hostUserNamePR="root";// 
+var $hostPasswordPR="sanovi";
+var $hostIPPR=$drmServer;
+var $hostPortPR="3306";

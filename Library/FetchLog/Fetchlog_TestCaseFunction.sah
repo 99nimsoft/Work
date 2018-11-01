@@ -1,0 +1,69 @@
+
+
+
+function createUsers_0001(){
+	try {
+		CreateUser($supadmin);
+		CreateUser($admin);
+		CreateUser($operator);
+		CreateUser($notification);
+		} catch ($e) { 
+		  _log($e.toString(),"Fetchlog");
+		_log("for test Case ID: Creation  of  different users,execution got failed.kindly check the log for more details");
+		_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+}
+
+function Assign_Group_User_0001(){
+	try {
+		//Assign_Group_User($username,$groupName);
+		Assign_Group_User($admin,$groupName);
+		Assign_Group_User($operator,$groupName);
+		Assign_Group_User($notification,$groupName);
+		Assign_Group_User($username,$groupName);
+		} catch ($e) { 
+		  _log($e.toString(),"Fetchlog");
+		_log("for test Case ID: Assigning Groups to different Users,execution got failed.kindly check the log for more details");
+		_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+}
+
+function Login_Different_User_0002(){
+
+	try {
+		login($admin, $password);
+		Fetch_Log_Normal();
+		} catch ($e) { 
+		  _log($e.toString(),"Fetchlog");
+		_log("for test Case ID: Change_ContinuityStatus_Group Function: Change_ContinuityStatus_Group_SO(),execution got failed.kindly check the log for more details");
+		_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+		
+		try {
+			login($operator, $password);
+			Fetch_Log_Opr();
+			} catch ($e) { 
+			  _log($e.toString(),"Fetchlog");
+			_log("for test Case ID: Change_ContinuityStatus_Group Function: Change_ContinuityStatus_Group_SO(),execution got failed.kindly check the log for more details");
+			_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+			
+			
+	
+}
+
+function FetchLog_CLI_Mode_0003(){
+	try {
+		Fetch_Log_AdvanceTab($groupName);
+		} catch ($e) { 
+		  _log($e.toString(),"Fetchlog");
+		_log("for test Case ID: Fetchlog  through CLIMode,execution got failed.kindly check the log for more details");
+		_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+}
+
+//Fetch_Log_AdvanceTab_Windows($groupName)
+
+function FetchLog_Windows_Mode_0004(){
+	Fetch_Log_AdvanceTab_Windows($groupName);
+}

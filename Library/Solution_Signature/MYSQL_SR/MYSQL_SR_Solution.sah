@@ -1,0 +1,687 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are the part of  My SQL SR solution screen wise fetching and comparing data from Db and GUI. 
+ ** AuthorName : Swati Chowdhary
+ ** Created Date : Feb 2013
+ ************************************************************************/
+
+/**
+* Function is for creating functional Group from MYSQL solution from solution details screen.
+*@param : $groupName, $groupDescription, $SolutionSignature, $primaryComponents, $remoteComponents, $primaryDatasets, $remoteDatasets, $primaryProtections, $remoteProtections
+*@return : null
+*@Author: Swati Chowdhary
+*
+*/
+function Mysql_Create_FG() {
+	$groupCreation = Create_FG($groupName, $groupDescription, $SolutionSignature, $primaryComponents, $remoteComponents, $primaryDatasets, $remoteDatasets, $primaryProtections, $remoteProtections);
+	if ($groupCreation.get("flag") == 0) {
+		_log("Same group name already exists");
+	} else {
+		_setValue(_textbox("userName"), $replicationUserName);
+		_setValue(_password("password"), $replicationPassword);
+		
+		_click(_button("Submit")); 
+		//_click(_submit("Submit"));
+		_click(_link("License"));
+		_click(_checkbox("Recovery"));
+		_click(_checkbox("Test"));
+		_wait(1000, _button("licensebutton"));
+		_click(_button("licensebutton"));
+		_wait(1000, _link("RPO/RTO"));
+		_click(_link("RPO/RTO"));
+		_setValue(_textbox("desrpo1"), $desiredRpo);
+		_setValue(_textbox("rpoint1"), $rpoCompute);
+		_click(_button(" Save "));
+		_click(_button("/Finish/"));
+		_wait(10000, _link("Discovery"));
+		navigateToGroups();
+		if (_exists(_link($groupName))) {
+			_log("Group created succesfully");
+		} else {
+			_fail("Group not created succesfully.So that stopping execution.");
+		}
+	}
+} // End of Mysql_Create_FG()
+/**
+* Function is for Verification of replication status in replication page after SO
+*@param : null
+*@return : null
+*@Author: Swati Chowdhary
+*
+*/
+function Mysql_Replication_Post_SO() {
+	_wait(6000);
+	Mysql_Replication_Staus($groupName, $hostIPPR, $hostPortPR, $hostUserNamePR, $hostPasswordPR, $hostIPDR, $hostPortDR, $hostUserNameDR, $hostPasswordDR);
+}// End of Mysql_Replication_Post_SO()
+
+
+/**
+* Function is for Verification of replication status in replication page before SO
+*@param : null
+*@return : null
+*@Author: Swati Chowdhary
+*
+*/
+
+function Mysql_Replication() {
+	Mysql_Replication_Staus($groupName, $hostIPDR, $hostPortDR, $hostUserNameDR, $hostPasswordDR, $hostIPPR, $hostPortPR, $hostUserNamePR, $hostPasswordPR);
+}// End of Mysql_Replication()
+
+/**
+* Function is for Verification of replication status in replication page 
+*@param : $groupName, $hostIPDR, $hostPortDR, $hostUserNameDR, $hostPasswordDR, $hostIPPR, $hostPortPR, $hostUserNamePR, $hostPasswordPR
+*@return : null
+*@Author: Swati Chowdhary
+*
+*/
+function Mysql_Replication_Staus($groupName, $hostIPDR, $hostPortDR, $hostUserNameDR, $hostPasswordDR, $hostIPPR, $hostPortPR, $hostUserNamePR, $hostPasswordPR) {
+	NavigateToRGDetailsPage($groupName);
+	_click(_link("Replication"));
+
+	// calling function Mysql_Get_Slave_Status & Mysql_Get_Master_Status to get the slave and master status
+	var $slave = Mysql_Get_Slave_Status($hostIPDR, $hostPortDR, $hostUserNameDR, $hostPasswordDR);
+	var $master = Mysql_Get_Master_Status($hostIPPR, $hostPortPR, $hostUserNamePR, $hostPasswordPR);
+
+	var $replication = Get_replication_Status($slave, $master);
+
+	// verification of Replication Status in GUI
+	_assertContainsText($replication.get("ReplicationStatus"), _preformatted(0), "Replication Status incorrect in GUI");
+
+	// verification of MySQL Replication Status in GUI
+	_assertContainsText($replication.get("mysqlReplicationStatus"), _preformatted(0), "Mysql replication Status incorrect in GUI");
+
+	// verification of MySQL Recovery Status in GUI
+	_assertContainsText($replication.get("recoveryStatus"), _preformatted(0), "Mysql recovery Status incorrect in GUI");
+
+	// verification of data lag
+	_assertContainsText($replication.get("laginKB"), _preformatted(0), "data lag incorrect in GUI");
+
+	// verification of master host on DR
+	_assertContainsText($slave.get("HOSTDB"), _preformatted(0), "master host on DR incorrect in GUI");
+
+	// verification of master port on DR
+	_assertContainsText($slave.get("portdb"), _preformatted(0), "master port on DR incorrect in GUI");
+
+	// verification of master user on DR
+	_assertContainsText($slave.get("userDB"), _preformatted(0), "master user on DR incorrect in GUI");
+
+	// verification of master log file on DR
+	_assertContainsText($slave.get("masterlogfileDB"), _preformatted(0), "master log file on DR incorrect in GUI");
+
+	// verification of Read master log position on DR
+	_assertContainsText($slave.get("masterlogpositionDB"), _preformatted(0), "Read master log position on DR incorrect in GUI");
+
+	// verification of Relay master log file on DR
+	_assertContainsText($slave.get("RelaymasterlogfileDB"), _preformatted(0), "Relay master log file on DR incorrect in GUI");
+
+	// verification of Exec master log position on DR
+
+	_assertContainsText($slave.get("ExecmasterlogpositionDB"), _preformatted(0), "Exec master log position on DR incorrect in GUI");
+
+	// verification of Log file on PR
+	_assertContainsText($master.get("MasterLogFileDB"), _preformatted(0), "Log file on PR incorrect in GUI");
+
+	// verification of Position on PR
+	_assertContainsText($master.get("MasterLogPositionDB"), _preformatted(0), "Position on PR incorrect in GUI");
+
+	var $replicationStatusGui = _getCellText(_listItem(1,_near(_span("Replication Status:"))));
+	$replicationStatusGui =$replicationStatusGui.split(":");
+	
+	_assertEqual($replication.get("ReplicationStatus"), $replicationStatusGui[1], "Comparing Replication status from DB and GUI");
+}// end of Mysql_Replication_Staus
+
+/**
+* Function is for Verification of the all RPO detail from RPO/RTO screen for mysql solution Post SO
+*@param : null
+*@return : null
+*@Author: Swati Chowdhary
+*
+*/
+
+function Mysql_Rpo_Post_SO() {
+	return Mysql_Rpo_Status($groupName, $binLogDirectoryDR, $hostIPDR, $drUserID, $drPassword, $hostIPPR, $hostPortPR, $hostUserNamePR, $hostPasswordPR, $hostIPDR, $hostPortDR, $hostUserNameDR, $hostPasswordDR);
+} // End of Mysql_RPO_Post_SO()
+
+/**
+* Function is for Verification of the all RPO detail from RPO/RTO screen for mysql solution before SO
+*@param : null
+*@return : null
+*@Author: Swati Chowdhary
+*
+*/
+
+function Mysql_Rpo() {
+	return Mysql_Rpo_Status($groupName, $binLogDirectoryPR, $hostIPPR, $prUserID, $prPassword, $hostIPDR, $hostPortDR, $hostUserNameDR, $hostPasswordDR, $hostIPPR, $hostPortPR, $hostUserNamePR, $hostPasswordPR);
+}// End of Mysql_RPO()
+
+/**
+* Function is for Verification of the all RPO detail from RPO/RTO screen for mysql solution .
+*@param : $groupName, $binLogDirectory, $sshIP, $sshUserID, $sshPassword, $hostIPDR, $hostPortDR, $hostUserNameDR, $hostPasswordDR, $hostIPPR, $hostPortPR, $hostUserNamePR, $hostPasswordPR
+*@return : $dbRecoveryPoint
+*@Author: Swati Chowdhary
+*
+*/
+
+function Mysql_Rpo_Status($groupName, $binLogDirectory, $sshIP, $sshUserID, $sshPassword, $hostIPDR, $hostPortDR, $hostUserNameDR, $hostPasswordDR, $hostIPPR, $hostPortPR, $hostUserNamePR, $hostPasswordPR) {
+	navigateToRPO($groupName);
+
+	// calling function Mysql_Get_Slave_Status & Mysql_Get_Master_Status to get the master and slave status
+	var $slave = Mysql_Get_Slave_Status($hostIPDR, $hostPortDR, $hostUserNameDR, $hostPasswordDR);
+	var $master = Mysql_Get_Master_Status($hostIPPR, $hostPortPR, $hostUserNamePR, $hostPasswordPR);
+	var $logFile = $master.get("MasterLogFileDB");
+	var $logPosition = $master.get("MasterLogPositionDB");
+	var $slaveLogFileDB = $slave.get("RelaymasterlogfileDB");
+	var $slaveLogPositionDB = $slave.get("ExecmasterlogpositionDB");
+	var $transactionTimePR = $logFile + " " + "|" + " " + "grep" + " " + $logPosition;
+	var $sshCommand = 'mysqlbinlog' + " " + $binLogDirectory + $transactionTimePR;
+
+	// Calling SSH connection function connecting to PR machine to get the Transaction Time of PR
+	$status = Execute_Ssh_Command($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommand);
+	var $statusStringPR = $status.get("output").toString();
+	var $statusSplitPR = $statusStringPR.split("#");
+	var $serverTimePR = $statusSplitPR[1].split("server");
+	var $transactionTimePRDB = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("yyMMdd HH:mm:ss").parse($serverTimePR[0]));
+	_assertExists("Transaction Time PR DB:", $transactionTimePRDB);
+
+	var $masterLogPosition = $slave.get("ExecmasterlogpositionDB");
+	var $masterLogFile = $slave.get("masterlogfileDB");
+
+	var $transactionTimeDR = $slaveLogFileDB + " " + "|" + " " + "grep" + " " + $slaveLogPositionDB;
+	var $sshCommand = 'mysqlbinlog' + " " + $binLogDirectory + $transactionTimeDR;
+
+	// Calling SSH connection function connecting to DR machine to get the Transaction Time of DR
+	$status = Execute_Ssh_Command($compIPDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommand);
+	var $statusStringDR = $status.get("output").toString();
+	var $statusSplitDR = $statusStringDR.split("#");
+	var $serverTimeDR = $statusSplitDR[1].split("server");
+	var $transactionTimeDRDB = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").format(new java.text.SimpleDateFormat("yyMMdd HH:mm:ss").parse($serverTimeDR[0]));
+	_assertExists("Transaction Time DR DB:", $transactionTimeDRDB);
+
+	var $i=0;
+	while($i<11){
+		_wait(5000);
+		$i++;
+	}
+	
+		
+	var $primaryMasterLogFile = _getText(_div("col-lg-7", _near(_div("Master Log File", _near(_strong("Primary"))))));		    
+	_assertExists("Primary Master Log File:", $primaryMasterLogFile);
+	_assertEqual($master.get("MasterLogFileDB"), $primaryMasterLogFile, "Comparing Master Log File from primary DB and GUI ");
+
+	var $remoteMasterLogFile = _getText(_div("col-lg-7", _near(_div("Master Log File", _near(_strong("Remote"))))));
+	_assertExists("Remote Master Log File:", $remoteMasterLogFile);
+	_assertEqual($slave.get("masterlogfileDB"), $remoteMasterLogFile, "Comparing Master Log File from Secondary DB and GUI ");
+
+	_assertEqual($primaryMasterLogFile, $remoteMasterLogFile, "Comparing Master Log File from  Primary GUI and Secondary GUI");
+
+	var $primaryMasterLogPosition = _getText(_div("col-lg-7", _near(_div("Master Log Position", _near(_strong("Primary"))))));
+	_assertExists("Primary Master Log Position:", $primaryMasterLogPosition);
+	_assertEqual($master.get("MasterLogPositionDB"), $primaryMasterLogPosition, "Comparing Master Log position from primary DB and GUI ");
+
+	var $executedMasterLogPosition =_getText(_div("col-lg-7", _near(_div("Master Log Position", _near(_strong("Remote"))))));
+	_assertExists("Executed Master Log Position :", $executedMasterLogPosition);
+	_assertEqual($slave.get("ExecmasterlogpositionDB"), $executedMasterLogPosition, " Comparing Log position from Secondary DB and GUI ");
+
+	_assertEqual($primaryMasterLogPosition, $executedMasterLogPosition, "Comparing Log Position from Primary GUI and Secondary GUI");
+
+	var $primaryTransactionTime =_getText(_div("col-lg-7", _near(_div("Transaction Time", _near(_strong("Primary"))))));
+	_assertExists("Primary Transaction Time:", $primaryTransactionTime);
+	_assertEqual($transactionTimePRDB, $primaryTransactionTime, "Comparing Transaction Time from primary DB and GUI ");
+
+	var $remoteTransactionTime = _getText(_div("col-lg-7", _near(_div("Transaction Time", _near(_strong("Remote"))))));
+	_assertExists("Remote Transaction Time:", $remoteTransactionTime);
+	_assertEqual($transactionTimeDRDB, $remoteTransactionTime, "Comparing Transaction Time from Secondary DB and GUI ");
+
+	_assertEqual($primaryTransactionTime, $remoteTransactionTime, "Comparing Transaction Time from Primary GUI and Secondary GUI ");
+
+	// Calling Calulate_Rpo function to verify RPO calculation from gui
+	$dbRpo = Calulate_Rpo($transactionTimePRDB, $transactionTimeDRDB);
+
+	var $recoveryPointinDB = $dbRpo.get("recoveryPointDB");
+
+	var $dbRecoveryPoint = new java.util.Properties();
+	$dbRecoveryPoint.put("RecoveryPointDB", $recoveryPointinDB);
+	return $dbRecoveryPoint;
+
+}// end of Mysql_RPO_Status()
+
+/**
+* Function is for Verification of the all RTO detail from RPO/RTO screen for mysql solution.
+*@param : $groupName
+*@return : $dbRto
+*@Author: Swati Chowdhary
+*
+*/
+
+function Mysql_Rto($groupName) {
+	navigateToRTO($groupName);
+    _mouseOver(_svg_rect(11));
+    var $stepName1 = RTO_Calculate();    
+    _wait(1000);
+    
+    _mouseOver(_svg_rect(12));
+    var $stepName2 = RTO_Calculate();
+    _wait(1000);
+    
+    _mouseOver(_svg_rect(13));
+    var $stepName3 = RTO_Calculate();
+    _wait(1000);
+        
+    _mouseOver(_svg_rect(14));
+    var $stepName4 = RTO_Calculate();
+	
+	
+	
+	var $expectedCompletionTime = Math.floor($stepName1 + $stepName2 + $stepName3 + $stepName4);
+	_assertExists("Expected_Completion_Time:", $expectedCompletionTime);
+
+	// calling to calculate rto function
+	var $dbRto = Calculate_Rto($expectedCompletionTime);
+	return $dbRto;
+} // End Of Mysql_Rto()
+
+/**
+* Function is for Verification of details in Group Information screen for MYSQL solution after SO.
+*@param :null
+*@return : null
+*@Author: Swati Chowdhary
+*
+*/
+
+function Mysql_GroupInformation_Post_SO() {
+	_wait(6000);
+	Mysql_GroupInformation_Details($groupName, $hostIPPR, $hostPortPR, $hostUserNamePR, $hostPasswordPR, $hostIPDR, $hostPortDR, $hostUserNameDR, $hostPasswordDR, "SO");
+}// End of Mysql_Groupinformation_Post_SO()
+
+/**
+* Function is for Verification of details in Group Information screen for MYSQL solution before SO.
+*@param :null
+*@return : null
+*@Author: Swati Chowdhary
+*
+*/
+function Mysql_GroupInformation() {
+	Mysql_GroupInformation_Details($groupName, $hostIPDR, $hostPortDR, $hostUserNameDR, $hostPasswordDR, $hostIPPR, $hostPortPR, $hostUserNamePR, $hostPasswordPR);
+}// End of Mysql_Groupinformation()
+
+
+/**
+* Function is for Verification of details in Group Information screen for MYSQL solution.
+*@param :$groupName, $hostIPDR, $hostPortDR, $hostUserNameDR, $hostPasswordDR, $hostIPPR, $hostPortPR, $hostUserNamePR, $hostPasswordPR, $WFType
+*@return : null
+*@Author: Swati Chowdhary
+*
+*/
+function Mysql_GroupInformation_Details($groupName, $hostIPDR, $hostPortDR, $hostUserNameDR, $hostPasswordDR, $hostIPPR, $hostPortPR, $hostUserNamePR, $hostPasswordPR, $WFType) {
+	_wait(10000);
+	Popup_Handler();
+	_click(_link("Manage"));
+	_click(_link("Groups List View"));
+	_click(_link($groupName));
+	_click(_link("Group Information"));
+
+	// calling Group_ManageGroupInformation to verify the PR and DR site status
+
+	Group_Managegroupinformation($groupName, $WFType);
+
+	// calling function Mysql_Get_Slave_Status & Mysql_Get_Master_Status to get
+	// master and slave status
+	var $slave = Mysql_Get_Slave_Status($hostIPDR, $hostPortDR, $hostUserNameDR, $hostPasswordDR);
+	var $master = Mysql_Get_Master_Status($hostIPPR, $hostPortPR, $hostUserNamePR, $hostPasswordPR);
+
+	// verification of master log file on slave
+
+	
+	var $i=0;
+	while($i<10){
+		var $masterLogFile = _getText(_cell(0, _near(_tableHeader("Master Log File:"))));
+		_assertExists("master log file on secondary:", $masterLogFile);
+	if($masterLogFile =="N/A"){
+		_wait(30000);
+	}
+	else
+		{
+		break;
+		_log("Go Ahead");
+		}
+	$i++;
+	}
+	
+	_assertEqual($slave.get("masterlogfileDB"), $masterLogFile, "Comparing Master Log Files from GUI and DR server");
+
+	// verification of Exec master log position on slave
+
+	var $executedMaterLogFilePosition = _getText(_cell(0, _near(_tableHeader("Executed Mater Log File Position:"))));
+	_assertExists("Exec master log position:", $executedMaterLogFilePosition);
+	_assertEqual($slave.get("ExecmasterlogpositionDB"), $executedMaterLogFilePosition, "Comparing Executed Mater Log File Position from GUI and DR server");
+
+	// verification of Log file on master
+
+	var $binLogFile = _getText(_cell(0, _near(_tableHeader("Bin Log File:"))));
+	_assertExists("Log file on Primary:", $binLogFile);
+	_assertEqual($master.get("MasterLogFileDB"), $binLogFile, "Comparing Bin Log Files from GUI and PR server");
+
+	// verification of Position on master
+
+	var $binLogFilePosition = _getText(_cell(0, _near(_tableHeader("Bin Log File Position:"))));
+	_assertExists("Log Position on Primary:", $binLogFilePosition);
+	_assertEqual($master.get("MasterLogPositionDB"), $binLogFilePosition, "Comparing Bin Log Position from GUI and PR server");
+
+	_assertEqual($binLogFile, $masterLogFile, "Comparing Files position from both PR and DR");
+	_assertEqual($binLogFilePosition, $executedMaterLogFilePosition, "Comparing Files position from both PR and DR");
+
+}// End of Mysql_Groupinformation_Details()
+
+
+
+/**
+* Function is for Validation of logs in Monitor > GroupSmapshot screen for MYSQL solution
+*@param :$WFType
+*@return : null
+*@Author: Anantha Sakthi
+*
+*/
+function Mysql_Continuity_Workflows($WFType) {
+	
+	NavigateToRGDetailsPage($groupName);
+	_click(_link("icon-right-arrow ex-col-arrow collapsed", _near(_link($WFType))));
+
+	// calling function Mysql_Get_Slave_Status & Mysql_Get_Master_Status to get master and slave status
+	var $slave = Mysql_Get_Slave_Status($hostIPDR, $hostPortDR, $hostUserNameDR, $hostPasswordDR);
+	var $master = Mysql_Get_Master_Status($hostIPPR, $hostPortPR, $hostUserNamePR, $hostPasswordPR);
+
+	
+// verification of Log file on master
+	
+    var $binLogFilefromgui = _getText(_heading5("/Bin Log File:.*/"));
+	var $binLogFilesplit = $binLogFilefromgui.split("File: ");
+	var $binLogFile =$binLogFilesplit[1];
+	_assertExists("Curretn Log from Gui " +$binLogFile);
+	
+	_assertEqual($master.get("MasterLogFileDB"), $binLogFile, "Comparing Bin Log Files from GUI and PR server");
+
+	// verification of Position on master
+
+
+    var $binLogFilePositiongui = _getText(_heading5("/Bin Log File Position:.*/"));
+	var $binLogFilePositionsplit = $binLogFilePositiongui.split("Position: ");
+	var $binLogFilePosition =$binLogFilePositionsplit[1];
+	_assertExists("Log Position on Primary:" + $binLogFilePosition);
+	
+	_assertEqual($master.get("MasterLogPositionDB"), $binLogFilePosition, "Comparing Bin Log Position from GUI and PR server");
+	
+	
+// verification of master log file on slave
+	
+    var $masterLogFilegui = _getText(_heading5("/Master Log File:.*/"));
+	var $masterLogFilesplit = $masterLogFilegui.split("File: ");
+	var $masterLogFile =$masterLogFilesplit[1];
+	_assertExists("master log file on secondary: " + $masterLogFile);	
+	
+	_assertEqual($slave.get("masterlogfileDB"), $masterLogFile, "Comparing Master Log Files from GUI and DR server");
+
+	// verification of Exec master log position on slave
+
+    var $executedMaterLogFilePositiongui = _getText(_heading5("/Executed Master Log File Position:.*/"));
+	var $executedMaterLogFilePositionsplit = $executedMaterLogFilePositiongui.split("Position: ");
+	var $executedMaterLogFilePosition =$executedMaterLogFilePositionsplit[1];
+	
+	_assertExists("Exec master log position on Secondary:", $executedMaterLogFilePosition);
+	_assertEqual($slave.get("ExecmasterlogpositionDB"), $executedMaterLogFilePosition, "Comparing Executed Mater Log File Position from GUI and DR server");
+
+	
+	_assertEqual($binLogFile, $masterLogFile, "Comparing Files position from both PR and DR");
+	_assertEqual($binLogFilePosition, $executedMaterLogFilePosition, "Comparing Files position from both PR and DR");
+
+}// End Of Mysql_Gruopsnapshot()
+
+/**
+* Function is to Get Master status PR
+*@param : $hostIPDR, $hostPortDR, $hostUserNameDR, $hostPasswordDR
+*@return : $master
+*@Author: Swati Chowdhary
+*
+*/
+
+// Description: Get Master status PR
+
+function Mysql_Get_Master_Status($hostIPPR, $hostPortPR, $hostUserNamePR, $hostPasswordPR) {
+
+	// calling jdbc connection function
+	$props = Get_Mysql_Db_Connection_URL($hostUserNamePR, $hostPasswordPR, $hostIPPR, $hostPortPR, "mysql");
+	// for enabling mysql connection
+	var $db = _getDB("com.mysql.jdbc.Driver", $props.get("databaseconnection"), $props);
+	// for enabling mariadb connection
+	//var $db = _getDB("org.mariadb.jdbc.Driver", $props.get("databaseconnection"), $props);
+	// executing query on PR
+	var $masterStatus = $db.select("show master status;");
+	var $status = $masterStatus.toString();
+	var $query = $status.split(",");
+
+	// verification of Log file
+	var $masterLogFileDB = $query[0].replace(/^\s+|\s+$/g, "");
+
+	// verification of Position
+	var $masterLogPositionDB = $query[1].replace(/^\s+|\s+$/g, "");
+
+	var $master = new java.util.Properties();
+	$master.put("MasterLogFileDB", $masterLogFileDB);
+	$master.put("MasterLogPositionDB", $masterLogPositionDB);
+
+	return $master;
+} // end Of Mysql_Get_Master_Status()
+
+/**
+* Function is to Get slave status DR
+*@param : $hostIPDR, $hostPortDR, $hostUserNameDR, $hostPasswordDR
+*@return : $slave
+*@Author: Swati Chowdhary
+*
+*/
+
+function Mysql_Get_Slave_Status($hostIPDR, $hostPortDR, $hostUserNameDR, $hostPasswordDR) {
+	// calling jdbc connection function
+	$props = Get_Mysql_Db_Connection_URL($hostUserNameDR, $hostPasswordDR, $hostIPDR, $hostPortDR, "mysql");
+	var db = _getDB("com.mysql.jdbc.Driver", $props.get("databaseconnection"), $props);
+	// executing query on DR
+	var $masterStatus = db.select("show slave status;");
+	var $status = $masterStatus.toString();
+	var $query = $status.split(",");
+
+	// verification of master host
+	var $hostDB = $query[1].replace(/^\s+|\s+$/g, "");
+
+	// verification of master port
+	var $portDB = $query[3].replace(/^\s+|\s+$/g, "");
+
+	// verification of master user
+	var $userDB = $query[2].replace(/^\s+|\s+$/g, "");
+
+	// verification of master log file
+	var $masterLogFileDB = $query[5].replace(/^\s+|\s+$/g, "");
+
+	// verification of Read master log position
+	var $masterLogPositionDB = $query[6].replace(/^\s+|\s+$/g, "");
+
+	// verification of Relay master log file
+	var $relayMasterLogFileDB = $query[9].replace(/^\s+|\s+$/g, "");
+
+	// verification of Exec master log position
+	var $execMasterLogPositionDB = $query[21].replace(/^\s+|\s+$/g, "");
+
+	// verification of Slave_IO_Running status
+	var $slaveIORunning = $query[10].replace(/^\s+|\s+$/g, "");
+
+	// verification of Slave_SQL_Running: status
+	var $slaveSQLRunning = $query[11].replace(/^\s+|\s+$/g, "");
+
+	// verification of Last_SQL_Errno:: status
+	var $lastSQLErrno = $query[36].replace(/^\s+|\s+$/g, "");
+
+	// verification of Last_SQL_Errno:: status
+	var $lastSQLError = $query[37].replace(/^\s+|\s+$/g, "");
+
+	var $slave = new java.util.Properties();
+	$slave.put("HOSTDB", $hostDB);
+	$slave.put("portdb", $portDB);
+	$slave.put("userDB", $userDB);
+	$slave.put("masterlogfileDB", $masterLogFileDB);
+	$slave.put("masterlogpositionDB", $masterLogPositionDB);
+	$slave.put("RelaymasterlogfileDB", $relayMasterLogFileDB);
+	$slave.put("ExecmasterlogpositionDB", $execMasterLogPositionDB);
+	$slave.put("slaveIORunning", $slaveIORunning);
+	$slave.put("slaveSQLRunning", $slaveSQLRunning);
+	$slave.put("lastSQLErrno", $lastSQLErrno);
+	$slave.put("lastSQLError", $lastSQLError);
+	return $slave;
+}// End Of Mysql_Get_Slave_Status()
+
+/**
+* Function is to Get replication status 
+*@param : $slave, $master
+*@return : $replication
+*@Author: Swati Chowdhary
+*
+*/
+
+function Get_replication_Status($slave, $master) {
+
+	// Getting MySQL Replication Status from back end for Active status
+	if ($slave.get("slaveIORunning") == "Yes") {
+		var $iostate = "ACTIVE";
+		var $mysqlReplicationStatus = "MySQL Replication Status: " + $iostate + "";
+		_assertExists("mysql replication Status in backend is :", $mysqlReplicationStatus);
+
+		// Getting MySQL Replication Status from back end for InActive status
+	} else if ($slave.get("slaveIORunning") == "No") {
+		var $iostate = "INACTIVE";
+		var $sqlerrormsg = "slaveIOState not found.";
+		var $mysqlReplicationStatus = "MySQL Replication Status: " + $iostate + "";
+		var $replicationStatusError = "MySQL Replication Status Error: DR_IO_ERROR=" + $sqlerrormsg + "";
+		_assertExists("replication Status Error in backend is :", $mysqlReplicationStatus);
+		// verification of MySQL Replication Status in GUI
+		_assertContainsText($replicationStatusError, _preformatted(0));
+
+		// Getting MySQL Replication Status from back end for Unknown status
+	} else {
+		var $iostate = "UNKNOWN";
+		var $sqlerrormsg = "slaveIOState not found.";
+		var $mysqlReplicationStatus = "MySQL Replication Status: " + $iostate + "";
+		var $replicationStatusError = "MySQL Replication Status Error: DR_IO_ERROR=" + $sqlerrormsg + "";
+		_assertExists("replication Status Error in backend is :", $mysqlReplicationStatus);
+
+		// verification of MySQL Replication Status in GUI
+		_assertContainsText($replicationStatusError, _preformatted(0));
+	}
+
+	// Getting MySQL Recovery Status from back end for Active status
+	if ($slave.get("slaveSQLRunning") == "Yes") {
+		var $sqlstate = "ACTIVE";
+		var $recoveryStatus = "MySQL Recovery Status: " + $sqlstate + "";
+		_assertExists("recovery Status in backend is :", $recoveryStatus);
+
+		// Getting MySQL Recovery Status from back end for InActive status
+	} else if ($slave.get("slaveSQLRunning") == "No") {
+		var $sqlstate = "INACTIVE";
+		var $sqlerrormsg = "SQL thread is not running. SQL thread state: " + $slave.get("slaveSQLRunning") + "";
+		var $recoveryStatus = "MySQL Recovery Status: " + $sqlstate + "";
+		var $recoveryStatusError = "MySQL Recovery Status Error: DR_SQL_ERROR=" + $sqlerrormsg + "";
+		_assertExists("recovery Status Error in backend is :", $recoveryStatus);
+
+		// verification of MySQL Recovery Status in GUI
+		_assertContainsText($recoveryStatusError, _preformatted(0));
+
+		// Getting MySQL Recovery Status from back end for Unknown status
+	} else {
+		var $sqlstate = "UNKNOWN";
+		var $sqlerrormsg = "SQL thread is not running. SQL thread state: " + $slave.get("slaveSQLRunning") + "";
+		var $recoveryStatus = "MySQL Recovery Status: " + $sqlstate + "";
+		var $recoveryStatusError = "MySQL Recovery Status Error: DR_SQL_ERROR=" + $sqlerrormsg + "";
+		_assertExists("recovery Status Error in backend is :", $recoveryStatus);
+		// verification of MySQL Recovery Status in GUI
+		_assertContainsText($recoveryStatusError, _preformatted(0));
+	}
+
+	// Setting overall status REP_STATE of group
+	if ($iostate == "INACTIVE" || $sqlstate == "INACTIVE") {
+		var $ReplicationStatus = "INACTIVE";
+	} else if ($iostate == "UNKNOWN" || $sqlstate == "UNKNOWN") {
+		var $ReplicationStatus = "UNKNOWN";
+	} else {
+		var $ReplicationStatus = "ACTIVE";
+	}
+
+	// calculation of Data lag in back end
+	if (Math.floor($master.get("MasterLogPositionDB") > $slave.get("ExecmasterlogpositionDB"))) {
+		var $laginBytes = Math.floor(($master.get("MasterLogPositionDB") - $slave.get("ExecmasterlogpositionDB")));
+		if (Math.floor($laginBytes <= 1024)) {
+			var $laginKB = "1" + " " + "KB";
+		} else {
+			var $laginKB = Math.floor($laginBytes / 1024) + " " + "KB";
+		}
+	} else {
+		var $laginKB = "0" + " " + "KB";
+	}
+	var $replication = new java.util.Properties();
+	$replication.put("mysqlReplicationStatus", $mysqlReplicationStatus);
+	$replication.put("recoveryStatus", $recoveryStatus);
+	$replication.put("ReplicationStatus", $ReplicationStatus);
+	$replication.put("laginKB", $laginKB);
+
+	return $replication;
+
+} // end of Get_replication_Status
+
+/**
+* Function is for Modification of MYSQL XML workflow for SO
+*@param :null
+*@return : null
+*@Author: Swati Chowdhary
+*
+*/
+
+function SO_Modify_WorkflowXML_Mysql(){
+	Modify_WorkflowXML_Mysql($fileSO);
+}
+
+/**
+* Function is for Modification of MYSQL XML workflow for SB
+*@param :null
+*@return : null
+*@Author: Swati Chowdhary
+*
+*/
+function SB_Modify_WorkflowXML_Mysql(){
+	Modify_WorkflowXML_Mysql($fileSB);
+}
+
+/**
+* Function is for Modification of MYSQL XML workflow for FO
+*@param :null
+*@return : null
+*@Author: Swati Chowdhary
+*
+*/
+function FO_Modify_WorkflowXML_Mysql(){
+	Modify_WorkflowXML_Mysql($fileFO);
+}
+
+/**
+* Function is for Modification of MYSQL XML workflow
+*@param :$file
+*@return : null
+*@Author: Swati Chowdhary
+*
+*/
+function Modify_WorkflowXML_Mysql($file){
+	
+	var $fileread= _userDataDir() + "\\MySQL\\" + $file;
+	var $xmlStr =_readFile($fileread); 
+	var $newXmlStr = $xmlStr.replace('<?xml version="1.0" encoding="UTF-8"?>',"");
+	var $xml = new XML($newXmlStr); 
+	var $waitTime = "120";
+	$xml..action.(@id=="1").timeToExecute=$waitTime;
+	_writeFile($xml.toString(),$fileread, true); 
+}
+

@@ -1,0 +1,190 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the Remote Agents parameters for MSSQL Log NetAPP Snap Mirror
+ ** AuthorName : Abdul Kareem A L
+ ** Created Date : 27/05/2014
+ ***********************************************************************************************/
+
+_log("done0");
+
+var $l_NetApp = _readExcelFile($SAHI_HOME + "\\conf\\MSSQL_LOG_NetAPP_SM\\MSSQL_LOG_NetAPP_SM_Parameter.xls","Remote");
+
+
+
+//This user Input required to Login the DRM server
+var $username = $l_NetApp[2][2]; // DRM server GUI user name e.g. "Abdul"
+var $password = $l_NetApp[3][2]; // DRM server GUI pwd
+
+//This user Input required to install the local agents
+//var $localAgentPathPR = $l_NetApp[13][5]; // this is the Path where user has install the agent on PR "/opt/panaces/"
+//var $localAgentPathDR = $l_NetApp[14][5]; // this is the Path where user has install the agent on DR "/opt/panaces/"
+
+
+//Remote Agent Installation
+//var $agentBuildPR =$l_NetApp[15][5];
+//var $agentBuildDR=$l_NetApp[16][5];
+//var $PfrStart="1";
+//var $PfrServicePath=$l_NetApp[17][5];
+var $systemType = $l_NetApp[6][2];//Component type (for dataset discovery (WIN)).
+var $osType = $l_NetApp[18][2]; //Build component type like Linux64
+var $NetAppsystemType = $l_NetApp[14][5]; //NetApp component type (for protection scheme).
+
+
+
+//This user Input required to create the Site
+var $incharge = "drmadmin"; // Site Incharge
+var $locationPR = "PR"; // PR Site Location
+var $addressPR = "Mumbai"; // PR site Address
+var $locationDR = "DR"; // DR Site Location
+var $addressDR = "Bangalore";// DR site Address
+
+//This user Input required to create the Component for Local or remote WINDOWS
+var $agentType = "Remote"; // This is for agent type always enter as e.g. Local or Remote.Note Here first letter is upper case and remaining lower case.
+var $compIPPR = $l_NetApp[8][2]; // PR Component IP
+var $compIPDR = $l_NetApp[9][2]; // DR Component IP
+var $remoteUserNameValPR = $l_NetApp[10][2]; // PR Machine user name. this information required for both local and remote
+var $remotePwdValPR = $l_NetApp[11][2]; // PR Machine Pwd name. this information required for both local and remote
+var $remoteUserNameValDR = $l_NetApp[12][2];// DR Machine user name. this information required for both local and remote
+var $remotePwdValDR = $l_NetApp[13][2];// PR Machine Pwd name. this information required for both local and remote
+var $compNamePR = $l_NetApp[14][2]; // PR Component Name
+var $compNameDR = $l_NetApp[15][2]; // DR Component Name
+
+//This user Input required to create NetApp components LINUX
+var $NetAppAgentType = "Remote"; //The NetApp Agent remains Remote ALWAYS.
+var $NetAppcompIPPR = $l_NetApp[20][2]; // NetAPP PR Component IP
+var $NetAppcompIPDR = $l_NetApp[21][2]; // NetAPP DR Component IP
+var $NetAppremoteUserNameValPR = $l_NetApp[22][2]; // NetAPP PR Machine user name. this information required for both local and remote
+var $NetAppremotePwdValPR = $l_NetApp[23][2]; // NetAPP PR Machine Pwd name. this information required for both local and remote
+var $NetAppremoteUserNameValDR = $l_NetApp[24][2];// NetAPP DR Machine user name. this information required for both local and remote
+var $NetAppremotePwdValDR = $l_NetApp[25][2];// NetAPP DR Machine Pwd name. this information required for both local and remote
+var $NetAppcompNamePR = $l_NetApp[26][2]; // NetAPP PR Component Name
+var $NetAppcompNameDR = $l_NetApp[27][2]; // NetAPP DR Component Name
+
+//This user Input required to create the dataset
+var $systemTypeDataset = $l_NetApp[2][5]; // Dataset Type "MSSQL"
+var $datasetNamePR = $l_NetApp[3][5]; // PR dataset name
+var $datasetNameDR = $l_NetApp[4][5]; // DR dataset name
+var $datasetInstanceNm = $l_NetApp[5][5];
+var $datasetPrDBUsrnm = $l_NetApp[6][5];
+var $datasetPrDBpwd = $l_NetApp[7][5];
+var $datasetDrDBUsrnm = $l_NetApp[8][5];
+var $datasetDrDBpwd = $l_NetApp[9][5];
+var $datasetport = $l_NetApp[10][5];
+var $datasetDBnm = $l_NetApp[11][5];
+
+//var $fileNameTextPathPR = $l_NetApp[6][5];
+//var $fileNameTextPathDR = $l_NetApp[7][5];
+
+//This user Input required to create the protection Scheme
+var $sernamePR = $l_NetApp[15][5]; // PR Protection Scheme name
+var $sernameDR = $l_NetApp[16][5]; // DR Protection Scheme name
+var $mgmtHostNetPR = $NetAppcompNamePR + " (" + $NetAppcompIPPR + ")";
+var $mgmtHostNetDR = $NetAppcompNameDR + " (" + $NetAppcompIPDR + ")";
+var $volumeNamePR = $l_NetApp[17][5];
+var $volumeNameDR = $l_NetApp[21][5];
+var $lunPathPR = $l_NetApp[18][5]; 
+var $lunPathDR = $l_NetApp[22][5];
+
+
+//This user Input required to create the Group
+var $groupName = $l_NetApp[30][2];// Group name
+var $groupDescription = "MSSQL Log with NetApp Snap Mirror"; // Group description
+
+// *********************************************************************************************************************************************
+// Important Note : Please don't modify/edit any below variable or its value.
+// If you made any changes of variable and its value, script will not execute.
+// *********************************************************************************************************************************************
+
+var $primaryPanacesServer = $drmServer; // this is Primary DRM server
+var $panacesAgentNodeAddressPR = $compIPPR;
+var $panacesAgentNodeAddressDR = $compIPDR;
+var $compsitePR = $locationPR;
+var $compsiteDR = $locationDR;
+var $primaryComponent = $compNamePR;
+var $remoteComponent = $compNameDR;
+var $primaryDataset = $datasetNamePR;
+var $remoteDataset = $datasetNameDR;
+var $primaryProtection = $sernamePR;
+var $remoteProtection = $sernameDR;
+//var $mgmtHostNetPR =$compNamePR+' ('+$compIPPR+')';
+//var $mgmtHostNetDR = $compNameDR+' ('+$compIPDR+')';
+var $dependentComponentNamePR = $compNamePR;
+var $dependentComponentNameDR = $compNameDR;
+var $incharge = "drmadmin";
+var $desiredRpo = "300";
+var $rpoCompute = "300";
+var $systemTypeProtection = "NetApp SnapMirror"; // Protection Scheme type
+var $SolutionSignature = "MSSQL Logs with NetApp SnapMirror"; // Solution type
+var $systemTypeDataset = "MSSQL"; // database subsystem
+var $datasetType = "MSSQL";// database Type
+var $drmDbUserName = "sa"; // DRM server database user id
+var $drmDbPassword = "sanovi";// DRM server database password
+//var $APP_PFRAgentChk = "1";
+
+
+var $ipPR= $compIPPR;
+var $ipDR= $compIPDR;
+
+
+var $database= $datasetDBnm;
+var $userPR = $datasetPrDBUsrnm; // for mssql db connection
+var $pwdPR = $datasetPrDBpwd;  // for mssql db connection
+var $userDR = $datasetDrDBUsrnm;  // for mssql db connection
+var $pwdDR = $datasetDrDBpwd;  // for mssqldb connection
+
+
+//workflow path
+var $WFPath = "MSSQL\\MSSQLLogNetApp"; // Location of SO/SB/FO xml file
+var $fileNC = "BCS-MSSQLLogNetApp-NC.xml"; // Name of NC xml file
+var $fileSO = "BCS-MSSQLLogNetApp-SO.xml"; // Name of SO xml file
+var $fileSB = "BCS-MSSQLLogNetApp-SB.xml"; // Name of SB xml file
+var $fileFO = "BCS-MSSQLLogNetApp-FO.xml" // Name of FO xml file
+var $fileRNC = "BCS-MSSQLLogNetApp-RNC.xml" // Name of RNC xml file	
+var $pstoolPath = $SAHI_HOME + "\\tools\\PsExec"; //pstool file path
+
+//NC Key Values
+var $PRLogPath = "E:\\"; // PANSQL_LOADLOGS_PATH= (DR Logfile Path) 
+var $MountDrive = "E:\\";  //MOUNT_DRIVE= (DR Logfile Path)
+var $PRBackupLogPath = "G:\\"; // PANSQL_BACKUP_LOGS_PATH= (PR Logfile Path)
+var $DRUndoPath = "F:\\"; // PANSQL_LOADLOGS_UNDO_LOGDIR= (DR Datafile Path)
+var $PRUndoPath = "G:\NetApp_Undo"; //PANSQL_BACKUPLOGS_UNDO_LOGDIR
+
+//RNC key Values
+
+var $RPRLogPath = "G:\\"; // PANSQL_LOADLOGS_PATH= (DR Logfile Path) 
+var $RMountDrive = "G:\\";  //MOUNT_DRIVE= (DR Logfile Path)
+var $RPRBackupLogPath = "E:\\"; // PANSQL_BACKUP_LOGS_PATH= (PR Logfile Path)
+var $RDRUndoPath = "F:\\"; // PANSQL_LOADLOGS_UNDO_LOGDIR= (DR Datafile Path)
+var $RPRUndoPath = "E:\NetApp_Undo"; //PANSQL_BACKUPLOGS_UNDO_LOGDIR
+
+/* Padma's PArameters:
+ * 
+ * var $primaryPanacesServer = $drmServer; // this is Primary DRM server
+var $panacesAgentNodeAddressPR = $compIPPR;
+var $panacesAgentNodeAddressDR = $compIPDR;
+var $compsitePR = $locationPR;
+var $compsiteDR = $locationDR;
+var $primaryComponents = $compNamePR;
+var $remoteComponents = $compNameDR;
+
+var $primaryNetAppComponent = $NetAppcompNamePR;
+var $remoteNetAppComponent = $NetAppcompNameDR;
+
+var $primaryDatasets = $datasetNamePR;
+var $remoteDatasets = $datasetNameDR;
+var $primaryProtections = $NetApp_Protection_PR;
+var $remoteProtections = $NetApp_Protection_DR;
+
+var $dependentComponentNamePR = $compNamePR;
+var $dependentComponentNameDR = $compNameDR;
+var $incharge = "drmadmin";
+var $desiredRpo = "300";
+var $rpoCompute = "300";
+var $systemTypeProtection = "NetApp SnapMirror"; // Protection Scheme type
+var $SolutionSignature = "Application SubSystem with NetApp SnapMirror"; // Solution type
+var $systemTypeDataset = "Application SubSystem"; // database subsystem
+var $datasetType = "Application SubSystem";// database Type
+var $drmDbUserName = "automation"; // DRM server database user id
+var $drmDbPassword = "sanovi";// DRM server database password
+var $APP_PFRAgentChk = "1"; */

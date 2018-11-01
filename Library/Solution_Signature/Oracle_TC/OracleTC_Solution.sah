@@ -1,0 +1,1097 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are the part of  Oracle TrueCopy solution screen wise fetching and comparing data from Db and GUI. 
+ ** @AuthorName : Aditi Jain
+ ** Created Date : Dec 2013
+ ************************************************************************/
+
+
+/**
+* Function is for Functional Group creation for OracleTC solution.
+*@param : null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+
+
+function Oracle_TC_Group_Creation()
+{
+	Oracle_TC_Group_Creation_Status($groupName, $groupDescription, $SolutionSignature,$compIPPR, $compIPstoragePR,$compIPDR, $compIPstorageDR, $primaryComponents,$compNamestoragePR, $remoteComponents, $compNamestorageDR,$primaryDatasets, $remoteDatasets);
+}
+
+/**
+* Function is for Functional Group creation for OracleTC solution.
+*@param :  $groupName, $groupDescription, $SolutionSignature, $primaryComponents, $remoteComponents,
+*          $primaryDatasets, $remoteDatasets, $primaryProtections, $remoteProtections
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+
+function Oracle_TC_Group_Creation_Status($groupName, $groupDescription, $SolutionSignature,$compIPPR, $compIPstoragePR,$compIPDR, $compIPstorageDR,$primaryComponents,$compNamestoragePR, $remoteComponents, $compNamestorageDR,$primaryDatasets, $remoteDatasets)
+{
+	navigateToDiscovery();
+	_click(_link("Groups"));
+	var $flag;
+	if (_exists(_link($groupName))) {
+		$flag = 0;
+	} else {
+		$flag = 1;
+		_setSelected(_select("createGroup"),"Functional Group");
+		_wait(1000);
+		_click(_button("/Go/"));
+		_setValue(_textbox("groupName"), $groupName);
+		_setValue(_textarea("groupDescription"), $groupDescription);
+		_setSelected(_select("solutionType"), $SolutionSignature);
+		_click(_button("/Next/"));
+		_wait(10000);
+		_click(_link("Server Component"));
+		if ($compIPPR == $compIPstoragePR){
+		_click(_checkbox($primaryComponents, _near(_cell($primaryComponents, _under(_tableHeader("PrimaryComponent"))))));
+		}
+		else{
+		_click(_checkbox($compNamestoragePR, _near(_cell($compNamestoragePR, _under(_tableHeader("PrimaryComponent"))))));
+	
+		}
+		if ($compIPDR == $compIPstorageDR){
+		_click(_checkbox($remoteComponents, _near(_cell($remoteComponents, _under(_tableHeader("RemoteComponent"))))));
+		}
+		else{
+		_click(_checkbox($compNamestorageDR, _near(_cell($compNamestorageDR, _under(_tableHeader("RemoteComponent"))))));
+		}
+		_click(_submit("Save"));
+		_wait(2000);
+		_click(_link("Application Dataset"));
+		_click(_checkbox("showAll"));
+		_setSelected(_select("primaryDatasets[1]"), $primaryDatasets);
+		_setSelected(_select("remoteDatasets[1]"), $remoteDatasets);
+		_click(_submit("/Save/"));
+		_click(_link("Data Protection"));
+		
+		
+		_setSelected(_select("primaryProtections"), $primaryProtections);
+		_setSelected(_select("remoteProtections"), $remoteProtections);
+		_click(_button("/Save/"));
+		_click(_button("/Next/"));
+		_wait(1000);
+		_click(_submit("Submit"));
+		_wait(2000);
+		_click(_link("License"));
+		_click(_checkbox("Recovery"));
+		_click(_checkbox("Test"));
+		_wait(1000);
+		_click(_button("Save[2]"));
+		_click(_button("Finish"));
+		_wait(5000);
+		navigateToDiscovery();
+		_click(_link("Groups"));
+		if (_exists(_link($groupName))) {
+			_assertExists("Group created succesfully");
+		} else {
+			_fail("Group not created succesfully.So that stopping execution.");
+		}
+	}
+
+}// End Of Oracle_TC_Group_Creation
+
+
+
+/**
+* Function is for Verification of the all RPO detail from RPO/RTO screen for oracle TC solution Post SO
+*@param : null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+function OracleTC_Rpo_Post_SO() {
+	var $archivePathPR = get_archive_path_PR("Archive Logs Location PR");
+	var $archivePathDR = get_archive_path_DR("Archive Logs Location DR");
+	return OracleTC_Rpo_Status($userDR, $pwdDR, $internalLogon, $oracleListenerIPDR, $dbSidSelect);
+
+} // End of Oracle_Rpo_Post_SO()
+
+/**
+* Function is for Verification of the all RPO detail from RPO/RTO screen for oracle TC solution before SO
+*@param : null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+function OracleTC_Rpo() {
+	var $archivePathPR = get_archive_path_PR("Archive Logs Location PR");
+	var $archivePathDR = get_archive_path_DR("Archive Logs Location DR");
+	return OracleTC_Rpo_Status($userPR, $pwdPR, $internalLogon, $oracleListenerIPPR, $dbSidSelect);
+
+}// End of Oracle_Rpo()
+
+/**
+* Function is for Verification of the all RPO detail from RPO/RTO screen for oracle TC solution.
+*@param : $userPR, $pwdPR, $internalLogon, $oracleListenerIPPR, $dbSidSelect,$archivePathPR, $userDR, $pwdDR, $internalLogon, $oracleListenerIPDR, $dbSidSelect,$archivePathDR
+*@return : $dbRecoveryPoint
+*@Author: Aditi Jain
+*
+*/
+function OracleTC_Rpo_Status($user, $pwd, $internalLogon, $oracleListenerIP, $dbSidSelect) {
+
+		_click(_link("Monitor"));
+		_click(_link($groupName));
+		_click(_link("RPO/RTO"));
+		
+		// Transaction ID PR 
+		var $transactionIDPRGui = _getCellText(_cell(0, _rightOf(_cell("Transaction ID:", _under(_cell("Primary"))))));
+		_assertExists("Transaction ID from GUI PR", $transactionIDPRGui);
+		
+		// Transaction Time PR 
+		var $transactionTimePRGui1 = _getCellText(_cell(0, _rightOf(_cell("Transaction Time:", _under(_cell("Primary"))))));
+		_assertExists("Transaction Time from GUI PR", $transactionTimePRGui1); 
+		
+		// Transaction ID DR
+		var $transactionIDDRGui = _getCellText(_cell(0, _rightOf(_cell("Transaction ID:", _under(_cell("Remote"))))));
+		_assertExists("Transaction ID from GUI DR", $transactionIDDRGui);
+		
+		// Transaction Time DR
+		var $transactionTimeDRGui = _getCellText(_cell(0, _rightOf(_cell("Transaction Time:", _under(_cell("Remote"))))));
+		_assertExists("Transaction time from GUI DR", $transactionTimeDRGui);
+		
+		
+		  //CONNECTION PR
+	    	
+	    	// calling function to connect the PR machine from back end
+		
+		    var $props = Get_User_Properties_for_OracleDb_Connection($user, $pwd, $internalLogon);
+		    var $conn = Get_Oracle_Db_Connection_URL($oracleListenerIP, $dbSidSelect);
+		     var $db = _getDB("oracle.jdbc.driver.OracleDriver", $conn, $props);
+		    
+	        
+		     var $tableCreationDBPR = $db.update("CREATE TABLE RPO (PersonID int,LastName varchar(255),FirstName varchar(255),Address varchar(255),City varchar(255))");
+		    
+		     var $TimeStampdbPR = $db.select("select to_char(completion_time,'DD Mon, YYYY HH24:MI:SS') MY_DATE, (blocks * block_size)  as ctime  from v$archived_log where sequence#=(select max(sequence#) from v$archived_log al, v$instance i, v$database d where al.thread# = i.thread#  and al.resetlogs_change# = d.resetlogs_change# and al.resetlogs_time = d.resetlogs_time)  and thread# = (select thread# from v$instance) order by thread#");
+			_assertExists("TimeStamp",$TimeStampdbPR);
+	    
+	    	
+	       var $date = $TimeStampdbPR;
+	       var $dateString = $date.toString();
+	       var $timeStampdb = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+	       _assertExists("Time Stamp db", $timeStampdb);
+	    	
+			$count = 0;
+			while($count<10){
+				_wait(30000);
+				}
+				$count++;
+			
+	   
+			
+		// Transaction ID PR 
+		var $transactionIDPR = _getCellText(_cell(0, _rightOf(_cell("Transaction ID:", _under(_cell("Primary"))))));
+		_assertExists("Transaction ID from GUI PR", $transactionIDPR);
+		
+		// Transaction Time PR 
+		var $transactionTimePR = _getCellText(_cell(0, _rightOf(_cell("Transaction Time:", _under(_cell("Primary"))))));
+		_assertExists("Transaction Time from GUI PR", $transactionTimePR); 
+
+		 var $date = $transactionTimePR;
+	       var $dateString = $date.toString();
+	       var $timeStampPRGUI = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+	       _assertExists("Time Stamp db", $timeStampPRGUI);
+		
+		// Transaction ID DR
+		var $transactionIDDR = _getCellText(_cell(0, _rightOf(_cell("Transaction ID:", _under(_cell("Remote"))))));
+		_assertExists("Transaction ID from GUI DR", $transactionIDDR);
+		
+		// Transaction Time DR
+		var $transactionTimeDR = _getCellText(_cell(0, _rightOf(_cell("Transaction Time:", _under(_cell("Remote"))))));
+		_assertExists("Transaction time from GUI DR", $transactionTimeDR);	
+		
+		 var $date = $transactionTimeDR;
+	       var $dateString = $date.toString();
+	       var $timeStampDRGUI = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+	       _assertExists("Time Stamp db", $timeStampDRGUI);
+	       
+		
+		_assertTrue($transactionIDPRGui<=$transactionIDPR,"TransactionID PR Equal in GUI and db");
+	    
+		_assertTrue($timeStampdb<=$timeStampPRGUI,"TimeStamp PR is Equal in GUI and db");
+	    
+		_assertTrue($transactionIDDRGui<=$transactionIDDR,"TransactionID DR Equal in GUI and db");
+	 
+		_assertTrue($timeStampDRGUI<= $timeStampdb,"TimeStamp DR is Equal in GUI and db");
+	  
+		var $droptable=$db.update("drop table RPO");
+	// Calling Calulate_Rpo function to verify RPO calculation from gui
+		$dbRpo = Calulate_Rpo($transactionTimePR, $transactionTimeDR);
+	    $recoveryPointinDB = $dbRpo.get("recoveryPointDB");
+
+	 	return $dbRpo;
+		return $recoveryPointinDB;
+		
+	}// End Of Oracle TC RPO
+
+/**
+* Function is to Get archive path from PR
+*@param :null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+function get_archive_path_PR(){
+	navigateToDiscovery();
+	_click(_link("Subsystems"));
+	_click(_link("Datasets"));
+	_wait(5000);
+	_click(_link($datasetNamePR, _near(_cell($datasetType))));
+	var $archiveLogsLocationPR = _getCellText(_cell(1, _near(_cell("Archive Logs Location:"))));
+	_assertExists("Archive Logs Location PR:", $archiveLogsLocationPR);
+
+	return $archiveLogsLocationPR;
+}
+
+
+/**
+* Function is to Get archive path from DR
+*@param :null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+function get_archive_path_DR(){
+	navigateToDiscovery();
+	_click(_link("Subsystems"));
+	_click(_link("Datasets"));
+	_wait(5000);
+	_click(_link($datasetNameDR, _near(_cell($datasetType))));
+	var $archiveLogsLocationDR = _getCellText(_cell(1, _near(_cell("Archive Logs Location:"))));
+	_assertExists("Archive Logs Location DR:", $archiveLogsLocationDR);
+
+	return $archiveLogsLocationDR;
+}
+
+
+
+/**
+* Function is for Verification of the all RTO detail from RPO/RTO screen for oracle TC solution
+*@param : null
+*@return : $dbRto
+*@Author: Aditi Jain
+*
+*/
+
+function OracleTC_Rto() {
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("RPO/RTO"));
+
+	// verification of current RTO :
+
+	var $stepName1 = parseInt(_getText(_cell(1, _near(_cell("Custom action for Remote Pre-check"), _under(_cell("Expected Completion Time (sec)"))))));
+	var $stepName2 = parseInt(_getText(_cell(1, _near(_cell("Chk DR Stdby"), _under(_cell("Expected Completion Time (sec)"))))));
+	var $stepName3 = parseInt(_getText(_cell(1, _near(_cell("Make DR TrueCopy device read-write"), _under(_cell("Expected Completion Time (sec)"))))));
+	var $stepName4 = parseInt(_getText(_cell(1, _near(_cell("Provide mount points to the mount action"), _under(_cell("Expected Completion Time (sec)"))))));
+	var $stepName5 = parseInt(_getText(_cell(1, _near(_cell("Mount the devices"), _under(_cell("Expected Completion Time (sec)"))))));
+	var $stepName6 = parseInt(_getText(_cell(1, _near(_cell("Apply Logs"), _under(_cell("Expected Completion Time (sec)"))))));
+	var $stepName7 = parseInt(_getText(_cell(1, _near(_cell("Activate DR"), _under(_cell("Expected Completion Time (sec)"))))));
+	var $stepName8 = parseInt(_getText(_cell(1, _near(_cell("Shutdown DR"), _under(_cell("Expected Completion Time (sec)"))))));
+	var $stepName9 = parseInt(_getText(_cell(1, _near(_cell("Start DR "), _under(_cell("Expected Completion Time (sec)"))))));
+	
+	
+	var $expectedCompletionTime = Math.floor($stepName1 + $stepName2 + $stepName3 + $stepName4 + $stepName5 + $stepName6 + $stepName7 + $stepName8 + $stepName9);
+	_assertExists("Expected completion time", $expectedCompletionTime);
+
+	// Calling function Calculate_Rto from Group_manager.sah
+	var $dbRto = Calculate_Rto($expectedCompletionTime);
+	return $dbRto;
+
+} // End of OracleTC RTO
+
+
+/**
+* Function is for Validation of logs in Monitor > GroupSnapshot screen for oracleTC solution post SO.
+*@param : null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+
+function Oracle_TC_Groupsnapshot_Post_SO() {
+	
+	Oracle_TC_Groupsnapshot_Status($groupName,$userDR, $pwdDR, $internalLogon,$oracleListenerIPDR, $dbSidSelect,$userPR, $pwdPR, $internalLogon,$oracleListenerIPPR, $dbSidSelect,"SO");
+
+} // End of Oracle_Groupsnapshot_Post_SO()
+
+
+/**
+* Function is for Validation of logs in Monitor > GroupSnapshot screen for oracleTC solution before SO.
+*@param : null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+function OracleTC_Groupsnapshot() {
+	
+	Oracle_TC_Groupsnapshot_Status($groupName,$userPR, $pwdPR, $internalLogon,$oracleListenerIPPR, $dbSidSelect,$userDR, $pwdDR, $internalLogon,$oracleListenerIPDR, $dbSidSelect);
+}// End of Oracle_Groupsnapshot()
+
+/**
+* Function is for Validation of logs in Monitor > GroupSnapshot screen for oracleTC solution.
+*@param : $groupName,$userPR, $pwdPR, $internalLogon,$oracleListenerIPPR, $dbSidSelect,$userDR, $pwdDR, $internalLogon,$oracleListenerIPDR, $dbSidSelect,$WFType
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+
+function Oracle_TC_Groupsnapshot_Status($groupName,$userPR, $pwdPR, $internalLogon,$oracleListenerIPPR, $dbSidSelect,$userDR, $pwdDR, $internalLogon,$oracleListenerIPDR, $dbSidSelect,$WFType) {
+
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("Group Snapshot"));
+
+	// verifying Recovery Point
+	if ($WFType == "SO") {
+		if (_exists(_cell("Not supported in Switchover mode"))) {
+			_log("So done successfully");
+		} else {
+			_log("Gui not showing correct value");
+		}
+		// calling OracleTC_RPO_Post_SO function
+		
+		 OracleTC_Rpo_Post_SO();
+
+	} else {
+		// calling OracleTC_RPO function
+		OracleTC_Rpo();
+	}
+	
+	var $recoveryPointGui = _getText(_span(1, _near(_span("DR Data Consistent up to:"), _near(_cell("Continuity")))));
+	_assertExists("Recovery Point DR Data Consistent up to:", $recoveryPointGui);
+	//_assertEqual($recoveryPointinDB, $recoveryPointGui, "Validating Recovery Point DR Data Consistent upto correct in GUI");
+
+	// Verfing Recovery time
+	if ($WFType == "SO") {
+		if (_exists(_cell("Not supported in Switchover mode"))) {
+			_log("Not supported in Switchover mode");
+		}
+	} else {
+	
+		_click(_link("Monitor"));
+		_click(_link($groupName));
+		_click(_link("Group Snapshot"));
+		var $recoveryTimeGui1 = (_getText(_cell(5, _near(_span("Est. time to recover:", _near((_cell("Recovery Time")))))))).split("Est. time to recover:");
+		var $recoveryTimeGui = $recoveryTimeGui1[1];
+		_assertExists("Recovery Time  Est. time to recover:", $recoveryTimeGui);
+		// calling function to calculate rto for Recovery Time
+		var $dbRto = OracleTC_Rto($groupName);
+		
+		_click(_link("Monitor"));
+		_click(_link($groupName));
+		_click(_link("Group Snapshot"));
+		_assertEqual($dbRto.get("actualRtoDB"), $recoveryTimeGui, "Validating Recovery Time  Est. time to recover correct in GUI");
+	}
+	
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("Group Snapshot"));
+	var $continuityOperation = _getText(_cell(1, _near(_cell("Continuity Operation:"))));
+	_assertExists("Continuity Operation:", $continuityOperation);
+	
+    ////////PR
+	
+	// Last Log File dumped at primary Detail from Gui
+  	var $lastLogFileDumpedatPrimaryGui=_getCellText(_cell(0,_near(_tableHeader("Last Log File dumped at primary:"))));
+	_assertExists("last Log File Dumpedat PrimaryGui", $lastLogFileDumpedatPrimaryGui);
+   
+    // Dump Log File Time Stamp Detail from Gui   
+    var $dumpLogFileTimeStampGui=_getCellText(_cell(0,_near(_tableHeader("Dump Log File Timestamp:"))));
+	_assertExists("dump Log File Time Stamp",$dumpLogFileTimeStampGui);
+      
+	// Last Dump Log Sequence Number Detail from Gui
+	var $lastDumpLogSequenceNumberGui=_getCellText(_cell(0,_near(_tableHeader("Last Dump Log sequence number:"))));
+	_assertExists("last Dump Log Sequence Number",$lastDumpLogSequenceNumberGui);
+	
+    ////////DR
+     
+	// Next Log File to be Applied at Secondary Detail from Gui
+	var $nextLogFiletobeatSecondaryGui=_getCellText(_cell(0,_near(_tableHeader("Next Log File to be Applied at secondary:"))));
+	_assertExists("next Log Filetobeat Secondary", $nextLogFiletobeatSecondaryGui);
+
+    // Log File Applied Time Stamp Detail from Gui
+	var $logFileAppliedTimeStampGui=_getCellText(_cell(0,_near(_tableHeader("Log File Applied Timestamp:"))));
+	_assertExists("log File Applied TimeStamp",$logFileAppliedTimeStampGui);
+
+	  
+	 // Last Apply Log Sequence Number Detail from Gui
+	var $lastApplyLogSequenceNumberGui=_getCellText(_cell(0,_near(_tableHeader("Last Apply Log sequence number:"))));
+	_assertExists("last Apply Log Sequence Number",$lastApplyLogSequenceNumberGui);
+	  
+	  
+      //CONNECTION PR
+    	
+    	// calling function to connect the PR machine from back end
+	
+	    var $props = Get_User_Properties_for_OracleDb_Connection($userPR, $pwdPR, $internalLogon);
+	    var $conn = Get_Oracle_Db_Connection_URL($oracleListenerIPPR, $dbSidSelect);
+	    var $db = _getDB("oracle.jdbc.driver.OracleDriver", $conn, $props);
+	    
+        
+	     var $tableCreationDBPR = $db.update("CREATE TABLE EmpDetails (PersonID int,LastName varchar(25),FirstName varchar(25),Address varchar(25),City varchar(25))");
+	    
+	     
+	    var $dumpLogFileTimeStampdbPR = $db.select("select to_char(completion_time,'DD Mon, YYYY HH24:MI:SS') MY_DATE, (blocks * block_size)  as ctime  from v$archived_log where sequence#=(select max(sequence#) from v$archived_log al, v$instance i, v$database d where al.thread# = i.thread#  and al.resetlogs_change# = d.resetlogs_change# and al.resetlogs_time = d.resetlogs_time)  and thread# = (select thread# from v$instance) order by thread#");
+		_assertExists("Dump Log File TimeStamp",$dumpLogFileTimeStampdbPR);
+    
+    	
+     var $date = $dumpLogFileTimeStampdbPR;
+      var $dateString = $date.toString();
+      var $dumpLogFileTimeStampdb = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+      _assertExists("Dump Log File Time Stamp db", $dumpLogFileTimeStampdb);
+    	
+      $count = 0;
+		while($count<10){
+			_wait(30000);
+			}
+			$count++;
+		
+
+	
+	//PR
+    	var $lastLogFileDumpedatPrimary=_getCellText(_cell(0,_near(_tableHeader("Last Log File dumped at primary:"))));
+	_assertExists("last Log File Dumpedat PrimaryGui", $lastLogFileDumpedatPrimary);
+   
+    // Dump Log File Time Stamp Detail from Gui   
+    var $dumpLogFileTimeStamp=_getCellText(_cell(0,_near(_tableHeader("Dump Log File Timestamp:"))));
+	_assertExists("dump Log File Time Stamp",$dumpLogFileTimeStamp);
+      
+	// Last Dump Log Sequence Number Detail from Gui
+	var $lastDumpLogSequenceNumber=_getCellText(_cell(0,_near(_tableHeader("Last Dump Log sequence number:"))));
+	_assertExists("last Dump Log Sequence Number",$lastDumpLogSequenceNumber);
+    	
+      var $date = $dumpLogFileTimeStamp;
+      var $dateString = $date.toString();
+      var $dumpLogFileTimeStampPR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+      _assertExists("TimeStamp PR", $dumpLogFileTimeStampPR);
+      
+    	//DR
+    // Next Log File to be Applied at Secondary Detail from Gui
+	var $nextLogFiletobeatSecondary=_getCellText(_cell(0,_near(_tableHeader("Next Log File to be Applied at secondary:"))));
+	_assertExists("next Log Filetobeat Secondary", $nextLogFiletobeatSecondary);
+
+    // Log File Applied Time Stamp Detail from Gui
+	var $logFileAppliedTimeStamp=_getCellText(_cell(0,_near(_tableHeader("Log File Applied Timestamp:"))));
+	_assertExists("log File Applied TimeStamp",$logFileAppliedTimeStamp);
+
+	  
+	 // Last Apply Log Sequence Number Detail from Gui
+	var $lastApplyLogSequenceNumber=_getCellText(_cell(0,_near(_tableHeader("Last Apply Log sequence number:"))));
+	_assertExists("last Apply Log Sequence Number",$lastApplyLogSequenceNumber);
+    	
+      var $date = $logFileAppliedTimeStamp;
+      var $dateString = $date.toString();
+      var $logFileAppliedTimeStampDR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+      _assertExists("TimeStamp DR", $logFileAppliedTimeStampDR);
+      
+    
+	//PR
+      _assertTrue($lastLogFileDumpedatPrimaryGui<=$lastLogFileDumpedatPrimary,"Last Log File Dumped at Primary is Equal in GUI and db");
+      
+      _assertTrue($dumpLogFileTimeStampdb<=$dumpLogFileTimeStampPR,"Dump Log File Time Stamp is Equal in GUI and db");
+        
+      _assertTrue($lastDumpLogSequenceNumberGui<=$lastDumpLogSequenceNumber,"Last Dump Log Sequence Number is Equal in GUI and db");
+	
+	
+	//DR
+	  _assertTrue($nextLogFiletobeatSecondaryGui<=$nextLogFiletobeatSecondary,"Next Log File to be at Secondary is Equal in GUI and db");
+   
+      _assertTrue($logFileAppliedTimeStampDR<=$dumpLogFileTimeStampdb ,"Log File Applied Time Stampis Equal in GUI and db");
+	
+	  _assertTrue($lastApplyLogSequenceNumberGui<=$lastApplyLogSequenceNumber,"Last Apply Log Sequence Numberis Equal in GUI and db");
+	
+	  
+	  var $droptable = $db.update("drop table EmpDetails");
+	 
+}// End Of OracleTC_Groupsnapshot()
+
+/**
+* Function is for verification of details in Manage-Group Information screen for Oracle_TC solution Post SO
+*@param : null
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+
+function OracleTC_Groupinformation_Post_SO() {
+	
+	Oracle_TC_Groupinformation_Details($groupName,$userDR, $pwdDR, $internalLogon,$oracleListenerIPDR,$dbSidSelect,"SO");
+}// End of Oracle_Groupinformation_Post_SO()
+
+/**
+* Function is for verification of details in Manage-Group Information screen for Oracle_TC solution Before SO
+*@param : null
+*@return : null
+*@Author: Aditi Jain	
+*
+*/
+function OracleTC_Groupinformation() {
+	Oracle_TC_Groupinformation_Details($groupName,$userPR, $pwdPR, $internalLogon,$oracleListenerIPPR,$dbSidSelect);
+}// End of Oracle_Groupinformation()
+
+
+/**
+* Function is for verification of details in Manage-Group Information screen for Oracle_TC solution Before SO
+*@param : $groupName,$userPR, $pwdPR, $internalLogon,$oracleListenerIPPR, $dbSidSelect,$userDR, $pwdDR, $internalLogon,$oracleListenerIPDR, $dbSidSelect,$WFType
+*@return : null
+*@Author: Aditi Jain
+*
+*/
+function Oracle_TC_Groupinformation_Details($groupName,$user, $pwd, $internalLogon,$oracleListenerIP,$dbSidSelect,$WFType) 
+{
+
+	_click(_link("Manage"));
+	_click(_link("Groups List View"));
+	_click(_link($groupName));
+	_click(_link("Group Information"));
+  // calling Group_ManageGroupInformation to verify the PR and DR site status
+     Group_Managegroupinformation($groupName, $WFType);
+      
+    //PR
+	
+	// Last Log File dumped at primary Detail from Gui
+  	var $lastLogFileDumpedatPrimaryGui=_getCellText(_cell(0,_near(_tableHeader("Last Log File dumped at primary:"))));
+	_assertExists("last Log File Dumpedat PrimaryGui", $lastLogFileDumpedatPrimaryGui);
+   
+    // Dump Log File Time Stamp Detail from Gui   
+    var $dumpLogFileTimeStampGui=_getCellText(_cell(0,_near(_tableHeader("Dump Log File Timestamp:"))));
+	_assertExists("dump Log File Time Stamp",$dumpLogFileTimeStampGui);
+      
+	// Last Dump Log Sequence Number Detail from Gui
+	var $lastDumpLogSequenceNumberGui=_getCellText(_cell(0,_near(_tableHeader("Last Dump Log sequence number:"))));
+	_assertExists("last Dump Log Sequence Number",$lastDumpLogSequenceNumberGui);
+	
+    ////////DR
+     
+	// Next Log File to be Applied at Secondary Detail from Gui
+	var $nextLogFiletobeatSecondaryGui=_getCellText(_cell(0,_near(_tableHeader("Next Log File to be Applied at secondary:"))));
+	_assertExists("next Log Filetobeat Secondary", $nextLogFiletobeatSecondaryGui);
+
+    // Log File Applied Time Stamp Detail from Gui
+	var $logFileAppliedTimeStampGui=_getCellText(_cell(0,_near(_tableHeader("Log File Applied Timestamp:"))));
+	_assertExists("log File Applied TimeStamp",$logFileAppliedTimeStampGui);
+
+	  
+	 // Last Apply Log Sequence Number Detail from Gui
+	var $lastApplyLogSequenceNumberGui=_getCellText(_cell(0,_near(_tableHeader("Last Apply Log sequence number:"))));
+	_assertExists("last Apply Log Sequence Number",$lastApplyLogSequenceNumberGui);
+	  
+	  
+      //CONNECTION PR
+    	
+    	// calling function to connect the PR machine from back end
+	
+	    var $props = Get_User_Properties_for_OracleDb_Connection($user, $pwd, $internalLogon);
+	    var $conn = Get_Oracle_Db_Connection_URL($oracleListenerIP, $dbSidSelect);
+	     var $db = _getDB("oracle.jdbc.driver.OracleDriver", $conn, $props);
+	   
+	     var $tableCreationDBPR = $db.update("CREATE TABLE Information (PersonID int,LastName varchar(255),FirstName varchar(255),Address varchar(255),City varchar(255))");
+	    
+	     
+	    var $dumpLogFileTimeStampdbPR = $db.select("select to_char(completion_time,'DD Mon, YYYY HH24:MI:SS') MY_DATE, (blocks * block_size)  as ctime  from v$archived_log where sequence#=(select max(sequence#) from v$archived_log al, v$instance i, v$database d where al.thread# = i.thread#  and al.resetlogs_change# = d.resetlogs_change# and al.resetlogs_time = d.resetlogs_time)  and thread# = (select thread# from v$instance) order by thread#");
+		_assertExists("Dump Log File TimeStamp",$dumpLogFileTimeStampdbPR);
+    
+    	
+     var $date = $dumpLogFileTimeStampdbPR;
+      var $dateString = $date.toString();
+      var $dumpLogFileTimeStampdb = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+      _assertExists("Dump Log File Time Stamp db", $dumpLogFileTimeStampdb);
+    	
+      $count = 0;
+		while($count<10){
+			_wait(30000);
+			}
+			$count++;
+	
+    	
+    
+	
+	//PR
+    	var $lastLogFileDumpedatPrimary=_getCellText(_cell(0,_near(_tableHeader("Last Log File dumped at primary:"))));
+	_assertExists("last Log File Dumpedat PrimaryGui", $lastLogFileDumpedatPrimary);
+   
+    // Dump Log File Time Stamp Detail from Gui   
+    var $dumpLogFileTimeStamp=_getCellText(_cell(0,_near(_tableHeader("Dump Log File Timestamp:"))));
+	_assertExists("dump Log File Time Stamp",$dumpLogFileTimeStamp);
+      
+	// Last Dump Log Sequence Number Detail from Gui
+	var $lastDumpLogSequenceNumber=_getCellText(_cell(0,_near(_tableHeader("Last Dump Log sequence number:"))));
+	_assertExists("last Dump Log Sequence Number",$lastDumpLogSequenceNumber);
+    	
+      var $date = $dumpLogFileTimeStamp;
+      var $dateString = $date.toString();
+      var $dumpLogFileTimeStampPR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+      _assertExists("TimeStamp PR", $dumpLogFileTimeStampPR);
+      
+    	//DR
+    // Next Log File to be Applied at Secondary Detail from Gui
+	var $nextLogFiletobeatSecondary=_getCellText(_cell(0,_near(_tableHeader("Next Log File to be Applied at secondary:"))));
+	_assertExists("next Log Filetobeat Secondary", $nextLogFiletobeatSecondary);
+
+    // Log File Applied Time Stamp Detail from Gui
+	var $logFileAppliedTimeStamp=_getCellText(_cell(0,_near(_tableHeader("Log File Applied Timestamp:"))));
+	_assertExists("log File Applied TimeStamp",$logFileAppliedTimeStamp);
+
+	  
+	 // Last Apply Log Sequence Number Detail from Gui
+	var $lastApplyLogSequenceNumber=_getCellText(_cell(0,_near(_tableHeader("Last Apply Log sequence number:"))));
+	_assertExists("last Apply Log Sequence Number",$lastApplyLogSequenceNumber);
+    	
+      var $date = $logFileAppliedTimeStamp;
+      var $dateString = $date.toString();
+      var $logFileAppliedTimeStampDR = new java.text.SimpleDateFormat("dd MMM, yyyy HH:mm:ss").parse($dateString).getTime();
+      _assertExists("TimeStamp DR", $logFileAppliedTimeStampDR);
+      
+    
+	//PR
+      _assertTrue($lastLogFileDumpedatPrimaryGui<=$lastLogFileDumpedatPrimary,"Last Log File Dumped at Primary is Equal in GUI and db");
+  
+  	  _assertTrue($dumpLogFileTimeStampdb<=$dumpLogFileTimeStampPR,"Dump Log File Time Stamp is Equal in GUI and db");
+     
+      _assertTrue($lastDumpLogSequenceNumberGui<=$lastDumpLogSequenceNumber,"Last Dump Log Sequence Number is Equal in GUI and db");
+	
+	//DR
+	  _assertTrue($nextLogFiletobeatSecondaryGui<=$nextLogFiletobeatSecondary,"Next Log File to be at Secondary is Equal in GUI and db");
+     
+      _assertTrue($dumpLogFileTimeStampdb<=$logFileAppliedTimeStampDR  ,"Log File Applied Time Stampis Equal in GUI and db");
+	 
+	  _assertTrue($lastApplyLogSequenceNumberGui<=$lastApplyLogSequenceNumber,"Last Apply Log Sequence Number is Equal in GUI and db");
+	   
+	 var droptable=$db.update("drop table Information"); 
+}
+
+function OracleTC_Replication_Post_SO(){
+	OracleTC_Replication_Status($groupName,$compIPPR, $remoteUserNameValPR, $remotePwdValPR);
+}
+
+
+
+/**
+*This function is used to verify Replication Screen
+*@param :  null
+*@return : null
+*@Author : Aditi Jain
+*/
+
+
+function OracleTC_Replication(){
+	OracleTC_Replication_Status($groupName,$compIPPR, $remoteUserNameValPR, $remotePwdValPR);
+}
+
+/**
+*This function is used to verify Replication Screen
+*@param :  $groupName,$compIP, $remoteUserNameVal, $remotePwdVal
+*@return : null
+*@Author : Aditi Jain
+*/
+
+function OracleTC_Replication_Status($groupName,$compIP, $remoteUserNameVal, $remotePwdVal){
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("Replication"));
+
+	//GUI Values
+	
+	//PR
+
+	var $portPvolGui= _getText(_cell(0, _under(_tableHeader("Port", _near(_bold("P-VOL Information"))))));
+	//_assertExists("Actual Port for P Vol GUI",$portPvolGui);
+	
+	var $targetPvolGui =_getText(_cell(0, _under(_tableHeader("Target", _near(_bold("P-VOL Information"))))));
+	//_assertExists("Actual target for P Vol GUI",$targetPvolGui);
+	
+	var $lunPvolGui = _getText(_cell(0, _under(_tableHeader("LUN", _near(_bold("P-VOL Information"))))));
+	//_assertExists("Actual LUN for P Vol GUI",$lunPvolGui);
+	
+	var $systemPvolGui=_getText(_cell(0, _under(_tableHeader("System", _near(_bold("P-VOL Information"))))));
+	//_assertExists("Actual System for P Vol GUI",$systemPvolGui);
+	
+//DR
+		
+	var $portSvolGui=_getText(_cell(0, _under(_tableHeader("Port[1]", _near(_bold("S-VOL Information"))))));
+	//_assertExists("Actual Port for S Vol GUI",$portSvolGui);
+	
+	var $targetSvolGui =_getText(_cell(0, _under(_tableHeader("Target[1]", _near(_bold("S-VOL Information"))))));
+	//_assertExists("Actual target for S Vol GUI",$targetSvolGui);
+	
+	var $lunSvolGui = _getText(_cell(0, _under(_tableHeader("LUN[1]", _near(_bold("S-VOL Information"))))));
+	//_assertExists("Actual LUN for S Vol GUI",$lunSvolGui);
+
+	var $systemSvolGui =_getText(_cell(0, _under(_tableHeader("System[1]", _near(_bold("S-VOL Information"))))));
+	//_assertExists("Actual System for S Vol GUI",$systemSvolGui);
+	
+	//DB Values
+var $grpName =_getCellText(_cell(1, _near(_cell("Group Name:"))));
+
+var $sshCommand = "pairdisplay"+" -"+$horcmNo+" -g "+ $grpName;
+var $status = SecuredShellConnection($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+//var $status = Execute_Ssh_Command($compIP, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+
+//PR
+var $output = $status.split($grpName);
+var $portPvolDB1=$output[1].split("(");
+var $port1DB=$portPvolDB1[2].split(",");
+var $portPvolDB=$port1DB[0];
+//_assertExists("Actual Port for P Vol DB",$portPvolDB);
+var $targetPvolDB=$port1DB[1];
+//_assertExists("Actual Target for P Vol DB",$targetPvolDB);
+
+var $lunPvolDB1=$port1DB[2].split(")");
+var $lunPvolDB=$lunPvolDB1[0];
+//_assertExists("Actual LUN for P Vol DB ",$lunPvolDB);
+
+var $systemPvolDB1=$lunPvolDB1[1].split(" ");
+var $systemPvolDB=$systemPvolDB1[0];
+//_assertExists("Actual System for P Vol DB",$systemPvolDB);
+
+
+//DR
+var $portSvolDB1=$output[2].split("(");
+
+var $port2DB=$portSvolDB1[2].split(",");
+var $portSvolDB=$port2DB[0];
+//_assertExists("Actual Port for S Vol DB",$portSvolDB);
+var $targetSvolDB=$port2DB[1];
+//_assertExists("Actual Target for S Vol DB",$targetSvolDB);
+
+var $lunSvolDB1=$port2DB[2].split(")");
+var $lunSvolDB=$lunSvolDB1[0];
+//_assertExists("Actual LUN for S Vol DB",$lunSvolDB);
+
+var $systemSvolDB1=$lunSvolDB1[1].split(" ");
+var $systemSvolDB=$systemSvolDB1[0];
+//_assertExists("Actual System for S Vol DB",$systemSvolDB);
+
+//Verification
+
+//Port
+_assertEqual($portPvolDB,$portPvolGui,"Verifying Port for Pvol from DB and GUI");
+_assertEqual($targetPvolDB,$targetPvolGui,"Verifying Target for Pvol from DB and GUI");
+_assertEqual($lunPvolDB,$lunPvolGui,"Verifying LUN for Pvol from DB and GUI");
+_assertEqual($systemPvolDB,$systemPvolGui,"Verifying System for Pvol from DB and GUI");
+
+_assertEqual($portSvolDB,$portSvolGui,"Verifying Port for Svol from DB and GUI");
+_assertEqual($targetSvolDB,$targetSvolGui,"Verifying Target for Svol from DB and GUI");
+_assertEqual($lunSvolDB,$lunSvolGui,"Verifying LUN for Svol from DB and GUI");
+_assertEqual($systemSvolDB,$systemSvolGui,"Verifying System for Svol from DB and GUI");
+}
+
+
+
+
+
+
+/**
+*This function is used to Edit SO/SB Workflow
+*@param :  null
+*@return : null
+*@Author : Aditi Jain
+*/
+
+function SO_Modify_WorkflowXML_OracleTC(){
+	Edit_SOSB_Workflow($datasetNamePR,$fileSO,$sernameHCMDR,$devMountPointTCDR,$devMountPointSIDR);
+}
+
+function SB_Modify_WorkflowXML_OracleTC(){
+	Edit_SOSB_Workflow($datasetNamePR,$fileSB,$sernameHCMPR,$devMountPointTCPR,$devMountPointSIPR);
+}
+
+function Edit_SOSB_Workflow($datasetName,$file,$sernameHCM,$devMountPointTC,$devMountPointSI)
+{
+	navigateToDiscovery();
+	_click(_link("Subsystems"));
+	_click(_link("Datasets"));
+	_click(_link($datasetName));
+	
+	//Mount Point
+	
+	var $mountPoint=_getCellText(_cell(1,_near(_cell("Archive Logs Location:"))));
+	
+	
+	// Control Files
+	var $controlFileGui1 = _getCellText(_cell(1, _near(_cell("Control file(s) :"))));
+	var $controlFileGui = $controlFileGui1.replace(/ /g, ",");
+	//_assertExists("Control files GUI", $controlFileGui);
+    var $control=$controlFileGui.toString();
+    var $controlGUI=$control.split(",");
+    var $controlGUI1=$controlGUI[0];
+    var $controlGUI2=$controlGUI[1];
+    var $controlGUI3=$controlGUI[2];
+    
+    var $redofilesGui1 = _getCellText(_cell(1, _near(_cell("Redo log(s) :"))));
+	var $redofilesGui = $redofilesGui1.replace(/ /g, ",");
+	//_assertExists("Redo files GUI", $redofilesGui);
+	var $redo=$redofilesGui.toString();
+	var $redoGUI=$redo.split(",");
+	
+	var $redoGUI1=$redoGUI[0];
+	var $redo0=$redoGUI1.split("redo01.log");
+	var $redo1=$redo0[0];
+	
+	var $redoGUI2=$redoGUI[1];
+	var $redo2=$redoGUI2.split("redo02.log");
+	var $redo3=$redo2[0];
+	
+	var $redoGUI3=$redoGUI[2];
+	var $redo4=$redoGUI1.split("redo03.log");
+	var $redo5=$redo4[0];
+	  
+	
+	  var $fileRead= _userDataDir() + "\\Oracle\\OracleArLogTrueCopy\\" + $file;
+	  var $xmlStr =_readFile($fileRead); 
+	  var $newXmlStr = $xmlStr.replace('<?xml version="1.0" encoding="UTF-8"?>',"");
+
+	  var $xml = new XML($newXmlStr); 
+	  //Protection scheme name of the ShadowImage of current DR
+	  $xml..userDef..entry.(@key=="DR_SI_PROT_SCHEME_NAME").(@value=$sernameHCM);
+	  //DR Truecopy Device
+	  $xml..userDef..entry.(@key=="DR_ARCHIVE_TC_DEVICE").(@value=$devMountPointTC);
+	  //DR Shadow Image Device
+	  $xml..userDef..entry.(@key=="DR_ARCHIVE_SI_DEVICE").(@value=$devMountPointSI);
+	  
+	  //mount point PR
+	  $xml..userDef..entry.(@key=="PROD_ARCHIVE_MOUNT_POINT").(@value=$mountPoint);
+	  //mount Point DR
+	  $xml..userDef..entry.(@key=="DR_ARCHIVE_MOUNT_POINT").(@value=$mountPoint);
+
+
+	  
+	  //var $controlGUI1=$Control1;
+	  $xml..userDef..entry.(@key=="PANORA_CONTROL_FILE1").(@value=$controlGUI1);
+	  //var $controlGUI2=$Control2;
+	  $xml..userDef..entry.(@key=="PANORA_CONTROL_FILE2").(@value=$controlGUI2);
+	  //var $controlGUI3=$Control3;
+	  $xml..userDef..entry.(@key=="PANORA_CONTROL_FILE3").(@value=$controlGUI3);
+	    
+	  _writeFile($xml.toString(),$fileRead, true);
+	  
+	  
+	  var $fileReadSO = _userDataDir() +"\\Oracle\\OracleArLogTrueCopy\\" + $file;
+	  var $xmlStr =_readFile($fileReadSO); 
+	  var $newXmlStr = $xmlStr.replace('<?xml version="1.0" encoding="UTF-8"?>',"");
+		
+	  var $anotherXmlStr = $newXmlStr.replace(/ws:pfrOperationAction/g,"pfrOperationAction");
+	  var $xml = new XML($anotherXmlStr); 
+	  
+	  //$xml..action.(@id=="15").privateProperties.pfrOperationAction.fileset.targetDirectory="/tmp/";
+	 // $xml..action.(@id=="15").privateProperties.pfrOperationAction.fileset.sourceDirectory="/tmp/backupctl.trace";
+	  
+	  $xml..action.(@id=="18").privateProperties.pfrOperationAction.fileset.targetDirectory[0]=$redo1;
+	  $xml..action.(@id=="18").privateProperties.pfrOperationAction.fileset.targetDirectory[1]=$redo3;
+	  $xml..action.(@id=="18").privateProperties.pfrOperationAction.fileset.targetDirectory[2]=$redo1;
+	  
+	  $xml..action.(@id=="18").privateProperties.pfrOperationAction.fileset.sourceDirectory[0]=$redoGUI1;
+	  $xml..action.(@id=="18").privateProperties.pfrOperationAction.fileset.sourceDirectory[1]=$redoGUI2;
+	  $xml..action.(@id=="18").privateProperties.pfrOperationAction.fileset.sourceDirectory[2]=$redoGUI3;
+	  
+	  $xml..action.(@id=="13").privateProperties.pfrOperationAction.fileset.targetDirectory="/tmp/";
+	  $xml..action.(@id=="13").privateProperties.pfrOperationAction.fileset.sourceDirectory="/tmp/stdby.ctl";
+	  
+	  $xml..action.(@id=="32").privateProperties.pfrOperationAction.fileset.targetDirectory="/tmp/";
+	  $xml..action.(@id=="32").privateProperties.pfrOperationAction.fileset.sourceDirectory="/tmp/stdby.ctl";
+	  
+	  var $anotherXmlStr = $xml.toString().replace(/pfrOperationAction/g,"ws:pfrOperationAction");
+	  
+	  
+	  _writeFile($anotherXmlStr.toString(),$fileReadSO, true);  
+}
+
+/**
+*This function is used to Edit PreRTO Workflow
+*@param :  null
+*@return : null
+*@Author : Aditi Jain
+*/
+
+function PreRTO_Modify_WorkflowXML_OracleTC(){
+	Edit_NCRNC_Workflow($datasetNamePR,$filePreRTO,$sernameHCMDR);
+}
+
+/**
+*This function is used to Edit NC Workflow
+*@param :  null
+*@return : null
+*@Author : Aditi Jain
+*/
+
+function NC_Modify_WorkflowXML_OracleTC(){
+	Edit_NCRNC_Workflow($datasetNamePR,$fileNC,$sernameHCMDR);
+}
+
+/**
+*This function is used to Edit RNC Workflow
+*@param :  null
+*@return : null
+*@Author : Aditi Jain
+*/
+function RNC_Modify_WorkflowXML_OracleTC(){
+	Edit_NCRNC_Workflow($datasetNamePR,$fileRNC,$sernameHCMPR);
+}
+
+/**
+*This function is used to Edit Workflows
+*@param :  $datasetName,$file,$sernameHCM
+*@return : null
+*@Author : Aditi Jain
+*/
+function Edit_NCRNC_Workflow($datasetName,$file,$sernameHCM)
+{
+	navigateToDiscovery();
+	_click(_link("Subsystems"));
+	_click(_link("Datasets"));
+	_click(_link($datasetName));
+	
+	//Mount Point
+	
+	var $mountPoint=_getCellText(_cell(1,_near(_cell("Archive Logs Location:"))));
+
+	
+	  var $fileRead= _userDataDir() + "\\Oracle\\OracleArLogTrueCopy\\" + $file;
+	  var $xmlStr =_readFile($fileRead); 
+	  var $newXmlStr = $xmlStr.replace('<?xml version="1.0" encoding="UTF-8"?>',"");
+
+	  var $xml = new XML($newXmlStr); 
+	  //Protection scheme name of the ShadowImage of current DR
+	  $xml..userDef..entry.(@key=="DR_SI_PROT_SCHEME_NAME").(@value=$sernameHCM);
+	  //DR Shadow Image Device
+	  $xml..userDef..entry.(@key=="DR_ARCHIVE_SI_DEVICE").(@value=$devMountPointSIDR);
+	  //mount Point DR
+	  $xml..userDef..entry.(@key=="DR_ARCHIVE_MOUNT_POINT").(@value=$mountPoint);
+
+	  
+	  _writeFile($xml.toString(),$fileRead, true); 	
+}
+
+/**
+*This function is used to Edit Post RTO Workflow
+*@param : null
+*@return : null
+*@Author : Aditi Jain
+*/
+
+function PostRTO_Modify_WorkflowXML_OracleTC(){
+	Edit_PostRTO_Workflow($datasetNamePR,$filePostRTO,$sernameHCMDR);
+}
+
+/**
+*This function is used to Edit Workflow for Post RTO
+*@param :  $datasetName,$file,$sernameHCM
+*@return : null
+*@Author : Aditi Jain
+*/
+function Edit_PostRTO_Workflow($datasetName,$file,$sernameHCM)
+{
+	navigateToDiscovery();
+	_click(_link("Subsystems"));
+	_click(_link("Datasets"));
+	_click(_link($datasetName));
+	
+	//Mount Point
+	
+	var $mountPoint=_getCellText(_cell(1,_near(_cell("Archive Logs Location:"))));
+
+	
+	  var $fileRead= _userDataDir() + "\\Oracle\\OracleArLogTrueCopy\\" + $file;
+	  var $xmlStr =_readFile($fileRead); 
+	  var $newXmlStr = $xmlStr.replace('<?xml version="1.0" encoding="UTF-8"?>',"");
+
+	  var $xml = new XML($newXmlStr); 
+	  //Protection scheme name of the ShadowImage of current DR
+	  $xml..userDef..entry.(@key=="DR_SI_PROT_SCHEME_NAME").(@value=$sernameHCM);
+	  //mount Point DR
+	  $xml..userDef..entry.(@key=="DR_ARCHIVE_MOUNT_POINT").(@value=$mountPoint);
+	  	  
+	  _writeFile($xml.toString(),$fileRead, true);
+	  
+}
+
+/**
+*This function is used to Edit FO Workflow
+*@param :  null
+*@return : null
+*@Author : Aditi Jain
+*/
+
+
+function FO_Modify_WorkflowXML_OracleTC(){
+	Edit_FO_Workflow($datasetNamePR,$fileFO);
+}
+
+/**
+*This function is used to Edit Workflow
+*@param :  $datasetName,$file,$sernameHCM
+*@return : null
+*@Author : Aditi Jain
+*/
+function Edit_FO_Workflow($datasetName,$file)
+{
+	navigateToDiscovery();
+	_click(_link("Subsystems"));
+	_click(_link("Datasets"));
+	_click(_link($datasetName));
+	
+	//Mount Point
+	
+	var $mountPoint=_getCellText(_cell(1,_near(_cell("Archive Logs Location:"))));
+
+	
+	  var $fileRead= _userDataDir() + "\\Oracle\\OracleArLogTrueCopy\\" + $file;
+	  var $xmlStr =_readFile($fileRead); 
+	  var $newXmlStr = $xmlStr.replace('<?xml version="1.0" encoding="UTF-8"?>',"");
+
+	  var $xml = new XML($newXmlStr); 
+	  //Protection scheme name of the ShadowImage of current DR
+	  $xml..userDef..entry.(@key=="DR_ARCHIVE_TC_DEVICE").(@value=$devMountPointTCDR);
+	  //mount Point DR
+	  $xml..userDef..entry.(@key=="DR_ARCHIVE_MOUNT_POINT").(@value=$mountPoint);
+	  
+	  
+	  _writeFile($xml.toString(),$fileRead, true);
+	  
+}
+
+
+function RTO_WorkflowExecution(){
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("RPO/RTO"));
+	_click(_link("Pre"));
+	
+	var $i=0;
+	while($i<10){
+	if(_exists(_cell("PreRTOComputation ( SUCCESS) Started by:system"))){
+		_log("PreRTO Success");
+		break;
+	}
+	else{
+		_wait(30000);
+	}
+	$i++;
+	}
+	_click(_link("Monitor"));
+	_click(_link($groupName));
+	_click(_link("RPO/RTO"));
+	_click(_link("Post"));
+	var $i=0;
+	while($i<10){
+	if(_exists(_cell("PostRTOComputation ( SUCCESS) Started by:system"))){
+		_log("PostRTO Success");
+		break;
+	}
+	else{
+		_wait(30000);
+	}
+	$i++;
+	}
+	
+}
+
+//SO click ok
+
+//_div("Please follow the instructions below and Click 'OK' when you are done. Procedure Name:ShutDown Production Application Stop Application Please Stop all Applications using the Oracle database.")

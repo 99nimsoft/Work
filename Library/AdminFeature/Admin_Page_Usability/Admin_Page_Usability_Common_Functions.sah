@@ -1,0 +1,426 @@
+/**
+ * @description: This function is used create the Drm User with different privileges
+ * @return : null
+ * @author : Gaurav
+ */
+
+function createUserWithDifferentPriviledges($argUserName,$argRole,$argUserFullName) {
+
+	//login("drmadmin","Drmadmin123$");
+	//login("gaurav","Cloud123456789$");
+	Login_001();
+	
+	_click(_link($Admin));
+	_click(_link($GotoUsers));
+	if(_exists(_link($argUserName))==true){
+		_click(_link($Logout));
+		login($argUserName,$userPassword);
+		_click(_link($Admin));
+		return;
+	}	
+	_click(_link($CreateNewUser));
+	_setValue(_textbox($loginId), $argUserName);
+	
+	//@ hard coding password as it is temporary
+	_setValue(_password($newPassword), "Sanovi123456789$");
+	_setValue(_password($confPassword), "Sanovi123456789$");
+	_setValue(_textbox($userfullName), $argUserFullName);
+	
+	if($argRole=="SUPER ADMINISTRATOR"){
+		_check(_radio("ucat"));
+	}
+	if($argRole=="ADMINISTRATOR"){
+		_check(_radio("ucat[1]"));
+	}
+	if($argRole=="OPERATOR"){
+		_check(_radio("ucat[2]"));
+	}
+	if($argRole=="NOTIFICATION-MEMBER"){
+		_check(_radio("ucat[3]"));
+	}
+	
+	adminPage_selectAllValueInSelectBox($assignedGroups);
+	
+	_setSelected(_select($homePage), $EventsListView);
+
+	_setValue(_textbox($email), "ibm@sanovi.com");
+	_click(_submit($Save));
+	_assertEqual($UserCreatedSuccess, _lastAlert());
+	_click(_link($Logout));
+	_setValue(_textbox($username1), $argUserName);
+	_setValue(_password($password1), "Sanovi123456789$");
+	_click(_submit($Submit));
+	_setValue(_password($curpassword), "Sanovi123456789$");
+	_setValue(_password($newPassword), $userPassword);
+	_setValue(_password($confPassword), $userPassword);
+	_click(_button($Save));
+	//_assertEqual("Password Changed Successfully.Please Login Again with Updated Password.", _lastAlert());
+	_setValue(_textbox($username1), $argUserName);
+	_setValue(_password($password1), $userPassword);
+	_click(_submit($Submit));
+	_click(_link($Admin));
+	_assert(_exists(_cell($User_C+$argUserName)),"Failed to verify logged in User:-"+$argUserName);
+}
+
+/**
+ * @description: This function is used delete user
+ * @return : null
+ * @author : Gaurav
+ */
+
+function deleteUser($argUserName) {
+	
+	_click(_link("Logout"));
+	 login($roUser, $userPassword);
+	_click(_link("Admin"));
+	_click(_link("Go to Users"));
+	_click(_image("ico_delete.gif", _near(_link($argUserName))));
+	_assertEqual("Are you sure you wish to delete this user "+$argUserName+" ?", _lastConfirm());
+}
+
+/**
+ * @description: This function is used to verify links on page
+ * @return : links which are not active
+ * @author : Gaurav
+ */
+
+function adminPage_verifyLink($links) {
+	
+	var linkDisabled = "";
+	_click(_link("Admin"));
+	var $arr = $links.split(",");
+	for(var $i=0;$i<$arr.length;$i++){
+		//_assert(_exists(_link($arr[$i])));
+		if(_getAttribute(_link($arr[$i]), "disabled")=="disabled"){
+			linkDisabled += $arr[$i]+" , ";
+		}
+		
+	}
+	return linkDisabled;
+}
+
+/**
+ * @description: This function verfies the users count
+ * @return : null
+ * @author : Gaurav
+ */
+
+function adminPage_createUserAndVerify() {
+	
+	var $tmpNumberOfUsers = 0;
+	var $tmpNumberOfUsers2 = 0;
+	
+	_click(_link("Admin"));
+	_click(_link("Go to Users"));
+	var $xpath = "//table[@id='report']";
+	var $table = _table(_byXPath($xpath));
+	_set($tmpNumberOfUsers, $table.rows.length-1);
+	_log("Number of users Listed on Goto Users Page:->"+$tmpNumberOfUsers,"Custom4");
+	_click(_link("Create New User"));
+	var $xpath = "//table[@id='smlrpt']";
+	var $table = _table(_byXPath($xpath));
+	_set($tmpNumberOfUsers2, $table.rows.length-3);
+	_log("Number of users Listed on Create New User Page:->"+$tmpNumberOfUsers2,"Custom4");
+	_assert($tmpNumberOfUsers==$tmpNumberOfUsers2);
+	_assert(_exists(_cell("Create New User")));
+	_setValue(_textbox("loginId"), $userName);
+	_setValue(_password("newPassword"), $userPassword);
+	_setValue(_password("confPassword"), $userPassword);
+	_setValue(_textbox("userFullName"), $userFullName);
+	_setValue(_textbox("email"), "sanovi@ibm.com");
+	_click(_submit("Save"));
+	_assertEqual("Please select the user role", _lastAlert());
+	_check(_radio("ucat"));
+	_click(_submit("Save"));
+	_assertEqual("User Created Successfully", _lastAlert());
+	deleteUser($userName);
+	_log("Deleted User:->"+$userName,"Custom4");
+}
+
+/**
+ * @description: This function is used test email feature
+ * @return : null
+ * @author : Gaurav
+ */
+
+function adminPage_NotificationPage_configiureEmailServer($argSMTP,$argEmail,$argReplyTo,$argUserName,$argPassword) {
+	 adminPage_NavigateToNotificationPage();
+	_click(_link("Configure Email Server"));
+	_setValue(_textbox("smtp"), $argSMTP);
+	_setValue(_textbox("email"), $argEmail);
+	_setValue(_textbox("replyTo"), $argReplyTo);
+	_check(_checkbox("authenticator"));
+	_setValue(_textbox("user"), $argUserName);
+	_setValue(_password("password"), $argPassword);
+	_click(_button("Save"));
+	_assertEqual("Successfully Modified!", _lastAlert());
+}
+
+/**
+ * @description: This function is test notification page
+ * @return : null
+ * @author : Gaurav
+ */
+
+function adminPage_AddNotificationList($argNotificationName) {
+	var $numberOfUsersListed = 0; 
+	adminPage_NavigateToNotificationPage();
+	_click(_link("Add Notification List"));
+	_setValue(_textbox("uname"), $argNotificationName);
+	
+	/*
+	 *fetching all users in table using below api and xpath */
+	 /*  _collect("_option", "/.*///", _in(_table(_byXPath("//*[@name='list1']/../../../..")))).size()
+	
+	_set($numberOfUsersListed,_collect("_option", "/.*/", _in(_table(_byXPath("//*[@name='list1']/../../../..")))).size());
+	_log("Number of users Listed in select box:->"+$numberOfUsersListed,"Custom4");
+	_assert($numberOfUsersListed>0,"Users are not listed in box");
+	_setSelected(_select("list1"), ["drmadmin"]);
+	_click(_byXPath("//input[@name='button2']"));
+	_click(_submit("Save"));
+	_assertEqual(" Notification List Successfully Added!", _lastAlert());
+}
+
+/**
+ * @description: This function deletes notification
+ * @return : null
+ * @author : Gaurav
+ */
+
+function adminPage_DeleteNotificationList($argNotificationListName) {
+	 adminPage_NavigateToNotificationPage();
+	_click(_image("ico_delete.gif", _near(_link($argNotificationListName))));
+	_assertEqual("Are you sure you wish to delete this Notification "+$argNotificationListName+"?", _lastConfirm());
+	_assertEqual("Notification List successfully deleted", _lastAlert());
+}
+
+/**
+ * @description: This function is adds snmp trap forwarder
+ * @return : null
+ * @author : Gaurav
+ */
+
+function adminPage_AddSNMPTrapForwarder($argSNMPTrapName,$argUID,$argPort) {
+	 adminPage_NavigateToNotificationPage();
+	_click(_link("Add SNMP Trap Forwarder"));
+	_setValue(_textbox("uid5"), $argSNMPTrapName);
+	_setValue(_textbox("uid4"), $argUID);
+	_setValue(_textbox("uid22"), $argPort);
+	_click(_button("Save"));
+	_assertEqual("Successfully Configured", _lastAlert());
+}
+
+/**
+ * @description: This function deletes snmp trap forwarder
+ * @return : null
+ * @author : Gaurav
+ */
+function adminPage_DeleteSNMPTrapForwarder($argSNMPTrapName) {
+	 adminPage_NavigateToNotificationPage();
+	_click(_image("ico_delete.gif", _near(_link($argSNMPTrapName))));
+	_assertEqual("Are you sure you wish to delete this SNMP Trap "+$argSNMPTrapName+"?", _lastConfirm());
+	_assertEqual("Successfully Deleted", _lastAlert());	
+}
+
+/**
+ * @description: This function verifies notification details
+ * @return : null
+ * @author : Gaurav
+ */
+
+function adminPage_VerificationNotificationDetails() {
+	 adminPage_NavigateToNotificationPage();
+	_strong("SMTP Server:", _near(_cell($notificationPage_SMTP)));
+	_strong("Sender Mail id:", _near(_cell($notificationPage_Email)));
+	_strong("Reply to :", _near(_cell($notificationPage_ReplyTo)));
+	_assert(_exists(_link("NotificationAddTest")));
+	_assert(_exists(_link("TestSNMPTrapName")));
+	_assert(_exists(_link("Configure Email Server")));
+	_assert(_exists(_link("Add Notification List")));
+	_assert(_exists(_link("Add SNMP Trap Forwarder")));
+}
+
+
+/**
+ * @description: This function verifies column names of table
+ * @return : null
+ * @author : Gaurav
+ */
+function adminPage_Agent_VerifyColumnNames($argColumnNames) {
+	
+	var $arr = $argColumnNames.split(",");
+	for(var $i=0;$i<$arr.length;$i++){		
+		_assert(_exists(_tableHeader($arr[$i])),"Column:->"+$arr[$i]+" ,is missing from table");
+	}
+}
+
+
+
+function adminPage_VerifyDetailsUnderLogPage() {
+	
+	 adminPage_NavigateToLogsPage();
+	 adminPage_Agent_VerifyColumnNames($adminLogsColumnsNames);
+	_assert(_exists(_link("Debug Level")));
+	_assert(_exists(_link("Fetch Logs")));
+	_assert(_exists(_link("System Capture")));
+	_assert(_exists(_textbox("path", _near(_strong("Retrieved Logs will be stored on Resiliency Orchestration Server at the following location :")))));	
+	_assert(_exists(_select("loglevel")));	
+	_assert(_exists(_select("retentiondays")));
+	_assert(_exists(_textbox("slsize")));
+	_assert(_exists(_select("aldays")));
+	_assert(_exists(_textbox("alsize")));
+	_assert(_exists(_textbox("lfsl")));
+}
+
+function adminPage_SelectDebugLevel($argAgentName) {
+	
+	  adminPage_NavigateToLogsPage();
+	 _setSelected(_select("/selectd/",_rightOf(_cell($argAgentName)) ), "Verbose2");
+	 _assertEqual("Debug level successfully set.", _lastAlert());
+
+}
+
+
+function adminPage_TakeBackUpAndVerify() {
+
+	 adminPage_NavigateToBackUpPage();
+	_setValue(_textbox("despath"), $adminBackUpFileDestinationPath);
+	_setSelected(_select("region"), $adminBackUpFileDuration);
+	_setSelected(_select("country"), $adminBackUpFileDay);
+	_click(_button("Save"));
+	_assertEqual("Backup Configuration done", _lastAlert());
+	
+	_click(_button("Backup Now"));
+	
+	_log("BackUp File Name:"+_getText(_cell("/PanacesMetadata/", _near(_strong("Backup File Name:")))),"Custom4");
+	
+	var $sshCommand="sudo test -f "+$adminBackUpFileDestinationPath+_getText(_cell("/PanacesMetadata/", _near(_strong("Backup File Name:"))))+";echo $?";
+	var $msg=SecuredShellConnection($drmServer, $drmUserName, $drmPassword, $sshCommand, "N");
+	_assert($msg=="0","Failed to create backup");
+	
+}
+
+/**
+ * @description: This function verifies email feature
+ * @return : null
+ * @author : Gaurav
+ */
+function adminPage_EmailServer_TestMail(){
+	adminPage_NotificationPage_configiureEmailServer($notificationPage_SMTP,$notificationPage_Email,$notificationPage_ReplyTo,$notificationPage_UserName,$notificationPage_Password);
+	_click(_link("Configure Email Server"));
+	_click(_link("Send Test Mail"));
+	_setValue(_textbox("toAddress"), $notificationPage_ReplyTo);
+	_setValue(_textbox("subject"), "TestMail");
+	_click(_button("Send Test Mail"));
+	_wait(60000, _isVisible(_bold("Sending Test Mail")));
+	if(_exists(_font("/Test mail has been sent successfully/"))){
+	_assertTrue(true);
+	return;
+	}
+	if(_isVisible(_bold("Sending Test Mail"))==true){
+		_wait(60000, _isVisible(_bold("Sending Test Mail")));
+		if(_isVisible(_bold("Sending Test Mail"))==true){
+			_assert(_isVisible(_bold("Sending Test Mail"))!=true, "sending mail feature taking more than 2 mins to respond, Unacceptable");
+			_assert(_exists(_font("/Error:javax.mail.MessagingException: Could not connect to SMTP host/"))==false,"Failed to send mail"); 
+			return;
+		}
+	}
+	_log("Valid credentials not avaliable sending mail will fail","Custom4");	
+    _assert(_exists(_font("/Error:javax.mail.MessagingException: Could not connect to SMTP host/"))==false,"Failed to send mail");    
+    
+}
+
+function adminPage_DownloadLogs($argGroupName) {
+
+	 adminPage_NavigateToLogsPage();
+	 	
+	_setSelected(_select("loglevel"), "Verbose2");
+	_click(_submit("Save"));
+	_assertEqual("Debug level successfully set.", _lastAlert());
+	_setSelected(_select("retentiondays"), "1");
+	_click(_submit("Save[1]"));
+	_assertEqual("Logfile retention period has been updated successfully.", _lastAlert());
+	_setValue(_textbox("slsize"), "10");
+	_click(_submit("Save[1]"));
+	_assertEqual("Logfile retention period has been updated successfully.", _lastAlert());
+	_setSelected(_select("aldays"), "1");
+	_setValue(_textbox("alsize"), "10");
+	_click(_submit("Save[2]"));
+	_assertEqual("Logfile retention period has been updated successfully.", _lastAlert());
+	_click(_button("Save"));
+	_assertEqual("Log file size limit has been updated successfully.", _lastAlert());
+	_click(_link("Fetch Logs"));
+	_setSelected(_select("selectedGroup"),$argGroupName);
+	_setSelected(_select("durationHours"), "2");
+	_click(_button("Fetch Log"));
+	_saveDownloadedAs(_userDataDir("\\")+"\\temp\\download\\"+"LOG.zip"); //Change this to whatever your download directory is
+	_fileExists(_userDataDir("\\")+"\\temp\\download\\LOG.zip");
+	_call(history.back());
+}
+
+function fetchDataFromDB($argDriver,$argURL,$argUserName,$argPassword,$argQuery) {
+
+	/** this method will return two dimentional array of fetched data **/
+	try {
+	  var db = _getDB($argDriver,$argURL, $argUserName,$argPassword);
+	  return db.select($argQuery);
+	} catch ($e) {
+	  _log($e.toString());
+	  _log("CHECK USER HAS BEEN GRANTED PERMISSION TO DB, FOLLOW BELOW STEPS TO GIVE PERMISSION TO USER FOR DB","Custom4");
+	  _log("STEP1: PUTTY THE RO SERVER AND FIRE COMMAND, sudo mysql","Custom4");
+	  _log("STEP2: FIRE COMMAND, CREATE USER 'sanovi'@'192.168.255.65' IDENTIFIED BY 'Sanovi123$';  ,here IP is the IP on which sahi code is running and sanovi/Sanovi123$ is username/password","Custom4");
+	  _log("STEP3: FIRE COMMAND, GRANT ALL PRIVILEGES ON *.* TO 'sanovi'@'192.168.255.65';","Custom4");
+      return ("Fail");
+	}
+}
+
+function adminPage_VerifyPurgedData($argDriver,$argURL,$argUserName,$argPassword,$argQuery) {
+
+	var $beforePurge = "";
+	$beforePurge = fetchDataFromDB($argDriver,$argURL,$argUserName,$argPassword,$argQuery);
+	if($beforePurge == "Fail"){
+		_assertTrue($beforePurge == "","FOLLOW STEPS TO GRANT USER PERMISSION");
+		return;
+	}
+	_log("Before Purge Data Count: "+$beforePurge.length,"Custom4");	
+	_assert(_exists(_link("Admin")==true),"Page not visible");
+	_click(_link("Admin"));
+	_click(_link("Go to Operational History"));
+	_click(_link("Edit Log Retention Period"));
+	_setValue(_textbox("uldays"), "1");
+	_setValue(_textbox("rldays"), "1");
+	_setValue(_textbox("rpoldays"), "1");
+	_setValue(_textbox("wrldays"), "1");
+	_setValue(_textbox("bcoldays"), "1");
+	_setValue(_textbox("internalWorkflowDays"), "1");
+	_setValue(_textbox("contDetdays"), "1");
+	_setValue(_textbox("ildays"), "1");
+	_setValue(_textbox("validationDays"), "1");
+	_setValue(_textbox("rildays"), "1");
+	_click(_button("Save Configuration"));
+	_click(_button("Purge Now"));
+	
+	var $afterPurge = fetchDataFromDB($adminPurgeDriver,$adminPurgeURL,$adminPurgeUser,$adminPurgePassword,$adminPurgeQuery);
+	_log("After Purge Data Count: "+$afterPurge.length,"Custom4");
+	_assert($beforePurge.length > $afterPurge.length,"Purge not performed successfully");
+}
+
+function adminPage_CreateCredentialsAndLogin() {
+
+	Login_001();
+	createUserWithDifferentPriviledges($argUserName,$argRole,$argUserFullName);
+}
+
+function adminPage_selectAllValueInSelectBox($argNameOfLocator) {
+
+	//_getOptions(_select("assignedGroups"),"options").length;
+	for(var $i=0;$i<_getOptions(_select("assignedGroups"),"options").length;$i++){
+		try{
+		 _setSelected(_select("assignedGroups"),$i,true);
+		}
+		 catch ($error) {
+
+		 }
+	}
+	
+}

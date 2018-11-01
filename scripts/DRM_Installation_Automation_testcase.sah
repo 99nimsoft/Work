@@ -1,0 +1,152 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains installation and Uninstallation. 
+ ** AuthorName : Automation Team
+ ** Created Date : Feb 2013
+ ************************************************************************/
+
+_log("=================================Pre-Condition===================================", "Custom1");
+
+//don't change the below line.
+_include("../Library/Solution_Signature/Include/Solution_function_Includes.sah");
+
+// mentioned the correct parameter file name which user are going to execute within the "" code.
+_include("../conf/DRMInstallation_Parameter.sah");
+_include("../conf/UserSelected_Installation_Testcase.sah");
+_include("../Library/Common/CommonRepository/CommonDRM_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/CommonGUINavigation_ObjRepository.sah");
+_include("../Library/Common/CommonRepository/GroupOperation_ObjRepository.sah");
+// *************************************************************************************************************************************************
+
+// Notes: below test cases for Local agent  __
+if ($g_executeAll == "Y" || $g_install == "Y") {
+	Panaces_PropertyFile_Update_001();
+}
+_log("=================================Test========================================", "Custom1");
+
+//if ($g_executeAll == "Y" || $g_uninstall == "Y") {
+//	var $test1 = _testcase("001", "UnInstall the panaces server in silent mode");
+//	$test1.start();
+//	DRM_UnInstllation_001();
+//	$test1.end();
+//}
+
+if ($g_executeAll == "Y" || $g_install == "Y") {
+	var $test2 = _testcase("Object_Manager/ Common/ Installation/ Server_Installation/ Server_Installation_09", "Silent mode install of Sanovi DRM server");
+	$test2.start();
+	DRM_Instllation_001();
+	$test2.end();
+}
+
+if ($g_executeAll == "Y" || $g_license == "Y") {
+	var $test3 = _testcase("003", "Install the panaces server license in silent mode");
+	$test3.start();
+	License_installation_001();
+	$test3.end();
+}
+
+_log("================================Post-Condition================================== ", "Custom1");
+
+
+Login_001();
+/*_click(_label($obj_admin));
+_click(_link($obj_GoToUser));*/
+CreateUser("jairam");  //to create user
+CreateUser("ankita");  //to create user
+CreateUser("sai");  //to create user
+CreateUser("savita");  //to create user
+CreateUser("sudipta");
+CreateUser("suba");  //to create user
+CreateUser("rakesh");  //to create user
+CreateUser("shilpa");  //to create user
+CreateUser("rakhee");  //to create user
+CreateUser("akanksha");  //to create user
+CreateUser("prasanna");
+CreateUser("hari");  //to create user
+CreateUser("shiva");
+CreateUser("subhasinee");  //to create user
+CreateUser("surendra");  //to create user
+CreateUser("harish");  //to create user
+CreateUser("常にオン"); // alwaysonRemote user
+CreateUser("常にロ"); // alwayson Local user
+CreateUser("応用"); // AppPFR Remote user
+CreateUser("拍手喝采");// AppPFR Local user
+CreateUser("拍手喝采1"); // AppPFR Local user
+CreateUser("拍手喝采2"); // AppPFR Local user
+CreateUser("データガード"); // OracleDG Remote user
+CreateUser("ログを取得する");//fetch log user
+CreateUser("システム事象"); // System Event User
+CreateUser("トリガーラル");// TriggerRals
+CreateUser("拍手喝采1");//ForknJoin AppPFR
+CreateUser("拍手喝采2");//ForknJoin AppPFR
+CreateUser("データガード1");//ForknJoin OraDG
+CreateUser("データガード2");//ForknJoin OraDG
+CreateUser("銀行報告書");//RBI Reports
+CreateUser("銀行報告書1");//RBI Reports1
+CreateUser("地元"); // Oracle DG Local User
+CreateUser("ハドル"); //Db2 HADR Local user
+CreateUser("ハドル0");//Db2 HADR Local user
+CreateUser("ハドル1"); //Db2 Hp3PAR Local user
+CreateUser("ハドル2");//Db2 Hp3PAR Local user
+CreateUser("ユーザーロール");//UserRole User
+CreateUser("automation");  //to create user
+CreateUser("automation1");  //to create user
+CreateUser("automation2");  //to create user
+CreateUser("auto");  //to create user
+CreateUser("auto1");  //to create user
+CreateUser("auto2");
+CreateUser("customAction");
+CreateUser("startProcess");
+CreateUser("OpfrRemote");
+CreateUser("OpfrLocal");
+CreateUser("mirrorLocal");
+CreateUser("mirrorRemote");
+CreateUser("mirrorLocal");
+CreateUser("mirrorRemote");
+CreateUser("postLocal");
+CreateUser("postRemote");//to create user
+CreateUser("mssqlremote");
+CreateUser("mssqllocal");
+CreateUser("mysqlremote");
+CreateUser("mysqllocal");
+CreateUser("alwayson1");
+CreateUser("alwayson2");
+CreateUser("sybase");
+CreateUser("oracledgremote");
+CreateUser("oracledglocal");//to create user
+CreateUser("applocal");
+CreateUser("logship1");
+CreateUser("logship2");
+CreateUser("logshipLocal");
+CreateUser("logshipRemote");
+CreateUser("db2hp3par");
+CreateUser("sanovi");
+CreateUser("sybasehp3par");
+CreateUser("TriggerRal");
+CreateUser("FetchLog");
+CreateUser("SysCapture");
+CreateUser("anantha");  //to create user
+CreateUser("srini");  //to create user
+CreateUser("sahu");  //to create user
+CreateUser("rajesh");  //to create user
+CreateUser("anita");  //to create user
+CreateUser("om");  //to create user
+CreateUser("Bhola");//to create user
+CreateUser("padma");  //to create user
+CreateUser("sharan");  //to create user
+CreateUser("hari");  //to create user
+CreateUser("abdul");  //to create user
+CreateUser("neha");  //to create user
+CreateUser("kande");  //to create user
+CreateUser("ashu");  //to create user
+CreateUser("sanjay");  //to create user
+CreateUser("lakshmipathi");  //to create user
+CreateUser("manish");  //to create user
+CreateUser("seki");  //to create user
+CreateUser("junji");  //to create user
+CreateUser("susumu");  //to create user
+CreateUser("hiroshi");  //to create user
+CreateUser("masahiro");  //to create user
+
+Logout_001(); 

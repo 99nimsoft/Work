@@ -1,0 +1,2597 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the common functions which are the part of SFR RAL( Recovery automation library). 
+ **@AuthorName : Anantha Sakthi
+ ** Created Date : July 2015
+ ************************************************************************/
+
+
+
+/**
+ * Function is used to add the custom action for command execution with sudo and dry run option. 
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+function Add_SfrRAL_CreateFileset($compNameIP_PR,$compNameIP_DR,$sername,$sourceDirectory,$targetDirectory){
+	_doubleClick(_span("PFROperation[1]"));
+    _click(_link("Action Properties"));
+	_setSelected(_select("operationType"), "CREATE FILESET");
+	_check(_checkbox("operationOn"));
+	_setSelected(_select("serviceName"),$sername);
+	_setSelected(_select("sourceHost"), $compNameIP_PR);
+	_setSelected(_select("targetHost"), $compNameIP_DR);
+	_setValue(_textbox("sourceDir"), $sourceDirectory);
+	_setValue(_textbox("targetDirAdd"), $targetDirectory);
+	_click(_button("Add"));
+	
+}
+
+/**
+ * Function is used to add the custom action for command execution with sudo and dry run option. 
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+function Add_SfrRAL($datasetName,$sername,$opertaionType){
+	_doubleClick(_span("PFROperation"));
+    _click(_link("Action Properties"));
+	_setSelected(_select("operationType"), $opertaionType);
+	_setSelected(_select("serviceName"),$groupName+"_RepPair <--> " + $sername);
+	SFR_saveClose("PFROperation");
+
+}
+
+/**
+ * Function is used to add the custom action for command execution with sudo and dry run option. 
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+function Add_SfrRAL_DeleteFileset($datasetName,$sername){
+	Add_SfrRAL($datasetName,$sername,"DELETE FILESET");
+
+}
+
+/**
+ * Function is used to add the custom action for command execution with sudo and dry run option. 
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+function Add_SfrRAL_EnableFileset($datasetName,$sername){
+	Add_SfrRAL($datasetName,$sername,"START FILESET");
+
+}
+
+
+/**
+ * Function is used to add the custom action for command execution with sudo and dry run option. 
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+function Add_SfrRAL_DisableFileset($datasetName,$sername){
+	Add_SfrRAL($datasetName,$sername,"STOP FILESET");
+
+}
+
+
+/**
+ * Function is used to add the custom action for command execution with sudo and dry run option. 
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+function Add_SfrRAL_StartFileset($datasetName,$sername){
+	Add_SfrRAL($datasetName,$sername,"START FILESET");
+}
+
+/**
+ * Function is used to add the custom action for command execution with sudo and dry run option. 
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+function Add_SfrRAL_StopFileset($datasetName,$sername){
+	Add_SfrRAL($datasetName,$sername,"STOP FILESET");
+}
+
+/**
+ * Function is configure the SFR advanced properties. 
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author:Anantha Sakthi
+ * 
+ */
+function SFR_advancedProperties($Cloumn){
+
+
+}
+
+//////////////////////////////////////////////////TRANSFER FILESET///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Function is used to create all the TRANSFER FILESET related configuration for SFR.
+ * @param :null
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function Transferfileset(){
+	createWorkFlow($groupName,$WorkflowName);
+	AddRalIntoLayout($ralString,$ralCategory,$ralName);
+	Transferfileset_RAL($sourceHost,$targetHost,$sourceDir,$targetDirAdd);
+	SFR_saveClose("PFROperation");
+	executeWorkflow($groupName,$WorkflowName);
+	validateExecutionPage($WorkflowName);
+	Validate_PR_DR_Transfer_fileset($cmdScriptPathPR, $compipPR, $remoteUserNameValPR, $remotePwdValPR,$cmdScriptPathDR, $compipDR, $remoteUserNameValDR, $remotePwdValDR);
+}
+
+/**
+ * Function is used to create all the TRANSFER FILESET RAL related configuration for SFR.
+ * @param : null
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function Transferfileset_RAL($sourceHost,$targetHostT,$sourceDir,$targetDirAdd){
+	_click(_span("PFR"));
+	_click(_button("infoBtn"));
+	_click(_link("Action Properties"));
+	_setSelected(_select("operationType"), "TRANSFER FILESET");
+	_setSelected(_select("sourceHost"), $sourceHost);
+	_setSelected(_select("targetHost"), $targetHost);
+	_setValue(_textbox("sourceDir"), $sourceDir);
+	_setValue(_textbox("targetDirAdd"), $targetDirAdd);
+	_click(_button("Add"));
+}
+
+/**
+ * Function is used to create all the Verify TRANSFER FILESET from backend for SFR.
+ * @param :null
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function Validate_PR_DR_Transfer_fileset($cmdScriptPathPR, $compipPR, $remoteUserNameValPR, $remotePwdValPR,$cmdScriptPathDR, $compipDR, $remoteUserNameValDR, $remotePwdValDR){
+    var $sshCommandPR = "ls -ltr " + $cmdScriptPathPR;
+     $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	_log($statusPR);
+	_wait(50000);
+	 var $sshCommandDR = "ls -ltr " + $cmdScriptPathDR;
+     $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	_log($statusDR);
+   _assertEqual($statusPR,$statusDR , "Validating  Transfer_fileset");
+}
+
+
+//////////////////////////////////////////////////Sync Delete///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Function is used to create all the Sync Delete  related configuration for SFR.
+ * @param :null
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+  
+
+function Sync_delete(){
+	createWorkFlow($groupName,$WorkflowName);
+	AddRalIntoLayout($ralString,$ralCategory,$ralName);
+	Add_SfrRAL_CreateFileset($compNameIP_PR,$compNameIP_DR,$sername,$sourceDirectory,$targetDirectory);
+    sync_delete_RAL();
+    SFR_saveClose("PFROperation");
+	executeWorkflow($groupName,$WorkflowName);
+	validateExecutionPage($WorkflowName);
+	Validate_PR_DR_sync_delete($cmdScriptPathPR, $compipPR, $remoteUserNameValPR, $remotePwdValPR,$cmdScriptPathDR,$syncdeletefile, $compipDR, $remoteUserNameValDR, $remotePwdValDR);
+	}
+
+/**
+ * Function is used to create all the Sync Delete  related configuration for SFR.
+ * @param :null
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function sync_delete_RAL(){
+	_click(_checkbox("enableReplication"));
+	_click(_label("Advanced Configuration"));
+	_click(_checkbox("syncDeleteFiles"));
+}
+
+/**
+ * Function is used to create all the Verify Sync Delete from backend for SFR.
+ * @param :null
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function Validate_PR_DR_sync_delete($cmdScriptPathPR, $compipPR, $remoteUserNameValPR, $remotePwdValPR,$cmdScriptPathDR, $syncdeletefile, $compipDR, $remoteUserNameValDR, $remotePwdValDR){
+    var $sshCommandPR = "ls -ltr " + $cmdScriptPathPR;
+     $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	_log($statusPR);
+	
+	 var $sshCommandDR = "ls -ltr " + $cmdScriptPathDR;
+     $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	_log($statusDR);
+
+   _assertEqual($statusPR,$statusDR , "Validating Before Deleting files");
+   
+if($statusPR == $statusDR){
+	var $sshCommandPRsync = "rm -rf  " + $cmdScriptPathPR+ $syncdeletefile;
+    $statussync = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPRsync);
+	_log($statussync);
+}
+else {
+	_fail("Fileset Not create and files are not Replicated DR side");
+}
+_wait(50000);
+
+var $sshCommandPR = "ls -ltr " + $cmdScriptPathPR;
+$statusPRsync = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+_log($statusPRsync);
+
+_wait(50000);
+
+var $sshCommandDR = "ls -ltr " + $cmdScriptPathDR;
+$statusDRsync = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+_log($statusDRsync);
+
+_assertEqual($statusPRsync,$statusDRsync , "Validating After Deleting files");
+
+}
+
+
+///////////////////////////////////////////////////SFR_Filters////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * Function is used to create all the Filter_Execution_Exclude()  configuration for SFR.
+ * @param :
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+function Filter_Execution_Exclude(){
+	filter_Exclude_01();
+	filter_Exclude_Files_02();
+	filter_Exclude_Directories_03();
+	filter_Exclude_Both_04();
+	filter_Exclude_Files_Casesensitive_05();
+	filter_Exclude_Directories_Casesensitive_06();
+	filter_Exclude_Both_Casesensitive_07();
+	filter_Exclude_File_Recursive_08();
+	filter_Exclude_Directories_Recursive_09();
+	filter_Exclude_Both_Recursive_10();
+	filter_Exclude_File_Casesensitive_Recursive_11();
+	filter_Exclude_Directories_Casesensitive_Recursive_12();
+	filter_Exclude_Both_Casesensitive_Recursive_13();
+	
+}
+/**
+ * Function is used to create all the Filter_Include_Exclude()  configuration for SFR.
+ * @param :
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+
+function Filter_Include_Execution(){
+	filter_Include_14();
+	filter_Include_Files_15();
+	filter_Include_Directories_16();
+	filter_Include_Both_17();
+	filter_Include_Files_Casesensitive_18();
+	filter_Include_Directories_Casesensitive_19();
+	filter_Include_Both_Casesensitive_20();
+	filter_Include_Files_Recursive_21();
+	filter_Include_Directories_Recursive_22();
+	filter_Include_BOTH_Recursive_23();
+	filter_Include_Files_Casesensitive_Recursive_24();
+	filter_Include_Directories_Casesensitive_Recursive_25();
+	filter_Include_BOTH_Casesensitive_Recursive_26();
+} 
+
+/**
+ * Function is used to create all the SFR_Filters  configuration for SFR.
+ * 
+ * @param :
+ *            null
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+function SFR_Filters(){
+	AddRalIntoLayout($ralString,$ralCategory,$ralName);
+	Add_SfrRAL_CreateFileset($compNameIP_PR,$compNameIP_DR,$sername,$sourceDirectory,$targetDirectory);
+	
+	SFR_Filters_RAL($sourceFolder,$filefolder,$Exclude,$Include,$files,$Directories,$Both,$Casesensitive,$Recursive);
+	
+	SFR_saveClose("PFROperation");
+	executeWorkflow($groupName,$WorkflowName);
+	validateExecutionPage($WorkflowName);
+	Add_SfrRAL_DeleteFileset($datasetName,$sername);
+}
+
+/**
+ * Function is used to create all the SFR_Filters_RAL related configuration for SFR.
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function SFR_Filters_RAL($groupName,$sourceFolder,$filefolder,$Exclude,$Include,$files,$Directories,$Both,$Casesensitive,$Recursive) {
+	navigateToGroups();
+	_click(_link($groupName));
+	_click(_link("Continuity...")); 
+	_click(_image("Modify Workflow Details[1]"));
+	_click(_span("Create PFR Fileset"));
+	_click(_button("infoBtn"));
+	_click(_link("Action Properties"));
+	_click(_label("Advanced Configuration"));
+	_setValue(_textbox("sourceFolder"), $sourceFolder);
+	_setValue(_textbox("sourceFolder[1]"), $filefolder);
+	
+	if(_exists(_link("Delete[1]"))) {
+		_click(_link("Delete[1]"));
+		_click(_link("Delete"));
+	}
+
+
+	
+if($Exclude == "Yes"){
+	_click(_radio("#"));
+	if(_exists(_link("Delete"))){
+		_click(_link("Delete"));
+	}
+}
+if($Include == "Yes"){
+	_click(_radio("#[1]"));
+}
+if($files == "Yes") {
+	_click(_radio("#[2]"));
+}
+if($Directories == "Yes"){
+	_click(_radio("#[3]"));
+}
+if($Both == "Yes"){
+	_click(_radio("#[4]"));
+}
+if($Casesensitive == "Yes"){
+	_click(_checkbox("passCriteria"));
+}
+if($Recursive  == "Yes"){
+	_click(_checkbox("passCriteria[1]"));
+}
+_click(_button("Add[1]"));
+
+if(_assertExists(_link("Delete"))){
+	_log("Filter configuration done successfully");
+} else{
+	_fail("Filter configuration NOT done successfully");
+}
+
+_click(_div("cell ui-droppable[207]"));
+_click(_link("Save Now"));
+
+}
+
+/**
+ * Function is used to create all the Create_Files_Folder related configuration for SFR.
+ * @return : null
+ * @Author: Govinda Mengji
+ * Updated: Anita
+ */
+
+function Create_Files_Folder(){
+	
+	var $sshCommandPR = "rm -rf /opt/pfrlogs/" ; 
+	SecuredShellConnection($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	
+	var $sshCommandPR = "mkdir /opt/pfrlogs" ; 
+	SecuredShellConnection($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	
+	var $sshCommandDR = "rm -rf /opt/pfrlogs/" ; 
+	SecuredShellConnection($compIPDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	
+	var $sshCommandDR = "mkdir /opt/pfrlogs" ; 
+	SecuredShellConnection($compIPDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	
+	var $sshCommandPR = "cd"+" "+$cmdScriptPathPR+ "&& touch Lop.xml Loo.xml lol.xml lolbf.xml lsdsol.xml Adf.xml ABC.xml abchdjf.xml abcs.xml BAT.xml Ball.xml bad.xml bb.xml adfd.txt avd.txt bdjgb.txt Adfd.txt Ashg.txt bhjdhv.txt bbfbf.txt BBB.txt BAT.txt test3.sh yuy.sh oiuio.sh pppp.sh" ; 
+	$statusPR = SecuredShellConnection($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	_log($statusPR);
+	
+		
+	var $sshCommandPR = "cd"+" "+$cmdScriptPathPR+ "&& mkdir ABC ABgrg ABtrtr abc abbb aaaa Sanovi sanovi123 folder folder1 folder FIle GGG gov ttt Too Bat Bol bfgf bdfgfb";
+	$statusPR = SecuredShellConnection($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	_log($statusPR);
+	
+	var $sshCommandPR = "cd"+" "+$RecursivePath+ "&& touch Lop.xml Loo.xml lol.xml lolbf.xml lsdsol.xml Adf.xml ABC.xml abchdjf.xml abcs.xml BAT.xml Ball.xml bad.xml bb.xml adfd.txt avd.txt bdjgb.txt Adfd.txt Ashg.txt bhjdhv.txt bbfbf.txt BBB.txt BAT.txt test3.sh yuy.sh oiuio.sh pppp.sh" ; 
+	$statusPR = SecuredShellConnection($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	_log($statusPR);
+	
+		
+	var $sshCommandPR = "cd"+" "+$RecursivePath+ "&& mkdir ABC ABgrg ABtrtr abc abbb aaaa Sanovi sanovi123 folder folder1 folder FIle GGG gov ttt Too Bat Bol bfgf bdfgfb";
+	$statusPR = SecuredShellConnection($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	_log($statusPR);
+	
+}
+
+/**
+ * Function is used to create all the EditPFRRAL related configuration for SFR.
+ * @param :
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+function  EditPFRRAL($groupName,$sourceFolder,$filefolder){
+	navigateToGroups();
+	_click(_link($groupName));
+	_click(_link("Group Configuration"));
+	_click(_link("Continuity..."));
+	_click(_image("Modify Workflow Details[1]"));
+	_click(_span("Create PFR Fileset"));
+	_click(_button("infoBtn"));
+	_click(_link("Action Properties"));
+	_click(_label("Advanced Configuration"));
+	_setValue(_textbox("sourceFolder"), $sourceFolder);
+	_setValue(_textbox("sourceFolder[1]"), $filefolder);
+}
+
+/**
+ * Function is used to create all the Delete_files_DR related configuration for SFR.
+ * @param :
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+function Delete_files_DR($cmdScriptPathDR,$compipDR, $remoteUserNameValDR, $remotePwdValDR){
+
+	var $sshCommandDR = "rm -rf " + $cmdScriptPathDR + "/*";
+
+    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	_log($statusDR);
+}
+
+
+/**
+ * Function is used to create all the filter_Exclude related configuration for SFR.
+ * @param :
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function filter_Exclude_01(){
+	Delete_files_DR($cmdScriptPathDR,$compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+    SFR_Filters_RAL($groupName,$sourceFolder,$filefolder,$Exclude,$Include,$files,$Directories,$Both,$Casesensitive,$Recursive);
+	Execute_NFC($groupName, "NormalFullCopy");
+	BCO_Exceution_Status($groupName, "NormalFullCopy");
+
+	var $sshCommandDR = 'ls -ltr '+$cmdScriptPathDR+' | grep xml | wc -l';
+    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	_log($statusDR);
+	_assertEqual("0",$statusDR , ": No such file or directory");
+
+	var $sshCommandPR = 'ls -ltr '+$cmdScriptPathPR+' | wc -l';
+    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	_log($statusPR);
+	
+	var $sshCommandDR = 'ls -ltr '+$cmdScriptPathDR+' | wc -l';
+    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	_log($statusDR);
+	_assertTrue($statusDR<$statusPR , "XML file Exclude from DR , So PR & DR should not be Equal");
+
+    //Diff code to validate 
+	/*var $sshCommandDR = "ls -ltr" +" "+ $cmdScriptPathDR + $filefolder;
+    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	_log($statusDR);
+	_assertEqual("",$statusDR , ": No such file or directory");
+	var $sshCommandDR = "ls -ltr" +" "+ $cmdScriptPathDR;
+    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	_log($statusDR);
+	_assertNotEqual("",$statusDR);*/
+}
+
+
+/**
+ * Function is used to create all the filter_Exclude_Files_02 related configuration for SFR.
+ * @param :
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function filter_Exclude_Files_02(){
+		
+	Delete_files_DR($cmdScriptPathDR,$compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+    SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[5][9],$l_filterActionRAL[5][2],$l_filterActionRAL[5][3],$l_filterActionRAL[5][4],$l_filterActionRAL[5][5],$l_filterActionRAL[5][6],$l_filterActionRAL[5][7],$l_filterActionRAL[5][8]);
+	Execute_NFC($groupName, "NormalFullCopy");
+	BCO_Exceution_Status($groupName, "NormalFullCopy");
+	
+     var $sshCommandPR = ' ls -al '+$cmdScriptPathPR+' | grep ^- | wc -l';
+	 $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	 //_log($statusPR);
+	
+    	// ls -al /opt/gov | grep ^- | wc -l
+	 
+	   var $sshCommandDR = ' ls -al '+$cmdScriptPathDR+' | grep ^- | wc -l';
+	    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+		//_log($statusDR);
+		_assertEqual("0",$statusDR , ": No Files");
+
+		_assertNotEqual($statusDR,$statusPR , "File Exclude from DR , So PR & DR should not be Equal");
+		
+		var $sshCommandPR = 'ls -ltr '+$cmdScriptPathPR+' | wc -l';
+	    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		_log($statusPR);
+		
+		var $sshCommandDR = 'ls -ltr '+$cmdScriptPathDR+' | wc -l';
+	    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+		_log($statusDR);
+		_assertTrue($statusDR<$statusPR , "File Exclude from DR , So PR & DR should not be Equal");
+
+}
+
+
+/**
+ * Function is used to create all the filter_Exclude_Directories_03 related configuration for SFR.
+ * @param :
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function filter_Exclude_Directories_03(){
+	
+		
+	Delete_files_DR($cmdScriptPathDR,$compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+    SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[6][9],$l_filterActionRAL[6][2],$l_filterActionRAL[6][3],$l_filterActionRAL[6][4],$l_filterActionRAL[6][5],$l_filterActionRAL[6][6],$l_filterActionRAL[6][7],$l_filterActionRAL[6][8]);
+	Execute_NFC($groupName, "NormalFullCopy");
+	BCO_Exceution_Status($groupName, "NormalFullCopy");
+	
+     var $sshCommandPR = ' tree '+$cmdScriptPathPR+' -d -L 1';
+	 $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	
+	//find /opt/gov/* -type d -ls | wc -l  -- to get count 
+	//tree /opt/gov/ -d -L 1
+	   var $sshCommandDR = ' tree '+$cmdScriptPathDR+' -d -L 1';
+	    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+		
+		_assertNotEqual($statusDR,$statusPR , "Directories file Exclude from DR , So PR & DR should not be Equal");
+		
+		var $sshCommandPR = 'ls -ltr '+$cmdScriptPathPR+' | wc -l';
+	    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		_log($statusPR);
+		
+		var $sshCommandDR = 'ls -ltr '+$cmdScriptPathDR+' | wc -l';
+	    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+		_log($statusDR);
+		_assertTrue($statusDR<$statusPR , "Directories  Exclude from DR , So PR & DR should not be Equal");
+
+
+}
+
+
+
+/**
+ * Function is used to create all the filter_Exclude_Both_04 related configuration for SFR.
+ * @param :
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function filter_Exclude_Both_04(){
+	
+		
+	Delete_files_DR($cmdScriptPathDR,$compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+    SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[7][9],$l_filterActionRAL[7][2],$l_filterActionRAL[7][3],$l_filterActionRAL[7][4],$l_filterActionRAL[7][5],$l_filterActionRAL[7][6],$l_filterActionRAL[7][7],$l_filterActionRAL[7][8]);
+	Execute_NFC($groupName, "NormalFullCopy");
+	BCO_Exceution_Status($groupName, "NormalFullCopy");
+		
+/////
+		var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[7][9]+' -type d -ls | wc -l';
+		 $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+
+		   var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[7][9]+' -type d -ls | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+			
+		    _assertEqual("0",$statusDR , ": No Directories");
+		    
+		    _assertNotEqual($statusPR,$statusDR, ":Directories not equal in DR n PR Side");
+		    
+		    //find /opt/gov/a* -type f -ls | wc -l
+		    //Files 
+		    var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[7][9]+' -type f -ls | wc -l';
+			 $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+			
+			   var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[7][9]+' -type f -ls | wc -l';
+			    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+				
+			    _assertEqual("0",$statusDR , ": No Files");
+		    
+			    _assertNotEqual($statusPR,$statusDR, ": Files not equal in DR n PR Side");
+
+}
+
+
+
+/**
+ * Function is used to create all the filter_Exclude_Files_Casesensitive_05 related configuration for SFR.
+ * @param :
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function filter_Exclude_Files_Casesensitive_05(){
+		
+	Delete_files_DR($cmdScriptPathDR,$compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+    SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[8][9],$l_filterActionRAL[8][2],$l_filterActionRAL[8][3],$l_filterActionRAL[8][4],$l_filterActionRAL[8][5],$l_filterActionRAL[8][6],$l_filterActionRAL[8][7],$l_filterActionRAL[8][8]);
+	Execute_NFC($groupName, "NormalFullCopy");
+	BCO_Exceution_Status($groupName, "NormalFullCopy");
+	
+     var $sshCommandPR = ' ls -al '+$cmdScriptPathPR+$l_filterActionRAL[8][9]+' | grep ^- | wc -l';
+	 $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	 //_log($statusPR);
+	
+    	// ls -al /opt/gov | grep ^- | wc -l
+	 
+	   var $sshCommandDR = ' ls -al '+$cmdScriptPathDR+$l_filterActionRAL[8][9]+' | grep ^- | wc -l';
+	    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+		//_log($statusDR);
+		_assertEqual("0",$statusDR , ": No Files");
+
+		_assertNotEqual($statusDR,$statusPR , "File Exclude from DR , So PR & DR should not be Equal");
+		
+		var $sshCommandPR = 'ls -ltr '+$cmdScriptPathPR+' | wc -l';
+	    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		_log($statusPR);
+		
+		var $sshCommandDR = 'ls -ltr '+$cmdScriptPathDR+' | wc -l';
+	    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+		_log($statusDR);
+		_assertTrue($statusDR<$statusPR , "File Exclude from DR , So PR & DR should not be Equal");
+
+}
+
+
+/**
+ * Function is used to create all the filter_Exclude_Directories_Casesensitive_06 related configuration for SFR.
+ * @param :
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function filter_Exclude_Directories_Casesensitive_06(){
+	
+		
+	Delete_files_DR($cmdScriptPathDR,$compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+    SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[9][9],$l_filterActionRAL[9][2],$l_filterActionRAL[9][3],$l_filterActionRAL[9][4],$l_filterActionRAL[9][5],$l_filterActionRAL[9][6],$l_filterActionRAL[9][7],$l_filterActionRAL[9][8]);
+	Execute_NFC($groupName, "NormalFullCopy");
+	BCO_Exceution_Status($groupName, "NormalFullCopy");
+	
+
+	 //find /opt/gov/* -type d -ls | wc -l  -- count to directery
+	//tree /opt/gov/ -d -L 1
+	
+	var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[9][9]+' -type d -ls | wc -l';
+	 $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	
+
+	   var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[9][9]+' -type d -ls | wc -l';
+	    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+		
+	    _assertEqual("0",$statusDR , ": No Directories");
+	    
+	    
+	    _assertNotEqual($statusDR,$statusPR , "Directories file Exclude from DR , So PR & DR should not be Equal");
+		
+		var $sshCommandPR = 'ls -ltr '+$cmdScriptPathPR+' | wc -l';
+	    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		_log($statusPR);
+		
+		var $sshCommandDR = 'ls -ltr '+$cmdScriptPathDR+' | wc -l';
+	    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+		_log($statusDR);
+		_assertTrue($statusDR<$statusPR , "Directories  Exclude from DR , So PR & DR should not be Equal");
+
+
+}
+
+
+
+/**
+ * Function is used to create all the filter_Exclude_Both_Casesensitive_07 related configuration for SFR.
+ * @param :
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function filter_Exclude_Both_Casesensitive_07(){
+		
+	Delete_files_DR($cmdScriptPathDR,$compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+    SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[10][9],$l_filterActionRAL[10][2],$l_filterActionRAL[10][3],$l_filterActionRAL[10][4],$l_filterActionRAL[10][5],$l_filterActionRAL[10][6],$l_filterActionRAL[10][7],$l_filterActionRAL[10][8]);
+	Execute_NFC($groupName, "NormalFullCopy");
+	BCO_Exceution_Status($groupName, "NormalFullCopy");
+	
+	//find /opt/gov/a* -type d -ls | wc -l
+	//Directories 
+	var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[10][9]+' -type d -ls | wc -l';
+	 $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+
+	   var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[10][9]+' -type d -ls | wc -l';
+	    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+		
+	    _assertEqual("0",$statusDR , ": No Directories");
+	    
+	    _assertNotEqual($statusPR,$statusDR, ":Directories not equal in DR n PR Side");
+	    
+	    
+	    //find /opt/gov/a* -type f -ls | wc -l
+	    //Files 
+	    var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[10][9]+' -type f -ls | wc -l';
+		 $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		
+		   var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[10][9]+' -type f -ls | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+			
+		    _assertEqual("0",$statusDR , ": No Files");
+	    
+		    _assertNotEqual($statusPR,$statusDR, ": Files not equal in DR n PR Side");
+	    
+	
+		var $sshCommandPR = 'ls -ltr '+$cmdScriptPathPR+' | wc -l';
+	    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		_log($statusPR);
+		
+		var $sshCommandDR = 'ls -ltr '+$cmdScriptPathDR+' | wc -l';
+	    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+		_log($statusDR);
+
+		_assertTrue($statusDR<$statusPR , "Directories & Files  Exclude from DR , So PR & DR should not be Equal");
+
+}
+
+
+
+/**
+ * Function is used to create all the filter_Exclude_File_Recursive_08 related configuration for SFR.
+ * @param :
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function filter_Exclude_File_Recursive_08(){
+		
+	Delete_files_DR($cmdScriptPathDR,$compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+    SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[11][9],$l_filterActionRAL[11][2],$l_filterActionRAL[11][3],$l_filterActionRAL[11][4],$l_filterActionRAL[11][5],$l_filterActionRAL[11][6],$l_filterActionRAL[11][7],$l_filterActionRAL[11][8]);
+	Execute_NFC($groupName, "NormalFullCopy");
+	BCO_Exceution_Status($groupName, "NormalFullCopy");
+	
+	
+	var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[11][9]+' -type f -ls | wc -l';
+	$statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	_log($statusPR);
+	
+	var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[11][9]+' -type f -ls | wc -l';
+	 $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR,$sshCommandDR);
+	_log($statusDR);
+
+	_assertEqual("0",$statusDR , ": No Files");
+    
+    _assertNotEqual($statusPR,$statusDR, ": Files not equal in DR n PR Side");
+    
+    var $sshCommandPR = 'ls -ltr '+$cmdScriptPathPR+' | wc -l';
+    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	_log($statusPR);
+	
+	var $sshCommandDR = 'ls -ltr '+$cmdScriptPathDR+' | wc -l';
+    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	_log($statusDR);
+
+	_assertTrue($statusDR<$statusPR , "Files  Exclude from DR , So PR & DR should not be Equal");
+    
+    //Check RecursivePath 
+    
+	var $sshCommandPR = ' find '+$RecursivePath+$l_filterActionRAL[11][9]+' -type f -ls | wc -l';
+	$statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	_log($statusPR);
+	
+	 
+	var $sshCommandDR = ' find '+$RecursivePath+$l_filterActionRAL[11][9]+' -type f -ls | wc -l';
+	 $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR,$sshCommandDR);
+	_log($statusDR);
+
+	
+	_assertEqual("0",$statusDR , ": RecursivePath No Files");
+    
+    _assertNotEqual($statusPR,$statusDR, ": RecursivePath Files not equal in DR n PR Side");
+    
+   
+    var $sshCommandPR = 'ls -ltr '+$RecursivePath+' | wc -l';
+    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	_log($statusPR);
+	
+	var $sshCommandDR = 'ls -ltr '+$RecursivePath+' | wc -l';
+    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	_log($statusDR);
+
+	_assertTrue($statusDR<$statusPR , "Files  Exclude from DR , So PR & DR should not be Equal");
+    
+}
+
+
+
+/**
+ * Function is used to create all the filter_Directories_File_Recursive_09 related configuration for SFR.
+ * @param :
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function filter_Exclude_Directories_Recursive_09(){
+		
+	Delete_files_DR($cmdScriptPathDR,$compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+    SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[12][9],$l_filterActionRAL[12][2],$l_filterActionRAL[12][3],$l_filterActionRAL[12][4],$l_filterActionRAL[12][5],$l_filterActionRAL[12][6],$l_filterActionRAL[12][7],$l_filterActionRAL[12][8]);
+	Execute_NFC($groupName, "NormalFullCopy");
+	BCO_Exceution_Status($groupName, "NormalFullCopy");
+	
+	
+	var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[12][9]+' -type d -ls | wc -l';
+	$statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	_log($statusPR);
+	
+	var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[12][9]+' -type d -ls | wc -l';
+	 $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR,$sshCommandDR);
+	_log($statusDR);
+
+	_assertEqual("0",$statusDR , ": No Directories");
+    
+    _assertNotEqual($statusPR,$statusDR, ": Files not equal in DR n PR Side");
+    
+    var $sshCommandPR = 'ls -ltr '+$cmdScriptPathPR+' | wc -l';
+    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	_log($statusPR);
+	
+	var $sshCommandDR = 'ls -ltr '+$cmdScriptPathDR+' | wc -l';
+    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	_log($statusDR);
+
+	_assertTrue($statusDR<$statusPR , "Directories  Exclude from DR , So PR & DR should not be Equal");
+    
+ /////Check RecursivePath 
+    
+	var $sshCommandPR = ' find '+$RecursivePath+$l_filterActionRAL[12][9]+' -type d -ls | wc -l';
+	$statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	_log($statusPR);
+	
+	 
+	var $sshCommandDR = ' find '+$RecursivePath+$l_filterActionRAL[12][9]+' -type d -ls | wc -l';
+	 $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR,$sshCommandDR);
+	_log($statusDR);
+
+	
+	_assertEqual("0",$statusDR , ": RecursivePath No Directories");
+    
+    _assertNotEqual($statusPR,$statusDR, ": RecursivePath Files not equal in DR n PR Side");
+    
+    var $sshCommandPR = 'ls -ltr '+$RecursivePath+' | wc -l';
+    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	_log($statusPR);
+	
+	var $sshCommandDR = 'ls -ltr '+$RecursivePath+' | wc -l';
+    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	_log($statusDR);
+
+	_assertTrue($statusDR<$statusPR , "Directories  Exclude from DR , So PR & DR should not be Equal");
+    
+}
+
+
+
+
+/**
+ * Function is used to create all the filter_Exclude_Both_Recursive_10 related configuration for SFR.
+ * @param :
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function filter_Exclude_Both_Recursive_10(){
+		
+	Delete_files_DR($cmdScriptPathDR,$compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+    SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[13][9],$l_filterActionRAL[13][2],$l_filterActionRAL[13][3],$l_filterActionRAL[13][4],$l_filterActionRAL[13][5],$l_filterActionRAL[13][6],$l_filterActionRAL[13][7],$l_filterActionRAL[13][8]);
+	Execute_NFC($groupName, "NormalFullCopy");
+	BCO_Exceution_Status($groupName, "NormalFullCopy");
+	
+	//find /opt/gov/a* -type d -ls | wc -l
+	//Directories 
+	var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[13][9]+' -type d -ls | wc -l';
+	 $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+
+	   var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[13][9]+' -type d -ls | wc -l';
+	    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+		
+	    _assertEqual("0",$statusDR , ": No Directories");
+	    
+	    _assertNotEqual($statusPR,$statusDR, ":Directories not equal in DR n PR Side");
+	    
+	    
+	    //find /opt/gov/a* -type f -ls | wc -l
+	    //Files 
+	    var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[13][9]+' -type f -ls | wc -l';
+		 $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		
+		   var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[13][9]+' -type f -ls | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+			
+		    _assertEqual("0",$statusDR , ": No Files");
+	    
+		    _assertNotEqual($statusPR,$statusDR, ": Files not equal in DR n PR Side");
+	
+	/////Check RecursivePath 
+	    
+		var $sshCommandPR = ' find '+$RecursivePath+$l_filterActionRAL[13][9]+' -type d -ls | wc -l';
+		$statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		_log($statusPR);
+		
+		 
+		var $sshCommandDR = ' find '+$RecursivePath+$l_filterActionRAL[13][9]+' -type d -ls | wc -l';
+		 $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR,$sshCommandDR);
+		_log($statusDR);
+
+		
+		_assertEqual("0",$statusDR , ": RecursivePath No Directories");
+	    
+	    _assertNotEqual($statusPR,$statusDR, ": RecursivePath Directories not equal in DR n PR Side");
+	    
+	    //files
+		var $sshCommandPR = ' find '+$RecursivePath+$l_filterActionRAL[13][9]+' -type f -ls | wc -l';
+		$statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		_log($statusPR);
+		
+		 
+		var $sshCommandDR = ' find '+$RecursivePath+$l_filterActionRAL[13][9]+' -type f -ls | wc -l';
+		 $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR,$sshCommandDR);
+		_log($statusDR);
+
+		
+		_assertEqual("0",$statusDR , ": RecursivePath No Filess");
+	    
+	    _assertNotEqual($statusPR,$statusDR, ": RecursivePath Files not equal in DR n PR Side");
+	    
+	    //
+	    var $sshCommandPR = 'ls -ltr '+$RecursivePath+' | wc -l';
+	    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		_log($statusPR);
+		
+		var $sshCommandDR = 'ls -ltr '+$RecursivePath+' | wc -l';
+	    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+		_log($statusDR);
+
+		_assertTrue($statusDR<$statusPR , "Directories  Exclude from DR , So PR & DR should not be Equal");
+
+}
+
+
+/**
+ * Function is used to create all the filter_Exclude_File_Recursive_08 related configuration for SFR.
+ * @param :
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function filter_Exclude_File_Casesensitive_Recursive_11(){
+		
+	Delete_files_DR($cmdScriptPathDR,$compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+    SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[14][9],$l_filterActionRAL[14][2],$l_filterActionRAL[14][3],$l_filterActionRAL[14][4],$l_filterActionRAL[14][5],$l_filterActionRAL[14][6],$l_filterActionRAL[14][7],$l_filterActionRAL[14][8]);
+	Execute_NFC($groupName, "NormalFullCopy");
+	BCO_Exceution_Status($groupName, "NormalFullCopy");
+	
+	
+	var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[14][9]+' -type f -ls | wc -l';
+	$statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	_log($statusPR);
+	
+	var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[14][9]+' -type f -ls | wc -l';
+	 $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR,$sshCommandDR);
+	_log($statusDR);
+
+	_assertEqual("0",$statusDR , ": No Files");
+    
+    _assertNotEqual($statusPR,$statusDR, ": Files not equal in DR n PR Side");
+    
+    var $sshCommandPR = 'ls -ltr '+$cmdScriptPathPR+' | wc -l';
+    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	_log($statusPR);
+	
+	var $sshCommandDR = 'ls -ltr '+$cmdScriptPathDR+' | wc -l';
+    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	_log($statusDR);
+
+	_assertTrue($statusDR<$statusPR , "Files  Exclude from DR , So PR & DR should not be Equal");
+    
+    //Check RecursivePath 
+    
+	var $sshCommandPR = ' find '+$RecursivePath+$l_filterActionRAL[14][9]+' -type f -ls | wc -l';
+	$statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	_log($statusPR);
+	
+	 
+	var $sshCommandDR = ' find '+$RecursivePath+$l_filterActionRAL[14][9]+' -type f -ls | wc -l';
+	 $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR,$sshCommandDR);
+	_log($statusDR);
+
+	
+	_assertEqual("0",$statusDR , ": RecursivePath No Files");
+    
+    _assertNotEqual($statusPR,$statusDR, ": RecursivePath Files not equal in DR n PR Side");
+    
+   
+    var $sshCommandPR = 'ls -ltr '+$RecursivePath+' | wc -l';
+    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	_log($statusPR);
+	
+	var $sshCommandDR = 'ls -ltr '+$RecursivePath+' | wc -l';
+    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	_log($statusDR);
+
+	_assertTrue($statusDR<$statusPR , "Files  Exclude from DR , So PR & DR should not be Equal");
+    
+}
+
+
+
+
+
+/**
+ * Function is used to create all the filter_Exclude_Directories_Casesensitive_Recursive_12 related configuration for SFR.
+ * @param :
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function filter_Exclude_Directories_Casesensitive_Recursive_12(){
+		
+	Delete_files_DR($cmdScriptPathDR,$compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+    SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[15][9],$l_filterActionRAL[15][2],$l_filterActionRAL[15][3],$l_filterActionRAL[15][4],$l_filterActionRAL[15][5],$l_filterActionRAL[15][6],$l_filterActionRAL[15][7],$l_filterActionRAL[15][8]);
+	Execute_NFC($groupName, "NormalFullCopy");
+	BCO_Exceution_Status($groupName, "NormalFullCopy");
+	
+	
+	var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[15][9]+' -type d -ls | wc -l';
+	$statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	_log($statusPR);
+	
+	var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[15][9]+' -type d -ls | wc -l';
+	 $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR,$sshCommandDR);
+	_log($statusDR);
+
+	_assertEqual("0",$statusDR , ": No Directories");
+    
+    _assertNotEqual($statusPR,$statusDR, ": Files not equal in DR n PR Side");
+    
+    var $sshCommandPR = 'ls -ltr '+$cmdScriptPathPR+' | wc -l';
+    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	_log($statusPR);
+	
+	var $sshCommandDR = 'ls -ltr '+$cmdScriptPathDR+' | wc -l';
+    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	_log($statusDR);
+
+	_assertTrue($statusDR<$statusPR , "Directories  Exclude from DR , So PR & DR should not be Equal");
+    
+ /////Check RecursivePath 
+    
+	var $sshCommandPR = ' find '+$RecursivePath+$l_filterActionRAL[15][9]+' -type d -ls | wc -l';
+	$statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	_log($statusPR);
+	
+	 
+	var $sshCommandDR = ' find '+$RecursivePath+$l_filterActionRAL[15][9]+' -type d -ls | wc -l';
+	 $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR,$sshCommandDR);
+	_log($statusDR);
+
+	
+	_assertEqual("0",$statusDR , ": RecursivePath No Directories");
+    
+    _assertNotEqual($statusPR,$statusDR, ": RecursivePath Files not equal in DR n PR Side");
+    
+    var $sshCommandPR = 'ls -ltr '+$RecursivePath+' | wc -l';
+    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	_log($statusPR);
+	
+	var $sshCommandDR = 'ls -ltr '+$RecursivePath+' | wc -l';
+    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	_log($statusDR);
+
+	_assertTrue($statusDR<$statusPR , "Directories  Exclude from DR , So PR & DR should not be Equal");
+    
+}
+
+
+
+/**
+ * Function is used to create all the filter_Exclude_Both_Casesensitive_Recursive_13 related configuration for SFR.
+ * @param :
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function filter_Exclude_Both_Casesensitive_Recursive_13(){
+		
+	Delete_files_DR($cmdScriptPathDR,$compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+    SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[16][9],$l_filterActionRAL[16][2],$l_filterActionRAL[16][3],$l_filterActionRAL[16][4],$l_filterActionRAL[16][5],$l_filterActionRAL[16][6],$l_filterActionRAL[16][7],$l_filterActionRAL[16][8]);
+	Execute_NFC($groupName, "NormalFullCopy");
+	BCO_Exceution_Status($groupName, "NormalFullCopy");
+	
+	//find /opt/gov/a* -type d -ls | wc -l
+	//Directories 
+	var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[16][9]+' -type d -ls | wc -l';
+	 $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+
+	   var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[16][9]+' -type d -ls | wc -l';
+	    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+		
+	    _assertEqual("0",$statusDR , ": No Directories");
+	    
+	    _assertNotEqual($statusPR,$statusDR, ":Directories not equal in DR n PR Side");
+	    
+	    
+	    //find /opt/gov/a* -type f -ls | wc -l
+	    //Files 
+	    var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[16][9]+' -type f -ls | wc -l';
+		 $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		
+		   var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[16][9]+' -type f -ls | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+			
+		    _assertEqual("0",$statusDR , ": No Files");
+	    
+		    _assertNotEqual($statusPR,$statusDR, ": Files not equal in DR n PR Side");
+	    
+	
+		var $sshCommandPR = 'ls -ltr '+$cmdScriptPathPR+' | wc -l';
+	    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		_log($statusPR);
+		
+		var $sshCommandDR = 'ls -ltr '+$cmdScriptPathDR+' | wc -l';
+	    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+		_log($statusDR);
+
+		_assertTrue($statusDR<$statusPR , "Directories & Files  Exclude from DR , So PR & DR should not be Equal");
+		
+		
+/////Check RecursivePath 
+	    
+		var $sshCommandPR = ' find '+$RecursivePath+$l_filterActionRAL[16][9]+' -type d -ls | wc -l';
+		$statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		_log($statusPR);
+		
+		 
+		var $sshCommandDR = ' find '+$RecursivePath+$l_filterActionRAL[16][9]+' -type d -ls | wc -l';
+		 $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR,$sshCommandDR);
+		_log($statusDR);
+
+		
+		_assertEqual("0",$statusDR , ": RecursivePath No Directories");
+	    
+	    _assertNotEqual($statusPR,$statusDR, ": RecursivePath Directories not equal in DR n PR Side");
+	    
+	    //files
+		var $sshCommandPR = ' find '+$RecursivePath+$l_filterActionRAL[16][9]+' -type f -ls | wc -l';
+		$statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		_log($statusPR);
+		
+		 
+		var $sshCommandDR = ' find '+$RecursivePath+$l_filterActionRAL[16][9]+' -type f -ls | wc -l';
+		 $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR,$sshCommandDR);
+		_log($statusDR);
+
+		
+		_assertEqual("0",$statusDR , ": RecursivePath No Filess");
+	    
+	    _assertNotEqual($statusPR,$statusDR, ": RecursivePath Files not equal in DR n PR Side");
+
+}
+
+
+
+
+
+
+/**
+ * Function is used to create all the filter_Include_14() related configuration for SFR.
+ * @param :
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function filter_Include_14(){
+	Delete_files_DR($cmdScriptPathDR,$compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+	
+	// 1 S> Exculude
+	SFR_Filters_RAL($groupName,$sourceFolder,$filefolder,$Exclude,$Include,$files,$Directories,$Both,$Casesensitive,$Recursive);
+	
+	//  Include
+	SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[17][9],$l_filterActionRAL[17][2],$l_filterActionRAL[17][3],$l_filterActionRAL[17][4],$l_filterActionRAL[17][5],$l_filterActionRAL[17][6],$l_filterActionRAL[17][7],$l_filterActionRAL[17][8]);
+	 
+	Execute_NFC($groupName, "NormalFullCopy");
+	BCO_Exceution_Status($groupName, "NormalFullCopy");
+	    
+	    //find /opt/gov/a* -type f -ls | wc -l
+	    //Files 
+	    var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[17][9]+' -type f -ls | wc -l';
+		 $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		
+		   var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[17][9]+' -type f -ls | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	    
+		    _assertEqual($statusPR,$statusDR, ": Files are equal in DR n PR Side");
+		    
+		    
+
+			var $sshCommandPR = 'ls -ltr '+$cmdScriptPathPR+' | wc -l';
+		    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+			_log($statusPR);
+			
+			var $sshCommandDR = 'ls -ltr '+$cmdScriptPathDR+' | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+			_log($statusDR);
+
+			_assertTrue($statusDR<$statusPR , "PR & DR should not be Equal");
+}
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * Function is used to create all the filter_Include_Files_15() related configuration for SFR.
+ * @param :
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function filter_Include_Files_15(){
+	Delete_files_DR($cmdScriptPathDR,$compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+	
+	// 2 > Exculude
+	 SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[5][9],$l_filterActionRAL[5][2],$l_filterActionRAL[5][3],$l_filterActionRAL[5][4],$l_filterActionRAL[5][5],$l_filterActionRAL[5][6],$l_filterActionRAL[5][7],$l_filterActionRAL[5][8]);
+	
+	//  Include
+	SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[18][9],$l_filterActionRAL[18][2],$l_filterActionRAL[18][3],$l_filterActionRAL[18][4],$l_filterActionRAL[18][5],$l_filterActionRAL[18][6],$l_filterActionRAL[18][7],$l_filterActionRAL[18][8]);
+	 
+	Execute_NFC($groupName, "NormalFullCopy");
+	BCO_Exceution_Status($groupName, "NormalFullCopy");
+	    
+	    //find /opt/gov/a* -type f -ls | wc -l
+	    //Files 
+	    var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[18][9]+' -type f -ls | wc -l';
+		 $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		
+		   var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[18][9]+' -type f -ls | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	    
+		    _assertEqual($statusPR,$statusDR, ": Files are equal in DR n PR Side");
+		    
+		    
+
+			var $sshCommandPR = 'ls -ltr '+$cmdScriptPathPR+' | wc -l';
+		    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+			_log($statusPR);
+			
+			var $sshCommandDR = 'ls -ltr '+$cmdScriptPathDR+' | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+			_log($statusDR);
+
+			_assertTrue($statusDR<$statusPR , "PR & DR should not be Equal");
+}
+
+
+
+
+/**
+ * Function is used to create all the filter_Include_Directories_16() related configuration for SFR.
+ * @param :
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function filter_Include_Directories_16(){
+	Delete_files_DR($cmdScriptPathDR,$compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+	
+	// 3> Exculude
+	 SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[6][9],$l_filterActionRAL[6][2],$l_filterActionRAL[6][3],$l_filterActionRAL[6][4],$l_filterActionRAL[6][5],$l_filterActionRAL[6][6],$l_filterActionRAL[6][7],$l_filterActionRAL[6][8]);
+	
+	//  Include
+	SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[19][9],$l_filterActionRAL[19][2],$l_filterActionRAL[19][3],$l_filterActionRAL[19][4],$l_filterActionRAL[19][5],$l_filterActionRAL[19][6],$l_filterActionRAL[19][7],$l_filterActionRAL[19][8]);
+	 
+	Execute_NFC($groupName, "NormalFullCopy");
+	BCO_Exceution_Status($groupName, "NormalFullCopy");
+	    
+	    //find /opt/gov/a* -type f -ls | wc -l
+	    //Files 
+	    var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[19][9]+' -type d -ls | wc -l';
+		 $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		
+		   var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[19][9]+' -type d -ls | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	    
+		    _assertEqual($statusPR,$statusDR, ": Files are equal in DR n PR Side");
+		    
+		    
+
+			var $sshCommandPR = 'ls -ltr '+$cmdScriptPathPR+' | wc -l';
+		    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+			_log($statusPR);
+			
+			var $sshCommandDR = 'ls -ltr '+$cmdScriptPathDR+' | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+			_log($statusDR);
+
+			_assertTrue($statusDR<$statusPR , "PR & DR should not be Equal");
+}
+
+
+
+
+/**
+ * Function is used to create all the filter_Include_Both_17() related configuration for SFR.
+ * @param :
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function filter_Include_Both_17(){
+	Delete_files_DR($cmdScriptPathDR,$compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+	
+	// 4> Exculude
+	SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[7][9],$l_filterActionRAL[7][2],$l_filterActionRAL[7][3],$l_filterActionRAL[7][4],$l_filterActionRAL[7][5],$l_filterActionRAL[7][6],$l_filterActionRAL[7][7],$l_filterActionRAL[7][8]);
+	
+	//  Include
+	SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[20][9],$l_filterActionRAL[20][2],$l_filterActionRAL[20][3],$l_filterActionRAL[20][4],$l_filterActionRAL[20][5],$l_filterActionRAL[20][6],$l_filterActionRAL[20][7],$l_filterActionRAL[20][8]);
+	 
+	Execute_NFC($groupName, "NormalFullCopy");
+	BCO_Exceution_Status($groupName, "NormalFullCopy");
+	    
+	    //find /opt/gov/a* -type f -ls | wc -l
+	    //Files 
+	    var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[20][9]+' -type d -ls | wc -l';
+		 $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		
+		   var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[20][9]+' -type d -ls | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	    
+		    _assertEqual($statusPR,$statusDR, ": Files are equal in DR n PR Side");
+		    
+		    
+		    //find /opt/gov/a* -type f -ls | wc -l
+		    //Files 
+		    var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[20][9]+' -type f -ls | wc -l';
+			 $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+			
+			   var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[20][9]+' -type f -ls | wc -l';
+			    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+		    
+			    _assertEqual($statusPR,$statusDR, ": Files are equal in DR n PR Side");
+		    
+		    
+
+			var $sshCommandPR = 'ls -ltr '+$cmdScriptPathPR+' | wc -l';
+		    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+			_log($statusPR);
+			
+			var $sshCommandDR = 'ls -ltr '+$cmdScriptPathDR+' | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+			_log($statusDR);
+
+			_assertTrue($statusDR<$statusPR , "PR & DR should not be Equal");
+}
+
+
+
+/**
+ * Function is used to create all the filter_Include_Files_Casesensitive_18() related configuration for SFR.
+ * @param :
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function filter_Include_Files_Casesensitive_18(){
+	Delete_files_DR($cmdScriptPathDR,$compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+	
+	// 5 > Exculude
+	 SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[8][9],$l_filterActionRAL[8][2],$l_filterActionRAL[8][3],$l_filterActionRAL[8][4],$l_filterActionRAL[8][5],$l_filterActionRAL[8][6],$l_filterActionRAL[8][7],$l_filterActionRAL[8][8]);
+	
+	//  Include
+	SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[21][9],$l_filterActionRAL[21][2],$l_filterActionRAL[21][3],$l_filterActionRAL[21][4],$l_filterActionRAL[21][5],$l_filterActionRAL[21][6],$l_filterActionRAL[21][7],$l_filterActionRAL[21][8]);
+	 
+	Execute_NFC($groupName, "NormalFullCopy");
+	BCO_Exceution_Status($groupName, "NormalFullCopy");
+	    
+	    //find /opt/gov/a* -type f -ls | wc -l
+	    //Files 
+	    var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[21][9]+' -type f -ls | wc -l';
+		 $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		
+		   var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[21][9]+' -type f -ls | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	    
+		    _assertEqual($statusPR,$statusDR, ": Files are equal in DR n PR Side");
+		    
+		    
+
+			var $sshCommandPR = 'ls -ltr '+$cmdScriptPathPR+' | wc -l';
+		    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+			_log($statusPR);
+			
+			var $sshCommandDR = 'ls -ltr '+$cmdScriptPathDR+' | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+			_log($statusDR);
+
+			_assertTrue($statusDR<$statusPR , "PR & DR should not be Equal");
+}
+
+
+
+
+/**
+ * Function is used to create all the filter_Include_Directories_Casesensitive_19() related configuration for SFR.
+ * @param :
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function filter_Include_Directories_Casesensitive_19(){
+	Delete_files_DR($cmdScriptPathDR,$compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+	
+	// 6 > Exculude
+	 SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[9][9],$l_filterActionRAL[9][2],$l_filterActionRAL[9][3],$l_filterActionRAL[9][4],$l_filterActionRAL[9][5],$l_filterActionRAL[9][6],$l_filterActionRAL[9][7],$l_filterActionRAL[9][8]);
+	
+	//  Include
+	SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[22][9],$l_filterActionRAL[22][2],$l_filterActionRAL[22][3],$l_filterActionRAL[22][4],$l_filterActionRAL[22][5],$l_filterActionRAL[22][6],$l_filterActionRAL[22][7],$l_filterActionRAL[22][8]);
+	 
+	Execute_NFC($groupName, "NormalFullCopy");
+	BCO_Exceution_Status($groupName, "NormalFullCopy");
+	    
+	    //find /opt/gov/a* -type f -ls | wc -l
+	    //Files 
+	    var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[22][9]+' -type d -ls | wc -l';
+		 $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		
+		   var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[22][9]+' -type d -ls | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	    
+		    _assertEqual($statusPR,$statusDR, ": Directories are equal in DR n PR Side");
+		    
+		    
+
+			var $sshCommandPR = 'ls -ltr '+$cmdScriptPathPR+' | wc -l';
+		    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+			_log($statusPR);
+			
+			var $sshCommandDR = 'ls -ltr '+$cmdScriptPathDR+' | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+			_log($statusDR);
+
+			_assertTrue($statusDR<$statusPR , "PR & DR should not be Equal");
+}
+
+
+
+/**
+ * Function is used to create all the filter_Include_Both_Casesensitive_20() related configuration for SFR.
+ * @param :
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function filter_Include_Both_Casesensitive_20(){
+	Delete_files_DR($cmdScriptPathDR,$compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+	
+	// 7> Exculude
+	SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[10][9],$l_filterActionRAL[10][2],$l_filterActionRAL[10][3],$l_filterActionRAL[10][4],$l_filterActionRAL[10][5],$l_filterActionRAL[10][6],$l_filterActionRAL[10][7],$l_filterActionRAL[10][8]);
+	
+	//  Include
+	SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[23][9],$l_filterActionRAL[23][2],$l_filterActionRAL[23][3],$l_filterActionRAL[23][4],$l_filterActionRAL[23][5],$l_filterActionRAL[23][6],$l_filterActionRAL[23][7],$l_filterActionRAL[23][8]);
+	 
+	Execute_NFC($groupName, "NormalFullCopy");
+	BCO_Exceution_Status($groupName, "NormalFullCopy");
+	    
+	    //find /opt/gov/a* -type f -ls | wc -l
+	    //Files 
+	    var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[23][9]+' -type d -ls | wc -l';
+		 $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		
+		   var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[23][9]+' -type d -ls | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	    
+		    _assertEqual($statusPR,$statusDR, ": Files are equal in DR n PR Side");
+		    
+		    
+		    //find /opt/gov/a* -type f -ls | wc -l
+		    //Files 
+		    var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[23][9]+' -type f -ls | wc -l';
+			 $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+			
+			   var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[23][9]+' -type f -ls | wc -l';
+			    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+		    
+			    _assertEqual($statusPR,$statusDR, ": Files are equal in DR n PR Side");
+		    
+		    
+
+			var $sshCommandPR = 'ls -ltr '+$cmdScriptPathPR+' | wc -l';
+		    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+			_log($statusPR);
+			
+			var $sshCommandDR = 'ls -ltr '+$cmdScriptPathDR+' | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+			_log($statusDR);
+
+			_assertTrue($statusDR<$statusPR , "PR & DR should not be Equal");
+}
+
+
+
+
+/**
+ * Function is used to create all the filter_Include_Files_Recursive_21() related configuration for SFR.
+ * @param :
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function filter_Include_Files_Recursive_21(){
+	Delete_files_DR($cmdScriptPathDR,$compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+	
+	// 8 > Exculude
+	 SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[11][9],$l_filterActionRAL[11][2],$l_filterActionRAL[11][3],$l_filterActionRAL[11][4],$l_filterActionRAL[11][5],$l_filterActionRAL[11][6],$l_filterActionRAL[11][7],$l_filterActionRAL[11][8]);
+	
+	//  Include
+	SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[24][9],$l_filterActionRAL[24][2],$l_filterActionRAL[24][3],$l_filterActionRAL[24][4],$l_filterActionRAL[24][5],$l_filterActionRAL[24][6],$l_filterActionRAL[24][7],$l_filterActionRAL[24][8]);
+	 
+	Execute_NFC($groupName, "NormalFullCopy");
+	BCO_Exceution_Status($groupName, "NormalFullCopy");
+	    
+	    //find /opt/gov/a* -type f -ls | wc -l
+	    //Files 
+	    var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[24][9]+' -type f -ls | wc -l';
+		 $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		
+		   var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[24][9]+' -type f -ls | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	    
+		    _assertEqual($statusPR,$statusDR, ": Files are equal in DR n PR Side");
+
+			var $sshCommandPR = 'ls -ltr '+$cmdScriptPathPR+' | wc -l';
+		    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+			_log($statusPR);
+			
+			var $sshCommandDR = 'ls -ltr '+$cmdScriptPathDR+' | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+			_log($statusDR);
+
+			_assertTrue($statusDR<$statusPR , "PR & DR should not be Equal");
+
+			//Check RecursivePath 
+			var $sshCommandPR = ' find '+$RecursivePath+$l_filterActionRAL[24][9]+' -type f -ls | wc -l';
+			$statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+			_log($statusPR);
+			 
+			var $sshCommandDR = ' find '+$RecursivePath+$l_filterActionRAL[24][9]+' -type f -ls | wc -l';
+			 $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR,$sshCommandDR);
+			_log($statusDR);
+			
+			_assertEqual($statusPR,$statusDR, ": Files are equal in DR n PR Side");
+		   
+		    var $sshCommandPR = 'ls -ltr '+$RecursivePath+' | wc -l';
+		    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+			_log($statusPR);
+
+			var $sshCommandDR = 'ls -ltr '+$RecursivePath+' | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+			_log($statusDR);
+
+			_assertTrue($statusDR<$statusPR , "Files  Exclude from DR , So PR & DR should not be Equal");		
+		
+			
+			
+}
+
+
+
+/**
+ * Function is used to create all the filter_Include_Directories_Recursive_22() related configuration for SFR.
+ * @param :
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function filter_Include_Directories_Recursive_22(){
+	Delete_files_DR($cmdScriptPathDR,$compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+	
+	// 9> Exculude
+	  SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[12][9],$l_filterActionRAL[12][2],$l_filterActionRAL[12][3],$l_filterActionRAL[12][4],$l_filterActionRAL[12][5],$l_filterActionRAL[12][6],$l_filterActionRAL[12][7],$l_filterActionRAL[12][8]);
+	
+	//  Include
+	SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[25][9],$l_filterActionRAL[25][2],$l_filterActionRAL[25][3],$l_filterActionRAL[25][4],$l_filterActionRAL[25][5],$l_filterActionRAL[25][6],$l_filterActionRAL[25][7],$l_filterActionRAL[25][8]);
+	 
+	Execute_NFC($groupName, "NormalFullCopy");
+	BCO_Exceution_Status($groupName, "NormalFullCopy");
+	    
+	    //find /opt/gov/a* -type d -ls | wc -l
+	    //Files 
+	    var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[25][9]+' -type d -ls | wc -l';
+		 $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		
+		   var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[25][9]+' -type d -ls | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	    
+		    _assertEqual($statusPR,$statusDR, ":  Directories are equal in DR n PR Side");
+
+			var $sshCommandPR = 'ls -ltr '+$cmdScriptPathPR+' | wc -l';
+		    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+			_log($statusPR);
+			
+			var $sshCommandDR = 'ls -ltr '+$cmdScriptPathDR+' | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+			_log($statusDR);
+
+			_assertTrue($statusDR<$statusPR , "PR & DR should not be Equal");
+
+			//Check RecursivePath 
+			var $sshCommandPR = ' find '+$RecursivePath+$l_filterActionRAL[25][9]+' -type d -ls | wc -l';
+			$statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+			_log($statusPR);
+			 
+			var $sshCommandDR = ' find '+$RecursivePath+$l_filterActionRAL[25][9]+' -type d -ls | wc -l';
+			 $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR,$sshCommandDR);
+			_log($statusDR);
+			
+			_assertEqual($statusPR,$statusDR, ": Directories are equal in DR n PR Side");
+		   
+		    var $sshCommandPR = 'ls -ltr '+$RecursivePath+' | wc -l';
+		    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+			_log($statusPR);
+
+			var $sshCommandDR = 'ls -ltr '+$RecursivePath+' | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+			_log($statusDR);
+
+			_assertTrue($statusDR<$statusPR , "Directories Exclude from DR , So PR & DR should not be Equal");		
+}
+
+
+
+/**
+ * Function is used to create all the filter_Include_BOTH_Recursive_23() related configuration for SFR.
+ * @param :
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function filter_Include_BOTH_Recursive_23(){
+	Delete_files_DR($cmdScriptPathDR,$compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+	
+	// 10> Exculude
+	 SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[13][9],$l_filterActionRAL[13][2],$l_filterActionRAL[13][3],$l_filterActionRAL[13][4],$l_filterActionRAL[13][5],$l_filterActionRAL[13][6],$l_filterActionRAL[13][7],$l_filterActionRAL[13][8]);
+	
+	//  Include
+	SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[26][9],$l_filterActionRAL[26][2],$l_filterActionRAL[26][3],$l_filterActionRAL[26][4],$l_filterActionRAL[26][5],$l_filterActionRAL[26][6],$l_filterActionRAL[26][7],$l_filterActionRAL[26][8]);
+	 
+	Execute_NFC($groupName, "NormalFullCopy");
+	BCO_Exceution_Status($groupName, "NormalFullCopy");
+
+
+
+    //find /opt/gov/a* -type d -ls | wc -l
+    //Files 
+    var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[26][9]+' -type d -ls | wc -l';
+	 $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	
+	   var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[26][9]+' -type d -ls | wc -l';
+	    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+    
+	    _assertEqual($statusPR,$statusDR, ":  Directories are equal in DR n PR Side");
+
+	    
+	    var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[26][9]+' -type f -ls | wc -l';
+		 $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		
+		   var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[26][9]+' -type f -ls | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	    
+		    _assertEqual($statusPR,$statusDR, ":  File are equal in DR n PR Side");
+
+
+		
+		
+		var $sshCommandPR = 'ls -ltr '+$cmdScriptPathPR+' | wc -l';
+	    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		_log($statusPR);
+		
+		var $sshCommandDR = 'ls -ltr '+$cmdScriptPathDR+' | wc -l';
+	    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+		_log($statusDR);
+
+		_assertTrue($statusDR<$statusPR , "PR & DR should not be Equal");
+
+		//Check RecursivePath Directories 
+		var $sshCommandPR = ' find '+$RecursivePath+$l_filterActionRAL[26][9]+' -type d -ls | wc -l';
+		$statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		_log($statusPR);
+		 
+		var $sshCommandDR = ' find '+$RecursivePath+$l_filterActionRAL[26][9]+' -type d -ls | wc -l';
+		 $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR,$sshCommandDR);
+		_log($statusDR);
+		
+		_assertEqual($statusPR,$statusDR, ": Directories are equal in DR n PR Side");
+	   
+			
+		//Check RecursivePath  files 
+		var $sshCommandPR = ' find '+$RecursivePath+$l_filterActionRAL[26][9]+' -type f -ls | wc -l';
+		$statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		_log($statusPR);
+		 
+		var $sshCommandDR = ' find '+$RecursivePath+$l_filterActionRAL[26][9]+' -type f -ls | wc -l';
+		 $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR,$sshCommandDR);
+		_log($statusDR);
+		
+		_assertEqual($statusPR,$statusDR, ": Files are equal in DR n PR Side");
+	   
+
+		var $sshCommandPR = 'ls -ltr '+$RecursivePath+' | wc -l';
+	    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		_log($statusPR);
+
+		var $sshCommandDR = 'ls -ltr '+$RecursivePath+' | wc -l';
+	    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+		_log($statusDR);
+
+		_assertTrue($statusDR<$statusPR , "Directories Exclude from DR , So PR & DR should not be Equal");	
+
+}
+
+
+
+/**
+* Function is used to create all the filter_Include_Files_Casesensitive_Recursive_24() related configuration for SFR.
+* @param :
+* @return : null
+* @Author: Govinda Mengji
+* 
+*/
+
+function filter_Include_Files_Casesensitive_Recursive_24(){
+	Delete_files_DR($cmdScriptPathDR,$compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+	
+	// 11 > Exculude
+	SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[14][9],$l_filterActionRAL[14][2],$l_filterActionRAL[14][3],$l_filterActionRAL[14][4],$l_filterActionRAL[14][5],$l_filterActionRAL[14][6],$l_filterActionRAL[14][7],$l_filterActionRAL[14][8]);
+	
+	//  Include
+	SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[27][9],$l_filterActionRAL[27][2],$l_filterActionRAL[27][3],$l_filterActionRAL[27][4],$l_filterActionRAL[27][5],$l_filterActionRAL[27][6],$l_filterActionRAL[27][7],$l_filterActionRAL[27][8]);
+	 
+	Execute_NFC($groupName, "NormalFullCopy");
+	BCO_Exceution_Status($groupName, "NormalFullCopy");
+	    
+	    //find /opt/gov/a* -type f -ls | wc -l
+	    //Files 
+	    var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[27][9]+' -type f -ls | wc -l';
+		 $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		
+		   var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[27][9]+' -type f -ls | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	    
+		    _assertEqual($statusPR,$statusDR, ": Files are equal in DR n PR Side");
+
+			var $sshCommandPR = 'ls -ltr '+$cmdScriptPathPR+' | wc -l';
+		    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+			_log($statusPR);
+			
+			var $sshCommandDR = 'ls -ltr '+$cmdScriptPathDR+' | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+			_log($statusDR);
+
+			_assertTrue($statusDR<$statusPR , "PR & DR should not be Equal");
+
+			//Check RecursivePath 
+			var $sshCommandPR = ' find '+$RecursivePath+$l_filterActionRAL[27][9]+' -type f -ls | wc -l';
+			$statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+			_log($statusPR);
+			 
+			var $sshCommandDR = ' find '+$RecursivePath+$l_filterActionRAL[27][9]+' -type f -ls | wc -l';
+			 $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR,$sshCommandDR);
+			_log($statusDR);
+			
+			_assertEqual($statusPR,$statusDR, ": Files are equal in DR n PR Side");
+		   
+		    var $sshCommandPR = 'ls -ltr '+$RecursivePath+' | wc -l';
+		    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+			_log($statusPR);
+
+			var $sshCommandDR = 'ls -ltr '+$RecursivePath+' | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+			_log($statusDR);
+
+			_assertTrue($statusDR<$statusPR , "Files  Exclude from DR , So PR & DR should not be Equal");		
+		
+}
+
+
+
+
+/**
+ * Function is used to create all the filter_Include_Directories_Casesensitive_Recursive_25() related configuration for SFR.
+ * @param :
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function filter_Include_Directories_Casesensitive_Recursive_25(){
+	Delete_files_DR($cmdScriptPathDR,$compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+	
+	// 15> Exculude
+	  SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[15][9],$l_filterActionRAL[15][2],$l_filterActionRAL[15][3],$l_filterActionRAL[15][4],$l_filterActionRAL[15][5],$l_filterActionRAL[15][6],$l_filterActionRAL[15][7],$l_filterActionRAL[15][8]);
+	
+	//  Include
+	SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[28][9],$l_filterActionRAL[28][2],$l_filterActionRAL[28][3],$l_filterActionRAL[28][4],$l_filterActionRAL[28][5],$l_filterActionRAL[28][6],$l_filterActionRAL[28][7],$l_filterActionRAL[28][8]);
+	 
+	Execute_NFC($groupName, "NormalFullCopy");
+	BCO_Exceution_Status($groupName, "NormalFullCopy");
+	    
+	    //find /opt/gov/a* -type d -ls | wc -l
+	    //Files 
+	    var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[28][9]+' -type d -ls | wc -l';
+		 $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		
+		   var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[28][9]+' -type d -ls | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	    
+		    _assertEqual($statusPR,$statusDR, ":  Directories are equal in DR n PR Side");
+
+			var $sshCommandPR = 'ls -ltr '+$cmdScriptPathPR+' | wc -l';
+		    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+			_log($statusPR);
+			
+			var $sshCommandDR = 'ls -ltr '+$cmdScriptPathDR+' | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+			_log($statusDR);
+
+			_assertTrue($statusDR<$statusPR , "PR & DR should not be Equal");
+
+			//Check RecursivePath 
+			var $sshCommandPR = ' find '+$RecursivePath+$l_filterActionRAL[28][9]+' -type d -ls | wc -l';
+			$statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+			_log($statusPR);
+			 
+			var $sshCommandDR = ' find '+$RecursivePath+$l_filterActionRAL[28][9]+' -type d -ls | wc -l';
+			 $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR,$sshCommandDR);
+			_log($statusDR);
+			
+			_assertEqual($statusPR,$statusDR, ": Directories are equal in DR n PR Side");
+		   
+		    var $sshCommandPR = 'ls -ltr '+$RecursivePath+' | wc -l';
+		    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+			_log($statusPR);
+
+			var $sshCommandDR = 'ls -ltr '+$RecursivePath+' | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+			_log($statusDR);
+
+			_assertTrue($statusDR<$statusPR , "Directories Exclude from DR , So PR & DR should not be Equal");		
+}
+
+
+
+/**
+ * Function is used to create all the filter_Include_BOTH__Casesensitive_Recursive_26() related configuration for SFR.
+ * @param :
+ * @return : null
+ * @Author: Govinda Mengji
+ * 
+ */
+
+function filter_Include_BOTH_Casesensitive_Recursive_26(){
+	Delete_files_DR($cmdScriptPathDR,$compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+	
+	// 10> Exculude
+	 SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[16][9],$l_filterActionRAL[16][2],$l_filterActionRAL[16][3],$l_filterActionRAL[16][4],$l_filterActionRAL[16][5],$l_filterActionRAL[16][6],$l_filterActionRAL[16][7],$l_filterActionRAL[16][8]);
+	
+	//  Include
+	SFR_Filters_RAL($groupName,$sourceFolder,$l_filterActionRAL[29][9],$l_filterActionRAL[29][2],$l_filterActionRAL[29][3],$l_filterActionRAL[29][4],$l_filterActionRAL[29][5],$l_filterActionRAL[29][6],$l_filterActionRAL[29][7],$l_filterActionRAL[29][8]);
+	 
+	Execute_NFC($groupName, "NormalFullCopy");
+	BCO_Exceution_Status($groupName, "NormalFullCopy");
+
+
+
+    //find /opt/gov/a* -type d -ls | wc -l
+    //Files 
+    var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[29][9]+' -type d -ls | wc -l';
+	 $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+	
+	   var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[29][9]+' -type d -ls | wc -l';
+	    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+    
+	    _assertEqual($statusPR,$statusDR, ":  Directories are equal in DR n PR Side");
+
+	    
+	    var $sshCommandPR = ' find '+$cmdScriptPathPR+$l_filterActionRAL[29][9]+' -type f -ls | wc -l';
+		 $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		
+		   var $sshCommandDR = ' find '+$cmdScriptPathDR+$l_filterActionRAL[29][9]+' -type f -ls | wc -l';
+		    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	    
+		    _assertEqual($statusPR,$statusDR, ":  File are equal in DR n PR Side");
+
+
+		
+		
+		var $sshCommandPR = 'ls -ltr '+$cmdScriptPathPR+' | wc -l';
+	    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		_log($statusPR);
+		
+		var $sshCommandDR = 'ls -ltr '+$cmdScriptPathDR+' | wc -l';
+	    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+		_log($statusDR);
+
+		_assertTrue($statusDR<$statusPR , "PR & DR should not be Equal");
+
+		//Check RecursivePath Directories 
+		var $sshCommandPR = ' find '+$RecursivePath+$l_filterActionRAL[29][9]+' -type d -ls | wc -l';
+		$statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		_log($statusPR);
+		 
+		var $sshCommandDR = ' find '+$RecursivePath+$l_filterActionRAL[29][9]+' -type d -ls | wc -l';
+		 $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR,$sshCommandDR);
+		_log($statusDR);
+		
+		_assertEqual($statusPR,$statusDR, ": Directories are equal in DR n PR Side");
+	   
+			
+		//Check RecursivePath  files 
+		var $sshCommandPR = ' find '+$RecursivePath+$l_filterActionRAL[29][9]+' -type f -ls | wc -l';
+		$statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		_log($statusPR);
+		 
+		var $sshCommandDR = ' find '+$RecursivePath+$l_filterActionRAL[29][9]+' -type f -ls | wc -l';
+		 $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR,$sshCommandDR);
+		_log($statusDR);
+		
+		_assertEqual($statusPR,$statusDR, ": Files are equal in DR n PR Side");
+	   
+
+		var $sshCommandPR = 'ls -ltr '+$RecursivePath+' | wc -l';
+	    $statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+		_log($statusPR);
+
+		var $sshCommandDR = 'ls -ltr '+$RecursivePath+' | wc -l';
+	    $statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+		_log($statusDR);
+
+		_assertTrue($statusDR<$statusPR , "Directories Exclude from DR , So PR & DR should not be Equal");	
+
+}
+//////////////////////////////////////////////////SFR Customer scenarios///////////////////////////////////////////////////////////////////////
+/**
+ * This function is to create n of files for pfr replication.
+ * 
+ * @param :$noOfFiles,$sizeOfFile,$fileLength,$pathToCreate,$compip,$remoteUserNameVal, $remotePwdVal
+ * @return : null
+ * @Author: Anantha Sakthi
+ */
+function Create_N_of_files($noOfFiles,$sizeOfFile,$fileLength,$pathToCreate,$compip,$remoteUserNameVal, $remotePwdVal){
+	
+	
+	$count = ($noOfFiles * $sizeOfFile);
+	
+	//To create this master file with specified size.
+	
+	var $sshCommand = "dd if=/dev/zero of=" + $pathToCreate + "/masterfile bs=1 count=" + $count;
+
+    $statusDR = SecuredShellConnection($compip, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+    
+    //This to generate the desired 10,000 files that are 10 bytes each.
+    
+    var $sshCommand = "cd " + $pathToCreate + " && split -b "+$sizeOfFile+" -a " + $fileLength + " " + $pathToCreate + "/masterfile";
+    
+    $statusDR = SecuredShellConnection($compip, $remoteUserNameVal, $remotePwdVal, $sshCommand);    
+	
+}
+
+/**
+ * This function is to create nested nof directories.
+ * 
+ * @param :$pathToCreate,$compip,$remoteUserNameVal, $remotePwdVal
+ * @return : null
+ * @Author: Anantha Sakthi
+ */
+
+function Create_NestedDirectory($pathToCreate,$compip,$remoteUserNameVal, $remotePwdVal){
+	$sshCommand = "mkdir -p " + $pathToCreate + "/swrwr{1..50}/Aqwrqw{1..50}/d/gg/awr/d/t/w/t/i/";
+	
+	$statusDR = SecuredShellConnection($compip, $remoteUserNameVal, $remotePwdVal, $sshCommand); 
+}
+
+/**
+ * This function is to delete the ramdom no of files and directory.
+ * 
+ * @param :$pathToDelete,$compip,$remoteUserNameVal, $remotePwdVal
+ * @return : null
+ * @Author: Anantha Sakthi
+ */
+
+function Delete_RandomFilesDirectory($pathToDelete,$compip,$remoteUserNameVal, $remotePwdVal){
+	$sshCommand = "find "+ $pathToDelete + "/ -name \"*i\" | xargs rm -rf";
+	
+	$statusDR = SecuredShellConnection($compip, $remoteUserNameVal, $remotePwdVal, $sshCommand); 
+	
+	$sshCommand = "find "+ $pathToDelete + "/ -name \"*1\" | xargs rm -rf";
+	
+	$statusDR = SecuredShellConnection($compip, $remoteUserNameVal, $remotePwdVal, $sshCommand); 
+	
+	$sshCommand = "find "+ $pathToDelete + "/ -name \"*a\" | xargs rm -rf";
+	
+	$statusDR = SecuredShellConnection($compip, $remoteUserNameVal, $remotePwdVal, $sshCommand); 
+}
+
+/**
+ * This function is to delete n of files.
+ * 
+ * @param :$noOfFiles,$pathToDelete,$compip,$remoteUserNameVal, $remotePwdVal
+ * @return : null
+ * @Author: Anantha Sakthi
+ */
+
+function DeleteNofFiles($noOfFiles,$pathToDelete,$compip,$remoteUserNameVal, $remotePwdVal){
+	
+	$sshCommand = "ls -p "+ $pathToDelete +"/ | grep -v / | head -"+$noOfFiles+" | xargs rm -rf";	
+	
+	$statusDR = SecuredShellConnection($compip, $remoteUserNameVal, $remotePwdVal, $sshCommand); 
+	
+}
+
+/**
+ * This function is to create n of directory.
+ * 
+ * @param :$noOfFolders,$pathToDelete,$compip,$remoteUserNameVal, $remotePwdVal
+ * @return : null
+ * @Author: Anantha Sakthi
+ */ 
+
+function DeleteNofolders($noOfFolders,$pathToDelete,$compip,$remoteUserNameVal, $remotePwdVal){
+	
+	$sshCommand = "ls -p "+ $pathToDelete +"/ | grep -v / | head -"+$noOfFolders+" | xargs rm -rf";	
+	
+	$statusDR = SecuredShellConnection($compip, $remoteUserNameVal, $remotePwdVal, $sshCommand); 
+	
+}
+
+/**
+ * This function is to edit the NFC workflow with enable sync delete option. 
+ * 
+ * @param :
+ * @return : null
+ * @Author: Anantha Sakthi
+ */ 
+
+function enable_SyncDeleteWithVss(){
+	navigateToGroups();
+	_click(_link($groupName));
+	_click(_link("Continuity...")); 
+	_click(_image("Modify Workflow Details[1]"));
+	_click(_span("Create PFR Fileset"));
+	_click(_button("infoBtn"));
+	_click(_link("Action Properties"));
+	_click(_label("Advanced Configuration"));
+	_check(_checkbox("syncDeleteFiles"));
+	SFR_saveClose("PFROperation");
+}
+
+/**
+ * This function is to validate the files and folders count and check sum value.
+ * 
+ * @param :
+ * @return : null
+ * @Author: Anantha Sakthi
+ */ 
+
+function validateFilesFoldersBetweenPRDR(){
+	var $sshCommandPR = "tree " + $fileNameTextPathPR + "/ | tail -1";
+    $filesDirectoryCountPR = SecuredShellConnection($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+
+	var $sshCommandDR = "tree " + $fileNameTextPathDR + "/ | tail -1";
+	$filesDirectoryCountDR = SecuredShellConnection($compIPDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	
+    _assertEqual($filesDirectoryCountPR,$filesDirectoryCountDR);
+    
+    
+	var $sshCommandPR = "find " + $fileNameTextPathPR + "/ -type f | sort -u | xargs cat | md5sum";
+    $cksumPR = SecuredShellConnection($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);
+
+	var $sshCommandDR = "find " + $fileNameTextPathDR + "/ -type f | sort -u | xargs cat | md5sum";
+	$cksumDR = SecuredShellConnection($compIPDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);
+	
+    _assertEqual($cksumPR,$cksumDR);
+	
+}
+
+/**
+ * This function is to wait for the synchronization of PR & DR.
+ * 
+ * @param :
+ * @return : null
+ * @Author: Anantha Sakthi
+ */ 
+
+function WaitForSynchronize(){
+	
+	NavigateToRGDetailsPage($groupName);
+	_click(_link("Replication"));
+	
+	$i=0;
+	while($i <= 20){
+		_click(_button("Refresh Details"));
+		var $replicationStatus1 = _getCellText(_listItem(1,_near(_span("Replication Status:"))));
+		var $replicationStatus2 = $replicationStatus1.split(":");
+		var $replicationStatus = $replicationStatus2[1];
+		
+		if($replicationStatus == "Synchronized"){
+			break;
+		}
+		_wait(30000);
+		$i++;
+	}
+}
+
+
+/**
+ * This function is to test sfr functionality of sync delete with no of files and random no of files deletion.
+ * 
+ * @param :
+ * @return : null
+ * @Author: Anantha Sakthi
+ */
+
+function Sync_deleteWith_NoFilesWithRandomDelete($nofFiles,$fileSize,$fileLength){	
+	
+	
+	Delete_files_DR($fileNameTextPathPR,$compIPPR, $remoteUserNameValPR, $remotePwdValPR);
+	Delete_files_DR($fileNameTextPathPR,$compIPDR, $remoteUserNameValDR, $remotePwdValDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+	Stop_Replication();
+	enable_SyncDeleteWithVss();
+	
+	Create_N_of_files($nofFiles,$fileSize,$fileLength,$fileNameTextPathPR,$compIPPR,$remoteUserNameValPR, $remotePwdValPR);
+	Create_NestedDirectory($fileNameTextPathPR,$compIPPR,$remoteUserNameValPR, $remotePwdValPR);
+	
+	Execute_NFC($groupName, "NormalFullCopy");
+	BCO_Exceution_Status($groupName, "NormalFullCopy");
+	
+	validateFilesFoldersBetweenPRDR();
+	Start_Replication();
+	
+    Delete_RandomFilesDirectory($fileNameTextPathPR,$compIPPR, $remoteUserNameValPR, $remotePwdValPR);    
+           
+    WaitForSynchronize();
+    
+    validateFilesFoldersBetweenPRDR();
+}
+
+/**
+ * This function is to test sfr functionality of sync delete with no of files and no of files & folder deletion.
+ * 
+ * @param :
+ * @return : null
+ * @Author: Anantha Sakthi
+ */
+
+function Sync_deleteWith_NoFiles($nofFiles,$fileSize,$fileLength,$noOfFilesToDelete,$noOfFoldersToDelete){
+	
+	Delete_files_DR($fileNameTextPathPR,$compIPPR, $remoteUserNameValPR, $remotePwdValPR);
+	Delete_files_DR($fileNameTextPathPR,$compIPDR, $remoteUserNameValDR, $remotePwdValDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+	Stop_Replication();
+	enable_SyncDeleteWithVss();
+	
+	Create_N_of_files($nofFiles,$fileSize,$fileLength,$fileNameTextPathPR,$compIPPR,$remoteUserNameValPR, $remotePwdValPR);
+	Create_NestedDirectory($fileNameTextPathPR,$compIPPR,$remoteUserNameValPR, $remotePwdValPR);
+	
+	Execute_NFC($groupName, "NormalFullCopy");
+	BCO_Exceution_Status($groupName, "NormalFullCopy");
+	
+	validateFilesFoldersBetweenPRDR();
+	Start_Replication();
+	
+	DeleteNofolders($noOfFoldersToDelete,$fileNameTextPathPR,$compIPPR,$remoteUserNameValPR, $remotePwdValPR);
+	DeleteNofFiles($noOfFilesToDelete,$fileNameTextPathPR,$compIPPR,$remoteUserNameValPR, $remotePwdValPR);
+    
+    WaitForSynchronize();
+    
+    validateFilesFoldersBetweenPRDR();
+}
+
+/**
+ * This function is to test sfr functionality of sync delete with no of files and no of files & folder deletion when files are in sync
+ * 
+ * @param :
+ * @return : null
+ * @Author: Anantha Sakthi
+ */
+
+function Syncronized_deleteWith_NoFiles($nofFiles,$fileSize,$fileLength,$noOfFilesToDelete,$noOfFoldersToDelete){
+	
+	Delete_files_DR($fileNameTextPathPR,$compIPPR, $remoteUserNameValPR, $remotePwdValPR);
+	Delete_files_DR($fileNameTextPathPR,$compIPDR, $remoteUserNameValDR, $remotePwdValDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+	Stop_Replication();
+	enable_SyncDeleteWithVss();
+	
+	Create_N_of_files($nofFiles,$fileSize,$fileLength,$fileNameTextPathPR,$compIPPR,$remoteUserNameValPR, $remotePwdValPR);
+	Create_NestedDirectory($fileNameTextPathPR,$compIPPR,$remoteUserNameValPR, $remotePwdValPR);
+	
+	Execute_NFC($groupName, "NormalFullCopy");
+/*	BCO_Exceution_Status($groupName, "NormalFullCopy");
+	
+	validateFilesFoldersBetweenPRDR();
+	Start_Replication();*/
+	
+	DeleteNofolders($noOfFoldersToDelete,$fileNameTextPathPR,$compIPPR,$remoteUserNameValPR, $remotePwdValPR);
+	DeleteNofFiles($noOfFilesToDelete,$fileNameTextPathPR,$compIPPR,$remoteUserNameValPR, $remotePwdValPR);
+    
+    WaitForSynchronize();
+    
+    validateFilesFoldersBetweenPRDR();
+}
+
+
+/**
+ * This function is to test sfr functionality of sync delete with no of files and no of files & folder deletion when files are in sync
+ * 
+ * @param :
+ * @return : null
+ * @Author: Anantha Sakthi
+ */
+
+function disKFull_AndResume_Replication($nofFiles,$fileSize,$fileLength,$driveToFull){
+	
+	Delete_files_DR($fileNameTextPathPR,$compIPPR, $remoteUserNameValPR, $remotePwdValPR);
+	Delete_files_DR($fileNameTextPathPR,$compIPDR, $remoteUserNameValDR, $remotePwdValDR);
+	Change_ContinuityStatus_Group($groupName, "Normal Reset");	
+	Stop_Replication();
+	enable_SyncDeleteWithVss();
+	
+	Execute_NFC($groupName, "NormalFullCopy");
+	BCO_Exceution_Status($groupName, "NormalFullCopy");
+
+	Start_Replication();	
+
+	Create_N_of_files($nofFiles,$fileSize,$fileLength,$fileNameTextPathPR,$compIPPR,$remoteUserNameValPR, $remotePwdValPR);
+	Create_NestedDirectory($fileNameTextPathPR,$compIPPR,$remoteUserNameValPR, $remotePwdValPR);
+		
+	make_DiskFull($driveToFull,$compIPDR, $remoteUserNameValDR, $remotePwdValDR);
+    
+    WaitForSynchronize();
+    
+    validateFilesFoldersBetweenPRDR();
+}
+
+function make_DiskFull($driveToFull,$compip, $remoteUserNameVal, $remotePwdVal){
+	
+	$sshCommand = "mkdir " + $driveToFull ;
+
+	$spaceAvailable = SecuredShellConnection($compip, $remoteUserNameVal, $remotePwdVal,$sshCommand);
+	
+	$sshCommand = " df " + $driveToFull + " | tail -1 | awk '{print $4}'";
+
+	$spaceAvailable = SecuredShellConnection($compip, $remoteUserNameVal, $remotePwdVal,$sshCommand);
+	
+	var $sshCommand = "dd if=/dev/zero of=" + $driveToFull + "/masterfile bs=1 count=" + $spaceAvailable;
+
+    $statusDR = SecuredShellConnection($compip, $remoteUserNameVal, $remotePwdVal, $sshCommand);
+}
+
+/**
+ * Function is used to delete files in PR DR related configuration for SFR.
+ * @return : null
+ * @Author: Anita
+ * 
+ */
+function Delete_Files_Set(){
+	
+	var $sshCommandPR = "cd "+$fileNameTextPathPR+";"+"rm -rf *.sh *.log";
+	$statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);	
+	_log($statusPR);
+	_wait(5000);
+	
+	var $sshCommandDR = "cd "+$fileNameTextPathDR+";"+"rm -rf *.sh *.log";
+	$statusDR = SecuredShellConnection($compipDR, $remoteUserNameValDR, $remotePwdValDR, $sshCommandDR);	
+	_log($statusDR);
+	_wait(5000);
+}
+/**
+ * Function is used to create files in PR related configuration for SFR.
+ * @return : null
+ * @Author: Anita
+ * 
+ */
+function Create_Files_Set(){
+	
+	var $nofFiles = 1;
+	while ($nofFiles <= 2){			
+		//var $sshCommandPR = "echo "+'date;sleep 60;trap "exit" INT'+" > "+ $fileNameTextPathPR+"file"+$nofFiles+".sh" ;
+		var $sshCommandPR ="echo 'date;sleep 60;trap INT' >"+$fileNameTextPathPR+"file"+$nofFiles+".sh" ;
+		$statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);	
+		_log($statusPR);
+		_wait(5000);
+		
+		var $sshCommandPR1 = "echo 'sh "+$fileNameTextPathPR+"file"+$nofFiles+".sh;"+"date;sleep 30;trap INT'>"+$fileNameTextPathPR+"fileTest"+$nofFiles+".sh";
+		$statusPR1 = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR1);	
+		_log($statusPR1);		
+		$nofFiles++;
+	}
+}	
+/**
+ * Function is used to files are in write /open state.
+ * @return : null
+ * @Author: Anita
+ * 
+ */
+function Open_Files_Set(){
+	
+	var $nofFiles = 1;
+	while ($nofFiles <= 2){			
+		var $sshCommandPR = "cd "+$fileNameTextPathPR+";"+"sh "+$fileNameTextPathPR+"fileTest"+$nofFiles+".sh";
+		$statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);	
+		_log($statusPR);
+		$nofFiles++;
+	}
+	//_wait(20000);
+	Replication_Details_fileopen();
+	
+}	
+/**
+ * This function is to test sfr functionality when files are open state.
+ * 
+ * @param :
+ * @return : null
+ * @Author:Anita
+ */
+
+function Replication_fileOpen(){
+	Stop_Replication();
+	Start_Replication();
+	Delete_Files_Set();
+	Create_Files_Set();
+	Open_Files_Set();
+}	
+
+/**
+* Function is for Verification Pending files count  in replication page.
+*@param : $groupName,$compIP,$remoteUserNameVal,$remotePwdVal
+*@return : null
+*@Author: Anita
+*/
+
+function VerifyPendingFiles(){
+	
+	 NavigateToRGDetailsPage($groupName);// navigate to replication page and click on group
+	    _log($groupName);
+		_click(_link("Replication"));
+		_click(_button("Refresh Details"));
+		_wait(5000);
+		
+		var $PendingFiles = _getText(_cell(0,_under( _tableHeader("Pending Files"))));
+
+		var $i = 1;
+		while ( $i < 5 ) {
+
+			if ( $PendingFiles != "0" ) {
+				_assertExists($PendingFiles);
+				var $replicationStatusdb = "Files Pending";
+				break;
+			} else {
+				_wait( 30000 );
+				_click(_link("Replication"));
+			}
+			$i++ ;
+		} // while ended
+}
+
+/**
+* Function is for Verification of  in replication page when file open and Replication active.
+*@param : $groupName,$compIP,$remoteUserNameVal,$remotePwdVal
+*@return : null
+*@Author: Anita
+*/
+
+
+function Replication_Details_fileopen(){
+	
+	VerifyPendingFiles();
+	
+	_click(_span("glyphicon icon-caret-right"));
+
+	_click(_link(27));
+	if (_exists(_link(27))) 
+    {
+	  _click(_link(27));
+	} 
+	else{
+		var $replicationStatusdb = "Files Pending is 0";
+	}
+	//var $openfiles = _isVisible(_preformatted("/Pending Files (1 - 50) /"));
+	//_assertExists($openfiles);
+	if($PendingFiles != "0"){
+		_assertExists("Success in replication when file are open in PR");
+	     }
+	else if($PendingFiles != "0"){
+		_assertExists("Files already replicated in DR ");
+	}
+	else{
+		_fail("Failed in replication when files Open in PR");
+	}
+}
+
+/**
+ * This function is to test sfr functionality when files are contents modifies.
+ * @param :
+ * @return : null
+ * @Author:Anita
+ */
+
+function Replication_fileModify(){
+	//Stop_Replication();
+	//Start_Replication();
+	Modify_Files_Set();
+}	
+
+/**
+ * Function is used to files are in write /open state and file contents modifies.
+ * @return : null
+ * @Author: Anita
+ * 
+ */
+function Modify_Files_Set(){
+	
+	var $nofFiles = 1;
+	while ($nofFiles <= 1){			
+		var $sshCommandPR = "cd "+$fileNameTextPathPR+";"+"sh "+$fileNameTextPathPR+"fileTest"+$nofFiles+".sh > output.log";
+		$statusPR = SecuredShellConnection($compipPR, $remoteUserNameValPR, $remotePwdValPR, $sshCommandPR);	
+		_log($statusPR);
+		$nofFiles++;
+	}
+	Replication_Details_fileModify();	
+}
+
+/**
+* Function is for Verification of  in replication page when file contents changes and Replication active.
+*@param : $groupName,$compIP,$remoteUserNameVal,$remotePwdVal
+*@return : null
+*@Author: Anita
+*/
+function Replication_Details_fileModify(){
+
+	VerifyPendingFiles();
+	
+	_click(_span("glyphicon icon-caret-right"));
+    
+	var $lastReplicatedFile =_getCellText(_span(1, _near(_span("Last Replicated File"))));
+	_assertExists($lastReplicatedFile);
+	var $lastModifiedFile =_getCellText(_span(1, _near(_span("File System Modified File"))));
+	_assertExists($lastModifiedFile);		
+    
+	// while loop for verify replication after file modifies in PR and same has replicated in DR 
+	var $j = 1;
+	while ( $j < 12 ){
+		if ($lastReplicatedFile == $lastModifiedFile) {
+			_assertExists($lastReplicatedFile);
+			_assertExists($lastModifiedFile);
+			 break;
+		} else {
+			_wait(30000);
+			_click(_button("Refresh Details"));
+			_wait(5000);
+			_click(_span("glyphicon icon-caret-right"));		    
+			var $lastReplicatedFile =_getCellText(_span(1, _near(_span("Last Replicated File"))));
+			_assertExists($lastReplicatedFile);
+			var $lastModifiedFile =_getCellText(_span(1, _near(_span("File System Modified File"))));
+			_assertExists($lastModifiedFile);
+		}
+		$j++ ;
+	} // while ended
+	
+	if($lastReplicatedFile == $lastModifiedFile){			
+			assertExists($PendingFiles);
+			assertExists("No Pending files");
+			_assertExists("Success in replication when file modifies in PR and same has replicated in DR");
+	     }
+	else {
+		_fail("Failed in replication when file modifies in PR");
+	} 
+} //end fun

@@ -1,0 +1,257 @@
+/**
+* Function  to verify the Agent & Agent Upgrade link in Admin Page
+*@param :  null
+*@return : null
+*@Author: Sujata Rani Choudhury
+*
+*/ 
+function verify_Agents_AgentUpgradeLinks_AdminPage(){
+navigateToAdmin();
+_assertExists(_link("Go to Agents"));
+_assertExists(_link(" Go to Agent Upgrade"));
+}
+
+
+/**
+* Function  to upgrade button
+*@param :  null
+*@return : null
+*@Author: Sujata Rani Choudhury
+*
+*/ 
+
+//_click(_button("/Upgrade*/", _near(_cell("win172.168.20.10win"))));
+function UpgradeButton_loadHanler($compName){
+	$i =0 ;
+	while($i <= 5 ){
+	  if(_isVisible(_bold("Upgrading.."))){
+	    _wait(60000);
+	    _log("waiting..."+$i);
+	  } else {	 
+	    break;
+	     }
+	  $i++;
+	  }
+	}
+
+/**
+* Function to fetch DRM version from help
+* *@param :  $compName,$AgentVersion
+*@return : null
+*@Author: Sujata Rani Choudhury
+*
+*/
+	//tested working fine
+function DRMversion_fromhelp()
+{
+	_click(_link("Help"));
+	_click(_link("About", _near(_link("Help"))));
+	$drm_version=_getText(_font(1, _near(_font("Sanovi DRM Version :"))));
+	_log("DRM version Status After Upgrade in help is  :" + $drm_version);
+}
+/**
+* Function  to Write File
+*@param :  $filepath
+*@return : null
+*@Author: Sujata Rani Choudhury
+*
+*/ 
+function writeToFile($message,$filepath)
+{
+    out = new java.io.FileWriter($filepath, false);   
+    out.write($message + "\n");
+    out.close();
+}
+
+/**
+* Function to Count the No of Agent per component in Agent Page
+* *@param :  $comName,$columnName
+*@return : null
+*@Author: Sujata Rani Choudhury
+*
+*/ 
+function CountCell($compName,$columnName){
+	
+	var $i = 0;	
+	
+	while(true){
+	if(_isVisible(_cell($compName, _under(_tableHeader($columnName))))){
+	  $i++;
+	} 
+	if(_isVisible(_cell($compName +"[" + $i + "]", _under(_tableHeader($columnName))))){
+	  $i++;
+	} else {
+	break;
+	}
+	}
+	return $i;
+}
+
+/**
+* Function to Verify all agent details in AgentPage BeforeAgentUpgrade
+* *@param :  $compName,$AgentVersion
+*@return : null
+*@Author: Sujata Rani Choudhury
+*
+*/
+//tested working
+
+function AgentsPage_BeforeUpgrade(){
+navigateToAdmin();
+_click(_link("Go to Agents")); 
+_assertExists(_cell($compName));
+var $AgentVersioninagentpage = _getText(_cell(1, _near(_cell($compName))));
+  _assertEqual($AgentVersion, $AgentVersioninagentpage);
+  _log("Local Agent Version is :" + $AgentVersioninagentpage);
+
+ var $Agent_Status= _getText(_cell(3, _near(_cell($compName))));
+   _log("Local Agent Status is :" + $Agent_Status);
+var $link_status=_getText(_link(1, _near(_cell($compName))));
+  _log("Local Agent Link Before Upgrade is :" +$link_status);
+
+var $compCount_beforeUpgrade = CountCell($compName,"Component/Mgmt Service");
+  writeToFile($compCount_beforeUpgrade,$SAHI_HOME + "\\utility\\agentCount" + $compName + "_beforeUpgrade.txt");
+
+} 
+
+/**
+* Function to Verify all agent details in AgentUpgradePage BeforeAgentUpgrade
+* *@param :  $compName,$AgentVersion
+*@return : null
+*@Author: Sujata Rani Choudhury
+*
+*/
+//tested no issue//
+function AgentsUpgradePage_BeforeAgentUpgrade(){
+navigateToAdmin();
+_click(_link("Go to Agent Upgrade")); 
+_assertExists(_cell($compName));
+ 
+var $AgentVersioninUpgradepage = _getText(_cell(2, _near(_cell($compName))));
+  _assertEqual($AgentVersion, $AgentVersioninUpgradepage);
+
+var $upgreadeMessage = _getText(_cell(3, _near(_cell($compName))));
+  var $upgradeVer1 = $upgreadeMessage.split(" to ");
+  var $upgradeVer = $upgradeVer1[1];
+  _log("Upgrade Message is:" + $upgreadeMessage);
+   _log("Agent Upgrade available from " + $AgentVersion + " to   " + $upgradeVer);
+ 
+var $upgradeButton =  _exists(_button("/Upgrade*/", _rightOf(_cell($compName))));
+  if($upgradeButton == true){
+   _log("Upgrade button is available in Agents Upgrade Page");	
+   _click(_button("/Upgrade*/", _near(_cell($compName))));
+   //_click(_button("Upgrade"));
+   _expectConfirm("/Do you really want to upgrade?/", false);
+	Popup_Handler();
+   UpgradeButton_loadHanler($compName);
+   
+   var $upgradeButton =  _exists(_button("/Upgrade*/", _rightOf(_cell($compName))));
+ if($upgradeButton == true){
+ var $upgreadeMessage = _getText(_cell(3, _near(_cell($compName))));
+ _fail("Agent Upgrade failed : " + $upgreadeMessage );
+}
+}
+else
+{
+_log("Upgrade button does not exist in Agents Upgrade Page");
+}
+}
+
+/**
+* Function to Verify all agent details in AgentUpgradePage AfterAgentUpgrade
+* *@param :  $compName,$latestAgentVersion
+*@return : null
+*@Author: Sujata Rani Choudhury
+*
+*/
+function AgentsUpgradePage_AfterAgentUpgrade(){
+navigateToAdmin();
+DRMversion_fromhelp();
+navigateToAdmin();
+_click(_link("Go to Agent Upgrade"));
+_assertExists(_cell($compName));
+
+ 
+     $AgVersionafterUpgrade = _getText(_cell(2, _near(_cell($compName))));
+    _log("Agent Version After Upgrade in Agent Upgrade Page: " + $AgVersionafterUpgrade);
+    _assertEqual($AgVersionafterUpgrade, $drm_version,"Comparing agent version in  AgentUpgrade page and drm version from help page");
+ 
+ 
+var $upgreadeMessage = _getText(_cell(3, _near(_cell($compName))));
+    var $upgradeVer1 = $upgreadeMessage.split(" From ");
+    var $upgradeVer = $upgradeVer1[0];
+    _log("Upgrade successful for: Agent : ",$upgradeVer[0] + $upgradeVer[1] + $upgradeVer[2] );
+
+
+var $upgradeButton = _exists(_button("/Upgrade*/", _rightOf(_cell($compName))));
+_assertEqual($upgradeButton, false , "After agent upgrade,upgrade button is not visible");
+}
+
+/**
+* Function to Verify all agent details in AgentPage AfterAgentUpgrade
+* *@param :  $compName,$AgentVersion
+*@return : null
+*@Author: Sujata Rani Choudhury
+*
+*/
+//tested working fine
+//function AgentsPage_AfterAgentUpgrade($compName,$columnName,$AgVersionafterUpgrade )
+function AgentsPage_AfterAgentUpgrade(){
+navigateToAdmin();
+AgentsUpgradePage_AfterAgentUpgrade();
+DRMversion_fromhelp();
+navigateToAdmin();
+_click(_link("Go to Agents")); 
+_assertExists(_cell($compName));
+
+var $AgVersionafterUpgradeinAgentPage = _getText(_cell(1, _near(_cell($compName))));
+_assertEqual($AgVersionafterUpgradeinAgentPage, $AgVersionafterUpgrade,"Comparing agent version in Agent Page and AgentUpgrade page");
+
+var $agentStatus = _getText(_cell(3, _near(_cell($compName))));
+_log("Agent Status After Upgrade in Agent Page is : "+ $agentStatus);
+
+var $compCount = CountCell($compName,"Component/Mgmt Service");
+
+var $beforeUpgradeCount = _readFile($SAHI_HOME + "\\utility\\agentCount"+$compName + "_beforeUpgrade.txt");
+
+_assertEqual($beforeUpgradeCount,$compCount,"comparing the agent count before and after per component");
+
+}
+
+
+/////////////////////////////////////////////
+
+
+/*
+_cell("27-Nov-2015 16:29: Upgrade successful for: Agent : From 4.2_FCS_P13 to 7.0 version")
+
+_getText(_cell(3, _near(_cell("Linux_192.168.20.26"))));
+// o/p is //Agent: Upgrade available to 7.0 version 27-Nov-2015 17:15: Upgrade successful for: Agent : From 4.2_FCS_P13 to 7.0 version Agent: Upgrade available to 7.0 version last upgrade status
+
+
+var $test1 = _testcase("Verify Agents and Agents Upgrade links in Admin page ");
+$test1.start();
+verify_Agents_AgentUpgradeLinks_AdminPage();
+$test1.end();
+
+var $test2 = _testcase("Verify Agents page details Before Upgrade");
+$test2.start();
+BeforeUpgrade_AgentsPage();
+$test2.end();
+
+var $test3 = _testcase("Verify Agents page details Before Upgrade ");
+$test3.start();
+BeforeUpgrade_AgentsUpgradePage();
+$test3.end()
+
+var $test4 = _testcase("Verify AgentUpgrade page details After Upgrade ");
+$test4.start();
+AfterUpgrade_AgentsUpgradePage();
+$test4.end()
+
+var $test5 = _testcase("Verify Agent page details After Upgrade");
+$test5.start();
+AfterUpgrade_AgentsPage();
+$test5.end()
+*/
+

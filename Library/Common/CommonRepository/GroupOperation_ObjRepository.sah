@@ -1,0 +1,246 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the Common Group operation web object parameters
+ ** AuthorName : Anita Gaded
+ ** Created Date : Mar 2017
+ ***********************************************************************************************/
+
+var $l_groupOperation=_readExcelFile($SAHI_HOME + "\\Library\\Common\\CommonRepository\\CommonDRM_ObjRepository.xls","GroupOperation");
+
+//This user Input required to Select language
+var $g_selLang = $l_groupOperation[1][2];
+var $g_selLang = $l_drmLogin[1][2];
+if($BrowserLang == "N"){
+	_setGlobal("Selected language is ","english");
+	var $colno = 2;
+}
+else if($BrowserLang == "Y-JA"){
+	_setGlobal("Selected language is ","japanese");
+	var $colno = 3;
+	}
+
+else if($BrowserLang == "Y-EN"){
+		_setGlobal("Selected language is ","japanese");
+		var $colno = 3;
+	}
+
+var $obj_discGroup = $l_groupOperation[4][$colno]; 
+var $obj_grpName = $l_groupOperation[5][$colno]; 
+var $obj_grpDescription = $l_groupOperation[6][$colno];
+var $obj_subscriberId = $l_groupOperation[7][$colno];
+
+var $obj_solutionType = $l_groupOperation[8][$colno];
+var $obj_Next1 = $l_groupOperation[9][$colno];
+var $obj_ServerComp = $l_groupOperation[10][$colno];
+
+var $obj_Save = $l_groupOperation[11][$colno];
+var $obj_applDataset = $l_groupOperation[12][$colno];
+/////
+var $obj_showAll = $l_groupOperation[13][$colno];
+var $obj_prDataset1 = $l_groupOperation[14][$colno];
+var $obj_remoteDataset1 = $l_groupOperation[15][$colno];
+
+var $obj_Save1 = $l_groupOperation[16][$colno];
+var $obj_dataProt = $l_groupOperation[17][$colno];
+var $obj_prProt = $l_groupOperation[18][$colno];
+var $obj_remoteProt = $l_groupOperation[19][$colno];
+var $obj_refreshDetails = $l_groupOperation[20][$colno];
+
+var $obj_imgwrench = $l_groupOperation[21][$colno];
+var $obj_manageGrp = $l_groupOperation[22][$colno];
+var $obj_changeContState = $l_groupOperation[23][$colno];
+var $obj_smtargetState = $l_groupOperation[24][$colno];
+//
+var $obj_Change = $l_groupOperation[25][$colno];
+var $obj_imgRepr30 = $l_groupOperation[26][$colno];
+var $obj_imgRepr301 = $l_groupOperation[27][$colno];
+var $obj_imgDBr300 = $l_groupOperation[28][$colno];
+var $obj_LeftupArw = $l_groupOperation[29][$colno];
+var $obj_LeftupArw1 = $l_groupOperation[30][$colno];
+var $obj_EXECUTING = $l_groupOperation[31][$colno];
+var $obj_NormalCopy = $l_groupOperation[32][$colno];
+var $obj_Failed = $l_groupOperation[173][$colno];
+
+var $obj_vewAllWorkFlows = $l_groupOperation[33][$colno];
+var $obj_AWAITINGINPUT = $l_groupOperation[34][$colno];
+var $obj_AwaitingInput = $l_groupOperation[35][$colno];
+var $obj_RetryUserIPbtn = $l_groupOperation[36][$colno];
+
+var $obj_SUCCESS = $l_groupOperation[37][$colno];
+var $obj_ReverseNormalCopy = $l_groupOperation[38][$colno];
+var $obj_Abort = $l_groupOperation[39][$colno];
+
+var $obj_textReason = $l_groupOperation[40][$colno];
+var $obj_xyz = $l_groupOperation[41][$colno];
+var $obj_ReasonAbort = $l_groupOperation[42][$colno];
+var $obj_ABORTED = $l_groupOperation[43][$colno];
+var $obj_QuitUserIPbtn = $l_groupOperation[44][$colno];
+
+var $obj_Continuity1 = $l_groupOperation[45][$colno];
+var $obj_DrillsDisc = $l_groupOperation[46][$colno];
+var $obj_Switchover = $l_groupOperation[47][$colno];
+var $obj_Switchback = $l_groupOperation[48][$colno];
+var $obj_Failover = $l_groupOperation[49][$colno];
+var $obj_IntegrityCheck = $l_groupOperation[50][$colno];
+var $obj_NormalReset = $l_groupOperation[51][$colno];
+var $obj_NormalFullCopy = $l_groupOperation[52][$colno];
+var $obj_SO = $l_groupOperation[53][$colno];
+var $obj_SB = $l_groupOperation[54][$colno];
+var $obj_imgDBr301 = $l_groupOperation[55][$colno];
+
+// start from Import_WF_PreRPO() 
+
+var $obj_GroupConfigation = $l_groupOperation[56][$colno];
+var $obj_RPORTO = $l_groupOperation[57][$colno];
+var $obj_PreRPOConfig = $l_groupOperation[58][$colno];
+var $obj_SaveNow = $l_groupOperation[59][$colno];
+var $obj_Nextbtn = $l_groupOperation[60][$colno];
+var $obj_PublishWorkflow = $l_groupOperation[61][$colno];
+var $obj_PostRPOConfig = $l_groupOperation[62][$colno];
+var $obj_usePreRpoWF = $l_groupOperation[63][$colno];
+var $obj_Publish = $l_groupOperation[64][$colno];
+var $obj_Test = $l_groupOperation[65][$colno];
+
+var $obj_glyphIon = $l_groupOperation[66][$colno];
+var $obj_Workflows = $l_groupOperation[67][$colno];
+var $obj_ImportWorkflow = $l_groupOperation[68][$colno];
+var $obj_ExecutionStatus = $l_groupOperation[69][$colno];
+var $obj_OKUserInput = $l_groupOperation[70][$colno];
+var $obj_ContinueUserInput = $l_groupOperation[71][$colno];
+var $obj_ExecuteWorkflow = $l_groupOperation[72][$colno];
+var $obj_Execute = $l_groupOperation[73][$colno];
+var $obj_PANDSQL0099 = $l_groupOperation[74][$colno];
+var $obj_Status = $l_groupOperation[75][$colno];
+
+var $obj_Manage = $l_groupOperation[76][$colno];
+var $obj_GroupListView = $l_groupOperation[77][$colno];
+var $obj_ManageDRSol = $l_groupOperation[78][$colno];
+var $obj_ProductionSite = $l_groupOperation[79][$colno];
+var $obj_Configured = $l_groupOperation[80][$colno];
+var $obj_Current = $l_groupOperation[81][$colno];
+var $obj_DRSite = $l_groupOperation[82][$colno];
+var $obj_button = $l_groupOperation[83][$colno];
+var $obj_GroupInformation = $l_groupOperation[84][$colno];
+var $obj_ProductionServer = $l_groupOperation[85][$colno];
+
+var $obj_DRServer = $l_groupOperation[86][$colno];
+var $obj_CurrentGroupState = $l_groupOperation[87][$colno];
+var $obj_CurrentContinuityState = $l_groupOperation[88][$colno];
+var $obj_ContinuityOperation = $l_groupOperation[89][$colno];
+var $obj_Monitor = $l_groupOperation[90][$colno];
+var $obj_GroupSnapshot = $l_groupOperation[91][$colno];
+var $obj_Continuity = $l_groupOperation[92][$colno];
+var $obj_Replication = $l_groupOperation[93][$colno];
+var $obj_StartTime = $l_groupOperation[94][$colno];
+var $obj_EndTime = $l_groupOperation[95][$colno];
+var $obj_prComp = $l_groupOperation[96][$colno];
+var $obj_remoteComp = $l_groupOperation[97][$colno];
+
+// Calculate_RPO_Post_FO() need to start 
+
+var $obj_RPO_grp = $l_groupOperation[98][$colno];
+var $obj_DataRecovered = $l_groupOperation[99][$colno];
+var $obj_RTO_grp = $l_groupOperation[100][$colno];
+var $obj_FailoverDuration = $l_groupOperation[101][$colno];
+var $obj_TimeTakenSec = $l_groupOperation[102][$colno];
+var $obj_ConfigAppRPO = $l_groupOperation[103][$colno];
+var $obj_ApplnRPOSumry = $l_groupOperation[104][$colno];
+var $obj_Updated = $l_groupOperation[105][$colno];
+var $obj_RecoveryPoint = $l_groupOperation[106][$colno];
+var $obj_ConfigRTO = $l_groupOperation[107][$colno];
+var $obj_RTOSumry = $l_groupOperation[108][$colno];
+var $obj_CurrentRTO = $l_groupOperation[109][$colno];
+var $obj_Deviation = $l_groupOperation[110][$colno];
+var $obj_RecoveryTime = $l_groupOperation[111][$colno];
+var $obj_StopReplication = $l_groupOperation[112][$colno];
+var $obj_Stop = $l_groupOperation[113][$colno];
+var $obj_StartReplication = $l_groupOperation[114][$colno];
+var $obj_Start = $l_groupOperation[115][$colno];
+var $obj_Admin = $l_groupOperation[116][$colno];
+var $obj_CurrentEvents = $l_groupOperation[117][$colno];
+var $obj_AdvFilter = $l_groupOperation[118][$colno];
+var $obj_severity3 = $l_groupOperation[119][$colno];
+var $obj_severity_type = $l_groupOperation[120][$colno];
+var $obj_Warningevent = $l_groupOperation[121][$colno];
+var $obj_CLOSEDevent = $l_groupOperation[122][$colno];
+var $obj_INFOevent = $l_groupOperation[123][$colno];
+var $obj_systemevents = $l_groupOperation[124][$colno];
+var $obj_WIP = $l_groupOperation[125][$colno];
+var $obj_groups = $l_groupOperation[126][$colno];
+var $obj_Apply = $l_groupOperation[127][$colno];
+var $obj_EventName = $l_groupOperation[128][$colno];
+var $obj_Fileset = $l_groupOperation[129][$colno];
+var $obj_iconcaretRight = $l_groupOperation[130][$colno];
+var $obj_LastReplicatedFile = $l_groupOperation[131][$colno];
+var $obj_LastReplicatedFileSize = $l_groupOperation[132][$colno];
+var $obj_Throughput = $l_groupOperation[133][$colno];
+var $obj_Protection_grp = $l_groupOperation[134][$colno];
+var $obj_PendingFiles = $l_groupOperation[135][$colno];
+var $obj_ReplicationStatus= $l_groupOperation[136][$colno];
+var $obj_PrimaryRemoteServices = $l_groupOperation[137][$colno];
+var $obj_severity2 = $l_groupOperation[138][$colno];
+var $obj_severity4 = $l_groupOperation[139][$colno];
+var $obj_NEWevent = $l_groupOperation[140][$colno];
+var $obj_Criticalevent = $l_groupOperation[141][$colno];
+var $obj_Seriousevent = $l_groupOperation[142][$colno];
+var $obj_bold = $l_groupOperation[143][$colno];
+var $obj_dotred = $l_groupOperation[144][$colno];
+var $obj_dotyellow = $l_groupOperation[145][$colno];
+var $obj_dotorrange= $l_groupOperation[146][$colno];
+var $obj_dotgreen = $l_groupOperation[147][$colno];
+var $obj_OverviewMain= $l_groupOperation[148][$colno];
+var $obj_fgrpgif = $l_groupOperation[149][$colno];
+var $obj_fusionchartstooltip = $l_groupOperation[150][$colno];
+var $obj_durationSplt = $l_groupOperation[151][$colno];
+var $obj_ReplicationMsgDisplay = $l_groupOperation[152][$colno];
+var $obj_CurrentAppRPO = $l_groupOperation[153][$colno];
+var $obj_TotalRepldActualSize = $l_groupOperation[154][$colno];
+var $obj_FallbackResync = $l_groupOperation[155][$colno];
+var $obj_Fallback = $l_groupOperation[156][$colno];
+//dryrun objects
+
+var $obj_PUBLISHED = $l_groupOperation[157][$colno];
+var $obj_ExecDryrun= $l_groupOperation[158][$colno];
+var $obj_Dryrun = $l_groupOperation[159][$colno];
+var $obj_chartType = $l_groupOperation[160][$colno];
+var $obj_DryRunExecution = $l_groupOperation[161][$colno];
+var $obj_dryDate = $l_groupOperation[162][$colno];
+var $obj_dryToday = $l_groupOperation[163][$colno];
+var $obj_dryFrom = $l_groupOperation[164][$colno];
+var $obj_dryFromDate = $l_groupOperation[165][$colno];
+var $obj_drytoDate = $l_groupOperation[166][$colno];
+var $obj_ViewDryrunReport = $l_groupOperation[167][$colno];
+var $obj_FAILED = $l_groupOperation[168][$colno];
+var $obj_Status = $l_groupOperation[169][$colno];
+var $obj_Datasets = $l_groupOperation[170][$colno];
+
+
+// Change Continuity state
+
+var $ContState_NI= $l_groupOperation[171][$colno];
+var $ContState_NR= $l_groupOperation[172][$colno];
+var $RefreshReplica=$l_groupOperation[174][$colno];
+var $DeleteWorkflow=$l_groupOperation[175][$colno];
+var $ContAsSuccess=$l_groupOperation[176][$colno];
+var $ConAsFailure=$l_groupOperation[177][$colno];
+var $DryRyn_Grp=$l_groupOperation[178][$colno];
+var $obj_StartProcess = $l_groupOperation[179][$colno];
+var $obj_Managed_Degraded=$l_groupOperation[180][$colno];
+var $obj_Synchronized=$l_groupOperation[181][$colno];
+var $obj_FilesPending=$l_groupOperation[182][$colno];
+var $StopWorkflow=$l_groupOperation[183][$colno];
+var $Closed_Event=$l_groupOperation[184][$colno];
+
+var $obj_dryDate2=$l_groupOperation[185][$colno];
+
+
+
+
+
+
+
+
+
+
+

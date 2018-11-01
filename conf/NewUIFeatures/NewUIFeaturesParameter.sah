@@ -1,0 +1,75 @@
+/************************************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all New UI feature Parameters
+ ** AuthorName : Aditi Jain
+ ** Created Date : Feb 2015
+ ***********************************************************************************************/
+
+
+
+var $new_UI=_readExcelFile($SAHI_HOME + "\\conf\\NewUIFeatures\\NewUIFeatures.xls","Sheet1");
+
+var $username = $new_UI[9][2]; // DRM server GUI user name 
+var $password = $new_UI[10][2]; // DRM server GUI pwd
+
+var $name = $new_UI[14][2]; //mane of WF to create for start process
+var $success =$new_UI[15][2];
+var $failure= $new_UI[16][2];
+var $waitFor= $new_UI[17][2];
+
+
+//smartcopy
+
+$WFName=$new_UI[2][6];
+$SolSignature=$new_UI[3][6];
+$WFToCopy=$new_UI[4][6];
+
+
+//Single Step
+
+var $groupName =$new_UI[8][6];
+var $WFNametoCreate =$new_UI[9][6];
+
+
+//Approver 
+	
+var $approverWF = $new_UI[13][6];
+/*
+
+var $groupDescription = "APP PFR"; // Group description
+
+// *********************************************************************************************************************************************
+// Important Note : Please don't modify/edit any below variable or its value.
+// If you made any changes of variable and its value, script will not execute.
+// *********************************************************************************************************************************************
+
+var $primaryPanacesServer = $drmServer; // this is Primary DRM server
+var $panacesAgentNodeAddressPR = $compIPPR;
+var $panacesAgentNodeAddressDR = $compIPDR;
+var $compsitePR = $locationPR;
+var $compsiteDR = $locationDR;
+var $primaryComponents = $compNamePR;
+var $remoteComponents = $compNameDR;
+var $primaryDatasets = $datasetNamePR;
+var $remoteDatasets = $datasetNameDR;
+var $primaryProtections = $sernamePR;
+var $remoteProtections = $sernameDR;
+var $mgmtHostDGPR =$compNamePR+' ('+$compIPPR+')';
+var $mgmtHostDGDR = $compNameDR+' ('+$compIPDR+')';
+var $dependentComponentNamePR = $compNamePR;
+var $dependentComponentNameDR = $compNameDR;
+var $incharge = "drmadmin";
+var $desiredRpo = "300";
+var $rpoCompute = "300";
+var $systemTypeProtection = "PFR"; // Protection Scheme type
+var $SolutionSignature = "Application SubSystem with PFR"; // Solution type
+var $systemTypeDataset = "Application SubSystem"; // database subsystem
+var $datasetType = "Application SubSystem";// database Type
+var $drmDbUserName = "automation"; // DRM server database user id
+var $drmDbPassword = "sanovi";// DRM server database password
+var $APP_PFRAgentChk = "1";
+
+
+
+*/

@@ -1,0 +1,25 @@
+
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the remote agent test cases which are the part of  CDRM feature. 
+ ** AuthorName : Sujata Rani Choudhury
+
+ ************************************************************************/
+
+//don't change the below line.
+
+_include("../../Library/Common/Common_Function.sah");
+_include("../../conf/DRMInstallation_Parameter.sah");
+
+_include("../../Library/Common/Operation_On_FG/Common_GUI_Navigation.sah");
+_include("../../Library/Solution_Signature/Include/Common_Automation_testcase_Function.sah");
+_include("../../Library/Agent_Upgrade/DRM_Uploadbinary.sah");
+_include("../../Library/Agent_Upgrade/Screenshot.sah");
+_include("../../Library/Agent_Upgrade/All_Function.sah");
+//_include("../../Library/Agent_Upgrade/Management_Services.sah");
+_include("../../conf/Agent_Upgrade/Agent_Upgrade_Parameter.sah");
+
+Login_001();
+
+After_DRMUpgrade_Screenshots();

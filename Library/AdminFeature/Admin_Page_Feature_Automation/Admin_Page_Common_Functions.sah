@@ -1,0 +1,246 @@
+/**
+ * This function is used create the Drm User to access Gui.
+ * 
+ * @param :
+ *            $$a_user - userId.
+ * @return : null
+ * @author : Gaurav
+ */
+
+function adminPageCreateNewUser($a_user) {
+
+	_click(_link("Admin"));
+	_click(_link("Go to Users"));
+	_click(_link("Create New User"));
+	_setValue(_textbox("loginId"), $a_user);
+	_setValue(_password("newPassword"), "Sanovi123$");
+	_setValue(_password("confPassword"), "Sanovi123$");
+	_click(_radio("ucat"));
+	_setValue(_textbox("userFullName"), $a_user);
+	_setSelected(_select("homePage"), "Events List View");
+	_setValue(_textbox("email"), "auto@sanovi.com");
+	_click(_submit("Save"));
+	_assertEqual("User Created Successfully", _lastAlert());
+	var $blnFlg = _exists(_link($a_user));
+	if ($blnFlg == true) {
+		_log("User " + $a_user
+				+ " created successfully with password Sanovi123$");
+	} else {
+		_log("Failed to create User " + $a_user);
+	}
+}
+
+function adminPageUpdateUser($userNameUpdated) {
+
+	_click(_image("edit.png", _near(_link($userName))));
+	_setValue(_textbox("userFullName"), $userNameUpdated);
+	_setValue(_textbox("userEmail"), "auto_UPDATED@sanovi.com");
+	_click(_button("Save"));
+	var $blnFlg = _assertEqual("User Details Modified Successfully",
+			_lastAlert());
+	if ($blnFlg == true) {
+		_log("User " + $a_user + " updated successfully to > "
+				+ $userNameUpdated);
+	} else {
+		_log("Failed to update User to " + $userNameUpdated);
+	}
+
+}
+
+function adminPageSetUserPreference($a_user) {
+
+	_click(_link("Logout"));
+	_setValue(_textbox("username"), $a_user);
+	_setValue(_password("password"), $password_ro);
+	_click(_submit("/Submit/"));
+	_setValue(_password("curpassword"), $password_ro);
+	_setValue(_password("newPassword"), $updated_password_ro);
+	_setValue(_password("confPassword"), $updated_password_ro);
+	_click(_button("Save"));
+	_assertEqual(
+			"Password Changed Successfully.Please Login Again with Updated Password.",
+			_lastAlert());
+	_setValue(_textbox("username"), $a_user);
+	_setValue(_password("password"), $updated_password_ro);
+	_click(_submit("/Submit/"));
+	_click(_link("Admin"));
+	_click(_link("Go to Users"));
+	_click(_link("User Preferences"));
+	_setValue(_password("currentPassword"), $updated_password_ro);
+	_setValue(_password("newPassword"), $password_ro);
+	_setValue(_password("confPassword"), $password_ro);
+	_click(_button("Save"));
+	var $blnFlg = _assertEqual("User Details Modified Successfully",
+			_lastAlert());
+	if ($blnFlg == true) {
+		_log("User preferences update successfully");
+	} else {
+		_log("Failed to update User preference");
+	}
+	_setValue(_textbox("username"), "drmadmin");
+	_setValue(_password("password"), "Drmadmin123$");
+	_click(_submit("/Submit/"));
+	if (_exists(_submit("YES")) == true) {
+		_click(_submit("YES"));
+	}
+	_click(_link("Admin"));
+	_click(_link("Go to Users"));
+
+}
+
+function adminPageSet_System_Options_for_Users() {
+
+	_click(_link("Set System Options for Users"));
+	_setValue(_textbox("expiryDuration"), "180");
+	_setValue(_textbox("expiryNotifyDuration"), "7");
+	_setValue(_textbox("companyName"), "IBM-Sanovi");
+	_setSelected(_select("timeInHR"), "8");
+	_setSelected(_select("timeOutHR"), "11");
+	_check(_checkbox("email"));
+	_click(_submit("Save"));
+	_click(_link("Logout"));
+	Login_001();
+	$blnFlg = _exists(_span("Events"));
+	if ($blnFlg == true) {
+		_log("System options set successfully");
+	} else {
+		_log("Failed to set system options");
+	}
+}
+
+function adminPageDeleteUser($a_user) {
+
+	_click(_link("Admin"));
+	_click(_link("Go to Users"));
+	_click(_image("ico_delete.gif", _near(_link($a_user))));
+	var $blnFlg = _exists(_link($a_user));
+	if ($blnFlg == true) {
+		_log("Failed to delete User " + $a_user);
+	} else {
+		_log("User " + $a_user + " deleted successfully");
+	}
+}
+
+function adminPageVerifyOrganisation() {
+
+	_click(_link("Admin"));
+	$numberOfOrganisation = parseInt(_getText(_paragraph("style1[1]")).split(
+			"Total Number of Organizations:").toString().replace(",", "")
+			.trim());
+	_click(_link("Go to Organizations"));
+	var $xpath = "//table[@id='report']";
+	var $table = _table(_byXPath($xpath));
+	_assert($table.rows.length - 1 == $numberOfOrganisation
+			&& $table.rows.length - 1 >= 1,
+			"Failed to verify number of organisations");
+
+}
+
+function adminPageAddNotification() {
+
+	_click(_link("Admin"));
+	_click(_link("Go to Notification"));
+	_click(_link("Configure Email Server"));
+	_setValue(_textbox("smtp"), $SMTP_IP);
+	_setValue(_textbox("email"), $Sender_Email_Address);
+	_setValue(_textbox("replyTo"), $Reply_To);
+	_click(_button("Save"));
+	_assertEqual("Successfully Modified!", _lastAlert());
+	_click(_link("Add Notification List"));
+	_setValue(_textbox("uname"), $Notification_List_Name);
+	_setSelected(_select("list1"), [ $Users ]);
+	_click(_byXPath("//input[@name='button2']"));
+	_click(_submit("Save"));
+	_assertEqual(" Notification List Successfully Added!", _lastAlert());
+//	if (_exists(" Notification Test_Notification_List already exist",
+//			_lastAlert()) == true) {
+//		_assertEqual(" Notification Test_Notification_List already exist",
+//				_lastAlert());
+//		_click(_button("Cancel"));
+//	} else {
+//		_assertEqual(" Notification List Successfully Added!", _lastAlert());
+//	}
+	_click(_link("Add SNMP Trap Forwarder"));
+	_setValue(_textbox("uid5"), $SNMP_Trap_Name);
+	_setValue(_textbox("uid4"), $SNMP_Trap_Destination_IP);
+	_setValue(_textbox("uid22"), $UDP_Port);
+	_setSelected(_select("groups"), [ $Select_Groups ]);
+	//_pause();
+	_click(_button("Save"));
+	
+//	if (_exists("SNMP_Trap_Name already exist,please try with different name", _lastAlert()) == true) {
+//		_assertEqual("SNMP_Trap_Name already exist,please try with different name", _lastAlert());
+//		_click(_button("Cancel"));
+//	} else {
+//		_assertEqual("Successfully Configured", _lastAlert());
+//	}
+
+	_click(_cell(21));
+	_click(_image("edit.png"));
+	_setSelected(_select("list1"), [ $Users2 ]);
+	_click(_byXPath("//input[@id='smlbtn'][2]"));
+	_click(_submit("Save"));
+	_assertEqual(" Successfully Modified!", _lastAlert());
+	_click(_button("Cancel"));
+	_click(_image("ico_delete.gif"));
+	_assertEqual(
+			"Are you sure you wish to delete this Notification Test_Notification_List?",
+			_lastConfirm());
+	_assertEqual("Notification List successfully deleted", _lastAlert());
+	if(_exists(_image("edit.png", _near(_link($SNMP_Trap_Name))))==true){
+		_click(_image("edit.png", _near(_link($SNMP_Trap_Name))));
+	}
+	else{
+		_click(_image("edit.png", _near(_link($SNMP_Trap_Name+"_"))));
+	}
+	
+	_setValue(_textbox("uid5"), $SNMP_Trap_Name+"_");
+	_click(_button("Save"));
+	_assertEqual("Successfully Modified!", _lastAlert());	
+	_click(_image("ico_delete.gif", _near(_link($SNMP_Trap_Name+"_"))));
+	_assertEqual(
+			"Are you sure you wish to delete this SNMP Trap SNMP_Trap_Name _?",
+			_lastConfirm());
+	_assertEqual("PAN-SNMP-0003: Please check for dependencies", _lastAlert());
+}
+
+function adminPageVerifyAgentNumber() {
+
+	_click(_link("Admin"));
+	$numberOfAgents = parseInt(_getText(_paragraph("style1[3]")).split(
+			"Total Number of Agents: ").toString().replace(",", "").trim());
+	_log("Total Number Of Agents:->" + $numberOfAgents);
+	_click(_link("Go to Agents"));
+	var $xpath = "//table[@id='report']";
+	var $table = _table(_byXPath($xpath));
+	_log("Total Number Of Agents listed in table:->" + $table.rows.length - 1);
+	_assert($table.rows.length - 1 == $numberOfAgents
+			&& $table.rows.length - 1 >= 1, "Failed to verify number of Agents");
+}
+
+function adminPageCreateTicker() {
+
+	_click(_link("Admin"));
+	_click(_div("Go to License License Summary"));
+	_click(_link("Go to Site Ticker"));
+	_click(_button("Show Expired Ticker"));
+	_exists(_span("Expired Site Ticker"));
+	_click(_button("Add Site Ticker"));
+	_setSelected(_select("siteId"), "PR");
+	_click(_row("To"));
+	_setValue(_textarea("tickerInfo"), $tickerName);
+	_click(_button("Create"));
+	_click(_image("edit.png"));
+	_setValue(_textarea("tickerInfo"), $tickerNameUpdated);
+	_click(_button("Save[1]"));
+	_click(_button("Hide Expired Ticker"));
+	_click(_button("Show Expired Ticker"));
+	_click(_byXPath("//img[contains(@id,'deleteSiteTicker')]"));
+	_click(_link("Confirm"));
+	_exists(_div("Successfully deleted.."));
+	if (_exists(_cell("Testing_Edit")) == true) {
+		_assertExists(_cell("Testing_Edit"), "element not deleted successfully");
+	} else {
+		_log("successfully deleted");
+	}
+}

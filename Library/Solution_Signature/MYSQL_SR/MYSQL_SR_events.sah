@@ -1,0 +1,184 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains all the functions which are the part of  My SQL SR solution for generating events. 
+ ** AuthorName : Swati Chowdhary
+ ** Created Date : Feb 2013
+ ************************************************************************/
+
+/**
+* Function is for remote agent stop the linux agent from back end for PR.
+*@param : null
+*@return : null
+*@Author: Swati Chowdhary
+*
+*/
+function Mysql_Remote_PR_Linux_Agent_Stop_Event() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "LinuxOSAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMySQLSR201", "OS agent is down on primary server. ", "Critical");
+}// End of Remote_PR_LinuxAgent_Stop
+
+/**
+* Function is for remote agent stop the linux agent from back end for DR.
+*@param : null
+*@return : null
+*@Author: Swati Chowdhary
+*
+*/
+function Mysql_Remote_DR_Linux_Agent_Stop_Event() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "LinuxOSAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMySQLSR202", "OS agent is down on DR server. ", "Critical");
+}// End of Remote_DR_LinuxAgent_Stop
+
+/**
+* Function is for remote agent start the linux agent from back end for PR.
+*@param : null
+*@return : null
+*@Author: Swati Chowdhary
+*
+*/
+
+function Mysql_Remote_PR_Linux_Agent_Start_Event() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "LinuxOSAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMySQLSR204", "OS Agent is up on primary server ", "Information");
+}// End of Remote_PR_LinuxAgent_Start
+
+/**
+* Function is for remote agent start the linux agent from back end for DR.
+*@param : null
+*@return : null
+*@Author: Swati Chowdhary
+*
+*/
+function Mysql_Remote_DR_Linux_Agent_Start_Event() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "LinuxOSAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMySQLSR205", "OS Agent is up on DR server ", "Information");
+}// End of Remote_DR_LinuxAgent_Start
+
+/**
+* Function is for remote agent stop the MySQL agent from back end for PR
+*@param : null
+*@return : null
+*@Author: Swati Chowdhary
+*
+*/
+function Mysql_Remote_PR_Mysql_Agent_Stop_Event() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "MySQLAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMySQLSR101", "Primary:MySQL Agent is Down ", "Critical");
+}// End of Remote_PR_Mysql_Agent_Stop_Event()
+
+/**
+* Function is for remote agent stop the MySQL agent from back end for DR
+*@param : null
+*@return : null
+*@Author: Swati Chowdhary
+*
+*/
+function Mysql_Remote_DR_Mysql_Agent_Stop_Event() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "MySQLAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMySQLSR102", "DR:MySQL Agent is Down ", "Critical");
+}// Remote_DR_Mysql_Agent_Stop_Event
+
+
+/**
+* Function is for remote agent start the MySQL agent from back end for PR
+*@param : null
+*@return : null
+*@Author: Swati Chowdhary
+*
+*/
+
+function Mysql_Remote_PR_Mysql_Agent_Start_Event() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "MySQLAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMySQLSR104", "Primary:MySQL Agent is Up ", "Information");
+}// End of Remote_PR_Mysql_Agent_Start_Event
+
+/**
+* Function is for remote agent start the MySQL agent from back end for DR
+*@param : null
+*@return : null
+*@Author: Swati Chowdhary
+*
+*/
+
+function Mysql_Remote_DR_Mysql_Agent_Start_Event() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "MySQLAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMySQLSR105", "DR:MySQL Agent is Up ", "Information");
+}// End of Remote_DR_Mysql_Agent_Start_Event
+
+/**
+* Function is verify the event after stopping the replication 
+*@param : null
+*@return : null
+*@Author: Swati Chowdhary
+*
+*/
+function Mysql_Stop_Replication_event() {
+	var $server = Stop_Replication();
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMySQLSR002", "DR:Replication is OFF/Stopped. ", "Serious");
+}
+
+/**
+* Function is verify the event after starting the replication 
+*@param : null
+*@return : null
+*@Author: Swati Chowdhary
+*
+*/
+function Mysql_Start_Replication_event() {
+	var $server = Start_Replication();
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMySQLSR004", "DR:Replication ON/Started. ", "Information");
+}
+
+/**
+* Function is for remote agent stop the MySQL agent from back end for PR
+*@param : null
+*@return : null
+*@Author: Swati Chowdhary
+*
+*/
+function Mysql_Local_PR_Mysql_Agent_Stop_Event() {
+	var $server = Get_Local_Agent_Event($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "MySQLAgent.sh stop ");
+	var $action = $status.get("output");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMySQLSR101", "Primary:MySQL Agent is Down ", "Critical");
+}// End of Mysql_Local_PR_Mysq_Agent_Stop_Event
+
+
+/**
+* Function is for remote agent stop the MySQL agent from back end for DR
+*@param : null
+*@return : null
+*@Author: Swati Chowdhary
+*
+*/
+function Mysql_Local_DR_Mysql_Agent_Stop_Event() {
+	var $server = Get_Local_Agent_Event($compIPDR, $remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "MySQLAgent.sh stop ");
+	var $action = $status.get("output");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMySQLSR102", "DR:MySQL Agent is Down ", "Critical");
+}// End of Remote_PR_LinuxAgent_Stop
+
+/**
+* Function is for Local agent start the MySQL agent from back end for PR.
+*@param : null
+*@return : null
+*@Author: Swati Chowdhary
+*
+*/
+
+function Mysql_Local_PR_Mysql_Agent_Start_Event() {
+	var $server = Get_Local_Agent_Event($compIPPR, $remoteUserNameValPR, $remotePwdValPR, $localAgentPathPR, "MySQLAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMySQLSR104", "Primary:MySQL Agent is Up ", "Information");
+}// End of Remote_PR_Mysql_Agent_Start_Event
+
+/**
+* Function is for Local agent start the MySQL agent from back end for DR.
+*@param : null
+*@return : null
+*@Author: Swati Chowdhary
+*
+*/
+function Mysql_Local_DR_Mysql_Agent_Start_Event() {
+	var $server = Get_Local_Agent_Event($compIPDR, $remoteUserNameValDR, $remotePwdValDR, $localAgentPathDR, "MySQLAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMySQLSR105", "DR:MySQL Agent is Up ", "Information");
+}// End of Remote_DR_Mysql_Agent_Start_Event
+

@@ -1,0 +1,93 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains Creation of Protection Scheme for both remote and local agents. 
+ ** AuthorName : Swati Chowdhary
+ ** Created Date : Feb 2013
+ ************************************************************************/
+//Description:create Protection Schemes in MYSQL solution for PR
+
+/**
+* Function is for Creating Protection Schemes in MYSQL solution for PR.
+*@param :  null
+*@return : null
+* Author: Swati Chowdhary
+*
+*/
+
+function Create_Mysql_ProtectionschemePR() {
+	Create_Mysql_Protectionscheme($systemTypeProtection, $sernamePR, $mgmtHostMySQLSRPR, $ProtectionIPAddressPR, $ProtectionUserNamePR, $ProtectionPasswordPR, $ProtectionPortnumberPR);
+}// end of Mysql_ProtectionschemePR()
+
+
+/**
+* Function is for Creating Protection Schemes in MYSQL solution for DR.
+*@param :  null
+*@return : null
+* Author: Swati Chowdhary
+*
+*/
+
+function Create_Mysql_ProtectionschemeDR() {
+	Create_Mysql_Protectionscheme($systemTypeProtection, $sernameDR, $mgmtHostMySQLSRDR, $ProtectionIPAddressDR, $ProtectionUserNameDR, $ProtectionPasswordDR, $ProtectionPortnumberDR);
+}
+// End of Mysql_ProtectionschemeDR()
+
+
+/**
+* Function is for Creating Protection Schemes in MYSQL solution.
+*@param :  $systemTypeProtection, $sername, $mgmtHostMysqlSR, $protectionIPAddress, $protectionUserName, $protectionPassword, $protectionPortNumber
+*@return : null
+* Author: Swati Chowdhary
+*
+*/
+
+function Create_Mysql_Protectionscheme($systemTypeProtection, $sername, $mgmtHostMysqlSR, $protectionIPAddress, $protectionUserName, $protectionPassword, $protectionPortNumber) {
+	Popup_Handler();
+	_wait(6000);
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($ProtectionSchemes));
+	if (_exists(_link($sername))) {
+		_log("Protectionscheme already exists");
+	} else {
+		_setSelected(_select($systemType), $systemTypeProtection);
+		_click(_button($Go));
+		_setSelected(_select($mgmtHostMySQLSR), $mgmtHostMysqlSR);
+		_setValue(_textbox($sername), $sername);
+		var $i = 0;
+		// Looping till Register Agent link appears
+		while ($i < 10) {
+			// Pause for 30 seconds
+			_log($i);
+			_wait(30000);
+
+			if (_exists(_link($RegisterAgent))) {
+				_click(_link($RegisterAgent));
+				_wait(30000);
+			} else if (_exists(_cell("Linux OS", _near(_cell($AgentName))))) {
+				_log("Agent is CONNECTED");
+				break;
+			}
+			$i = $i + 1;
+		}// While loop ended
+		_setValue(_textbox("OtherReplicatorInputElement_0", _near(_cell($IPAddress))), $protectionIPAddress);
+		_setValue(_textbox("OtherReplicatorInputElement_1", _near(_cell($UserName))), $protectionUserName);
+		_setValue(_password("OtherReplicatorInputElement_2", _near(_cell($Password))), $protectionPassword);
+		_setValue(_textbox("OtherReplicatorInputElement_3", _near(_cell($Portnumber))), $protectionPortNumber);
+		_clearLastAlert();
+		_click(_button($Save));
+		_wait(10000);
+		navigateToDiscovery();
+		_click(_link($Subsystems));
+		_click(_link($ProtectionSchemes));
+		if (_exists(_link($sername))) {
+			_log("Protection Schemes created succesfully");
+		} else {
+			_assertEqual("Protection Schemes created succesfully",_lastAlert()); 	
+			_fail("Protection Schemes not created succesfully.So that stopping execution.");
+		}
+	}
+
+}// end Of Mysql_Protectionscheme()
+

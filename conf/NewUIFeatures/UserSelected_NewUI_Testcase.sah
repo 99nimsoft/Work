@@ -1,0 +1,45 @@
+
+var $l_userInputs_newUI = _readExcelFile($SAHI_HOME + "\\conf\\NewUIFeatures\\NewUIFeatures.xls","UserSelected");
+var $userDataLengthAPP_PFR  = $l_userInputs_newUI.length-1;
+
+var $flag = 0;
+for($i = 3 ; $i <= $userDataLengthAPP_PFR ; $i++){
+	if($l_userInputs_newUI[$i][4] == "Y"){	
+		$flag=$flag+1;	
+	}
+}
+
+//-----------Execution of Individual Testcase------------------------------
+
+var $g_smart_copy = $l_userInputs_newUI[9][4];
+var $g_singlestep = $l_userInputs_newUI[10][4];
+var $g_export_import = $l_userInputs_newUI[11][4];
+var $g_approver_chk= $l_userInputs_newUI[12][4];
+var $g_continue_success_failure = $l_userInputs_newUI[13][4];;
+var $g_rollback = $l_userInputs_newUI[14][4];
+
+
+
+
+//---------------For Executing All the Testcases------------------------
+var $g_executeAll = $l_userInputs_newUI[4][4];
+
+
+if ($g_executeAll == "Y"){
+
+	var $g_smart_copy = "Y";
+	var $g_singlestep = "Y";
+		
+	var $g_export_import = "Y";
+	var $g_approver_chk = "Y";
+	var $g_continue_success_failure = "Y";
+	var $g_rollback = "Y";
+
+	}
+
+
+
+
+if($flag == 0){
+	$g_executeAll = "Y";
+}

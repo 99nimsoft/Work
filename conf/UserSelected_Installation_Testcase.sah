@@ -1,0 +1,37 @@
+ var $l_userInputsData = _readExcelFile("../conf/DRM_Inputs.xls","User Selected Case");
+
+var $userDataLength  = $l_userInputsData.length-1;
+
+var $flag = 0;
+for($i = 3 ; $i <= $userDataLength ; $i++){
+	if($l_userInputsData[$i][4] == "Y"){	
+		$flag=$flag+1;	
+	}
+}	
+
+//--------Below variable are for individual test cases-------------
+var $g_uninstall = $l_userInputsData[16][4];
+var $g_install = $l_userInputsData[17][4];
+var $g_license = $l_userInputsData[18][4];
+
+
+//---------- Variable for execute all the test cases---------	
+var $g_executeAll = $l_userInputsData[3][4];
+
+
+//---------Below variable are for group level test cases execution-------
+var $g_installUninstall = $l_userInputsData[9][4];
+if($g_installUninstall == "Y"){
+	var $g_install = "Y";
+	var $g_uninstall = "Y";
+}
+
+var $g_installLicense = $l_userInputsData[11][4];
+if($g_installLicense == "Y"){
+	var $g_install = "Y";
+	var $g_license = "Y";
+}
+		
+if($flag == 0){
+	$g_executeAll = "Y";
+}

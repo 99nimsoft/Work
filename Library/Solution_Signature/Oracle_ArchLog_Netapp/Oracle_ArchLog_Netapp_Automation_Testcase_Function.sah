@@ -1,0 +1,786 @@
+
+function Login_001() {
+	try {
+		login($username, $password);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Login_001(),Function: login ,execution got failed.kindly check the log for more details");
+		_fail("Login failed.So that stopping execution.");
+	}
+}
+
+function Site_0003() {
+	try {
+		Create_Site_PR();
+		Create_Site_DR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Site_0003(),Function: Create_Site_PR or Create_Site_DR ,execution got failed.kindly check the log for more details");
+		_fail("site not created succesfully.So that stopping execution.");
+	}
+}
+
+function Agent_node_001() {
+	try {
+		Create_Agent_Node_Component();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Agent_node_001(),Function: Create_Agent_Node_Component(),execution got failed.kindly check the log for more details");
+		_fail("Agent Node component not created succesfully.So that stopping execution.");
+	}
+}
+
+
+function OracleArchLogNetApp_Component_Local_Discovery_0002() {
+	try {
+		Create_Local_Component($systemType, $compNamePR, $compIPPR, $compsitePR);
+		Create_Local_Component($systemType, $compNameDR, $compIPPR, $compsiteDR);
+		Create_Remote_Component($systemType, $NetAppcompNamePR, $NetAppcompIPPR,  $compsitePR, $NetAppUserNameValPR, $NetAppPwdValPR);
+		Create_Remote_Component($systemType, $NetAppcompNameDR, $NetAppcompIPDR,  $compsiteDR, $NetAppUserNameValDR, $NetAppPwdValDR);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Component_Local_Discovery_0002(),Function: Create_Local_ComponentPR or Create_Local_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("component not created succesfully.So that stopping execution.");
+	}
+}
+
+function OracleArchLogNetApp_Component_Remote_Discovery_0018() {
+	try {
+		Create_Remote_Component($systemType, $compNamePR, $compIPPR, $compsitePR, $remoteUserNameValPR, $remotePwdValPR);
+		Create_Remote_Component($systemType, $compNameDR, $compIPDR, $compsiteDR, $remoteUserNameValDR, $remotePwdValDR);
+		Create_Remote_Component("NetAppONTAP", $NetAppcompNamePR, $NetAppcompIPPR,  $compsitePR, $NetAppUserNameValPR, $NetAppPwdValPR);
+		Create_Remote_Component("NetAppONTAP", $NetAppcompNameDR, $NetAppcompIPDR,  $compsiteDR, $NetAppUserNameValDR, $NetAppPwdValDR);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Component_Remote_Discovery_0018(),Function: Create_Remote_ComponentPR or Create_Remote_ComponentDR ,execution got failed.kindly check the log for more details");
+		_fail("component not created succesfully.So that stopping execution.");
+	}
+}
+
+function OracleArchLogNetApp_Dataset_Discovery_0007() {
+	try {
+		Create_OracleDG_Dataset_PR();
+		Create_OracleDG_Dataset_DR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:OracleArchLogNetApp_Dataset_Discovery_0007(),Function: Create_OracleArchLogNetApp_Dataset_PR or Create_OracleArchLogNetApp_DatasetNetApp_DR ,execution got failed.kindly check the log for more details");
+		_fail("dataset not created succesfully.So that stopping execution.");
+	}
+
+}
+
+
+function OracleArchLogNetApp_Edit_workflows005(){
+	try {
+		// oracleArchNetapp
+		Oracle_ArchLog_Netapp_Edit_SO_Workflow();
+		Oracle_ArchLog_Netapp_Edit_SB_Workflow();
+		Oracle_ArchLog_Netapp_Edit_FOTE_Workflow();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:Edit_workflows_OracleNetApp(),Function:To edit Pre/Post PRO and SO/SB WF .kindly check the log for more details");
+	}	
+	
+}
+
+function OracleArchLogNetApp_Auto_DatasetDiscovery0009() {
+	try {
+		Verify_Dataset_Details_PR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:OracleDG_Auto_DatasetDiscovery0009(),Function: Verify_Dataset_Details_PR or Verify_Dataset_Details_DR,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_Dataset_status_0011() {
+	try {
+		Verify_OracleFDB_Dataset_Status_PR("Status DatasetPR:");
+	    Verify_OracleFDB_Dataset_Status_DR("Status DatasetDR:");	
+	} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID:OracleFDB_NetApp_Dataset_status_0011(),Function: Verify_Dataset_Status_PR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_Protectionscheme_Discovery_0018() {
+	try {
+		Create_NetApp_ProtectionschemePR();
+		Create_NetApp_ProtectionschemeDR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: OracleFDB_NetApp_Protectionscheme_Discovery_0018(),Function: Oracle_FullDB_NetApp_ProtectionScheme_PR or Oracle_FullDB_NetApp_ProtectionScheme_DR ,execution got failed.kindly check the log for more details");
+		_fail("Protection Schemes not created succesfully.So that stopping execution.");
+	}
+}
+
+function OracleArchLogNetApp_Component_Status_0001() {
+	try {
+		Verify_Component_Status_PR($agentType);
+		Verify_Component_Status_DR($agentType);
+		Verify_NetAppAgent_Status_PR($agentType);
+		Verify_NetAppAgent_Status_DR($agentType);
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_assertTrue(false);
+		_log("for test Case ID: Component_Status_0001(),Function: Verify_Component_Status_PR or Verify_Component_Status_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_Protectionscheme_status_0021() {
+	try {
+		//Verify_NetApp_SnapMirror_Protection_Scheme_Status_PR(); //not working thru ssh cmd
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_assertTrue(false);
+		_log("for test Case ID: NetAPP_SnapMirror_Protectionscheme_status_0021(),Function: Verify_Protection_Scheme_Status_PR ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		//Verify_NetApp_SnapMirror_Protection_Scheme_Status_DR();//not working thru ssh cmd
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_assertTrue(false);
+		_log("for test Case ID: NetAPP_SnapMirror_Protectionscheme_status_0021(),Function: Verify_Protection_Scheme_Status_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+
+function OracleArchLogNetApp_GroupCreation_0022() {
+	try {
+		Creation_Oracle_NetApp_SnapMirror_Group();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: OracleFDB_NetApp_GroupCreation_0022(),Function: Oracle_FG_NetApp_Group_Creation ,execution got failed.kindly check the log for more details");
+		_fail("Group not created succesfully.So that stopping execution.");
+	}
+
+}
+
+function OracleArchLogNetApp_Move_Group_Manage_0006() {
+	try {
+		Move_To_Manage_Group($groupName);
+		_wait(100);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: OracleFDB_NetApp_Move_Group_Manage_0006(),Function: Move_To_Manage_Group ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+
+}
+
+function OracleArchLogNetApp_Change_Continuity_State_0001() {
+	try {
+		Change_ContinuityStatus_Group($groupName, "Normal Inactive");
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Change_Continuity_State_0001(),Function: Change_ContinuityStatus_Group ,execution got failed.kindly check the log for more details");
+		_fail("Current group state is not correct,so that stopping execution");
+	}
+}
+
+function OracleArchLogNetApp_Post_Group_Creation_0010() {
+	try {
+			Import_NetApp_WF_PrePOSTRPO($filePreRPO,"Pre");
+		    Import_NetApp_WF_PrePOSTRPO($filePostRPO,"Post");
+			Oracle_fulldb_Netapp_Post_Group_Creation();
+		
+	} catch ($e) {
+		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Post_Group_Creation_0010(),Function: Post_Group_Creation ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+function OracleArchLogNetApp_Contiunity_Status_0002() {
+	try {
+		//Verify_Continuity_Status($groupName, "DR Sync In Progress");
+		_log("this feature removed");
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Contiunity_Status_0002(),Function: Verify_Continuitystatus_Before_NC ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_Continuity_Management_0015() {
+	try {
+		Oracle_fulldb_Netapp_Managedrsolution();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Continuity_Management_0015(),Function: Group_Managedrsolution ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_GroupInformation_Manage_0007() {
+	try {
+		Oracle_fulldb_Netapp_Groupinformation();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: GroupInformation_Manage_0007(),Function: OracleArchLogNetApp_Groupinformation ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_Groupsnapshot_Monitor_0001() {
+	try {
+		Oracle_fulldb_Netapp_Groupsnapshot();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Gruopsnapshot_Monitor_0001(),Function: OracleArchLogNetApp_Gruopsnapshot ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_NC_Replication_0028() {
+	try {
+		Oracle_fulldb_Netapp_Replication();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: NC_OracleArchLogNetApp_Replication_0028(),Function: OracleArchLogNetApp_Replication ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Oracle_Replication_Status_backend_0029() {
+	try {
+		Oracle_Replication_Status_backend_DR();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Oracle_Replication_Status_backend_0029(),Function: Oracle_Replication_Status_backend_DR ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_NC_RPO_0026() {
+	try {
+		OracleArLogNetApp_Rpo();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: NC_OracleArchLogNetApp_RPO_0026(),Function: OracleArchLogNetApp_Rpo ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_NC_Data_RPO_0026() {
+	try {
+		Oracle_fulldb_Netapp_data_Rpo();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: NC_OracleArchLogNetApp_RPO_0026(),Function: OracleArchLogNetApp_Rpo ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+
+function OracleArchLogNetApp_Monitor_Relationship_0030() {
+	try {
+		Oracle_fulldb_Netapp_Monitor_Relationship($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Monitor_Relationship_0030(),Function: Monitor_Relationship ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_Import_FO_0010() {
+	try {
+		Import_WF_FO();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: OracleArchLogNetApp_Import_FO_0010(),Function: OracleArchLogNetApp_Import_FO_0010 ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_Import_NC_0011() {
+	try {
+		Import_WF_NC();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: OracleArchLogNetApp_Import_NC_0011(),Function: OracleArchLogNetApp_Import_NC_0011 ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_Import_RNC_0012() {
+	try {
+		Import_WF_RNC();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: OracleArchLogNetApp_Import_RNC_0012(),Function: OracleArchLogNetApp_Import_RNC_0012 ,execution got failed.kindly check the log for more details");
+	}
+}
+function OracleArchLogNetApp_Start_NormalCopy_001() {
+	try {
+			Execute_NC($groupName, "NormalCopy");
+			_wait(5000);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: OracleArchLogNetApp_Start_NormalCopy_001(),Function: OracleArchLogNetApp_Start_NormalCopy_001 ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_Stop_NormalCopy_002() {
+	try {
+		Stop_NC($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: OracleArchLogNetApp_Start_NormalCopy_001(),Function: OracleArchLogNetApp_Start_NormalCopy_001 ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_Start_ReverseNormalCopy_002() {
+	try {
+		Execute_Reverse_Normal_Copy($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: OracleArchLogNetApp_Start_ReverseNormalCopy_002(),Function: OracleArchLogNetApp_Start_ReverseNormalCopy_002 ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_Stop_ReverseNormalCopy_002() {
+	try {
+		Verify_NC_RPO_Deviation("NormalCopy");
+		Stop_Reverse_Normal_Copy($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: OracleArchLogNetApp_Stop_ReverseNormalCopy_002(),Function: OracleArchLogNetApp_Stop_ReverseNormalCopy_002 ,execution got failed.kindly check the log for more details");
+	}
+}
+function OracleArchLogNetApp_NC_RTO_0027() {
+	try {
+		Oracle_fulldb_Netapp_Rto();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: OracleArchLogNetApp_NC_RTO_0027(),Function: OracleArchLogNetApp_Rto ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_NC_RPO_Deviation() {
+	try {		
+		Verify_NC_RPO_Deviation("NormalCopy");
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: OracleArchLogNetApp_NC_RPO_Deviation(),Function: OracleArchLogNetApp_Rto ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_RNC_RPO_Deviation() {
+	try {		
+		Verify_RNC_RPO_Deviation("ReverseNormalCopy");
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: OracleArchLogNetApp_RNC_RPO_Deviation(),Function: OracleArchLogNetApp_Rto ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_Rsync_PostSO() {
+	try {		
+		  Apply_Resync_SnapMirror_PostSO();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: OracleArchLogNetApp_Rsync_PostSO(),Function: OracleArchLogNetApp_Rsync_PostSO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_Rsync_PostSB() {
+	try {		
+		  Apply_Resync_SnapMirror_PostSB();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: OracleArchLogNetApp_Rsync_PostSB(),Function: OracleArchLogNetApp_Rsync_PostSB ,execution got failed.kindly check the log for more details");
+	}
+}
+function OracleArchLogNetApp_Import_SOSB_0007() {
+	try {
+		Import_WF_SO();
+		_wait(5000);
+		Import_WF_SB();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Import_SOSB_0007(),Function: Import_WF_SO ,execution got failed.kindly check the log for more details");
+		_fail("workflow not imported succesfully.So that stopping execution.");
+	}
+}
+
+
+
+function OracleArchLogNetApp_Start_SO_0011() {
+	try {
+		Start_SO($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_SO_0011(),Function: Start_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_SO_Execution_0012() {
+	try {
+		OracleArchLogNetApp_SO_Execution_Status($groupName,"Switchover");
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SO_Execution_0012(),Function: SO_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("SO workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+}
+
+function OracleArchLogNetApp_SO_Replication_0013() {
+	try {
+		Verify_Continuity_Status($groupName,"DR Resync is not started");
+		Oracle_fulldb_Netapp_Replication_Post_SO();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SO_Replication_0013(),Function: Verify_Continuitystatus_After_SO or OracleArchLogNetApp_Replication_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_Managedrsolution_RNC_0033() {
+	try {
+		Oracle_fulldb_Netapp_Managedrsolution_PostSO();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_RNC_0033(),Function: Execute_Reverse_Normal_Copy or OracleArchLogNetApp_Managedrsolution_PostSO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_RNC_Groupinformation_Monitor_0022() {
+	try {
+		Oracle_fulldb_Netapp_Groupinformation_Post_SO();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: RNC_Groupinformation_Monitor_0022(),Function: OracleArchLogNetApp_Groupinformation_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_RNC_Groupsnapshot_Monitor_0021() {
+	try {
+		Oracle_fulldb_Netapp_Groupsnapshot_Post_SO();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: RNC_Gruopsnapshot_Monitor_0021(),Function: OracleArchLogNetApp_Gruopsnapshot_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_RNC_Rpo_Monitor_0023() {
+	try {
+		Oracle_fulldb_Netapp_Rpo_Post_SO();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: RNC_Rpo_Monitor_0023(),Function: OracleArchLogNetApp_Rpo_Post_SO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_ReplicationStatus_PostSO() {
+	try {
+		_log("verify replication status post SO");
+		OracleNetApp_ReplicationStatus();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: OracleArchLogNetApp_ReplicationStatus_PostSO(),Function: OracleArchLogNetApp_ReplicationStatus_PostSO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_ReplicationStatus_PostSB() {
+	try {
+		_log("verify replication status post SB");
+		OracleNetApp_ReplicationStatus();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: OracleArchLogNetApp_ReplicationStatus_PostSB(),Function: OracleArchLogNetApp_ReplicationStatus_PostSO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_Start_SB_0034() {
+	try {
+		
+		Start_SB($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_SB_0034(),Function: Verify_Continuitystatus_Stop_RNC or Start_SB ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_SB_Execution_0035() {
+	try {
+		Verify_Continuitystatus_In_SB();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SB_Execution_0035(),Function: Verify_Continuitystatus_In_SB ,execution got failed.kindly check the log for more details");
+	}
+	try {
+		SB_Execution_Status($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SB_Execution_0035(),Function: SB_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("SB workflow execution faild.So that stopping execution.Kindly look in to the logs.");
+	}
+}
+
+function OracleArchLogNetApp_SB_Monitor_Manage_0038() {
+	try {
+		Verify_Continuity_Status($groupName, "DR Sync In Progress");
+		Oracle_fulldb_Netapp_Managedrsolution();
+	  } catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: SB_Monitor_Manage_0038(),Function: managedrsolution or Replication or Gruopsnapshot or Managegroupinformation or RPO or RTO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_Start_FO_0001() {
+	try {
+		Stop_NC($groupName);
+		Start_FO($groupName);
+		Verify_Continuitystatus_In_FO();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Start_FO_0001(),Function: Stop_NC or Start_FO or Verify_Continuitystatus_In_FO  ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_FO_execution_0058() {
+	try {
+		FO_Execution_Status($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: FO_execution_0058(),Function: FO_Execution_Status ,execution got failed.kindly check the log for more details");
+		_fail("Fail over workflow execution faild.So that stopping execution.Kindly check the logs for further details");
+	}
+}
+
+function OracleArchLogNetApp_FO_RPO_0003() {
+	try {
+		Calculate_RPO_Post_FO($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: FO_RPO_0003(),Function: Calculate_RPO_Post_FO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_FO_Monitor_Manage_0006() {
+	try {
+		Gruopsnapshot_Post_FO($groupName);
+		Groupinformation_Post_FO($groupName);
+		Replication_Post_FO($groupName);
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: FO_Monitor_Manage_0006(),Function: Gruopsnapshot_Post_FO or Groupinformation_Post_FO or Replication_Post_FO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_Continuity_Status_FO_0007() {
+	try {
+		Verify_Continuitystatus_After_FO();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Continuity_Status_FO_0007(),Function: Verify_Continuitystatus_After_FO ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_Stop_replication_0051() {
+	try {
+		OracleArchLogNetApp_Stop_Replication_event();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: OracleArchLogNetApp_Stop_replication_0051(),Function: OracleArchLogNetApp_Stop_Replication_event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_Start_replication_0052() {
+	try {
+		OracleArchLogNetApp_Start_Replication_event();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: OracleArchLogNetApp_Start_replication_0052(),Function: OracleArchLogNetApp_Start_Replication_event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function Logout_001() {
+	try {
+		logout();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Logout_001(),Function: logout ,execution got failed.kindly check the log for more details");
+	}
+}
+
+///////////////////////Events/////////////////
+
+function OracleArchLogNetApp_Remote_Stop_OracleArchLogNetApp_Agent_0039() {
+	try {
+		OracleArchLogNetApp_Remote_PR_Oracle_Agent_Stop_Event();
+		OracleArchLogNetApp_Remote_DR_Oracle_Agent_Stop_Event();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Stop_OracleArchLogNetApp_Agent_0039(),Function: OracleArchLogNetApp_Remote_PR_OracleArchLogNetApp_Agent_Stop_Event or OracleArchLogNetApp_Remote_DR_OracleArchLogNetApp_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_Remote_Start_OracleArchLogNetApp_Agent_0038() {
+	try {
+		OracleArchLogNetApp_Remote_PR_Oracle_Agent_Start_Event();
+		OracleArchLogNetApp_Remote_DR_Oracle_Agent_Start_Event();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Start_OracleArchLogNetApp_Agent_0038(),Function: OracleArchLogNetApp_Remote_PR_OracleArchLogNetApp_Agent_Start_Event or OracleArchLogNetApp_Remote_DR_OracleArchLogNetApp_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+function OracleArchLogNetApp_Remote_Stop_NetApp_Agent_0051(){
+	try {
+		
+		OracleArchLogNetApp_Remote_PR_NetApp_Agent_Stop_Event();
+		OracleArchLogNetApp_Remote_DR_NetApp_Agent_Stop_Event();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Start_OracleArchLogNetApp_Agent_0038(),Function: OracleArchLogNetApp_Remote_PR_OracleArchLogNetApp_Agent_Stop_Event or OracleArchLogNetApp_Remote_DR_OracleArchLogNetApp_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+	
+function OracleArchLogNetApp_Remote_Start_NetApp_Agent_0052(){
+	try {
+		
+		OracleArchLogNetApp_Remote_PR_NetApp_Agent_Start_Event();
+		OracleArchLogNetApp_Remote_DR_NetApp_Agent_Start_Event();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Start_OracleArchLogNetApp_Agent_0038(),Function: OracleArchLogNetApp_Remote_PR_OracleArchLogNetApp_Agent_Start_Event or OracleArchLogNetApp_Remote_DR_OracleArchLogNetApp_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+//SOActive
+function OracleArchLogNetApp_Remote_Stop_OracleArchLogNetApp_Agent_SO_InActive_0039(){
+	
+	try {
+		OracleArchLogNetApp_Remote_PR_Oracle_Agent_Stop_Event_SO_InActive();
+		OracleArchLogNetApp_Remote_DR_Oracle_Agent_Stop_Event_SO_InActive();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Stop_OracleArchLogNetApp_Agent_0039(),Function: OracleArchLogNetApp_Remote_PR_OracleArchLogNetApp_Agent_Stop_Event or OracleArchLogNetApp_Remote_DR_OracleArchLogNetApp_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+	
+
+function OracleArchLogNetApp_Remote_Start_OracleArchLogNetApp_Agent_SO_InActive_0038(){
+	
+	try {
+		OracleArchLogNetApp_Remote_PR_Oracle_Agent_Start_Event_SO_InActive();
+		OracleArchLogNetApp_Remote_DR_Oracle_Agent_Start_Event_SO_InActive();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Start_OracleArchLogNetApp_Agent_0038(),Function: OracleArchLogNetApp_Remote_PR_OracleArchLogNetApp_Agent_Start_Event or OracleArchLogNetApp_Remote_DR_OracleArchLogNetApp_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_Remote_Stop_PFR_Agent_0051_SO_InActive(){
+	try {
+		
+		OracleArchLogNetApp_Remote_PR_PFR_Agent_Stop_Event_SO_InActive();
+		OracleArchLogNetApp_Remote_DR_PFR_Agent_Stop_Event_SO_InActive();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Start_OracleArchLogNetApp_Agent_0038(),Function: OracleArchLogNetApp_Remote_PR_OracleArchLogNetApp_Agent_Stop_Event or OracleArchLogNetApp_Remote_DR_OracleArchLogNetApp_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}	
+	
+function OracleArchLogNetApp_Remote_Start_PFR_Agent_0052_SO_InActive(){
+	try {
+		
+		OracleArchLogNetApp_Remote_PR_PFR_Agent_Start_Event_SO_InActive();
+		OracleArchLogNetApp_Remote_DR_PFR_Agent_Start_Event_SO_InActive();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Start_OracleArchLogNetApp_Agent_0038(),Function: OracleArchLogNetApp_Remote_PR_OracleArchLogNetApp_Agent_Start_Event or OracleArchLogNetApp_Remote_DR_OracleArchLogNetApp_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+///local
+
+function OracleArchLogNetApp_Local_Stop_OracleArchLogNetApp_Agent_0039() {
+	try {
+		OracleArchLogNetApp_Local_PR_Oracle_Agent_Stop_Event();
+		OracleArchLogNetApp_Local_DR_Oracle_Agent_Stop_Event();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Local_Stop_OracleArchLogNetApp_Agent_0039(),Function: OracleArchLogNetApp_Local_PR_OracleArchLogNetApp_Agent_Stop_Event or OracleArchLogNetApp_Local_DR_OracleArchLogNetApp_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+
+function OracleArchLogNetApp_Local_Start_OracleArchLogNetApp_Agent_0038() {
+	try {
+		OracleArchLogNetApp_Local_PR_Oracle_Agent_Start_Event();
+		OracleArchLogNetApp_Local_DR_Oracle_Agent_Start_Event();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Local_Start_OracleArchLogNetApp_Agent_0038(),Function: OracleArchLogNetApp_Local_PR_OracleArchLogNetApp_Agent_Start_Event or OracleArchLogNetApp_Local_DR_OracleArchLogNetApp_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_Local_Stop_PFR_Agent_0051(){
+	try{
+		OracleArchLogNetApp_Local_PR_PFR_Agent_Stop_Event();
+		OracleArchLogNetApp_Local_DR_PFR_Agent_Stop_Event();
+		} catch ($e) { 
+		_log($e.toString(),"Custom1");
+	_log("for test Case ID: Local_Start_OracleArchLogNetApp_Agent_0038(),Function: OracleArchLogNetApp_Local_PR_OracleArchLogNetApp_Agent_Start_Event or OracleArchLogNetApp_Local_DR_OracleArchLogNetApp_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+}
+}
+
+
+function OracleArchLogNetApp_Local_Start_PFR_Agent_0052(){
+      try{
+    	  OracleArchLogNetApp_Local_PR_PFR_Agent_Start_Event();
+    	  OracleArchLogNetApp_Local_DR_PFR_Agent_Start_Event();
+		} catch ($e) { 
+		_log($e.toString(),"Custom1");
+	_log("for test Case ID: Local_Start_OracleArchLogNetApp_Agent_0038(),Function: OracleArchLogNetApp_Local_PR_OracleArchLogNetApp_Agent_Start_Event or OracleArchLogNetApp_Local_DR_OracleArchLogNetApp_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+}
+}	
+	
+//SO Active
+
+//SOActive
+function OracleArchLogNetApp_Local_Stop_OracleArchLogNetApp_Agent_SO_InActive_0039(){
+	
+	try {
+		OracleArchLogNetApp_Local_PR_Oracle_Agent_Stop_Event_SO_InActive();
+		OracleArchLogNetApp_Local_DR_Oracle_Agent_Stop_Event_SO_InActive();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Stop_OracleArchLogNetApp_Agent_0039(),Function: OracleArchLogNetApp_Remote_PR_OracleArchLogNetApp_Agent_Stop_Event or OracleArchLogNetApp_Remote_DR_OracleArchLogNetApp_Agent_Stop_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+	
+
+function OracleArchLogNetApp_Local_Start_OracleArchLogNetApp_Agent_SO_InActive_0038(){
+	
+	try {
+		OracleArchLogNetApp_Local_PR_Oracle_Agent_Start_Event_SO_InActive();
+		OracleArchLogNetApp_Local_DR_Oracle_Agent_Start_Event_SO_InActive();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Start_OracleArchLogNetApp_Agent_0038(),Function: OracleArchLogNetApp_Remote_PR_OracleArchLogNetApp_Agent_Start_Event or OracleArchLogNetApp_Remote_DR_OracleArchLogNetApp_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+function OracleArchLogNetApp_Local_Stop_PFR_Agent_0051_SO_InActive(){
+	try {
+		
+		OracleArchLogNetApp_Local_PR_PFR_Agent_Stop_Event_SO_InActive();
+		OracleArchLogNetApp_Local_DR_PFR_Agent_Stop_Event_SO_InActive();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Start_OracleArchLogNetApp_Agent_0038(),Function: OracleArchLogNetApp_Remote_PR_OracleArchLogNetApp_Agent_Stop_Event or OracleArchLogNetApp_Remote_DR_OracleArchLogNetApp_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}	
+	
+function OracleArchLogNetApp_Local_Start_PFR_Agent_0052_SO_InActive(){
+	try {
+		
+		OracleArchLogNetApp_Local_PR_PFR_Agent_Start_Event_SO_InActive();
+		OracleArchLogNetApp_Local_DR_PFR_Agent_Start_Event_SO_InActive();
+		} catch ($e) { 
+ 		_log($e.toString(),"Custom1");
+		_log("for test Case ID: Remote_Start_OracleArchLogNetApp_Agent_0038(),Function: OracleArchLogNetApp_Remote_PR_OracleArchLogNetApp_Agent_Start_Event or OracleArchLogNetApp_Remote_DR_OracleArchLogNetApp_Agent_Start_Event ,execution got failed.kindly check the log for more details");
+	}
+}
+
+	
+
+
+

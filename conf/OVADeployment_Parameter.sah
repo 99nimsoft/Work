@@ -1,0 +1,80 @@
+
+var $l_ova_drmInstallInputs = _readExcelFile("../conf/OVA_DRM_Inputs.xls","OVA");  //To read the inputs from the drm_inputs excel file.
+
+// This user Input required to Login the DRM Server from backend
+var $drmServer = $l_ova_drmInstallInputs[2][4];//"192.168.2.165";//DRM server IP
+var $drmUserName = $l_ova_drmInstallInputs[3][4];//"root";// DRM server user name
+var $drmPassword = $l_ova_drmInstallInputs[4][4];//"Sanovi123";// DRM server password
+
+//This user Input required to Login the DRM Server from backend
+var $deployServer = $l_ova_drmInstallInputs[14][4];//"192.168.1.207";//$l_drmInstallInputs[4][4];//DRM server IP
+var $deployUserName = $l_ova_drmInstallInputs[15][4];//"root";//$l_drmInstallInputs[5][4];// DRM server user name
+var $deployPassword = $l_ova_drmInstallInputs[16][4];//"ig";//$l_drmInstallInputs[6][4];// DRM server password
+
+var $g_isDailyBuild = $l_ova_drmInstallInputs[11][4];
+
+if($g_isDailyBuild == "Y"){
+	var $revisionNo = _readFile("../conf/latest_rev_OVA");
+	$revisionNo = $revisionNo.replace(/\n/g,"");
+
+var $g_buildUrl  = "http://192.168.1.201:8080/jenkins/job/JaspeRed_7_1_Nightly/ws/Pumice_Tonalite_Appliance_" + $revisionNo + "/ova/";
+	
+_setGlobal("newBuildName",$g_buildUrl);
+_writeFile($revisionNo, "../conf/SCCOVARevisionNo.txt", true);
+} else {
+	var $g_buildUrl = $l_ova_drmInstallInputs[10][4];
+	_setGlobal("newBuildName",$g_buildUrl);
+}
+
+var $DRMbuild = $l_ova_drmInstallInputs[9][4];// // This is the path where build will copy
+
+var $deploybuild = $l_ova_drmInstallInputs[9][4];// // This is the path where build will copy
+
+var $deploybuildServer = $deploybuild + "/DRM_Build/OVA/SanoviCC/";
+
+var $username = "drmadmin";// // DRM server GUI user name 
+var $password = "Drmadmin123$";// // DRM server GUI pwd
+
+var $SecondaryPanacesServer = $l_ova_drmInstallInputs[5][4]; //This is Secondary DRM server,Primary and secondary both are same then don't change it.Else use "172.168.20.176"
+
+var $primaryPanacesServer = $drmServer; //this is Primary DRM server
+
+$g_sahiBuildUrl = "http://172.168.20.43/jenkins/job/DRM_Automation/ws/DRM_Automation_Pumice/";
+
+$PFRfilePath = "/SanoviDRM/Agents/PFRInstaller.properties";
+
+
+var $systemTypeAgent = "Linux";
+
+var $subscriber = "Default";
+
+var $SAHI_HOME = Get_Sahi_Home_Path();
+
+var $EAMSROOT = $l_ova_drmInstallInputs[6][4]; // This path of EAMSROOT
+
+var $vCenterServerIP = $l_ova_drmInstallInputs[17][4];//"192.168.20.66";
+
+var $vCenterUserName = $l_ova_drmInstallInputs[18][4];//"auto";
+
+var $vCenterPassword = $l_ova_drmInstallInputs[19][4];//"Cloud123\\$";
+	
+var $vcenterDataCenter = $l_ova_drmInstallInputs[20][4];//"PR_Site";
+
+var $ESXHostIP = $l_ova_drmInstallInputs[21][4];//"192.168.1.210"; 
+
+var $vcenterPath = $vCenterUserName + ":" + $vCenterPassword  + "@" + $vCenterServerIP + "/" + $vcenterDataCenter + "/host/" + $ESXHostIP;
+
+
+$datastoreIP = $l_ova_drmInstallInputs[22][4]; // datastore 
+
+$deployVMName = $l_ova_drmInstallInputs[23][4]; // Deploy server IP
+
+$DNSIP = "192.168.1.110";
+
+$gatewayIP = "192.168.2.254";
+
+$NetworkMask = "255.255.255.0";
+
+
+
+

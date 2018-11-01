@@ -1,0 +1,1 @@
+C:\Users\IBM_ADMIN\sahi_pro\userdata\scripts\RO_Automation\tools\PsExec\PsExec.exe \\192.168.3.35 -u Administrator -p Sanovi123 -s -d cmd.exe /c sc start SFR

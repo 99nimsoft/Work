@@ -1,0 +1,391 @@
+function Create_AG_0001(){
+	try {
+		//	Move_To_Manage_Group($AGrpNm);
+		creation_AG($groupName1,$groupName2,$groupName3,$AGrpNm,$time);
+			} catch ($e) { 
+			  _log($e.toString(),"Application_Group");
+			_log("for test Case ID  AG_Move_Group_Manage_0002(): AG_Move_Group_Manage,execution got failed.kindly check the log for more details");
+			//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+			}
+
+	}
+function AG_Move_Group_Manage_0002(){
+	try {
+	//	Move_To_Manage_Group($AGrpNm);
+		Move_AG_To_Manage_Group($AGrpNm);
+		} catch ($e) { 
+		  _log($e.toString(),"Application_Group");
+		_log("for test Case ID  AG_Move_Group_Manage_0002(): AG_Move_Group_Manage,execution got failed.kindly check the log for more details");
+		//_fail("Group continuity state is not changed to Switchover Inactive. So that stopping execution.");
+		}
+}
+
+
+
+function  AG_Initiate_NormalFullcopy_0002(){
+	try {
+		publishBCO($groupName1, "NormalFullCopy");
+		Trigger_Ral_Initiate_NormalFullcopy($groupName1,$WorkflowNm1);
+		} catch ($e) {
+		_log($e.toString(),"Application_Group");
+ 		_log($e.toString(),"Application_Group");
+		_log("for test Case ID: Application_Group_Initiate_NormalFullcopy_0002(),Function: Initiate_NormalFullcopy ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+		try {
+			
+			publishBCO($groupName3, "NormalFullCopy");
+			Trigger_Ral_Initiate_NormalFullcopy($groupName3,$WorkflowNm3);
+			} catch ($e) {
+			_log($e.toString(),"Application_Group");
+	 		_log($e.toString(),"Application_Group");
+			_log("for test Case ID: Application_Group_Initiate_NormalFullcopy_0002(),Function: Initiate_NormalFullcopy ,execution got failed.kindly check the log for more details");
+			_fail("Group is still Unmanaged,so that stopping the execution.");
+		}
+
+}
+function  AG_Initiate_Normalcopy_0003(){
+try {
+	publishBCO($groupName1, "NormalCopy");
+	Trigger_Ral_Initiate_Normalcopy($groupName1,$WorkflowNm1);
+	} catch ($e) {
+	_log($e.toString(),"Application_Group");
+		_log($e.toString(),"Application_Group");
+	_log("for test Case ID: AG_Initiate_Normalcopy_0003(),Function: Initiate_Normalcopy ,execution got failed.kindly check the log for more details");
+	_fail("Group is still Unmanaged,so that stopping the execution.");
+}
+
+	try {
+		publishBCO($groupName3, "NormalCopy");
+		Trigger_Ral_Initiate_Normalcopy($groupName3,$WorkflowNm3);
+		} catch ($e) {
+		_log($e.toString(),"Application_Group");
+			_log($e.toString(),"Application_Group");
+		_log("for test Case ID: Application_Group_Initiate_Normalcopy_0003(),Function: Initiate_Normalcopy ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+
+}
+
+
+function AG_Stop_Normalcopy_0004(){
+	try {
+		Trigger_Ral_Stop_Normalcopy($groupName1,$WorkflowNm1);
+		} catch ($e) {
+		_log($e.toString(),"Application_Group");
+			_log($e.toString(),"Application_Group");
+		_log("for test Case ID: Application_Group_Stop_Normalcopy_0004(),Function: Stop_Normalcopy ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+		
+		try {
+			Trigger_Ral_Stop_Normalcopy($groupName3,$WorkflowNm3);
+			} catch ($e) {
+				_log($e.toString(),"Application_Group");
+				_log($e.toString(),"Application_Group");
+			_log("for test Case ID: Application_Group_Stop_Normalcopy_0004(),Function: Stop_Normalcopy ,execution got failed.kindly check the log for more details");
+			_fail("Group is still Unmanaged,so that stopping the execution.");
+		}
+}
+
+
+function AG_Start_SO_0005(){
+	try {
+		publishDrill($groupName1,"Switchover");
+		//Trigger_Ral_Start_SO($groupName,$workflowType,$SOWrkflwNm)
+		Trigger_Ral_Start_SO($groupName1,"Switchover",$TEWrkflwNm1);
+		} catch ($e) {
+		_log($e.toString(),"Application_Group");
+			_log($e.toString(),"Application_Group");
+		_log("for test Case ID: Application_Group_StartSO_0005(),Function: Start_SO ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+		try {
+			publishDrill($groupName3,"Switchover");
+			//Trigger_Ral_Start_SO("Switchover");
+			Trigger_Ral_Start_SO($groupName3,"Switchover",$TEWrkflwNm3);
+			} catch ($e) {
+			_log($e.toString(),"Application_Group");
+				_log($e.toString(),"Application_Group");
+			_log("for test Case ID: Application_Group_StartSO_0005(),Function: Start_SO ,execution got failed.kindly check the log for more details");
+			_fail("Group is still Unmanaged,so that stopping the execution.");
+		}
+		
+}
+
+function AG_ReverseNormalcopy_0006(){
+	try {
+		publishBCO($groupName1, "ReverseNormalCopy");
+		Trigger_Ral_Initiate_ReverseNormalcopy($groupName1,$WorkflowNm1);
+		} catch ($e) {
+		_log($e.toString(),"Application_Group");
+			_log($e.toString(),"Application_Group");
+		_log("for test Case ID:Application_Group_Initiate_ReverseNormalcopy_0006(),Function: Initiate_ReverseNormalcopy ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+		try {
+			publishBCO($groupName1, "ReverseNormalCopy");
+			Trigger_Ral_Initiate_ReverseNormalcopy($groupName3,$WorkflowNm3);
+			} catch ($e) {
+			_log($e.toString(),"Application_Group");
+				_log($e.toString(),"Application_Group");
+			_log("for test Case ID:Application_Group_Initiate_ReverseNormalcopy_0006(),Function: Initiate_ReverseNormalcopy ,execution got failed.kindly check the log for more details");
+			_fail("Group is still Unmanaged,so that stopping the execution.");
+		}
+		
+}
+
+function AG_Stop_ReverseNormalcopy_0007(){
+	try {
+		Trigger_Ral_Stop_ReverseNormalcopy($groupName1,$WorkflowNm1);
+		} catch ($e) {
+		_log($e.toString(),"Application_Group");
+			_log($e.toString(),"Application_Group");
+		_log("for test Case ID: Application_Group_Stop_ReverseNormalcopy_0007(),Function: Stop_ReverseNormalcopy ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+		try {
+			Trigger_Ral_Stop_ReverseNormalcopy($groupName3,$WorkflowNm3);
+			} catch ($e) {
+			_log($e.toString(),"Application_Group");
+				_log($e.toString(),"Application_Group");
+			_log("for test Case ID: Application_Group_Stop_ReverseNormalcopy_0007(),Function: Stop_ReverseNormalcopy ,execution got failed.kindly check the log for more details");
+			_fail("Group is still Unmanaged,so that stopping the execution.");
+		}
+
+}
+
+function AG_Start_SB_0008(){
+	try {
+		//Change_ContinuityStatus_Group($groupName, "Switchover Inactive");
+		publishDrill($groupName1,"Switchback");
+		Trigger_Ral_Start_SB($groupName1,"Switchback",$TEWrkflwNm1);
+		//Trigger_Ral_Start_SB($groupName,$workflowType,$WrkflwNm)
+		//Trigger_Ral_Start_SO($groupName1,"Switchover",$TEWrkflwNm1);
+
+		} catch ($e) {
+		_log($e.toString(),"Application_Group");
+			_log($e.toString(),"Application_Group");
+		_log("for test Case ID: Trigger_Ral_Initiate_Normalcopy_0003(),Function: Initiate_Normalcopy ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+		try {
+			//Change_ContinuityStatus_Group($groupName, "Switchover Inactive");
+			publishDrill($groupName3,"Switchback");
+			//Trigger_Ral_Start_SB("Switchback");
+			Trigger_Ral_Start_SB($groupName3,"Switchback",$TEWrkflwNm3);
+
+			} catch ($e) {
+			_log($e.toString(),"Application_Group");
+				_log($e.toString(),"Application_Group");
+			_log("for test Case ID: Trigger_Ral_Initiate_Normalcopy_0003(),Function: Initiate_Normalcopy ,execution got failed.kindly check the log for more details");
+			_fail("Group is still Unmanaged,so that stopping the execution.");
+		}
+	
+}
+
+function preConditionFor_AGGroupCreation(){
+	try {
+		Create_Remote_Component_AG_PR($systemType, $compNamePR, $compIPPR,$compsitePR, $remoteUserNameValPR, $remotePwdValPR);
+		Create_Remote_Component_AG_DR($systemType, $compNameDR, $compIPDR,$compsiteDR, $remoteUserNameValPR, $remotePwdValPR);
+		Create_AG_Dataset_PR($systemTypeDataset, $dependentComponentNamePR, $datasetNamePR, $fileNameTextPathPR);
+		Create_AG_Dataset_DR($systemTypeDataset, $dependentComponentNameDR, $datasetNameDR, $fileNameTextPathDR);
+		Create_AG_ProtectionScheme_PR($systemTypeProtection,$sernamePR,$mgmtHostPFRPR);
+		Create_AG_ProtectionScheme_PR($systemTypeProtection,$sernameDR,$mgmtHostPFRDR);
+		Creation_APP_PFR_Group($groupName1, $groupDescription, $PFRApplicationSubsystem, $primaryComponents, $remoteComponents, $primaryDatasets,
+				               $remoteDatasets, $primaryProtections, $remoteProtections, $fileNameTextPathPR,$fileNameTextPathDR);
+		Move_To_Manage_Group($groupName1);
+		} catch ($e) {
+		_log($e.toString(),"Application_Group");
+			_log($e.toString(),"Application_Group");
+		_log("for test Case ID:Application_Group_Initiate_ReverseNormalcopy_0006(),Function: Initiate_ReverseNormalcopy ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+
+	try {
+		//Create_Remote_Component_AG_PR($systemType, $compname, $compip, $compsite, $remoteUserNameVal, $remotePwdVal);
+		//Create_Remote_Component_AG_DR($systemType, $compname, $compip, $compsite, $remoteUserNameVal, $remotePwdVal);
+		Create_AG_Dataset_PR($systemTypeDataset, $dependentComponentNamePR1, $datasetNamePR1, $fileNameTextPathPR1);
+		Create_AG_Dataset_DR($systemTypeDataset, $dependentComponentNameDR1, $datasetNameDR1, $fileNameTextPathDR1);
+		Create_AG_ProtectionScheme_PR($systemTypeProtection,$sernamePR1,$mgmtHostPFRPR1);
+		Create_AG_ProtectionScheme_PR($systemTypeProtection,$sernameDR1,$mgmtHostPFRDR1);
+		Creation_APP_PFR_Group($groupName2, $groupDescription, $PFRApplicationSubsystem, $primaryComponents, $remoteComponents, $primaryDatasets1,
+	               $remoteDatasets1, $primaryProtections1, $remoteProtections1,$fileNameTextPathPR1,$fileNameTextPathDR1);
+		Move_To_Manage_Group($groupName2);
+	 	
+	} catch ($e) {
+		_log($e.toString(),"Application_Group");
+			_log($e.toString(),"Application_Group");
+		_log("for test Case ID:Application_Group_Initiate_ReverseNormalcopy_0006(),Function: Initiate_ReverseNormalcopy ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+			try {
+				Create_AG_Dataset_PR($systemTypeDataset, $dependentComponentNamePR2, $datasetNamePR2, $fileNameTextPathPR2);
+				Create_AG_Dataset_DR($systemTypeDataset, $dependentComponentNameDR2, $datasetNameDR2, $fileNameTextPathDR2);
+				Create_AG_ProtectionScheme_PR($systemTypeProtection,$sernamePR2,$mgmtHostPFRPR2);
+				Create_AG_ProtectionScheme_PR($systemTypeProtection,$sernameDR2,$mgmtHostPFRDR2);
+				Creation_APP_PFR_Group($groupName3, $groupDescription, $PFRApplicationSubsystem, $primaryComponents, $remoteComponents, $primaryDatasets2,
+			               $remoteDatasets2, $primaryProtections2, $remoteProtections2,$fileNameTextPathPR2,$fileNameTextPathDR2);
+				Move_To_Manage_Group($groupName3);
+			} catch ($e) {
+			_log($e.toString(),"Application_Group");
+				_log($e.toString(),"Application_Group");
+			_log("for test Case ID:Application_Group_Initiate_ReverseNormalcopy_0006(),Function: Initiate_ReverseNormalcopy ,execution got failed.kindly check the log for more details");
+			_fail("Group is still Unmanaged,so that stopping the execution.");
+		}
+	
+
+}
+
+
+
+function Trigger_Ral_Initiate_Failover_0009(){
+	try {
+		Change_ContinuityStatus_Group($groupName1, "Normal Inactive");
+		publishBCO($groupName1, "Failover");
+		Trigger_Ral_Initiate_Failover();
+		} catch ($e) {
+		_log($e.toString(),"TriggerRal");
+			_log($e.toString(),"TriggerRal");
+		_log("for test Case ID: Trigger_Ral_Initiate_Normalcopy_0003(),Function: Initiate_Normalcopy ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+		
+		/*try {
+			Change_ContinuityStatus_Group($groupName2, "Normal Inactive");
+			publishBCO($groupName2, "Failover");
+			Trigger_Ral_Initiate_Failover();
+			} catch ($e) {
+			_log($e.toString(),"TriggerRal");
+				_log($e.toString(),"TriggerRal");
+			_log("for test Case ID: Trigger_Ral_Initiate_Normalcopy_0003(),Function: Initiate_Normalcopy ,execution got failed.kindly check the log for more details");
+			_fail("Group is still Unmanaged,so that stopping the execution.");
+		}*/
+			try {
+				Change_ContinuityStatus_Group($groupName3, "Normal Inactive");
+				publishBCO($groupName3, "Failover");
+				Trigger_Ral_Initiate_Failover();
+				} catch ($e) {
+				_log($e.toString(),"TriggerRal");
+					_log($e.toString(),"TriggerRal");
+				_log("for test Case ID: Trigger_Ral_Initiate_Normalcopy_0003(),Function: Initiate_Normalcopy ,execution got failed.kindly check the log for more details");
+				_fail("Group is still Unmanaged,so that stopping the execution.");
+			}
+	
+}
+
+/*function Trigger_Ral_Initiate_Failover_0009(){
+	try {
+		Trigger_Ral_Initiate_Failover();
+		} catch ($e) {
+		_log($e.toString(),"TriggerRal");
+			_log($e.toString(),"TriggerRal");
+		_log("for test Case ID: Trigger_Ral_Initiate_Normalcopy_0003(),Function: Initiate_Normalcopy ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+}*/
+
+function Trigger_Ral_Initiate_Fallback_0011(){
+	try {
+		Change_ContinuityStatus_Group($groupName1, "Failover Active");
+		publishBCO($groupName1, "Fallback");
+		Trigger_Ral_Initiate_Fallback();
+		} catch ($e) {
+		_log($e.toString(),"TriggerRal");
+			_log($e.toString(),"TriggerRal");
+		_log("for test Case ID: Trigger_Ral_Initiate_Normalcopy_0003(),Function: Initiate_Normalcopy ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+/*		try {
+			Change_ContinuityStatus_Group($groupName2, "Failover Active");
+			publishBCO($groupName2, "Fallback");
+			Trigger_Ral_Initiate_Fallback();
+			} catch ($e) {
+			_log($e.toString(),"TriggerRal");
+				_log($e.toString(),"TriggerRal");
+			_log("for test Case ID: Trigger_Ral_Initiate_Normalcopy_0003(),Function: Initiate_Normalcopy ,execution got failed.kindly check the log for more details");
+			_fail("Group is still Unmanaged,so that stopping the execution.");
+		}*/
+			try {
+				Change_ContinuityStatus_Group($groupName3, "Failover Active");
+				publishBCO($groupName3, "Fallback");
+				Trigger_Ral_Initiate_Fallback();
+				} catch ($e) {
+				_log($e.toString(),"TriggerRal");
+					_log($e.toString(),"TriggerRal");
+				_log("for test Case ID: Trigger_Ral_Initiate_Normalcopy_0003(),Function: Initiate_Normalcopy ,execution got failed.kindly check the log for more details");
+				_fail("Group is still Unmanaged,so that stopping the execution.");
+			}
+
+}
+
+
+function TriggerRal_Move_Group_Failover_Active_0010() {
+	try {
+		
+		Change_ContinuityStatus_Group($groupName1, "Failover Active");
+		//publishBCO($groupName,"Failover"); 
+		} catch ($e) {
+		_log($e.toString(),"TriggerRal");
+ 		_log($e.toString(),"TriggerRal");
+		_log("for test Case ID: TriggerRal_Move_Group_Manage_0001(),Function: Move_To_Manage_Group ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+		
+		/*try {
+			
+			Change_ContinuityStatus_Group($groupName2, "Failover Active");
+			//publishBCO($groupName,"Failover"); 
+			} catch ($e) {
+			_log($e.toString(),"TriggerRal");
+	 		_log($e.toString(),"TriggerRal");
+			_log("for test Case ID: TriggerRal_Move_Group_Manage_0001(),Function: Move_To_Manage_Group ,execution got failed.kindly check the log for more details");
+			_fail("Group is still Unmanaged,so that stopping the execution.");
+		}*/
+			try {
+				
+				Change_ContinuityStatus_Group($groupName3, "Failover Active");
+				//publishBCO($groupName,"Failover"); 
+				} catch ($e) {
+				_log($e.toString(),"TriggerRal");
+		 		_log($e.toString(),"TriggerRal");
+				_log("for test Case ID: TriggerRal_Move_Group_Manage_0001(),Function: Move_To_Manage_Group ,execution got failed.kindly check the log for more details");
+				_fail("Group is still Unmanaged,so that stopping the execution.");
+			}
+	
+}
+
+function Mixed_TriggerRal_Scenario_0011(){
+	try {
+		Change_ContinuityStatus_Group($groupName1, "Normal Reset");
+		publishBCO($groupName1, "NormalFullCopy");
+		Trigger_Ral_Initiate_NormalFullcopy($groupName1,$WorkflowNm1);
+		} catch ($e) {
+		_log($e.toString(),"Application_Group");
+ 		_log($e.toString(),"Application_Group");
+		_log("for test Case ID: Application_Group_Initiate_NormalFullcopy_0002(),Function: Initiate_NormalFullcopy ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+	try {
+		publishBCO($groupName3, "NormalCopy");
+		Trigger_Ral_Initiate_Normalcopy($groupName3,$WorkflowNm3);
+		} catch ($e) {
+		_log($e.toString(),"Application_Group");
+			_log($e.toString(),"Application_Group");
+		_log("for test Case ID: Application_Group_Initiate_Normalcopy_0003(),Function: Initiate_Normalcopy ,execution got failed.kindly check the log for more details");
+		_fail("Group is still Unmanaged,so that stopping the execution.");
+	}
+
+		
+		try {
+			publishDrill($groupName1,"Switchover");
+			//Trigger_Ral_Start_SO($groupName,$workflowType,$SOWrkflwNm)
+			Trigger_Ral_Start_SO($groupName1,"Switchover",$TEWrkflwNm1);
+			} catch ($e) {
+			_log($e.toString(),"Application_Group");
+				_log($e.toString(),"Application_Group");
+			_log("for test Case ID: Application_Group_StartSO_0005(),Function: Start_SO ,execution got failed.kindly check the log for more details");
+			_fail("Group is still Unmanaged,so that stopping the execution.");
+		}
+		
+}

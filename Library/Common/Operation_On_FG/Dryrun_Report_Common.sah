@@ -1,0 +1,177 @@
+/*************************************************************************
+ ** CompanyName : Sanovi an IBM company Ltd.
+ ** Application Name : SCC
+ ** Objective : This script contains all the functions which are used commonly 
+ **             for for all the solutions. 
+ ** AuthorName : Omprakash.v
+ ** Created Date : jan 2017
+ ************************************************************************/
+
+////**************************************************DRY RUN SCRIPT***********************
+
+/**
+ *Function Dry run Execution for different workflows
+ *@param :$groupName
+ *@return : null
+ *@author : Omprakash.V
+ */
+
+function Dryrun_for_Diffrent_Workflows($workflowType)
+{
+	NavigateToViewAllWorkflowsPage($groupName);
+	switch($workflowType) {
+    case "NormalFullCopy":
+    	Start_Dryrun_Execution($workflowType);
+        break;
+    case "NormalCopy":
+    	Start_Dryrun_Execution($workflowType);
+        break;
+    case "ReverseNormalCopy":
+    	Start_Dryrun_Execution($workflowType);
+        break;
+    case "Failover":
+    	Start_Dryrun_Execution($workflowType);
+        break;
+    case "FallbackResync":
+    	publishBCO($groupName,$workflowType);
+    	Start_Dryrun_Execution($workflowType);
+        break;
+    case "Fallback":
+    	publishBCO($groupName,$workflowType);
+    	Start_Dryrun_Execution($workflowType);
+        break;
+    case "Switchover":
+    	navigateDrillListing($groupName);
+    	Start_Dryrun_Execution($workflowType);
+        break;
+    case "Switchback":
+    	navigateDrillListing($groupName);
+    	Start_Dryrun_Execution($workflowType);
+        break;
+  }
+}
+
+/**
+ *Function start Dry run Execution for different workflows.
+ *@param :$groupName
+ *@return : null
+ *@author : Omprakash.V
+ */
+
+function Start_Dryrun_Execution($workflowType)
+{
+  if ($workflowType=="Switchover" || $workflowType=="Switchback"){
+    var $versionStatus=_getText(_span(3, _near(_link($workflowType))));
+	_log($versionStatus);
+}
+ else
+   {
+	var $versionStatus=_getText(_strong(0, _near(_link($workflowType))));
+    }
+if ($versionStatus==$obj_PUBLISHED)
+{
+_log($workflowType+"Workflow was published");
+_click(_image($obj_ExecDryrun, _near(_link($workflowType))));
+_click(_link($obj_Dryrun));
+Dryrun_Execution_Status($workflowType);
+Fetch_Dry_Run_Reports($groupName,$workflowType);
+}
+else 
+{
+_log($workflowType+"Workflow was not published");
+}
+}
+
+/**
+ *Function Dry run Execution status
+ *@param :$groupName
+ *@return : null
+ *@author : Omprakash.V
+ */
+
+function Dryrun_Execution_Status($workflowType)
+{
+	var $i=0;
+while($i<10)
+	
+	{
+_wait(20000,_strong($obj_SUCCESS));
+ if ($workflowType=="Switchover" || $workflowType=="Switchback")
+ {
+  var $testStatus=_getText(_span(12, _near(_link($workflowType))));
+  _log($testStatus);
+   }
+ else{
+var $testStatus = _getText(_strong(2, _near(_link($workflowType))));
+_log($testStatus);	
+ }
+if ($testStatus  == $obj_SUCCESS) 
+{
+	_log("Dry run executed successfully");
+	break;
+}
+else if ($testStatus == $obj_EXECUTING)
+	{
+	_log("Dry run execution in progress");	
+	
+	}
+else if($testStatus == $obj_Failed)
+{
+_log("Dry run execution Failed");
+_assertTrue(false);
+break;
+}
+$i++;
+}
+}
+
+/**
+ *Function Fetching Dry run Execution Reports for different workflows
+ *@param :$groupName
+ *@return : null
+ *@author : Omprakash.V
+ */
+
+function Fetch_Dry_Run_Reports($groupName,$workflowType)
+{
+	navigateToReports();
+	_click(_link($groupName));
+	var $rowCount = 0;
+	_setSelected(_select("chartType"), $obj_DryRunExecution);
+	
+	if(_exists(_image($obj_dryDate2))==true){
+		_click(_image($obj_dryDate2));
+	}
+	else if(_exists(_image("Date selector"))==true){
+		_click(_image("Date selector"));
+	}
+//	_click(_div($obj_dryToday),$obj_dryFrom);
+//	$date=_getText(_textbox("fromDate"));
+//	_setValue(_textbox("toDate"), $date);
+	
+	$dateFrom = getDate("yyyy-MM-dd","year",-0);
+	$dateTo = getDate("yyyy-MM-dd","year",-0);
+	_setValue(_textbox("fromDate"), $dateFrom);
+	_setValue(_textbox("toDate"), $dateTo);
+	
+	_click(_button($obj_ViewDryrunReport));
+	
+	if(_exists(_link($workflowType,_under(_tableHeader($DryRyn_Grp)))))
+		{
+		$errWarning=_getText(_cell(4, _near(_link($workflowType))));
+		$errWarning1=$errWarning.split("/");
+		$errors=$errWarning1[0];
+		$warnings=$errWarning1[1];
+		_log("errors in dry run report are ="+$errors);
+		_log("Warnings in dry run report are ="+$warnings);
+		if($errors>0)
+			{
+			_log("Errors found");
+			_assertTrue(false);
+			}
+		else
+			{
+			_log("No Erors found");
+			}
+		}
+}	

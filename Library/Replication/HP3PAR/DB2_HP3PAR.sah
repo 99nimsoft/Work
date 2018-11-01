@@ -1,0 +1,86 @@
+/*************************************************************************
+ ** CompanyName : Sanovi Technologies Ltd.
+ ** Application Name : DRM 
+ ** Objective : This script contains Creation of Protection Scheme for local agents. 
+ ** AuthorName : Saiteja M
+ ** Created Date : SEPTEMBER 2016
+ ************************************************************************/
+
+
+/**
+* Function is for Creating Protection Schemes in DB2_HP3PAR  solution for PR.
+*@param :  null
+*@return : null
+* Author: Saiteja M
+*
+*/
+
+function Create_DB2_HP3PAR_ProtectionschemePR() {
+   Create_DB2_HP3PAR_ProtectionScheme($systemTypeProtection, $sernamePR,  $mgmtHost_HP3PAR_PR  ,$userPR,$dataBaseName,$userPR,$pwdPR);
+   }//end of DB2_HP3PAR_ProtectionschemePR()
+   
+/**
+* Function is for Creating Protection Schemes in DB2_HP3PAR  solution for DR.
+*@param :  null
+*@return : null
+* Author: Saiteja M
+*
+*/
+function Create_DB2_HP3PAR_ProtectionschemeDR(){
+   Create_DB2_HP3PAR_ProtectionScheme($systemTypeProtection, $sernameDR,  $mgmtHost_HP3PAR_DR  ,$userDR,$dataBaseName,$userDR,$pwdDR);
+   }//end of DB2_HP3PAR_ProtectionschemeDR() 
+
+/**
+* Function is for Creating Protection Schemes in DB2_HP3PAR  solution.
+*@param :  $systemType, $sername,  $mgmtHostPFR
+*@return : null
+* Author: Saiteja M
+*
+*/
+function Create_DB2_HP3PAR_ProtectionScheme($systemTypeProtection, $sername,  $mgmtHost_HP3PAR,$db2Instance,$dbName,$db2UserName,$db2Password)
+  {
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($ProtectionSchemes));
+	if (_exists(_link($sername))) {
+		_assertExists("Protectionscheme already exists");
+	} else {
+	_setSelected(_select("systemType"), $systemTypeProtection);
+	_click(_button($Go));
+	
+	_setSelected(_select("mgmtHost_HP3PAR"), $mgmtHost_HP3PAR);
+	_setValue(_textbox("sername"), $sername);
+    if (_exists(_link($RegisterAgent))) 
+    {
+	_click(_link($RegisterAgent));
+	_wait(30000, _cell($CONNECTED));
+	} 
+	
+	var $status = _getCellText(_cell(1, _near(_cell($Status))));
+	if($status == $CONNECTED)
+	{
+	_assertExists("Agent is CONNECTED");
+	}
+	else
+	{
+	_fail("Agent is not CONNECTED");
+	}
+	_setValue(_textbox("OtherReplicatorInputElement_0"), $db2Instance);
+	_setValue(_textbox("OtherReplicatorInputElement_1"), $dbName);
+	_setValue(_textbox("OtherReplicatorInputElement_2"), $db2UserName);
+	_setValue(_textbox("OtherReplicatorInputElement_3"), $db2Password);
+	_click(_button($Save));
+	navigateToDiscovery();
+	_click(_link($Subsystems));
+	_click(_link($ProtectionSchemes));
+	if (_exists(_link($sername))) 
+	{
+	_assertExists("Protection Schemes created succesfully");
+	} 
+	else 
+	{
+		_assertEqual("Protection Scheme created",_lastAlert()); 
+	_fail("Protection Schemes not created succesfully.");
+	}
+}
+}

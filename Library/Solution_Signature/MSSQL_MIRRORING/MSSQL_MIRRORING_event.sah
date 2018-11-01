@@ -1,0 +1,495 @@
+//For event
+/*var $MssqlLocalAgentStartPR= "net start \"Panaces Agent For MS SQL SERVER\""; //To start the instance 
+var $MssqlLocalAgentStopPR= "net stop \"Panaces Agent For MS SQL SERVER\""; //To stop the instance
+var $MssqlServerStart= "NET START MSSQLSERVER"; //To start the instance 
+var $MssqlServerStop= "NET STOP MSSQLSERVER";   //To stop the instance
+var $MssqlLocalAgentStartDR= $MssqlLocalAgentStartPR;
+var $MssqlLocalAgentStopDR= $MssqlLocalAgentStopPR;*/
+
+var $WindowsLocalAgentStop= "net stop \"Panaces Agent For MS Windows OS\""; 
+var $WindowsLocalAgentStart= "net start \"Panaces Agent For MS Windows OS\"";
+var $MssqlLocalAgentStop= "net stop \"Panaces Agent For MS SQL Server\""; 
+var $MssqlLocalAgentStart= "net start \"Panaces Agent For MS SQL Server\""; 
+//Description: For remote agent Stop & Start the MsSQL agent from back end for PR and DR
+/**
+ *For remote agent stop the MsSQL agent from back end for PR 
+ *@param :  null
+*@return : null
+ *@author : Govinda
+ */
+
+
+function MSSQL_Mirroring_Remote_PR_MSSQL_Agent_Stop_Event() {
+var $server = Get_Remote_Agent_Event($compIPPR, "MSSQLAgent.sh stop ");
+Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent007", "MSSQL Agent is Down on Primary Server", "Critical");
+}// End of Remote_PR_Mssql_Agent_Stop_Event()
+
+/**
+*For remote agent start the MsSQL agent from back end for PR 
+*@param :  null
+*@return : null
+*@author : Govinda
+*/
+
+function MSSQL_Mirroring_Remote_PR_MSSQL_Agent_Start_Event() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "MSSQLAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent010", "MSSQL Agent is UP on Primary Server", "Information");
+}// End of Remote_PR_Mssql_Agent_Start_Event
+
+/**
+ *For remote agent stop the MsSQL agent from back end for DR 
+ *@param :  null
+*@return : null
+ *@author : Govinda
+ */
+
+function MSSQL_Mirroring_Remote_DR_MSSQL_Agent_Stop_Event() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "MSSQLAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent008", "MSSQL Agent is Down on DR server", "Critical");
+}// Remote_DR_Mssql_Agent_Stop_Event
+
+
+/**
+ *For remote agent start the MsSQL agent from back end for DR 
+ *@param :  null
+*@return : null
+ *@author : Govinda
+ */
+
+function MSSQL_Mirroring_Remote_DR_MSSQL_Agent_Start_Event() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "MSSQLAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent011", "MSSQL Agent is UP on DR Server", "Information");
+}// End of Remote_DR_Mssql_Agent_Start_Event
+
+
+/**
+ *For remote agent stop the MsSQL agent from back end for PR (current DR) (SO InActive)
+ *@param :  null
+*@return : null
+ *@author : Govinda
+ */
+function MSSQL_Mirroring_Remote_PR_MSSQL_Agent_Stop_Event_SO_InActive() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "MSSQLAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent008", "MSSQL Agent is Down on DR server", "Critical");
+}// End of Remote_PR_Mssql_Agent_Stop_Event()
+
+/**
+ *For remote agent start the MsSQL agent from back end for PR (current DR) (SO InActive)
+ *@param :  null
+*@return : null
+ *@author : Govinda
+ */
+
+function MSSQL_Mirroring_Remote_PR_MSSQL_Agent_Start_Event_SO_InActive() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "MSSQLAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent011", "MSSQL Agent is UP on DR Server", "Information");
+}// End of Remote_PR_Mssql_Agent_Start_Event
+
+
+
+/**
+ *For remote agent stop the MsSQL agent from back end for DR (current PR) (SO InActive)
+ *@param :  null
+*@return : null
+ *@author : Govinda
+ */
+
+function MSSQL_Mirroring_Remote_DR_MSSQL_Agent_Stop_Event_SO_InActive() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "MSSQLAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent007", "MSSQL Agent is Down on Primary Server", "Critical");
+}// Remote_DR_Mssql_Agent_Stop_Event
+
+
+/**
+ *For remote agent start the MsSQL agent from back end for DR (current PR) (SO InActive)
+ *@param :  null
+*@return : null
+ *@author : Govinda
+ */
+
+function MSSQL_Mirroring_Remote_DR_MSSQL_Agent_Start_Event_SO_InActive() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "MSSQLAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent010", "MSSQL Agent is UP on Primary Server", "Information");
+}// End of Remote_DR_Mssql_Agent_Start_Event
+
+//Description: For remote agent Stop & Start the Windows OS agent from back end for PR & DR 
+/**
+ *For remote agent stop the Windows OS agent from back end for PR 
+ *@param :  null
+*@return : null
+ *@author : Govinda
+ */
+
+
+function MSSQL_Mirroring_Remote_PR_Windows_OS_Agent_Stop_Event() {
+var $server = Get_Remote_Agent_Event($compIPPR, "WindowsOSAgent.sh stop ");
+Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent001", "Windows OS Agent is Down on Primary Server", "Critical");
+}// End of Remote_PR_Mssql_Agent_Stop_Event()
+
+/**
+*For remote agent start the Windows OS agent from back end for PR 
+*@param :  null
+*@return : null
+*@author : Govinda
+*/
+
+function MSSQL_Mirroring_Remote_PR_Windows_OS_Agent_Start_Event() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "WindowsOSAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent004", "Windows OS Agent is UP on Primary Server", "Information");
+}// End of Remote_PR_Mssql_Agent_Start_Event
+
+/**
+ *For remote agent stop the Windows OS agent from back end for DR 
+ *@param :  null
+*@return : null
+ *@author : Govinda
+ */
+
+function MSSQL_Mirroring_Remote_DR_Windows_OS_Agent_Stop_Event() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "WindowsOSAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent002", "Windows OS Agent is Down on DR Server", "Critical");
+}// Remote_DR_Mssql_Agent_Stop_Event
+
+
+/**
+ *For remote agent start the Windows OS agent from back end for DR 
+ *@param :  null
+*@return : null
+ *@author : Govinda
+ */
+
+function MSSQL_Mirroring_Remote_DR_Windows_OS_Agent_Start_Event() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "WindowsOSAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent005", "Windows OS Agent is UP on DR Server", "Information");
+}// End of Remote_DR_Mssql_Agent_Start_Event
+
+///////////////////////////SO Active//////////////////////////
+
+
+//Description: For remote agent Stop & Start the Windows OS agent from back end for PR & DR (SO InActive)
+/**
+ *For remote agent stop the Windows OS agent from back end for PR (Current DR) (SO InActive)
+ *@param :  null
+*@return : null
+ *@author : Govinda
+ */
+
+
+function MSSQL_Mirroring_Remote_PR_Windows_OS_Agent_Stop_Event_SO_InActive() {
+       var $server = Get_Remote_Agent_Event($compIPPR, "WindowsOSAgent.sh stop ");
+       Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent002", "Windows OS Agent is Down on DR Server", "Critical");
+}// End of Remote_PR_Mssql_Agent_Stop_Event()
+
+/**
+*For remote agent start the Windows OS agent from back end for PR 
+*@param :  null
+*@return : null
+*@author : Govinda
+*/
+
+function MSSQL_Mirroring_Remote_PR_Windows_OS_Agent_Start_Event_SO_InActive() {
+	var $server = Get_Remote_Agent_Event($compIPPR, "WindowsOSAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent005", "Windows OS Agent is UP on DR Server", "Information");
+}// End of Remote_PR_Mssql_Agent_Start_Event
+
+/**
+ *For remote agent stop the Windows OS agent from back end for DR (Current PR) (SO InActive)
+ *@param :  null
+*@return : null
+ *@author : Govinda
+ */
+
+function MSSQL_Mirroring_Remote_DR_Windows_OS_Agent_Stop_Event_SO_InActive() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "WindowsOSAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent001", "Windows OS Agent is Down on Primary Server", "Critical");
+}// Remote_DR_Mssql_Agent_Stop_Event
+
+
+/**
+ *For remote agent start the Windows OS agent from back end for DR (Current PR) (SO InActive)
+ *@param :  null
+*@return : null
+ *@author : Govinda
+ */
+
+function MSSQL_Mirroring_Remote_DR_Windows_OS_Agent_Start_Event_SO_InActive() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "WindowsOSAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent004", "Windows OS Agent is UP on Primary Server", "Information");
+	
+}// End of Remote_DR_Mssql_Agent_Start_Event
+
+
+//FailOver Events
+
+//Description: For remote agent Stop & Start the MsSQL agent from back end for DR in Failover Active
+/**
+ *For remote agent stop the Windows OS agent for failover active from back end for DR(Current PR)
+ *@param :  null
+*@return : null
+ *@author : Govinda
+ */
+function MSSQL_Mirroring_Remote_DR_Windows_OS_Agent_Stop_Event_Failover_Active() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "WindowsOSAgent.sh stop ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent003", "Server with Windows OS is down on Primary", "Critical");
+}// End of Remote_PR_Mssql_Agent_Stop_Event_Failover_Active()
+
+/**
+ *For remote agent start the Windows OS agent for failover active from back end for DR(Current PR)
+ *@param :  null
+*@return : null
+ *@author : Govinda
+ */
+function MSSQL_Mirroring_Remote_DR_Windows_OS_Agent_Start_Event_Failover_Active() {
+	var $server = Get_Remote_Agent_Event($compIPDR, "WindowsOSAgent.sh start ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent006", "Disk / Directory Resource reached threshold on Primary Server", "Information");
+}// End of Remote_PR_Mssql_Agent_Start_Event_Failover_Active()
+
+
+/////////////////Local Agent\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+
+var $WindowsLocalAgentStop= "SC stop WindowsOSAgent"; 
+
+var $WindowsLocalAgentStart= "SC start WindowsOSAgent";
+
+var $MssqlLocalAgentStop= "SC stop MSSQLAgent"; 
+
+var $MssqlLocalAgentStart= "SC start MSSQLAgent"; 
+
+/// Local Windows OS Agent down
+/**
+ *For Local agent stop the Windows agent from back end for PR 
+ *@param :  null
+ *@return : null
+ *@Author :  Govinda Mengji
+ *@Modified:Anantha
+ */
+//need to
+function MSSQL_MIRR_Local_PR_Windows_Agent_Stop_Event() {
+	var $command = $WindowsLocalAgentStop ;
+	RemoteConnectionToWindows($ipPR,$remoteUserNameValPR,$remotePwdValPR,$command);
+	var $server = Get_Remote_Agent_Event($compIPPR, "WindowsOSAgent.sh status ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent001", "Windows OS Agent is Down on Primary Server", "Critical");
+}
+/**
+ *For Local agent start the Windows agent from back end for PR 
+ *@param :  null
+ *@return : null
+ *@Author :  Govinda Mengji
+ *@Modified:Anantha
+ */
+
+function MSSQL_MIRR_Local_PR_Windows_Agent_Start_Event() {
+	var $command =$WindowsLocalAgentStart ;
+	RemoteConnectionToWindows($ipPR,$remoteUserNameValPR,$remotePwdValPR,$command);
+	var $server = Get_Remote_Agent_Event($compIPPR, "WindowsOSAgent.sh status ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent004", "Windows OS Agent is UP on Primary Server", "Information");
+}
+/**
+ *For Local agent stop the Windows agent from back end for DR 
+ *@param :  null
+ *@return : null
+ *@Author :  Govinda Mengji
+ *@Modified:Anantha
+ */
+
+function MSSQL_MIRR_Local_DR_Windows_Agent_Stop_Event() {
+	var $command =$WindowsLocalAgentStop ;
+	RemoteConnectionToWindows($ipDR,$remoteUserNameValDR,$remotePwdValDR,$command);
+	var $server = Get_Remote_Agent_Event($compIPDR, "WindowsOSAgent.sh status ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent002 ", "Windows OS Agent is Down on DR Server", "Critical");
+}
+
+/**
+ *For Local agent start the Windows agent from back end for DR 
+ *@param :  null
+ *@return : null
+ *@Author :  Govinda Mengji
+ *@Modified:Anantha
+ */
+function MSSQL_MIRR_Local_DR_Windows_Agent_Start_Event() {
+	var $command =$WindowsLocalAgentStart;
+	RemoteConnectionToWindows($ipDR,$remoteUserNameValDR,$remotePwdValDR,$command);
+	var $server = Get_Remote_Agent_Event($compIPDR, "WindowsOSAgent.sh status ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent005 ", "Windows OS Agent is UP on DR Server", "Information");
+}
+
+
+// Local MSSQL Agent down
+/**
+ *For Local agent stop the MSSQL agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :  Govinda Mengji
+ *@Modified:Anantha
+ */
+function MSSQL_MIRR_Local_PR_MSSQL_Agent_Stop_Event() {
+	var $command = $MssqlLocalAgentStop ;
+	RemoteConnectionToWindows($ipPR,$remoteUserNameValPR,$remotePwdValPR,$command);
+	var $server = Get_Remote_Agent_Event($compIPPR, "WindowsOSAgent.sh status ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent007", "MSSQL Agent is Down on Primary Server", "Critical");
+}
+
+/**
+ *For Local agent start the MSSQL agent from back end for PR
+ *@param :  null
+ *@return : null
+ *@Author :  Govinda Mengji
+ *@Modified:Anantha
+ */
+function MSSQL_MIRR_Local_PR_MSSQL_Agent_Start_Event() {
+	var $command =$MssqlLocalAgentStart ;
+	RemoteConnectionToWindows($ipPR,$remoteUserNameValPR,$remotePwdValPR,$command);
+	var $server = Get_Remote_Agent_Event($compIPPR, "WindowsOSAgent.sh status ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent010", "MSSQL Agent is UP on Primary Server", "Information");
+}
+
+/**
+ *For Local agent stop the MSSQL agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :  Govinda Mengji
+ *@Modified:Anantha
+ */
+function MSSQL_MIRR_Local_DR_MSSQL_Agent_Stop_Event() {
+	var $command =$MssqlLocalAgentStop;
+	RemoteConnectionToWindows($ipDR,$remoteUserNameValDR,$remotePwdValDR,$command);
+	var $server = Get_Remote_Agent_Event($compIPDR, "WindowsOSAgent.sh status ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent008", "MSSQL Agent is Down on DR server", "Critical");
+}
+
+/**
+ For Local agent start the MSSQL agent from back end for DR
+ *@param :  null
+ *@return : null
+ *@Author :  Govinda Mengji
+ *@Modified:Anantha
+ */
+function MSSQL_MIRR_Local_DR_MSSQL_Agent_Start_Event() {
+	var $command =$MssqlLocalAgentStart ;
+	RemoteConnectionToWindows($ipDR,$remoteUserNameValDR,$remotePwdValDR,$command);
+	var $server = Get_Remote_Agent_Event($compIPDR, "WindowsOSAgent.sh status ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent011", "MSSQL Agent is UP on DR Server", "Information");
+}
+
+/////SO Active\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+/// Local Windows OS Agent down
+/**
+ *For Local agent stop the Windows agent from back end for PR (current DR)(SO InActive)
+ *@param :  null
+ *@return : null
+ *@Author :  Govinda Mengji
+ *@Modified:Anantha
+ */
+function MSSQL_MIRR_Local_PR_Windows_Agent_Stop_Event_SO_InActive() {
+	var $command = $WindowsLocalAgentStop ;
+	RemoteConnectionToWindows($ipPR,$remoteUserNameValPR,$remotePwdValPR,$command);
+	var $server = Get_Remote_Agent_Event($compIPPR, "WindowsOSAgent.sh status ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent002 ", "Windows OS Agent is Down on DR Server", "Critical");
+}
+
+/**
+ *For Local agent start the Windows agent from back end for PR (current DR)(SO InActive)
+ *@param :  null
+ *@return : null
+ *@Author :  Govinda Mengji
+ *@Modified:Anantha
+ */
+function MSSQL_MIRR_Local_PR_Windows_Agent_Start_Event_SO_InActive() {
+	var $command =$WindowsLocalAgentStart ;
+	RemoteConnectionToWindows($ipPR,$remoteUserNameValPR,$remotePwdValPR,$command);
+	var $server = Get_Remote_Agent_Event($compIPPR, "WindowsOSAgent.sh status ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent005 ", "Windows OS Agent is UP on DR Server", "Information");
+}
+/**
+ *For Local agent stop the Windows agent from back end for DR (current PR)(SO InActive)
+ *@param :  null
+ *@return : null
+ *@Author :  Govinda Mengji
+ *@Modified:Anantha
+ */
+
+function MSSQL_MIRR_Local_DR_Windows_Agent_Stop_Event_SO_InActive() {
+	var $command =$WindowsLocalAgentStop ;
+	RemoteConnectionToWindows($ipDR,$remoteUserNameValDR,$remotePwdValDR,$command);
+	var $server = Get_Remote_Agent_Event($compIPDR, "WindowsOSAgent.sh status ");
+Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent001", "Windows OS Agent is Down on Primary Server", "Critical");	
+
+}
+/**
+ *For Local agent start the Windows agent from back end for DR (current PR)(SO InActive)
+ *@param :  null
+ *@return : null
+ *@Author :  Govinda Mengji
+ *@Modified:Anantha
+ */
+
+function MSSQL_MIRR_Local_DR_Windows_Agent_Start_Event_SO_InActive() {
+	var $command =$WindowsLocalAgentStart ;
+	RemoteConnectionToWindows($ipDR,$remoteUserNameValDR,$remotePwdValDR,$command);
+	var $server = Get_Remote_Agent_Event($compIPDR, "WindowsOSAgent.sh status ");
+Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent004", "Windows OS Agent is UP on Primary Server", "Information");	
+
+}
+
+
+// Local MSSQL Agent down
+/**
+ *For Local agent stop the MSSQL agent from back end for PR (current DR)(SO InActive)
+ *@param :  null
+ *@return : null
+ *@Author :  Govinda Mengji
+ *@Modified:Anantha
+ */
+function MSSQL_MIRR_Local_PR_MSSQL_Agent_Stop_Event_SO_InActive() {
+	var $command = $MssqlLocalAgentStop ;
+	RemoteConnectionToWindows($ipPR,$remoteUserNameValPR,$remotePwdValPR,$command);
+	var $server = Get_Remote_Agent_Event($compIPPR, "WindowsOSAgent.sh status ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent008", "MSSQL Agent is Down on DR server", "Critical");
+}
+/**
+ *For Local agent start the MSSQL agent from back end for PR (current DR)(SO InActive)
+ *@param :  null
+ *@return : null
+ *@Author :  Govinda Mengji
+ *@Modified:Anantha
+ */
+
+function MSSQL_MIRR_Local_PR_MSSQL_Agent_Start_Event_SO_InActive() {
+	var $command =$MssqlLocalAgentStart ;
+	RemoteConnectionToWindows($ipPR,$remoteUserNameValPR,$remotePwdValPR,$command);
+	var $server = Get_Remote_Agent_Event($compIPPR, "WindowsOSAgent.sh status ");
+	Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent011", "MSSQL Agent is UP on DR Server", "Information");
+}
+
+/**
+ *For Local agent stop the MSSQL agent from back end for DR (current PR)(SO InActive)
+ *@param :  null
+ *@return : null
+ *@Author :  Govinda Mengji
+ *@Modified:Anantha
+ */
+function MSSQL_MIRR_Local_DR_MSSQL_Agent_Stop_Event_SO_InActive() {
+	var $command =$MssqlLocalAgentStop;
+	RemoteConnectionToWindows($ipDR,$remoteUserNameValDR,$remotePwdValDR,$command);
+	var $server = Get_Remote_Agent_Event($compIPDR, "WindowsOSAgent.sh status ");
+    Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent007", "MSSQL Agent is Down on Primary Server", "Critical");	
+
+
+}
+/**
+ *For Local agent start the MSSQL agent from back end for DR (current PR)(SO InActive)
+ *@param :  null
+ *@return : null
+ *@Author :  Govinda Mengji
+ *@Modified:Anantha
+ */
+
+function MSSQL_MIRR_Local_DR_MSSQL_Agent_Start_Event_SO_InActive() {
+	var $command =$MssqlLocalAgentStart ;
+	RemoteConnectionToWindows($ipDR,$remoteUserNameValDR,$remotePwdValDR,$command);
+	var $server = Get_Remote_Agent_Event($compIPDR, "WindowsOSAgent.sh status ");
+  Event_Verification($server.get("Server Time"), $groupName, "BCSMSSQLLogMirrorEvent010", "MSSQL Agent is UP on Primary Server", "Information");	
+
+}

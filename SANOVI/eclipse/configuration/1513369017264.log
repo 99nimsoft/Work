@@ -1,0 +1,58 @@
+!SESSION 2017-12-15 15:16:56.338 -----------------------------------------------
+eclipse.buildId=M20120914-1800
+java.version=9.0.1
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
+Framework arguments:  -product org.eclipse.epp.package.jee.product
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -clean -product org.eclipse.epp.package.jee.product
+
+!ENTRY org.eclipse.equinox.simpleconfigurator 4 0 2017-12-15 15:17:08.197
+!MESSAGE FrameworkEvent ERROR
+!STACK 0
+org.osgi.framework.BundleException: The bundle "org.eclipse.equinox.simpleconfigurator_1.0.301.v20120828-033635 [1]" could not be resolved. Reason: Missing Constraint: Bundle-RequiredExecutionEnvironment: CDC-1.1/Foundation-1.1,J2SE-1.4
+	at org.eclipse.osgi.framework.internal.core.AbstractBundle.getResolverError(AbstractBundle.java:1332)
+	at org.eclipse.osgi.framework.internal.core.AbstractBundle.getResolutionFailureException(AbstractBundle.java:1316)
+	at org.eclipse.osgi.framework.internal.core.BundleHost.startWorker(BundleHost.java:323)
+	at org.eclipse.osgi.framework.internal.core.AbstractBundle.resume(AbstractBundle.java:390)
+	at org.eclipse.osgi.framework.internal.core.Framework.resumeBundle(Framework.java:1176)
+	at org.eclipse.osgi.framework.internal.core.StartLevelManager.resumeBundles(StartLevelManager.java:559)
+	at org.eclipse.osgi.framework.internal.core.StartLevelManager.resumeBundles(StartLevelManager.java:544)
+	at org.eclipse.osgi.framework.internal.core.StartLevelManager.incFWSL(StartLevelManager.java:457)
+	at org.eclipse.osgi.framework.internal.core.StartLevelManager.doSetStartLevel(StartLevelManager.java:243)
+	at org.eclipse.osgi.framework.internal.core.StartLevelManager.dispatchEvent(StartLevelManager.java:438)
+	at org.eclipse.osgi.framework.internal.core.StartLevelManager.dispatchEvent(StartLevelManager.java:1)
+	at org.eclipse.osgi.framework.eventmgr.EventManager.dispatchEvent(EventManager.java:230)
+	at org.eclipse.osgi.framework.eventmgr.EventManager$EventThread.run(EventManager.java:340)
+
+!ENTRY org.eclipse.osgi 4 0 2017-12-15 15:17:08.203
+!MESSAGE Bundle initial@reference:file:plugins/org.eclipse.equinox.simpleconfigurator_1.0.301.v20120828-033635.jar was not resolved.
+
+!ENTRY org.eclipse.osgi 2 0 2017-12-15 15:17:08.211
+!MESSAGE One or more bundles are not resolved because the following root constraints are not resolved:
+!SUBENTRY 1 org.eclipse.osgi 2 0 2017-12-15 15:17:08.211
+!MESSAGE Bundle initial@reference:file:plugins/org.eclipse.equinox.simpleconfigurator_1.0.301.v20120828-033635.jar was not resolved.
+!SUBENTRY 2 org.eclipse.equinox.simpleconfigurator 2 0 2017-12-15 15:17:08.211
+!MESSAGE Missing required capability Require-Capability: osgi.ee; filter="(|(&(osgi.ee=CDC/Foundation)(version=1.1))(&(osgi.ee=JavaSE)(version=1.4)))".
+
+!ENTRY org.eclipse.osgi 2 0 2017-12-15 15:17:08.212
+!MESSAGE The following is a complete list of bundles which are not resolved, see the prior log entry for the root cause if it exists:
+!SUBENTRY 1 org.eclipse.osgi 2 0 2017-12-15 15:17:08.212
+!MESSAGE Bundle org.eclipse.equinox.simpleconfigurator_1.0.301.v20120828-033635 [1] was not resolved.
+!SUBENTRY 2 org.eclipse.equinox.simpleconfigurator 2 0 2017-12-15 15:17:08.212
+!MESSAGE Missing required capability Require-Capability: osgi.ee; filter="(|(&(osgi.ee=CDC/Foundation)(version=1.1))(&(osgi.ee=JavaSE)(version=1.4)))".
+
+!ENTRY org.eclipse.osgi 4 0 2017-12-15 15:17:08.215
+!MESSAGE Application error
+!STACK 1
+java.lang.IllegalStateException: Unable to acquire application service. Ensure that the org.eclipse.core.runtime bundle is resolved and started (see config.ini).
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:74)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:353)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:180)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:629)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:584)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1438)
+	at org.eclipse.equinox.launcher.Main.main(Main.java:1414)
